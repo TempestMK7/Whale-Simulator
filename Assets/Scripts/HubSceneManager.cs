@@ -22,7 +22,7 @@ public class HubSceneManager : MonoBehaviour {
 
     void Update() {
         HandleClickEvents();
-        HandleTouchEvents();
+        // HandleTouchEvents();
     }
 
     private void HandleClickEvents() {
@@ -61,7 +61,7 @@ public class HubSceneManager : MonoBehaviour {
             var touch = Input.GetTouch(0);
             var touchPosition = (Vector3)touch.position;
             if (startingClickPosition == null) {
-                startingClickPosition = touchPosition;
+                startingClickPosition = new Vector3(touchPosition.x, touchPosition.y);
             }
 
             var vertExtent = mainCamera.orthographicSize;
@@ -83,6 +83,7 @@ public class HubSceneManager : MonoBehaviour {
                     PerformClick(touchPosition);
                 }
                 startingClickPosition = null;
+                clickPosition = null;
             }
         }
     }

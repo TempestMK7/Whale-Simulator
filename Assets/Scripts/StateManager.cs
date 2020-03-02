@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class StateManager {
 
-    private const string fileName = "WhaleState.dat";
+    private static string fileName = Application.persistentDataPath + "/WhaleState.dat";
     private static AccountStateContainer currentState;
 
     public static AccountStateContainer GetCurrentState() {
