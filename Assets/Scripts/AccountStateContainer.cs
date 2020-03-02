@@ -10,7 +10,7 @@ public class AccountStateContainer {
 
     [SerializeField] public double currentGold;
     [SerializeField] public double currentSouls;
-    [SerializeField] public double currentLevel;
+    [SerializeField] public int currentLevel;
     [SerializeField] public double currentExperience;
     [SerializeField] public double currentGems;
     [SerializeField] public double currentScrolls;
@@ -18,10 +18,12 @@ public class AccountStateContainer {
     [SerializeField] public double goldRate;
     [SerializeField] public double soulsRate;
     [SerializeField] public double experienceRate;
-    [SerializeField] public double gemRate;
-    [SerializeField] public double scrollRate;
+    [SerializeField] public double gemInterval;
+    [SerializeField] public double scrollInterval;
 
     public void InitializeAccount() {
+        playerName = "Unregistered Account";
+
         lastClaimTimeStamp = EpochTime.CurrentTimeMillis();
 
         currentGold = 0;
@@ -34,8 +36,8 @@ public class AccountStateContainer {
         goldRate = 2.0;
         soulsRate = 1.0;
         experienceRate = 1.0;
-        gemRate = 0f;
-        scrollRate = 0f;
+        gemInterval = 60.0 * 60.0;
+        scrollInterval = 60.0 * 60.0 * 24.0;
     }
 
     public void ClaimMaterials() {
@@ -43,10 +45,15 @@ public class AccountStateContainer {
         lastClaimTimeStamp = EpochTime.CurrentTimeMillis();
 
         currentGold += goldRate * timeElapsed;
-        currentSouls += goldRate * timeElapsed;
-        currentExperience += goldRate * timeElapsed;
-        currentGems += goldRate * timeElapsed;
-        currentScrolls += goldRate * timeElapsed;
+        currentSouls += soulsRate * timeElapsed;
+        currentExperience += experienceRate * timeElapsed;
+        currentGems += (1.0 / gemInterval) * timeElapsed;
+        currentScrolls += (1.0 / scrollInterval) * timeElapsed;
+
+        while (currentExperience > LevelContainer.experienceRequirement(currentLevel)) {
+            currentExperience -= LevelContainer.experienceRequirement(currentLevel);
+            currentLevel++;
+        }
 
         StateManager.SaveState();
     }

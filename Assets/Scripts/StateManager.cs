@@ -17,6 +17,8 @@ public class StateManager {
     }
 
     private static void LoadCurrentState() {
+        if (currentState != null) return;
+
         if (!File.Exists(fileName)) {
             CreateEmptyContainer();
             return;
@@ -41,6 +43,7 @@ public class StateManager {
         AccountStateContainer container = new AccountStateContainer();
         container.InitializeAccount();
         currentState = container;
+        SaveState();
     }
 
     public static void SaveState() {
