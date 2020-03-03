@@ -27,13 +27,13 @@ public class SanctumSceneManager : MonoBehaviour {
         double unformattedTime = (double)(EpochTime.CurrentTimeMillis() - state.lastClaimTimeStamp) / 1000.0;
 
         goldRateLabel.text = string.Format("Gold: {0} / min.", state.goldRate * 60.0);
-        goldUnclaimedLabel.text = (unformattedTime * state.goldRate).ToString("0");
+        goldUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * state.goldRate);
 
         soulsRateLabel.text = string.Format("Souls: {0} / min.", state.soulsRate * 60.0);
-        soulsUnclaimedLabel.text = (unformattedTime * state.soulsRate).ToString("0");
+        soulsUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * state.soulsRate);
 
         experienceRateLabel.text = string.Format("Exp: {0} / min.", state.experienceRate * 60.0);
-        experienceUnclaimedLabel.text = (unformattedTime * state.experienceRate).ToString("0");
+        experienceUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * state.experienceRate);
 
         // This is a bit of a mess, I need to see if there's a time formatter out there that works.
         long elapsedTime = (EpochTime.CurrentTimeMillis() - state.lastClaimTimeStamp) / 1000;

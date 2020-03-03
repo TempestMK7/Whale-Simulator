@@ -16,7 +16,7 @@ public class PortalSceneManager : MonoBehaviour {
         state = StateManager.GetCurrentState();
         nameText.text = state.playerName;
         levelText.text = string.Format("Level {0}", state.currentLevel);
-        summonText.text = state.currentScrolls.ToString("0");
+        summonText.text = CustomFormatter.Format(state.currentScrolls);
     }
 
     public void OnBackPressed() {

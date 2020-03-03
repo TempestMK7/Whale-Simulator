@@ -28,9 +28,9 @@ public class PlayerInfoPanelManager : MonoBehaviour {
         AccountStateContainer accountState = StateManager.GetCurrentState();
         nameText.text = accountState.playerName;
         levelText.text = "Level " + accountState.currentLevel.ToString("0");
-        gemText.text = accountState.currentGems.ToString("0");
-        goldText.text = accountState.currentGold.ToString("0");
-        soulsText.text = accountState.currentSouls.ToString("0");
+        gemText.text = CustomFormatter.Format(accountState.currentGems);
+        goldText.text = CustomFormatter.Format(accountState.currentGold);
+        soulsText.text = CustomFormatter.Format(accountState.currentSouls);
         levelBar.SetValue((float)accountState.currentExperience, (float)LevelContainer.experienceRequirement(accountState.currentLevel));
     }
 }
