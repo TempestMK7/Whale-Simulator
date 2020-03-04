@@ -26,11 +26,11 @@ public class PlayerInfoPanelManager : MonoBehaviour {
 
     private void BindStateToUi() {
         AccountStateContainer accountState = StateManager.GetCurrentState();
-        nameText.text = accountState.playerName;
-        levelText.text = "Level " + accountState.currentLevel.ToString("0");
-        gemText.text = CustomFormatter.Format(accountState.currentGems);
-        goldText.text = CustomFormatter.Format(accountState.currentGold);
-        soulsText.text = CustomFormatter.Format(accountState.currentSouls);
-        levelBar.SetValue((float)accountState.currentExperience, (float)LevelContainer.experienceRequirement(accountState.currentLevel));
+        nameText.text = accountState.PlayerName;
+        levelText.text = "Level " + accountState.CurrentLevel.ToString("0");
+        gemText.text = CustomFormatter.Format(accountState.CurrentGems);
+        goldText.text = CustomFormatter.Format(accountState.CurrentGold);
+        soulsText.text = CustomFormatter.Format(accountState.CurrentSouls);
+        levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.experienceRequirement(accountState.CurrentLevel));
     }
 }

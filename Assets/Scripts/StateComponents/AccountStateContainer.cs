@@ -1,60 +1,72 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 public class AccountStateContainer {
 
-    [SerializeField] public string playerName;
+    [SerializeField] public string PlayerName { get; set; }
 
-    [SerializeField] public long lastClaimTimeStamp;
+    [SerializeField] public long LastClaimTimeStamp { get; set; }
 
-    [SerializeField] public double currentGold;
-    [SerializeField] public double currentSouls;
-    [SerializeField] public int currentLevel;
-    [SerializeField] public double currentExperience;
-    [SerializeField] public double currentGems;
-    [SerializeField] public double currentScrolls;
+    [SerializeField] public double CurrentGold { get; set; }
+    [SerializeField] public double CurrentSouls { get; set; }
+    [SerializeField] public int CurrentLevel { get; set; }
+    [SerializeField] public double CurrentExperience { get; set; }
+    [SerializeField] public double CurrentGems { get; set; }
+    [SerializeField] public double CurrentSummons { get; set; }
 
-    [SerializeField] public double goldRate;
-    [SerializeField] public double soulsRate;
-    [SerializeField] public double experienceRate;
-    [SerializeField] public double gemInterval;
-    [SerializeField] public double scrollInterval;
+    [SerializeField] public double GoldRate { get; set; }
+    [SerializeField] public double SoulsRate { get; set; }
+    [SerializeField] public double ExperienceRate { get; set; }
+    [SerializeField] public double GemInterval { get; set; }
+    [SerializeField] public double SummonInterval { get; set; }
+
+    [SerializeField] public List<AccountHero> AccountHeroes { get; set; }
 
     public void InitializeAccount() {
-        playerName = "Unregistered Account";
+        PlayerName = "Unregistered Account";
 
-        lastClaimTimeStamp = EpochTime.CurrentTimeMillis();
+        LastClaimTimeStamp = EpochTime.CurrentTimeMillis();
 
-        currentGold = 0;
-        currentSouls = 0;
-        currentLevel = 1;
-        currentExperience = 0;
-        currentGems = 0;
-        currentScrolls = 0;
+        CurrentGold = 0;
+        CurrentSouls = 0;
+        CurrentLevel = 1;
+        CurrentExperience = 0;
+        CurrentGems = 0;
+        CurrentSummons = 0;
 
-        goldRate = 2.0;
-        soulsRate = 1.0;
-        experienceRate = 1.0;
-        gemInterval = 60.0 * 60.0;
-        scrollInterval = 60.0 * 60.0 * 24.0;
+        GoldRate = 2.0;
+        SoulsRate = 1.0;
+        ExperienceRate = 1.0;
+        GemInterval = 60.0 * 60.0;
+        SummonInterval = 60.0 * 60.0 * 24.0;
+
+        AccountHeroes = new List<AccountHero>();
     }
 
     public void ClaimMaterials() {
-        double timeElapsed = (EpochTime.CurrentTimeMillis() - lastClaimTimeStamp) / 1000.0;
-        lastClaimTimeStamp = EpochTime.CurrentTimeMillis();
+        double timeElapsed = (EpochTime.CurrentTimeMillis() - LastClaimTimeStamp) / 1000.0;
+        LastClaimTimeStamp = EpochTime.CurrentTimeMillis();
 
-        currentGold += goldRate * timeElapsed;
-        currentSouls += soulsRate * timeElapsed;
-        currentExperience += experienceRate * timeElapsed;
-        currentGems += (1.0 / gemInterval) * timeElapsed;
-        currentScrolls += (1.0 / scrollInterval) * timeElapsed;
+        CurrentGold += GoldRate * timeElapsed;
+        CurrentSouls += SoulsRate * timeElapsed;
+        CurrentExperience += ExperienceRate * timeElapsed;
+        CurrentGems += (1.0 / GemInterval) * timeElapsed;
+        CurrentSummons += (1.0 / SummonInterval) * timeElapsed;
 
-        while (currentExperience > LevelContainer.experienceRequirement(currentLevel)) {
-            currentExperience -= LevelContainer.experienceRequirement(currentLevel);
-            currentLevel++;
+        while (CurrentExperience > LevelContainer.experienceRequirement(CurrentLevel)) {
+            CurrentExperience -= LevelContainer.experienceRequirement(CurrentLevel);
+            CurrentLevel++;
         }
 
         StateManager.SaveState();
+    }
+
+    public void RetrieveDataAfterLoad() {
+        foreach (AccountHero hero in AccountHeroes) {
+            hero.LoadBaseHero();
+        }
     }
 }

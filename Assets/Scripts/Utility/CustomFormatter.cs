@@ -5,6 +5,7 @@ using UnityEngine;
 public class CustomFormatter {
 
     public static string Format(double input) {
+        if (input == 0) return "0";
         int log = (int)Mathf.Log10((float)input);
         int numThousands = log / 3;
         int trailingDigits = TrailingDigits(log);

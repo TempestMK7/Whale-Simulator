@@ -37,6 +37,7 @@ public class StateManager {
         if (currentState == null) {
             CreateEmptyContainer();
         }
+        currentState.RetrieveDataAfterLoad();
     }
 
     private static void CreateEmptyContainer() {
@@ -55,5 +56,24 @@ public class StateManager {
         } finally {
             stream.Close();
         }
+    }
+
+    public static void ClaimRewards(Action<object> handler) {
+        GetCurrentState().ClaimMaterials();
+        handler.Invoke(null);
+    }
+
+    public static void RequestSummon(int numSummons, Action<List<AccountHero>> handler) {
+        AccountStateContainer state = GetCurrentState();
+        // state.CurrentSummons -= numSummons;
+        List<AccountHero> summonedHeroes = new List<AccountHero>();
+        for (int x = 0; x < numSummons; x++) {
+            AccountHero newHero = new AccountHero(HeroEnum.VAPOR_CLOUD);
+            state.AccountHeroes.Add(newHero);
+            summonedHeroes.Add(newHero);
+        }
+        // state.AccountHeroes.Sort();
+        SaveState();
+        handler.Invoke(summonedHeroes);
     }
 }

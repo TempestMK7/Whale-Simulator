@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
     "com.unity.2d.animation": "4.1.1",
     "com.unity.2d.pixel-perfect": "3.0.1",
     "com.unity.2d.psdimporter": "3.1.1",
@@ -45,5 +46,11 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
+  },
+  "lock": {
+    "com.coffee.ui-particle": {
+      "revision": "HEAD",
+      "hash": "c5ff121b35419084884116a9505752dc26773dc9"
+    }
   }
 }
