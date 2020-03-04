@@ -13,6 +13,7 @@ public class SummonPopupBehavior : MonoBehaviour {
         transform.localScale = new Vector3(0f, 0f);
         revealText.enabled = true;
         doneButton.gameObject.SetActive(false);
+        summonCard.SetParticleScale(120f);
     }
 
     public void LaunchPopup(AccountHero summonedHero) {
@@ -33,20 +34,21 @@ public class SummonPopupBehavior : MonoBehaviour {
     }
 
     IEnumerator ExpandIntoFrame() {
-        for (int frame = 0; frame < 60; frame++) {
-            float ratio = frame / 60f;
+        float duration = 12f;
+        for (float frame = 0f; frame <= duration; frame++) {
+            float ratio = frame / duration;
             transform.localScale = new Vector3(ratio, ratio);
             yield return null;
         }
     }
 
     IEnumerator ShrinkToNothing() {
-        for (int frame = 60; frame >= 0; frame--) {
-            float ratio = frame / 60f;
+        float duration = 12f;
+        for (float frame = duration; frame >= 0; frame--) {
+            float ratio = frame / duration;
             transform.localScale = new Vector3(ratio, ratio);
             yield return null;
         }
         Destroy(gameObject);
-        yield return null;
     }
 }

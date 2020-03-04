@@ -16,6 +16,12 @@ public class HubSceneManager : MonoBehaviour {
     private Vector3? clickPosition;
     private Vector3? startingClickPosition;
 
+    public void Awake() {
+        Application.targetFrameRate = 60;
+        BaseHeroContainer.InitializeHeroes();
+        StateManager.GetCurrentState();
+    }
+
     void Update() {
         HandleClickEvents();
     }

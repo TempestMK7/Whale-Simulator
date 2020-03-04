@@ -23,9 +23,6 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
     public void Awake() {
         glowingBorder.enabled = false;
         heroIcon.enabled = false;
-        foreach (UIParticle particle in this.GetComponentsInChildren<UIParticle>()) {
-            particle.scale = 120f;
-        }
         waterSummon.GetComponent<ParticleSystem>().Stop();
         grassSummon.GetComponent<ParticleSystem>().Stop();
         fireSummon.GetComponent<ParticleSystem>().Stop();
@@ -37,6 +34,12 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
     public void SetHero(BaseHero hero) {
         summonedHero = hero;
         BuildFromHero();
+    }
+
+    public void SetParticleScale(float scale) {
+        foreach (UIParticle particle in this.GetComponentsInChildren<UIParticle>()) {
+            particle.scale = scale;
+        }
     }
 
     private void BuildFromHero() {
@@ -65,6 +68,10 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData eventData) {
+        OnCardReveal();
+    }
+
+    public void OnCardReveal() {
         if (summonedHero == null) return;
         if (hasRevealed) return;
         hasRevealed = true;
@@ -95,12 +102,25 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
         StartCoroutine("RevealHero");
     }
 
+    public bool HasRevealed() {
+        return hasRevealed;
+    }
+
     IEnumerator RevealHero() {
         var popup = GetComponentInParent<SummonPopupBehavior>();
-        popup.HideRevealText();
-        yield return new WaitForSeconds(1f);
-        heroIcon.enabled = true;
-        yield return new WaitForSeconds(0.5f);
-        popup.RevealDoneButton();
+        if (popup != null) {
+            popup.HideRevealText();
+            yield return new WaitForSeconds(1f);
+            heroIcon.enabled = true;
+            yield return new WaitForSeconds(0.5f);
+            popup.RevealDoneButton();
+        }
+
+        var tenPopup = GetComponentInParent<TenSummonPopupBehavior>();
+        if (tenPopup != null) {
+            tenPopup.OnReveal();
+            yield return new WaitForSeconds(1f);
+            heroIcon.enabled = true;
+        }
     }
 }

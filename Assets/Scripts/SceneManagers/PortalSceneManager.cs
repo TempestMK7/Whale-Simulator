@@ -13,6 +13,7 @@ public class PortalSceneManager : MonoBehaviour {
     public Text summonText;
 
     public GameObject singleSummonPopupPrefab;
+    public GameObject tenSummonPopupPrefab;
 
     private AccountStateContainer state;
 
@@ -44,6 +45,10 @@ public class PortalSceneManager : MonoBehaviour {
             var popup = Instantiate(singleSummonPopupPrefab, sceneUiCanvas.transform);
             var behavior = popup.GetComponent<SummonPopupBehavior>();
             behavior.LaunchPopup(hero);
+        } else if (summonedHeroes.Count == 10) {
+            var popup = Instantiate(tenSummonPopupPrefab, sceneUiCanvas.transform);
+            var behavior = popup.GetComponent<TenSummonPopupBehavior>();
+            behavior.LaunchPopup(summonedHeroes);
         }
     }
 

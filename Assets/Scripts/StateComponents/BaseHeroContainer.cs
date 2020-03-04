@@ -7,7 +7,7 @@ public class BaseHeroContainer {
 
     private static Dictionary<HeroEnum, BaseHero> allHeroes;
 
-    public static void InitializedHeroes() {
+    public static void InitializeHeroes() {
         allHeroes = new Dictionary<HeroEnum, BaseHero>();
         foreach (HeroEnum hero in Enum.GetValues(typeof(HeroEnum))) {
             allHeroes[hero] = BaseHero.GetHero(hero);
@@ -16,7 +16,7 @@ public class BaseHeroContainer {
 
     public static BaseHero GetBaseHero(HeroEnum hero) {
         if (allHeroes == null || allHeroes.Count == 0) {
-            InitializedHeroes();
+            InitializeHeroes();
         }
         return allHeroes[hero];
     }
