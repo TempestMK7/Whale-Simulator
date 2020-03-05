@@ -4,12 +4,12 @@ using UnityEngine;
 
 public enum HeroEnum {
     // 1-3 star heroes.
-    VAPOR_CLOUD, RAIN_MAN, FEESH,
-    CANDLE_MAN, EMBER, TORCH,
-    HAPPY_FLOWER, BUSH_WHACKER, BALL_OF_ROOTS,
-    SNOW_MAN, ICE_CUBE, ICICLE_FLINGER,
-    STATIC_CLING, BATTERY, SPARK_ELEMENTAL,
-    PEBBLE_ELEMENTAL, BOULDER, PEBBLE_FLINGER
+    VAPOR_CLOUD, RAIN_MAN, FEESH, MIST_CALLER, ORACLE,
+    CANDLE_MAN, EMBER, TORCH, LAVA_GOLEM, INFERNOMANCER,
+    HAPPY_FLOWER, BUSH_WHACKER, BALL_OF_ROOTS, DRYAD, ANGERY_TREANT,
+    SNOW_MAN, ICE_CUBE, ICICLE_FLINGER, BLIZZARD_WIZZARD, REFLECTOR,
+    STATIC_CLING, BATTERY, SPARK_ELEMENTAL, LIGHTNING_WRAITH, NEUROMANCER,
+    PEBBLE_ELEMENTAL, BOULDER, PEBBLE_FLINGER, LIVING_WALL, EARTHZERKER
 }
 
 public enum RoleEnum {
@@ -36,18 +36,9 @@ public class BaseHero {
     public double BaseSpeed { get; }
     public double BaseCritChance { get; }
 
-    public double HealthGain { get; }
-    public double PhysicalAttackGain { get; }
-    public double MagicAttackGain { get; }
-    public double PhysicalDefenseGain { get; }
-    public double MagicDefenseGain { get; }
-    public double SpeedGain { get; }
-
     public BaseHero(HeroEnum hero, string heroName, string heroIcon, RoleEnum role, FactionEnum faction, int rarity,
         double baseHealth, double basePhysicalAttack, double baseMagicAttack,
-        double basePhysicalDefense, double baseMagicDefense, double baseSpeed, double baseCritChance,
-        double healthGain, double physicalAttackGain, double magicAttackGain,
-        double physicalDefenseGain, double magicDefenseGain, double speedGain) {
+        double basePhysicalDefense, double baseMagicDefense, double baseSpeed, double baseCritChance) {
 
         Hero = hero;
         HeroName = heroName;
@@ -63,36 +54,86 @@ public class BaseHero {
         BaseMagicDefense = baseMagicDefense;
         BaseSpeed = baseSpeed;
         BaseCritChance = baseCritChance;
-        HealthGain = healthGain;
-        PhysicalAttackGain = physicalAttackGain;
-        MagicAttackGain = magicAttackGain;
-        PhysicalDefenseGain = physicalDefenseGain;
-        MagicDefenseGain = magicDefenseGain;
-        SpeedGain = speedGain;
     }
 
     public static BaseHero GetHero(HeroEnum hero) {
         switch (hero) {
             case HeroEnum.VAPOR_CLOUD:
                 return new BaseHero(
-                    hero, "Vapor Cloud", "Icons/icon_gift", RoleEnum.DAMAGE, FactionEnum.WATER, 1,
-                    60, 60, 80,
-                    32, 40, 65, 0.1,
-                    2, 1.5, 3.5,
-                    .7, 1.2, 0.8);
+                    hero, "Vapor Cloud", "Icons/icon_gift",
+                    RoleEnum.DAMAGE, FactionEnum.WATER, 1,
+                    60, 60, 80, 32, 40, 65, 0.1);
             case HeroEnum.RAIN_MAN:
                 return new BaseHero(
-                    hero, "Rain Man", "Icons/icon_gift_blue", RoleEnum.SUPPORT, FactionEnum.WATER, 2,
-                    75, 60, 70,
-                    38, 42, 60, 0.1,
-                    3, 1.5, 3,
-                    .8, 1.5, .75);
+                    hero, "Rain Man", "Icons/icon_gift_blue",
+                    RoleEnum.SUPPORT, FactionEnum.WATER, 2,
+                    75, 60, 70, 38, 42, 60, 0.1);
+            case HeroEnum.FEESH:
+                return new BaseHero(
+                    hero, "Feesh", "Icons/icon_gift_blue",
+                    RoleEnum.PROTECTION, FactionEnum.WATER, 3,
+                    85, 70, 50, 48, 42, 50, 0.1);
+            case HeroEnum.MIST_CALLER:
+                return new BaseHero(hero, "Mist Caller", "Icons/icon_gift_blue",
+                    RoleEnum.DAMAGE, FactionEnum.WATER, 5,
+                    60, 55, 95, 35, 40, 75, 0.15);
+            case HeroEnum.ORACLE:
+                return new BaseHero(hero, "Oracle", "Icons/icon_gift_blue",
+                    RoleEnum.SUPPORT, FactionEnum.WATER, 5,
+                    75, 60, 90, 38, 42, 75, 0.15);
+            case HeroEnum.CANDLE_MAN:
+                return new BaseHero(hero, "Candle Man", "Icons/icon_gift_blue",
+                    RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
+                    55, 60, 85, 31, 40, 85, 0.15);
+            case HeroEnum.EMBER:
+                return new BaseHero(hero, "Ember", "Icons/icon_gift_blue",
+                    RoleEnum.SUPPORT, FactionEnum.FIRE, 2,
+                    70, 55, 90, 34, 38, 80, 0.15);
+            case HeroEnum.TORCH:
+                return new BaseHero(hero, "Torch", "Icons/icon_gift_blue",
+                    RoleEnum.DAMAGE, FactionEnum.FIRE, 3,
+                    65, 65, 95, 34, 40, 70, 0.2);
+            case HeroEnum.LAVA_GOLEM:
+                return new BaseHero(hero, "Lava Golem", "Icons/icon_gift_blue",
+                    RoleEnum.PROTECTION, FactionEnum.FIRE, 4,
+                    85, 80, 60, 48, 40, 60, 0.1);
+            case HeroEnum.INFERNOMANCER:
+                return new BaseHero(hero, "Infernomancer", "Icons/icon_gift_blue",
+                    RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
+                    70, 60, 100, 32, 35, 95, 0.25);
+            case HeroEnum.HAPPY_FLOWER:
+                return new BaseHero(hero, "Happy Flower", "Icons/icon_gift_blue",
+                    RoleEnum.SUPPORT, FactionEnum.GRASS, 1,
+                    70, 70, 55, 38, 36, 55, 0.1);
+            case HeroEnum.BUSH_WHACKER:
+                return new BaseHero(hero, "Bush Whacker", "Icons/icon_gift_blue",
+                    RoleEnum.DAMAGE, FactionEnum.GRASS, 2,
+                    75, 80, 60, 36, 34, 80, 0.2);
+            case HeroEnum.BALL_OF_ROOTS:
+                return new BaseHero(hero, "Ball Of Roots", "Icons/icon_gift_blue",
+                    RoleEnum.PROTECTION, FactionEnum.GRASS, 3,
+                    90, 65, 60, 36, 34, 80, 0.15);
+            case HeroEnum.DRYAD:
+                return new BaseHero(hero, "Dryad", "Icons/icon_gift_blue",
+                    RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
+                    80, 85, 85, 38, 38, 80, 0.15);
+            case HeroEnum.ANGERY_TREANT:
+                return new BaseHero(hero, "Angery Treant", "Icons/icon_gift_blue",
+                    RoleEnum.PROTECTION, FactionEnum.GRASS, 5,
+                    100, 75, 60, 46, 42, 50, 0.1);
             default:
-                return new BaseHero(hero, "Unknown", "Icons/icon_gem", RoleEnum.DAMAGE, FactionEnum.WATER, 1,
+                return new BaseHero(hero, "Unknown", "Icons/icon_gem",
+                    RoleEnum.DAMAGE, FactionEnum.WATER, 1,
                     50, 50, 50,
-                    30, 30, 50, 0.10,
-                    1, 1, 1,
-                    0.5, 0.5, 1);
+                    30, 30, 50, 0.10);
         }
+    }
+
+    public static int GetBigStatGain(int baseStat) {
+        return (baseStat - 40) / 10;
+    }
+
+    public static double GetSmallStatGain(double baseStat) {
+        return (baseStat - 30.0) / 10.0;
     }
 }

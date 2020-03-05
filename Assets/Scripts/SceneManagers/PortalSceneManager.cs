@@ -53,6 +53,6 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     private bool PopupExists() {
-        return FindObjectsOfType<SummonPopupBehavior>().Length > 0;
+        return FindObjectsOfType<SummonPopupBehavior>().Length > 0 || FindObjectsOfType<TenSummonPopupBehavior>().Length > 0;
     }
 }
