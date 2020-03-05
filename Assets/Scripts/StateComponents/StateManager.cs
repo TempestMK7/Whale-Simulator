@@ -65,15 +65,36 @@ public class StateManager {
 
     public static void RequestSummon(int numSummons, Action<List<AccountHero>> handler) {
         AccountStateContainer state = GetCurrentState();
+        System.Random rand = new System.Random((int)EpochTime.CurrentTimeMillis());
         // state.CurrentSummons -= numSummons;
         List<AccountHero> summonedHeroes = new List<AccountHero>();
         for (int x = 0; x < numSummons; x++) {
-            AccountHero newHero = new AccountHero(HeroEnum.VAPOR_CLOUD);
+            AccountHero newHero = new AccountHero(ChooseRandomHero(rand));
             state.AccountHeroes.Add(newHero);
             summonedHeroes.Add(newHero);
         }
         // state.AccountHeroes.Sort();
         SaveState();
         handler.Invoke(summonedHeroes);
+    }
+
+    private static HeroEnum ChooseRandomHero(System.Random rand) {
+        double roll = rand.NextDouble();
+        if (roll <= 0.3) {
+            return ChooseHeroFromList(rand, BaseHeroContainer.rarityOne);
+        } else if (roll <= 0.6) {
+            return ChooseHeroFromList(rand, BaseHeroContainer.rarityTwo);
+        } else if (roll <= 0.8) {
+            return ChooseHeroFromList(rand, BaseHeroContainer.rarityThree);
+        } else if (roll <= 0.95) {
+            return ChooseHeroFromList(rand, BaseHeroContainer.rarityFour);
+        } else {
+            return ChooseHeroFromList(rand, BaseHeroContainer.rarityFive);
+        }
+    }
+
+    private static HeroEnum ChooseHeroFromList(System.Random rand, List<HeroEnum> choices) {
+        int choice = rand.Next(choices.Count);
+        return choices[choice];
     }
 }
