@@ -15,6 +15,10 @@ public class PortalSceneManager : MonoBehaviour {
     public GameObject singleSummonPopupPrefab;
     public GameObject tenSummonPopupPrefab;
 
+    public ParticleSystem portalParticle;
+    public AudioSource portalOpenEffect;
+    public AudioSource portalLoopEffect;
+
     private AccountStateContainer state;
 
     public void Awake() {
@@ -22,6 +26,11 @@ public class PortalSceneManager : MonoBehaviour {
         nameText.text = state.PlayerName;
         levelText.text = string.Format("Level {0}", state.CurrentLevel);
         summonText.text = CustomFormatter.Format(state.CurrentSummons);
+        portalOpenEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
+        portalOpenEffect.PlayDelayed(0.3f);
+        portalLoopEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
+        portalLoopEffect.Play();
+        portalParticle.Play();
     }
 
     public void OnBackPressed() {

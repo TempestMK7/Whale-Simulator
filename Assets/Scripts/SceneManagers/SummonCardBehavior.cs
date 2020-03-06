@@ -17,6 +17,8 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
     public GameObject electricSummon;
     public GameObject earthSummon;
 
+    public AudioSource summonSound;
+
     private BaseHero summonedHero;
     private bool hasRevealed = false;
 
@@ -29,6 +31,7 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
         iceSummon.GetComponent<ParticleSystem>().Stop();
         electricSummon.GetComponent<ParticleSystem>().Stop();
         earthSummon.GetComponent<ParticleSystem>().Stop();
+        summonSound.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
     }
 
     public void SetHero(BaseHero hero) {
@@ -76,6 +79,8 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
         if (hasRevealed) return;
         hasRevealed = true;
 
+        summonSound.time = 0.2f;
+        summonSound.Play();
         FactionEnum faction = summonedHero.Faction;
         GameObject summonEffect = waterSummon;
         switch (faction) {
