@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HubSceneManager : MonoBehaviour {
@@ -36,6 +37,10 @@ public class HubSceneManager : MonoBehaviour {
         var settingsPopup = Instantiate(settingsPopupPrefab, mainCanvas.transform).GetComponent<SettingsPopupManager>();
         settingsPopup.LaunchPopup();
         settingsOpen = true;
+    }
+    
+    public void OnHeroClicked() {
+        SceneManager.LoadScene("HeroScene");
     }
 
     public void NotifySettingsClosed() {
