@@ -41,8 +41,6 @@ public class MusicManager : MonoBehaviour {
         this.volume = volume;
         backgroundMusic.volume = volume;
         battleMusic.volume = volume;
-        SettingsManager.GetInstance().musicVolume = volume;
-        SettingsManager.SaveContainer();
     }
 }
 

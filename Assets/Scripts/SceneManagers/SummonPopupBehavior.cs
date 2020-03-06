@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class SummonPopupBehavior : MonoBehaviour {
 
+    public float particleScale = 120f;
+
     public Text revealText;
     public UnityEngine.UI.Button doneButton;
     public SummonCardBehavior summonCard;
@@ -13,11 +15,10 @@ public class SummonPopupBehavior : MonoBehaviour {
         transform.localScale = new Vector3(0f, 0f);
         revealText.enabled = true;
         doneButton.gameObject.SetActive(false);
-        summonCard.SetParticleScale(120f);
     }
 
     public void LaunchPopup(AccountHero summonedHero) {
-        summonCard.SetHero(summonedHero.GetBaseHero());
+        summonCard.SetHero(summonedHero.GetBaseHero(), particleScale);
         StartCoroutine("ExpandIntoFrame");
     }
 

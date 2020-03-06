@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class TenSummonPopupBehavior : MonoBehaviour {
 
+    public float particleScale = 60f;
+
     public Text revealText;
     public UnityEngine.UI.Button doneButton;
     public UnityEngine.UI.Button revealButton;
@@ -19,9 +21,6 @@ public class TenSummonPopupBehavior : MonoBehaviour {
         doneButton.gameObject.SetActive(false);
         revealButton.gameObject.SetActive(true);
         revealCount = 0;
-        foreach (SummonCardBehavior card in summonCard) {
-            card.SetParticleScale(60f);
-        }
     }
 
     public void LaunchPopup(List<AccountHero> summonedHero) {
@@ -30,7 +29,7 @@ public class TenSummonPopupBehavior : MonoBehaviour {
             return;
         }
         for (int x = 0; x < 10; x++) {
-            summonCard[x].SetHero(summonedHero[x].GetBaseHero());
+            summonCard[x].SetHero(summonedHero[x].GetBaseHero(), particleScale);
         }
         StartCoroutine("ExpandIntoFrame");
     }

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class HubSceneManager : MonoBehaviour {
 
@@ -9,12 +11,16 @@ public class HubSceneManager : MonoBehaviour {
 
     public GameObject backgroundHolder;
     public Camera mainCamera;
+    public Canvas mainCanvas;
+
+    public GameObject settingsPopupPrefab;
 
     public float usableWidth = 1.0f;
     public float usableHeight = 1.0f;
 
     private Vector3? clickPosition;
     private Vector3? startingClickPosition;
+    private bool settingsOpen = false;
 
     public void Awake() {
         Application.targetFrameRate = 60;
@@ -26,7 +32,23 @@ public class HubSceneManager : MonoBehaviour {
         HandleClickEvents();
     }
 
+    public void OnSettingsClicked() {
+        var settingsPopup = Instantiate(settingsPopupPrefab, mainCanvas.transform).GetComponent<SettingsPopupManager>();
+        settingsPopup.LaunchPopup();
+        settingsOpen = true;
+    }
+
+    public void NotifySettingsClosed() {
+        settingsOpen = false;
+    }
+
     private void HandleClickEvents() {
+        if (settingsOpen) return;
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            clickPosition = null;
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0)) {
             clickPosition = Input.mousePosition;
             startingClickPosition = Input.mousePosition;

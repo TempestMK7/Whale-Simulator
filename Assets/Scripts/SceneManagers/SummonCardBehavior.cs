@@ -10,39 +10,30 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
     public Image glowingBorder;
     public Image heroIcon;
 
-    public GameObject waterSummon;
-    public GameObject grassSummon;
-    public GameObject fireSummon;
-    public GameObject iceSummon;
-    public GameObject electricSummon;
-    public GameObject earthSummon;
+    public GameObject waterSummonPrefab;
+    public GameObject grassSummonPrefab;
+    public GameObject fireSummonPrefab;
+    public GameObject iceSummonPrefab;
+    public GameObject electricSummonPrefab;
+    public GameObject earthSummonPrefab;
 
     public AudioSource summonSound;
 
     private BaseHero summonedHero;
     private bool hasRevealed = false;
+    private ParticleSystem summoningParticle;
+    private float particleScale;
 
     public void Awake() {
         glowingBorder.enabled = false;
         heroIcon.enabled = false;
-        waterSummon.GetComponent<ParticleSystem>().Stop();
-        grassSummon.GetComponent<ParticleSystem>().Stop();
-        fireSummon.GetComponent<ParticleSystem>().Stop();
-        iceSummon.GetComponent<ParticleSystem>().Stop();
-        electricSummon.GetComponent<ParticleSystem>().Stop();
-        earthSummon.GetComponent<ParticleSystem>().Stop();
         summonSound.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
     }
 
-    public void SetHero(BaseHero hero) {
+    public void SetHero(BaseHero hero, float scale) {
         summonedHero = hero;
+        particleScale = scale;
         BuildFromHero();
-    }
-
-    public void SetParticleScale(float scale) {
-        foreach (UIParticle particle in this.GetComponentsInChildren<UIParticle>()) {
-            particle.scale = scale;
-        }
     }
 
     private void BuildFromHero() {
@@ -68,6 +59,32 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
                 glowingBorder.enabled = false;
                 break;
         }
+
+        switch (summonedHero.Faction) {
+            case FactionEnum.WATER:
+                summoningParticle = Instantiate(waterSummonPrefab, transform).GetComponent<ParticleSystem>();
+                break;
+            case FactionEnum.GRASS:
+                summoningParticle = Instantiate(grassSummonPrefab, transform).GetComponent<ParticleSystem>();
+                break;
+            case FactionEnum.FIRE:
+                summoningParticle = Instantiate(fireSummonPrefab, transform).GetComponent<ParticleSystem>();
+                break;
+            case FactionEnum.ICE:
+                summoningParticle = Instantiate(iceSummonPrefab, transform).GetComponent<ParticleSystem>();
+                break;
+            case FactionEnum.ELECTRIC:
+                summoningParticle = Instantiate(electricSummonPrefab, transform).GetComponent<ParticleSystem>();
+                break;
+            case FactionEnum.EARTH:
+                summoningParticle = Instantiate(earthSummonPrefab, transform).GetComponent<ParticleSystem>();
+                break;
+        }
+
+        foreach (UIParticle particle in summoningParticle.GetComponentsInChildren<UIParticle>()) {
+            particle.scale = particleScale;
+        }
+        summoningParticle.Stop();
     }
 
     public void OnPointerClick(PointerEventData eventData) {
@@ -79,31 +96,10 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
         if (hasRevealed) return;
         hasRevealed = true;
 
+        // We offset the sound effect time to make it line up with the particle's pop effect.
         summonSound.time = 0.2f;
         summonSound.Play();
-        FactionEnum faction = summonedHero.Faction;
-        GameObject summonEffect = waterSummon;
-        switch (faction) {
-            case FactionEnum.WATER:
-                summonEffect = waterSummon;
-                break;
-            case FactionEnum.GRASS:
-                summonEffect = grassSummon;
-                break;
-            case FactionEnum.FIRE:
-                summonEffect = fireSummon;
-                break;
-            case FactionEnum.ICE:
-                summonEffect = iceSummon;
-                break;
-            case FactionEnum.ELECTRIC:
-                summonEffect = electricSummon;
-                break;
-            case FactionEnum.EARTH:
-                summonEffect = earthSummon;
-                break;
-        }
-        summonEffect.GetComponent<ParticleSystem>().Play();
+        summoningParticle.Play();
         StartCoroutine("RevealHero");
     }
 
