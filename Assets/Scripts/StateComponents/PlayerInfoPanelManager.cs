@@ -16,10 +16,6 @@ public class PlayerInfoPanelManager : MonoBehaviour {
         BindStateToUi();
     }
 
-    public void Update() {
-        
-    }
-
     public void NotifyUpdate() {
         BindStateToUi();
     }

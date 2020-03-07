@@ -73,7 +73,7 @@ public class StateManager {
             state.AccountHeroes.Add(newHero);
             summonedHeroes.Add(newHero);
         }
-        // state.AccountHeroes.Sort();
+        state.AccountHeroes.Sort();
         SaveState();
         handler.Invoke(summonedHeroes);
     }

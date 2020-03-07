@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class AccountHero {
+public class AccountHero : IComparable<AccountHero> {
 
     [SerializeField] public HeroEnum HeroType { get; }
     [SerializeField] public int AwakeningLevel { get; }
@@ -25,5 +25,19 @@ public class AccountHero {
 
     public BaseHero GetBaseHero() {
         return baseHero;
+    }
+
+    public int CompareTo(AccountHero other) {
+        var awakening = other.AwakeningLevel - AwakeningLevel;
+        if (awakening != 0) return awakening;
+        var myHero = baseHero;
+        var otherHero = other.GetBaseHero();
+        var rarity = otherHero.Rarity - myHero.Rarity;
+        if (rarity != 0) return rarity;
+        var faction = myHero.Faction.CompareTo(otherHero.Faction);
+        if (faction != 0) return faction;
+        var name = otherHero.HeroName.CompareTo(myHero.HeroName);
+        if (name != 0) return name;
+        return other.CurrentLevel - CurrentLevel;
     }
 }

@@ -17,7 +17,7 @@ public enum RoleEnum {
 }
 
 public enum FactionEnum {
-    WATER, FIRE, GRASS, ICE, ELECTRIC, EARTH
+    WATER, GRASS, FIRE, ICE, EARTH, ELECTRIC
 }
 
 public class BaseHero {
