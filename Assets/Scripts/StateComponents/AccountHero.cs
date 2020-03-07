@@ -6,13 +6,15 @@ using UnityEngine;
 [Serializable]
 public class AccountHero : IComparable<AccountHero> {
 
-    [SerializeField] public HeroEnum HeroType { get; }
-    [SerializeField] public int AwakeningLevel { get; }
-    [SerializeField] public int CurrentLevel { get; }
+    [SerializeField] public Guid HeroGuid { get; set; }
+    [SerializeField] public HeroEnum HeroType { get; set; }
+    [SerializeField] public int AwakeningLevel { get; set; }
+    [SerializeField] public int CurrentLevel { get; set; }
 
     [NonSerialized] private BaseHero baseHero;
 
     public AccountHero(HeroEnum heroType) {
+        HeroGuid = new Guid();
         HeroType = heroType;
         baseHero = BaseHeroContainer.GetBaseHero(HeroType);
         AwakeningLevel = baseHero.Rarity;
@@ -25,6 +27,10 @@ public class AccountHero : IComparable<AccountHero> {
 
     public BaseHero GetBaseHero() {
         return baseHero;
+    }
+
+    public CombatHero GetCombatHero() {
+        return new CombatHero(this);
     }
 
     public int CompareTo(AccountHero other) {
@@ -44,4 +50,48 @@ public class AccountHero : IComparable<AccountHero> {
 
 public class CombatHero {
 
+    public BaseHero Base { get; set; }
+    public int AwakeningLevel { get; set; }
+    public int CurrentLevel { get; set; }
+    public double Health { get; set; }
+    public double Attack { get; set; }
+    public double Magic { get; set; }
+    public double Defense { get; set; }
+    public double Reflection { get; set; }
+    public double Speed { get; set; }
+
+    public double CurrentHealth { get; set; }
+    public double CurrentAttack { get; set; }
+    public double CurrentMagic { get; set; }
+    public double CurrentDefense { get; set; }
+    public double CurrentReflection { get; set; }
+    public double CurrentSpeed { get; set; }
+
+    public CombatHero(AccountHero accountHero) {
+        Base = accountHero.GetBaseHero();
+        AwakeningLevel = accountHero.AwakeningLevel;
+        CurrentLevel = accountHero.CurrentLevel;
+
+        Health = GetBigStat(Base.BaseHealth);
+        Attack = GetBigStat(Base.BaseAttack);
+        Magic = GetBigStat(Base.BaseMagic);
+        Defense = GetSmallStat(Base.BaseDefense);
+        Reflection = GetSmallStat(Base.BaseReflection);
+        Speed = GetBigStat(Base.BaseSpeed);
+
+        CurrentHealth = Health;
+        CurrentAttack = Attack;
+        CurrentMagic = Magic;
+        CurrentDefense = Defense;
+        CurrentReflection = Reflection;
+        CurrentSpeed = Speed;
+    }
+
+    private double GetBigStat(double baseStat) {
+        return baseStat + (BaseHero.GetBigStatGain(baseStat) * CurrentLevel);
+    }
+
+    private double GetSmallStat(double baseStat) {
+        return baseStat + (BaseHero.GetSmallStatGain(baseStat) * CurrentLevel);
+    }
 }

@@ -844,7 +844,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 152012792}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1276627507}
+        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+        m_MethodName: OnLevelUpPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &152012792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2027,7 +2039,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 444925135}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1276627507}
+        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+        m_MethodName: OnFusePressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &444925135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3922,6 +3946,28 @@ MonoBehaviour:
   heroLabel: {fileID: 199775822}
   factionIconLeft: {fileID: 65692601}
   factionIconRight: {fileID: 1879206793}
+  rarityStars:
+  - {fileID: 992768856}
+  - {fileID: 13650235}
+  - {fileID: 994658317}
+  - {fileID: 1494045015}
+  - {fileID: 367032958}
+  - {fileID: 693392697}
+  - {fileID: 109165824}
+  - {fileID: 1501654026}
+  - {fileID: 281125644}
+  - {fileID: 1291948987}
+  levelLabel: {fileID: 439160071}
+  currentGold: {fileID: 967994866}
+  currentSouls: {fileID: 958078651}
+  goldCost: {fileID: 45649389}
+  soulsCost: {fileID: 1703442681}
+  healthLabel: {fileID: 201030585}
+  defenseLabel: {fileID: 1358621004}
+  reflectionLabel: {fileID: 244206065}
+  speedLabel: {fileID: 700257162}
+  attackLabel: {fileID: 22526716}
+  magicLabel: {fileID: 890078861}
   heroListItemPrefab: {fileID: 3704714214907441649, guid: d0f5e57624b45a84184b17651e7db052, type: 3}
 --- !u!4 &1276627508
 Transform:

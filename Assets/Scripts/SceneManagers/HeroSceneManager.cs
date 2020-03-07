@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 public class HeroSceneManager : MonoBehaviour {
 
+    private const string emptyStar = "Icons/star_empty";
+    private const string silverStar = "Icons/star_silver";
+    private const string goldStar = "Icons/star_gold";
+
     public GameObject masterContainer;
     public RectTransform heroListContent;
 
@@ -16,7 +20,25 @@ public class HeroSceneManager : MonoBehaviour {
     public Image factionIconLeft;
     public Image factionIconRight;
 
+    public Image[] rarityStars;
+    public Text levelLabel;
+    public Text currentGold;
+    public Text currentSouls;
+    public Text goldCost;
+    public Text soulsCost;
+
+    public Text healthLabel;
+    public Text defenseLabel;
+    public Text reflectionLabel;
+    public Text speedLabel;
+    public Text attackLabel;
+    public Text magicLabel;
+
     public GameObject heroListItemPrefab;
+
+    private Sprite emptySprite;
+    private Sprite silverSprite;
+    private Sprite goldSprite;
 
     private FactionEnum? currentFilter;
     private List<AccountHero> unfilteredList;
@@ -25,6 +47,10 @@ public class HeroSceneManager : MonoBehaviour {
     private int currentPosition;
 
     public void Awake() {
+        emptySprite = Resources.Load<Sprite>(emptyStar);
+        silverSprite = Resources.Load<Sprite>(silverStar);
+        goldSprite = Resources.Load<Sprite>(goldStar);
+
         var state = StateManager.GetCurrentState();
         unfilteredList = state.AccountHeroes;
         BuildList();
@@ -70,7 +96,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private List<AccountHero> FilterList() {
-        if (currentFilter == null) return unfilteredList;
+        if (currentFilter == null) return new List<AccountHero>(unfilteredList);
         List<AccountHero> filteredList = new List<AccountHero>();
         foreach (AccountHero hero in unfilteredList) {
             if (hero.GetBaseHero().Faction == currentFilter) filteredList.Add(hero);
@@ -117,12 +143,49 @@ public class HeroSceneManager : MonoBehaviour {
         BindDetailView();
     }
 
+    public void OnFusePressed() {
+
+    }
+
+    public void OnLevelUpPressed() {
+        StateManager.LevelUpHero(filteredList[currentPosition]);
+        BindDetailView();
+    }
+
     public void BindDetailView() {
+        var state = StateManager.GetCurrentState();
         var currentHero = filteredList[currentPosition];
-        var baseHero = currentHero.GetBaseHero();
+        var combatHero = currentHero.GetCombatHero();
+        var baseHero = combatHero.Base;
+        var currentLevel = combatHero.CurrentLevel;
 
         heroLabel.text = baseHero.HeroName;
         factionIconLeft.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
         factionIconRight.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
+
+        levelLabel.text = string.Format("Level: {0}", currentLevel);
+        currentGold.text = CustomFormatter.Format(state.CurrentGold);
+        currentSouls.text = CustomFormatter.Format(state.CurrentSouls);
+        goldCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
+        soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
+
+        healthLabel.text = string.Format("Health: {0}", combatHero.Health);
+        attackLabel.text = string.Format("Attack: {0}", combatHero.Attack);
+        magicLabel.text = string.Format("Magic: {0}", combatHero.Magic);
+        defenseLabel.text = string.Format("Defense: {0}", combatHero.Defense);
+        reflectionLabel.text = string.Format("Reflection: {0}", combatHero.Reflection);
+        speedLabel.text = string.Format("Speed: {0}", combatHero.Speed);
+
+        BindRarityPanel(currentHero);
+    }
+
+    private void BindRarityPanel(AccountHero hero) {
+        int rarity = hero.GetBaseHero().Rarity;
+        int awakeningLevel = hero.AwakeningLevel;
+        for (int x = 0; x < rarityStars.Length; x++) {
+            if (x < rarity) rarityStars[x].sprite = silverSprite;
+            else if (x < awakeningLevel) rarityStars[x].sprite = goldSprite;
+            else rarityStars[x].sprite = emptySprite;
+        }
     }
 }

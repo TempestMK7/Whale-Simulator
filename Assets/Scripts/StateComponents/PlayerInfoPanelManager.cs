@@ -27,6 +27,6 @@ public class PlayerInfoPanelManager : MonoBehaviour {
         gemText.text = CustomFormatter.Format(accountState.CurrentGems);
         goldText.text = CustomFormatter.Format(accountState.CurrentGold);
         soulsText.text = CustomFormatter.Format(accountState.CurrentSouls);
-        levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.experienceRequirement(accountState.CurrentLevel));
+        levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
     }
 }

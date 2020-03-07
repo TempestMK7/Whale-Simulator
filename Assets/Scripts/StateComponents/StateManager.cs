@@ -48,6 +48,8 @@ public class StateManager {
     }
 
     public static void SaveState() {
+        currentState.AccountHeroes.Sort();
+
         FileStream stream = new FileStream(fileName, FileMode.Create);
         BinaryFormatter formatter = new BinaryFormatter();
 
@@ -73,7 +75,6 @@ public class StateManager {
             state.AccountHeroes.Add(newHero);
             summonedHeroes.Add(newHero);
         }
-        state.AccountHeroes.Sort();
         SaveState();
         handler.Invoke(summonedHeroes);
     }
@@ -96,5 +97,15 @@ public class StateManager {
     private static HeroEnum ChooseHeroFromList(System.Random rand, List<HeroEnum> choices) {
         int choice = rand.Next(choices.Count);
         return choices[choice];
+    }
+
+    public static void LevelUpHero(AccountHero hero) {
+        long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
+        if (currentState.CurrentGold > cost && currentState.CurrentSouls > cost && hero.CurrentLevel < 200) {
+            currentState.CurrentGold -= cost;
+            currentState.CurrentSouls -= cost;
+            hero.CurrentLevel += 1;
+        }
+        SaveState();
     }
 }

@@ -56,8 +56,8 @@ public class AccountStateContainer {
         CurrentGems += (1.0 / GemInterval) * timeElapsed;
         CurrentSummons += (1.0 / SummonInterval) * timeElapsed;
 
-        while (CurrentExperience > LevelContainer.experienceRequirement(CurrentLevel)) {
-            CurrentExperience -= LevelContainer.experienceRequirement(CurrentLevel);
+        while (CurrentExperience > LevelContainer.ExperienceRequirement(CurrentLevel)) {
+            CurrentExperience -= LevelContainer.ExperienceRequirement(CurrentLevel);
             CurrentLevel++;
         }
 

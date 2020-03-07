@@ -29,16 +29,16 @@ public class BaseHero {
     public FactionEnum Faction { get; }
     public int Rarity { get; }
     public double BaseHealth { get; }
-    public double BasePhysicalAttack { get; }
-    public double BaseMagicAttack { get; }
-    public double BasePhysicalDefense { get; }
-    public double BaseMagicDefense { get; }
+    public double BaseAttack { get; }
+    public double BaseMagic { get; }
+    public double BaseDefense { get; }
+    public double BaseReflection { get; }
     public double BaseSpeed { get; }
     public double BaseCritChance { get; }
 
     public BaseHero(HeroEnum hero, string heroName, string heroIcon, RoleEnum role, FactionEnum faction, int rarity,
-        double baseHealth, double basePhysicalAttack, double baseMagicAttack,
-        double basePhysicalDefense, double baseMagicDefense, double baseSpeed, double baseCritChance) {
+        double baseHealth, double baseAttack, double baseMagic,
+        double baseDefense, double baseReflection, double baseSpeed, double baseCritChance) {
 
         Hero = hero;
         HeroName = heroName;
@@ -48,10 +48,10 @@ public class BaseHero {
         Faction = faction;
         Rarity = rarity;
         BaseHealth = baseHealth;
-        BasePhysicalAttack = basePhysicalAttack;
-        BaseMagicAttack = baseMagicAttack;
-        BasePhysicalDefense = basePhysicalDefense;
-        BaseMagicDefense = baseMagicDefense;
+        BaseAttack = baseAttack;
+        BaseMagic = baseMagic;
+        BaseDefense = baseDefense;
+        BaseReflection = baseReflection;
         BaseSpeed = baseSpeed;
         BaseCritChance = baseCritChance;
     }
@@ -186,8 +186,9 @@ public class BaseHero {
         }
     }
 
-    public static int GetBigStatGain(int baseStat) {
-        return (baseStat - 40) / 10;
+    public static int GetBigStatGain(double baseStat) {
+        int stat = (int)baseStat;
+        return (stat - 40) / 10;
     }
 
     public static double GetSmallStatGain(double baseStat) {
