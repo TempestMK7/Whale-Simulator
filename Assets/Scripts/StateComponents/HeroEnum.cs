@@ -192,6 +192,6 @@ public class BaseHero {
     }
 
     public static double GetSmallStatGain(double baseStat) {
-        return (baseStat - 30.0) / 10.0;
+        return (baseStat - 30.0) / 20.0;
     }
 }

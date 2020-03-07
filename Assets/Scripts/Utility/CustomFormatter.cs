@@ -6,6 +6,10 @@ public class CustomFormatter {
 
     public static string Format(double input) {
         if (input == 0) return "0";
+        var prefix = input < 0 ? "-" : "";
+        if (input < 0) input *= -1.0;
+        if (input < 1000) return prefix + Mathf.FloorToInt((float)input);
+        
         int log = (int)Mathf.Log10((float)input);
         int numThousands = log / 3;
         int trailingDigits = TrailingDigits(log);
@@ -13,7 +17,7 @@ public class CustomFormatter {
 
         float divisor = Mathf.Pow(1000f, numThousands);
         float formattableNumber = (float)(input / divisor);
-        return formattableNumber.ToString(DecimalFormat(trailingDigits)) + cap;
+        return prefix + formattableNumber.ToString(DecimalFormat(trailingDigits)) + cap;
     }
 
     private static string Units(int numDivisions) {

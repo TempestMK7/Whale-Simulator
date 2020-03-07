@@ -72,7 +72,7 @@ public class CombatHero {
         AwakeningLevel = accountHero.AwakeningLevel;
         CurrentLevel = accountHero.CurrentLevel;
 
-        Health = GetBigStat(Base.BaseHealth);
+        Health = GetBigStat(Base.BaseHealth) * 10.0;
         Attack = GetBigStat(Base.BaseAttack);
         Magic = GetBigStat(Base.BaseMagic);
         Defense = GetSmallStat(Base.BaseDefense);
@@ -88,10 +88,10 @@ public class CombatHero {
     }
 
     private double GetBigStat(double baseStat) {
-        return baseStat + (BaseHero.GetBigStatGain(baseStat) * CurrentLevel);
+        return (baseStat + (BaseHero.GetBigStatGain(baseStat) * CurrentLevel)) * Mathf.Pow(1.1f, AwakeningLevel - 1);
     }
 
     private double GetSmallStat(double baseStat) {
-        return baseStat + (BaseHero.GetSmallStatGain(baseStat) * CurrentLevel);
+        return baseStat + (BaseHero.GetSmallStatGain(baseStat) * CurrentLevel) * Mathf.Pow(1.1f, AwakeningLevel - 1);
     }
 }

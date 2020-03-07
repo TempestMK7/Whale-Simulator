@@ -20,7 +20,7 @@ public class HeroSceneManager : MonoBehaviour {
     public Image factionIconLeft;
     public Image factionIconRight;
 
-    public Image[] rarityStars;
+    public RarityBehavior rarityView;
     public Text levelLabel;
     public Text currentGold;
     public Text currentSouls;
@@ -33,6 +33,8 @@ public class HeroSceneManager : MonoBehaviour {
     public Text speedLabel;
     public Text attackLabel;
     public Text magicLabel;
+
+    public AudioSource levelUpSound;
 
     public GameObject heroListItemPrefab;
 
@@ -56,6 +58,7 @@ public class HeroSceneManager : MonoBehaviour {
         BuildList();
         masterContainer.SetActive(true);
         detailContainer.SetActive(false);
+        levelUpSound.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
     }
 
     // Master List Stuff
@@ -148,6 +151,8 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void OnLevelUpPressed() {
+        levelUpSound.time = 0.2f;
+        levelUpSound.Play();
         StateManager.LevelUpHero(filteredList[currentPosition]);
         BindDetailView();
     }
@@ -169,23 +174,13 @@ public class HeroSceneManager : MonoBehaviour {
         goldCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
         soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
 
-        healthLabel.text = string.Format("Health: {0}", combatHero.Health);
-        attackLabel.text = string.Format("Attack: {0}", combatHero.Attack);
-        magicLabel.text = string.Format("Magic: {0}", combatHero.Magic);
-        defenseLabel.text = string.Format("Defense: {0}", combatHero.Defense);
-        reflectionLabel.text = string.Format("Reflection: {0}", combatHero.Reflection);
-        speedLabel.text = string.Format("Speed: {0}", combatHero.Speed);
+        healthLabel.text = string.Format("Health: {0}", combatHero.Health.ToString("0"));
+        attackLabel.text = string.Format("Attack: {0}", combatHero.Attack.ToString("0"));
+        magicLabel.text = string.Format("Magic: {0}", combatHero.Magic.ToString("0"));
+        defenseLabel.text = string.Format("Defense: {0}", combatHero.Defense.ToString("0.0"));
+        reflectionLabel.text = string.Format("Reflection: {0}", combatHero.Reflection.ToString("0.0"));
+        speedLabel.text = string.Format("Speed: {0}", combatHero.Speed.ToString("0"));
 
-        BindRarityPanel(currentHero);
-    }
-
-    private void BindRarityPanel(AccountHero hero) {
-        int rarity = hero.GetBaseHero().Rarity;
-        int awakeningLevel = hero.AwakeningLevel;
-        for (int x = 0; x < rarityStars.Length; x++) {
-            if (x < rarity) rarityStars[x].sprite = silverSprite;
-            else if (x < awakeningLevel) rarityStars[x].sprite = goldSprite;
-            else rarityStars[x].sprite = emptySprite;
-        }
+        rarityView.SetLevel(baseHero.Rarity, currentHero.AwakeningLevel, true);
     }
 }
