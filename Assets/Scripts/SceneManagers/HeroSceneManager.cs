@@ -8,10 +8,6 @@ using UnityEngine.UI;
 
 public class HeroSceneManager : MonoBehaviour {
 
-    private const string emptyStar = "Icons/star_empty";
-    private const string silverStar = "Icons/star_silver";
-    private const string goldStar = "Icons/star_gold";
-
     public GameObject masterContainer;
     public RectTransform heroListContent;
 
@@ -19,6 +15,9 @@ public class HeroSceneManager : MonoBehaviour {
     public Text heroLabel;
     public Image factionIconLeft;
     public Image factionIconRight;
+    public Text fuseButtonText;
+    public GameObject statPanel;
+    public GameObject fusePanel;
 
     public RarityBehavior rarityView;
     public Text levelLabel;
@@ -36,11 +35,14 @@ public class HeroSceneManager : MonoBehaviour {
 
     public AudioSource levelUpSound;
 
-    public GameObject heroListItemPrefab;
+    public FusionSelectionBehavior centerFusion;
+    public FusionSelectionBehavior topLeftFusion;
+    public FusionSelectionBehavior topRightFusion;
+    public FusionSelectionBehavior bottomLeftFusion;
+    public FusionSelectionBehavior bottomMiddleFusion;
+    public FusionSelectionBehavior bottomRightFusion;
 
-    private Sprite emptySprite;
-    private Sprite silverSprite;
-    private Sprite goldSprite;
+    public GameObject heroListItemPrefab;
 
     private FactionEnum? currentFilter;
     private List<AccountHero> unfilteredList;
@@ -49,10 +51,6 @@ public class HeroSceneManager : MonoBehaviour {
     private int currentPosition;
 
     public void Awake() {
-        emptySprite = Resources.Load<Sprite>(emptyStar);
-        silverSprite = Resources.Load<Sprite>(silverStar);
-        goldSprite = Resources.Load<Sprite>(goldStar);
-
         var state = StateManager.GetCurrentState();
         unfilteredList = state.AccountHeroes;
         BuildList();
@@ -147,7 +145,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void OnFusePressed() {
-
+        ToggleStatPanel(!statPanel.activeSelf);
     }
 
     public void OnLevelUpPressed() {
@@ -182,5 +180,93 @@ public class HeroSceneManager : MonoBehaviour {
         speedLabel.text = string.Format("Speed: {0}", combatHero.Speed.ToString("0"));
 
         rarityView.SetLevel(baseHero.Rarity, currentHero.AwakeningLevel, true);
+        ToggleStatPanel(true);
+    }
+
+    private void ToggleStatPanel(bool showStats) {
+        fuseButtonText.text = showStats ? "Fuse!" : "Stats";
+        statPanel.SetActive(showStats);
+        fusePanel.SetActive(!showStats);
+
+        if (!showStats) SetupFusePanel();
+    }
+
+    private void SetupFusePanel() {
+        var currentHero = filteredList[currentPosition];
+        var baseHero = currentHero.GetBaseHero();
+
+        int currentHeroRequirement = 0;
+        int factionHeroRequirement = 0;
+
+        int currentHeroLevelRequirement = 0;
+        int factionHeroLevelRequirement = 0;
+
+        switch (currentHero.AwakeningLevel) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                currentHeroRequirement = 2;
+                factionHeroRequirement = 2;
+                currentHeroLevelRequirement = currentHero.AwakeningLevel;
+                factionHeroLevelRequirement = currentHero.AwakeningLevel;
+                break;
+            case 6:
+                currentHeroRequirement = 0;
+                factionHeroRequirement = 1;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            case 7:
+                currentHeroRequirement = 0;
+                factionHeroRequirement = 2;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            case 8:
+                currentHeroRequirement = 0;
+                factionHeroRequirement = 3;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            case 9:
+                currentHeroRequirement = 2;
+                factionHeroRequirement = 2;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+        }
+
+        centerFusion.SetAccountHero(currentHero);
+
+        topLeftFusion.gameObject.SetActive(currentHeroRequirement >= 1);
+        topLeftFusion.SetEmpty(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        topRightFusion.gameObject.SetActive(currentHeroRequirement >= 2);
+        topRightFusion.SetEmpty(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        bottomLeftFusion.gameObject.SetActive(factionHeroRequirement >= 1);
+        bottomLeftFusion.SetEmpty(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomRightFusion.gameObject.SetActive(factionHeroRequirement >= 2);
+        bottomRightFusion.SetEmpty(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomMiddleFusion.gameObject.SetActive(factionHeroRequirement >= 3);
+        bottomMiddleFusion.SetEmpty(baseHero.Faction, factionHeroLevelRequirement, null);
+    }
+
+    private List<AccountHero> GetSelectedFusionHeroes() {
+        List<AccountHero> selected = new List<AccountHero>();
+        if (topLeftFusion.GetSelectedHero() != null) selected.Add(topLeftFusion.GetSelectedHero());
+        if (topRightFusion.GetSelectedHero() != null) selected.Add(topRightFusion.GetSelectedHero());
+        if (bottomLeftFusion.GetSelectedHero() != null) selected.Add(bottomLeftFusion.GetSelectedHero());
+        if (bottomMiddleFusion.GetSelectedHero() != null) selected.Add(bottomMiddleFusion.GetSelectedHero());
+        if (bottomRightFusion.GetSelectedHero() != null) selected.Add(bottomRightFusion.GetSelectedHero());
+        return selected;
+    }
+
+    public void RequestPopup(FusionSelectionBehavior fusionButton, FactionEnum faction, int levelRequirement, HeroEnum? specificHero) {
+        List<AccountHero> alreadySelected = GetSelectedFusionHeroes();
+        alreadySelected.Add(centerFusion.GetSelectedHero());
+        var selected = fusionButton.GetSelectedHero();
+        if (selected != null && alreadySelected.Contains(selected)) alreadySelected.Remove(selected);
+        Debug.Log("Requesting popup: " + alreadySelected.Count);
     }
 }
