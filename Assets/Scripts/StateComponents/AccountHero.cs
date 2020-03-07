@@ -41,3 +41,7 @@ public class AccountHero : IComparable<AccountHero> {
         return other.CurrentLevel - CurrentLevel;
     }
 }
+
+public class CombatHero {
+
+}
