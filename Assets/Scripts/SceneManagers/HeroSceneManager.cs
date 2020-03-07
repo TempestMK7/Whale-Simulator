@@ -23,8 +23,8 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private void BuildList() {
-        while (heroListContent.childCount > 0) {
-            Destroy(heroListContent.GetChild(0).gameObject);
+        for (int x = heroListContent.childCount - 1; x >= 0; x--) {
+            Destroy(heroListContent.GetChild(x).gameObject);
         }
 
         var heroes = FilterList();
@@ -59,7 +59,11 @@ public class HeroSceneManager : MonoBehaviour {
 
     private List<AccountHero> FilterList() {
         if (currentFilter == null) return unfilteredList;
-        return unfilteredList;
+        List<AccountHero> filteredList = new List<AccountHero>();
+        foreach (AccountHero hero in unfilteredList) {
+            if (hero.GetBaseHero().Faction == currentFilter) filteredList.Add(hero);
+        }
+        return filteredList;
     }
 
     public void NotifyListSelection(int listPosition) {
