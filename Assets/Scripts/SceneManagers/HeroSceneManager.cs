@@ -172,7 +172,8 @@ public class HeroSceneManager : MonoBehaviour {
         StateManager.LevelUpHero(filteredList[currentPosition], OnLevelUpComplete);
     }
 
-    public void OnLevelUpComplete() {
+    public void OnLevelUpComplete(bool successful) {
+        if (!successful) return;
         levelUpSound.time = 0.2f;
         levelUpSound.Play();
         ResetListPosition();

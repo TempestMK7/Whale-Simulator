@@ -99,16 +99,23 @@ public class StateManager {
         return choices[choice];
     }
 
-    public static void LevelUpHero(AccountHero hero, Action handler) {
-        if (hero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(hero.AwakeningLevel)) return;
-        long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
-        if (currentState.CurrentGold > cost && currentState.CurrentSouls > cost && hero.CurrentLevel < 200) {
-            currentState.CurrentGold -= cost;
-            currentState.CurrentSouls -= cost;
-            hero.CurrentLevel += 1;
+    public static void LevelUpHero(AccountHero hero, Action<bool> handler) {
+        if (hero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(hero.AwakeningLevel)) {
+            handler.Invoke(false);
+            return;
         }
+
+        long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
+        if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost || hero.CurrentLevel >= 200) {
+            handler.Invoke(false);
+            return;
+        }
+
+        currentState.CurrentGold -= cost;
+        currentState.CurrentSouls -= cost;
+        hero.CurrentLevel += 1;
         SaveState();
-        handler.Invoke();
+        handler.Invoke(true);
     }
 
     public static void FuseHero(AccountHero fusedHero, List<AccountHero> destroyedHeroes, Action<bool> handler) {
