@@ -86,6 +86,7 @@ public class HeroSceneManager : MonoBehaviour {
             var hero = filteredList[x];
             var listItem = Instantiate(heroListItemPrefab);
             listItem.GetComponent<HeroListItemBehavior>().SetHero(hero, x);
+            listItem.GetComponent<HeroListItemBehavior>().SetHeroSceneManager(this);
             listItem.transform.SetParent(heroListContent);
             var transform = listItem.transform as RectTransform;
             float rowPosition = x % numItemsPerRow;
@@ -114,6 +115,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void OnBackPressed() {
+        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
         SceneManager.LoadScene("HubScene");
     }
 
@@ -130,26 +132,31 @@ public class HeroSceneManager : MonoBehaviour {
     // Detail Screen Stuff
 
     public void OnDetailBackPressed() {
+        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
         detailContainer.SetActive(false);
         masterContainer.SetActive(true);
         BuildList();
     }
 
     public void OnPageLeftPressed() {
+        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
         if (currentPosition > 0) currentPosition--;
         BindDetailView();
     }
 
     public void OnPageRightPressed() {
+        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
         if (currentPosition < filteredList.Count - 1) currentPosition++;
         BindDetailView();
     }
 
     public void OnFusePressed() {
+        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
         ToggleStatPanel(!statPanel.activeSelf);
     }
 
     public void OnLevelUpPressed() {
+        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
         levelUpSound.time = 0.2f;
         levelUpSound.Play();
         StateManager.LevelUpHero(filteredList[currentPosition]);
