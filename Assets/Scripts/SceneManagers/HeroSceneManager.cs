@@ -43,6 +43,7 @@ public class HeroSceneManager : MonoBehaviour {
     public FusionSelectionBehavior bottomRightFusion;
 
     public GameObject heroListItemPrefab;
+    public GameObject fusionPopupPrefab;
 
     private FactionEnum? currentFilter;
     private List<AccountHero> unfilteredList;
@@ -241,15 +242,20 @@ public class HeroSceneManager : MonoBehaviour {
         centerFusion.SetAccountHero(currentHero);
 
         topLeftFusion.gameObject.SetActive(currentHeroRequirement >= 1);
-        topLeftFusion.SetEmpty(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        topLeftFusion.SetCardRequirements(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        topLeftFusion.SetEmpty();
         topRightFusion.gameObject.SetActive(currentHeroRequirement >= 2);
-        topRightFusion.SetEmpty(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        topRightFusion.SetCardRequirements(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        topRightFusion.SetEmpty();
         bottomLeftFusion.gameObject.SetActive(factionHeroRequirement >= 1);
-        bottomLeftFusion.SetEmpty(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomLeftFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomLeftFusion.SetEmpty();
         bottomRightFusion.gameObject.SetActive(factionHeroRequirement >= 2);
-        bottomRightFusion.SetEmpty(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomRightFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomRightFusion.SetEmpty();
         bottomMiddleFusion.gameObject.SetActive(factionHeroRequirement >= 3);
-        bottomMiddleFusion.SetEmpty(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomMiddleFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomMiddleFusion.SetEmpty();
     }
 
     private List<AccountHero> GetSelectedFusionHeroes() {
@@ -267,6 +273,8 @@ public class HeroSceneManager : MonoBehaviour {
         alreadySelected.Add(centerFusion.GetSelectedHero());
         var selected = fusionButton.GetSelectedHero();
         if (selected != null && alreadySelected.Contains(selected)) alreadySelected.Remove(selected);
-        Debug.Log("Requesting popup: " + alreadySelected.Count);
+
+        var popup = Instantiate(fusionPopupPrefab, detailContainer.transform).GetComponent<FusionPopupBehavior>();
+        popup.LaunchPopup(faction, levelRequirement, specificHero, alreadySelected, fusionButton);
     }
 }

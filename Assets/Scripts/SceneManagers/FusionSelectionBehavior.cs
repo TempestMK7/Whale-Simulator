@@ -26,26 +26,30 @@ public class FusionSelectionBehavior : MonoBehaviour {
         parentManager = FindObjectOfType<HeroSceneManager>();
     }
 
-    public void SetEmpty(FactionEnum faction, int levelRequirement, HeroEnum? heroRequirement) {
+    public void SetCardRequirements(FactionEnum faction, int level, HeroEnum? hero) {
         requiredFaction = faction;
-        requiredLevel = levelRequirement;
-        requiredHero = heroRequirement;
+        requiredLevel = level;
+        requiredHero = hero;
+    }
 
-        blurryBorder.color = ColorContainer.ColorFromFaction(faction);
+    public void SetAccountHero(AccountHero hero) {
+        selectedHero = hero;
+        blurryBorder.color = ColorContainer.ColorFromFaction(hero.GetBaseHero().Faction);
+        heroIcon.sprite = (hero.GetBaseHero().HeroIcon);
+        rarityView.SetLevel(hero.GetBaseHero().Rarity, hero.AwakeningLevel, false);
+        levelText.text = hero.CurrentLevel.ToString();
+    }
+
+    public void SetEmpty() {
+        selectedHero = null;
+        blurryBorder.color = ColorContainer.ColorFromFaction(requiredFaction);
         heroIcon.sprite = addSprite;
-        rarityView.SetLevel(0, levelRequirement, false);
+        rarityView.SetLevel(0, requiredLevel, false);
         levelText.text = "";
     }
 
     public AccountHero GetSelectedHero() {
         return selectedHero;
-    }
-
-    public void SetAccountHero(AccountHero hero) {
-        blurryBorder.color = ColorContainer.ColorFromFaction(hero.GetBaseHero().Faction);
-        heroIcon.sprite = (hero.GetBaseHero().HeroIcon);
-        rarityView.SetLevel(hero.GetBaseHero().Rarity, hero.AwakeningLevel, false);
-        levelText.text = hero.CurrentLevel.ToString();
     }
 
     public void OnButtonClicked() {
