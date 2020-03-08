@@ -65,10 +65,22 @@ public class StateManager {
         handler.Invoke(null);
     }
 
+    public static void CheatIdleCurrency(long millis) {
+        var state = GetCurrentState();
+        state.LastClaimTimeStamp -= millis;
+        state.ClaimMaterials();
+    }
+
+    public static void CheatSummons(int summons) {
+        GetCurrentState().CurrentSummons += summons;
+        SaveState();
+    }
+
     public static void RequestSummon(int numSummons, Action<List<AccountHero>> handler) {
         AccountStateContainer state = GetCurrentState();
+        if (state.CurrentSummons < numSummons) return;
+        state.CurrentSummons -= numSummons;
         System.Random rand = new System.Random((int)EpochTime.CurrentTimeMillis());
-        // state.CurrentSummons -= numSummons;
         List<AccountHero> summonedHeroes = new List<AccountHero>();
         for (int x = 0; x < numSummons; x++) {
             AccountHero newHero = new AccountHero(ChooseRandomHero(rand));

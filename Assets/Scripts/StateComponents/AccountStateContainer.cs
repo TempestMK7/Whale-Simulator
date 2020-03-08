@@ -20,8 +20,6 @@ public class AccountStateContainer {
     [SerializeField] public double GoldRate { get; set; }
     [SerializeField] public double SoulsRate { get; set; }
     [SerializeField] public double ExperienceRate { get; set; }
-    [SerializeField] public double GemInterval { get; set; }
-    [SerializeField] public double SummonInterval { get; set; }
 
     [SerializeField] public List<AccountHero> AccountHeroes { get; set; }
 
@@ -40,8 +38,6 @@ public class AccountStateContainer {
         GoldRate = 2.0;
         SoulsRate = 1.0;
         ExperienceRate = 1.0;
-        GemInterval = 60.0 * 60.0;
-        SummonInterval = 60.0 * 60.0 * 24.0;
 
         AccountHeroes = new List<AccountHero>();
     }
@@ -53,8 +49,6 @@ public class AccountStateContainer {
         CurrentGold += GoldRate * timeElapsed;
         CurrentSouls += SoulsRate * timeElapsed;
         CurrentExperience += ExperienceRate * timeElapsed;
-        CurrentGems += (1.0 / GemInterval) * timeElapsed;
-        CurrentSummons += (1.0 / SummonInterval) * timeElapsed;
 
         while (CurrentExperience > LevelContainer.ExperienceRequirement(CurrentLevel)) {
             CurrentExperience -= LevelContainer.ExperienceRequirement(CurrentLevel);

@@ -34,6 +34,8 @@ public class AccountHero : IComparable<AccountHero> {
     }
 
     public int CompareTo(AccountHero other) {
+        var level = other.CurrentLevel - CurrentLevel;
+        if (level != 0) return level;
         var awakening = other.AwakeningLevel - AwakeningLevel;
         if (awakening != 0) return awakening;
         var myHero = baseHero;
@@ -42,9 +44,7 @@ public class AccountHero : IComparable<AccountHero> {
         if (faction != 0) return faction;
         var rarity = otherHero.Rarity - myHero.Rarity;
         if (rarity != 0) return rarity;
-        var name = otherHero.HeroName.CompareTo(myHero.HeroName);
-        if (name != 0) return name;
-        return other.CurrentLevel - CurrentLevel;
+        return otherHero.HeroName.CompareTo(myHero.HeroName);
     }
 }
 

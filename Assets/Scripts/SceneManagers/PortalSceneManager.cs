@@ -49,6 +49,7 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {
+        summonText.text = CustomFormatter.Format(state.CurrentSummons);
         if (summonedHeroes.Count == 1) {
             var hero = summonedHeroes[0];
             var popup = Instantiate(singleSummonPopupPrefab, sceneUiCanvas.transform);

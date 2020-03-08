@@ -15,6 +15,7 @@ public class HubSceneManager : MonoBehaviour {
     public Canvas mainCanvas;
 
     public GameObject settingsPopupPrefab;
+    public GameObject cheaterPopupPrefab;
 
     public float usableWidth = 1.0f;
     public float usableHeight = 1.0f;
@@ -22,6 +23,7 @@ public class HubSceneManager : MonoBehaviour {
     private Vector3? clickPosition;
     private Vector3? startingClickPosition;
     private bool settingsOpen = false;
+    private bool cheaterOpen = false;
 
     public void Awake() {
         Application.targetFrameRate = 60;
@@ -34,6 +36,7 @@ public class HubSceneManager : MonoBehaviour {
     }
 
     public void OnSettingsClicked() {
+        if (PopupOpened()) return;
         var settingsPopup = Instantiate(settingsPopupPrefab, mainCanvas.transform).GetComponent<SettingsPopupManager>();
         settingsPopup.LaunchPopup();
         settingsOpen = true;
@@ -43,12 +46,27 @@ public class HubSceneManager : MonoBehaviour {
         SceneManager.LoadScene("HeroScene");
     }
 
+    public void OnCheatPressed() {
+        if (PopupOpened()) return;
+        var cheaterPopup = Instantiate(cheaterPopupPrefab, mainCanvas.transform).GetComponent<CheaterPopupBehavior>();
+        cheaterPopup.LaunchPopup();
+        cheaterOpen = true;
+    }
+
+    private bool PopupOpened() {
+        return settingsOpen || cheaterOpen;
+    }
+
     public void NotifySettingsClosed() {
         settingsOpen = false;
     }
 
+    public void NotifyCheaterClosed() {
+        cheaterOpen = false;
+    }
+
     private void HandleClickEvents() {
-        if (settingsOpen) return;
+        if (PopupOpened()) return;
         if (EventSystem.current.IsPointerOverGameObject()) {
             clickPosition = null;
             return;
