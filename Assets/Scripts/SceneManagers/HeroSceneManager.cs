@@ -21,6 +21,7 @@ public class HeroSceneManager : MonoBehaviour {
     public GameObject fusePanel;
 
     public GameObject heroAnimation;
+    public FusionFanfareBehavior fusionFanfare;
 
     public RarityBehavior rarityView;
     public Text levelLabel;
@@ -55,6 +56,7 @@ public class HeroSceneManager : MonoBehaviour {
     private List<AccountHero> filteredList;
 
     private int currentPosition;
+    private bool fanfarePlaying = false;
 
     private int currentHeroRequirement;
     private int factionHeroRequirement;
@@ -127,7 +129,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return FindObjectOfType<FusionPopupBehavior>() != null;
+        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null;
     }
 
     public void OnBackPressed() {
@@ -344,11 +346,10 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void OnFusionComplete(bool successful) {
-        Debug.Log("Attempted fusion: " + successful);
         if (!successful) return;
         ResetListPosition();
         BindDetailView();
-        StartCoroutine("FusionFanfare");
+        StartCoroutine("PlayFanfare");
     }
 
     public void OnSuggestFusion() {
@@ -398,7 +399,11 @@ public class HeroSceneManager : MonoBehaviour {
         }
     }
 
-    IEnumerator FusionFanfare() {
+    IEnumerator PlayFanfare() {
+        fanfarePlaying = true;
+        fusionFanfare.PlayFanfare();
+        yield return new WaitForSeconds(2f);
+        fanfarePlaying = false;
         yield return null;
     }
 }
