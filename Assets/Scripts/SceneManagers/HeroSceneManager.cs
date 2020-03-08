@@ -20,6 +20,8 @@ public class HeroSceneManager : MonoBehaviour {
     public GameObject statPanel;
     public GameObject fusePanel;
 
+    public GameObject heroAnimation;
+
     public RarityBehavior rarityView;
     public Text levelLabel;
     public UnityEngine.UI.Button levelButton;
@@ -64,6 +66,7 @@ public class HeroSceneManager : MonoBehaviour {
         unfilteredList = state.AccountHeroes;
         BuildList();
         masterContainer.SetActive(true);
+        heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
         levelUpSound.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
     }
@@ -118,6 +121,7 @@ public class HeroSceneManager : MonoBehaviour {
     public void NotifyListSelection(int listPosition) {
         currentPosition = listPosition;
         masterContainer.SetActive(false);
+        heroAnimation.SetActive(true);
         detailContainer.SetActive(true);
         BindDetailView();
     }
@@ -146,6 +150,7 @@ public class HeroSceneManager : MonoBehaviour {
     public void OnDetailBackPressed() {
         if (ButtonsBlocked()) return;
         detailContainer.SetActive(false);
+        heroAnimation.SetActive(false);
         masterContainer.SetActive(true);
         BuildList();
     }
@@ -197,6 +202,9 @@ public class HeroSceneManager : MonoBehaviour {
         positionLabel.text = string.Format("({0} of {1})", currentPosition + 1, filteredList.Count);
         factionIconLeft.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
         factionIconRight.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
+
+        var animator = baseHero.HeroAnimator;
+        heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
         levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
