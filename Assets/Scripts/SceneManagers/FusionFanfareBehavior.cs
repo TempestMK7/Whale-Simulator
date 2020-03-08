@@ -18,7 +18,7 @@ public class FusionFanfareBehavior : MonoBehaviour {
         secondSound.volume = SettingsManager.GetInstance().effectVolume * 0.8f;
     }
 
-    public void PlayFanfare() {
+    public void Play() {
         StartCoroutine("DoEverything");
     }
 

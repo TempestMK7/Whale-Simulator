@@ -22,6 +22,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public GameObject heroAnimation;
     public FusionFanfareBehavior fusionFanfare;
+    public LevelupFanfareBehavior levelupFanfare;
 
     public RarityBehavior rarityView;
     public Text levelLabel;
@@ -37,8 +38,6 @@ public class HeroSceneManager : MonoBehaviour {
     public Text speedLabel;
     public Text attackLabel;
     public Text magicLabel;
-
-    public AudioSource levelUpSound;
 
     public FusionSelectionBehavior centerFusion;
     public FusionSelectionBehavior topLeftFusion;
@@ -70,7 +69,6 @@ public class HeroSceneManager : MonoBehaviour {
         masterContainer.SetActive(true);
         heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
-        levelUpSound.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
     }
 
     // Master List Stuff
@@ -181,8 +179,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void OnLevelUpComplete(bool successful) {
         if (!successful) return;
-        levelUpSound.time = 0.2f;
-        levelUpSound.Play();
+        levelupFanfare.Play();
         ResetListPosition();
         BindDetailView();
     }
@@ -401,7 +398,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     IEnumerator PlayFanfare() {
         fanfarePlaying = true;
-        fusionFanfare.PlayFanfare();
+        fusionFanfare.Play();
         yield return new WaitForSeconds(2f);
         fanfarePlaying = false;
         yield return null;
