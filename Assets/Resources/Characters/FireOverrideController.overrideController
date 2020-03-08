@@ -6,6 +6,18 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterOverrideController
-  m_Controller: {fileID: 0}
-  m_Clips: []
+  m_Name: FireOverrideController
+  m_Controller: {fileID: 9100000, guid: a9de4c190d070634facf34f8c9a444e0, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 962163fdbcab9cc41b9e33c2cebc2b7e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: b7e6d814cd2a7704e8b03376d7d61e7b, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 85f3517845dd73746abc92b49666e7f0, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f77c5dbc9ae0d774680701a7cbf227c2, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 31fb0289c8acaf245898b77613943225, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 5790579dd3d08244db6780fb7212f03f, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 9c81148da6e29ba4c83729b59cebf104, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 217dff9fed7456149bd93fc7fc4f50ed, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: eaeae23f803e80246ac895463747f5ed, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d834c92ef9dbdfd409bcfb03a2ae5697, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 4366b69aeee904248b57d4dd025ab04a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 56fd7de2ab8ec57428123c5ac4409689, type: 2}

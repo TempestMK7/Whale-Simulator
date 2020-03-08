@@ -7,5 +7,17 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WaterOverrideController
-  m_Controller: {fileID: 0}
-  m_Clips: []
+  m_Controller: {fileID: 9100000, guid: a9de4c190d070634facf34f8c9a444e0, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 962163fdbcab9cc41b9e33c2cebc2b7e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 441dd542907600148a808bb73b2bf53b, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 85f3517845dd73746abc92b49666e7f0, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 30d7c9eb2e7582d49b8c347a4840281f, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 31fb0289c8acaf245898b77613943225, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d6f27ad926851d4449f85ad2300a6651, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 9c81148da6e29ba4c83729b59cebf104, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 441dd542907600148a808bb73b2bf53b, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: eaeae23f803e80246ac895463747f5ed, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: afb526dcaa3f5b447b0c1e6edf613042, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 4366b69aeee904248b57d4dd025ab04a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 81060d97f6f454e4e94890f9804d6820, type: 2}
