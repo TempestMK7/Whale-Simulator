@@ -72,7 +72,7 @@ public class BaseHero {
                     85, 70, 50, 48, 42, 50, 0.1);
             case HeroEnum.MIST_CALLER:
                 return new BaseHero(hero, "Mist Caller", "Icons/Element02_256_04",
-                    RoleEnum.DAMAGE, FactionEnum.WATER, 5,
+                    RoleEnum.DAMAGE, FactionEnum.WATER, 4,
                     60, 55, 95, 35, 40, 75, 0.15);
             case HeroEnum.ORACLE:
                 return new BaseHero(hero, "Oracle", "Icons/Element02_256_04",

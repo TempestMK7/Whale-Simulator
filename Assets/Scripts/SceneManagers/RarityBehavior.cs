@@ -23,10 +23,18 @@ public class RarityBehavior : MonoBehaviour {
 
     public void SetLevel(int rarity, int awakening, bool showEmptyStars) {
         for (int x = 0; x < starImages.Length; x++) {
-            if (x < rarity) starImages[x].sprite = silverSprite;
-            else if (x < awakening) starImages[x].sprite = goldSprite;
-            else if (showEmptyStars) starImages[x].sprite = emptySprite;
-            else starImages[x].enabled = false;
+            if (x < rarity) {
+                starImages[x].sprite = goldSprite;
+                starImages[x].enabled = true;
+            } else if (x < awakening) {
+                starImages[x].sprite = silverSprite;
+                starImages[x].enabled = true;
+            } else if (showEmptyStars) {
+                starImages[x].sprite = emptySprite;
+                starImages[x].enabled = true;
+            } else {
+                starImages[x].enabled = false;
+            }
         }
     }
 }

@@ -99,7 +99,7 @@ public class StateManager {
         return choices[choice];
     }
 
-    public static void LevelUpHero(AccountHero hero) {
+    public static void LevelUpHero(AccountHero hero, Action handler) {
         long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
         if (currentState.CurrentGold > cost && currentState.CurrentSouls > cost && hero.CurrentLevel < 200) {
             currentState.CurrentGold -= cost;
@@ -107,5 +107,84 @@ public class StateManager {
             hero.CurrentLevel += 1;
         }
         SaveState();
+        handler.Invoke();
+    }
+
+    public static void FuseHero(AccountHero fusedHero, List<AccountHero> destroyedHeroes, Action<bool> handler) {
+        if (!FusionIsLegal(fusedHero, destroyedHeroes)) {
+            handler.Invoke(false);
+            return;
+        }
+
+        var accountHeroes = GetCurrentState().AccountHeroes;
+        fusedHero.AwakeningLevel++;
+        foreach (AccountHero destroyed in destroyedHeroes) {
+            accountHeroes.Remove(destroyed);
+        }
+        accountHeroes.Sort();
+        SaveState();
+        handler.Invoke(true);
+    }
+
+    private static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+        int currentHeroRequirement;
+        int factionHeroRequirement;
+        int currentHeroLevelRequirement;
+        int factionHeroLevelRequirement;
+        switch (fusedHero.AwakeningLevel) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                currentHeroRequirement = 2;
+                factionHeroRequirement = 2;
+                currentHeroLevelRequirement = fusedHero.AwakeningLevel;
+                factionHeroLevelRequirement = fusedHero.AwakeningLevel;
+                break;
+            case 6:
+                currentHeroRequirement = 0;
+                factionHeroRequirement = 1;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            case 7:
+                currentHeroRequirement = 0;
+                factionHeroRequirement = 2;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            case 8:
+                currentHeroRequirement = 0;
+                factionHeroRequirement = 3;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            case 9:
+                currentHeroRequirement = 2;
+                factionHeroRequirement = 2;
+                currentHeroLevelRequirement = 5;
+                factionHeroLevelRequirement = 6;
+                break;
+            default:
+                return false;
+        }
+        Debug.Log("Fusion requirements: " + currentHeroRequirement + ", " + factionHeroRequirement);
+
+        int selectedSameHeroes = 0;
+        int selectedFactionHeroes = 0;
+        foreach (AccountHero destroyed in destroyedHeroes) {
+            if (destroyed == fusedHero) return false;
+            if (destroyed.GetBaseHero().Hero == fusedHero.GetBaseHero().Hero && destroyed.AwakeningLevel == currentHeroLevelRequirement && selectedSameHeroes != currentHeroRequirement) {
+                selectedSameHeroes++;
+            } else if (destroyed.GetBaseHero().Faction == fusedHero.GetBaseHero().Faction && destroyed.AwakeningLevel == factionHeroLevelRequirement) {
+                selectedFactionHeroes++;
+            } else {
+                return false;
+            }
+        }
+
+        Debug.Log("Fusion components: " + selectedSameHeroes + ", " + selectedFactionHeroes);
+        return selectedSameHeroes == currentHeroRequirement && selectedFactionHeroes == factionHeroRequirement;
     }
 }

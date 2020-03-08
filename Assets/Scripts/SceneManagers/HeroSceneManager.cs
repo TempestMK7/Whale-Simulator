@@ -13,6 +13,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public GameObject detailContainer;
     public Text heroLabel;
+    public Text positionLabel;
     public Image factionIconLeft;
     public Image factionIconRight;
     public Text fuseButtonText;
@@ -50,6 +51,11 @@ public class HeroSceneManager : MonoBehaviour {
     private List<AccountHero> filteredList;
 
     private int currentPosition;
+
+    private int currentHeroRequirement;
+    private int factionHeroRequirement;
+    private int currentHeroLevelRequirement;
+    private int factionHeroLevelRequirement;
 
     public void Awake() {
         var state = StateManager.GetCurrentState();
@@ -114,8 +120,12 @@ public class HeroSceneManager : MonoBehaviour {
         BindDetailView();
     }
 
+    private bool ButtonsBlocked() {
+        return FindObjectOfType<FusionPopupBehavior>() != null;
+    }
+
     public void OnBackPressed() {
-        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
+        if (ButtonsBlocked()) return;
         SceneManager.LoadScene("HubScene");
     }
 
@@ -132,35 +142,45 @@ public class HeroSceneManager : MonoBehaviour {
     // Detail Screen Stuff
 
     public void OnDetailBackPressed() {
-        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
+        if (ButtonsBlocked()) return;
         detailContainer.SetActive(false);
         masterContainer.SetActive(true);
         BuildList();
     }
 
     public void OnPageLeftPressed() {
-        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
+        if (ButtonsBlocked()) return;
         if (currentPosition > 0) currentPosition--;
         BindDetailView();
     }
 
     public void OnPageRightPressed() {
-        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
+        if (ButtonsBlocked()) return;
         if (currentPosition < filteredList.Count - 1) currentPosition++;
         BindDetailView();
     }
 
     public void OnFusePressed() {
-        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
+        if (ButtonsBlocked()) return;
         ToggleStatPanel(!statPanel.activeSelf);
     }
 
     public void OnLevelUpPressed() {
-        if (FindObjectOfType<FusionPopupBehavior>() != null) return;
+        if (ButtonsBlocked()) return;
+        StateManager.LevelUpHero(filteredList[currentPosition], OnLevelUpComplete);
+    }
+
+    public void OnLevelUpComplete() {
         levelUpSound.time = 0.2f;
         levelUpSound.Play();
-        StateManager.LevelUpHero(filteredList[currentPosition]);
+        ResetListPosition();
         BindDetailView();
+    }
+
+    private void ResetListPosition() {
+        var selected = filteredList[currentPosition];
+        filteredList = FilterList();
+        currentPosition = filteredList.IndexOf(selected);
     }
 
     public void BindDetailView() {
@@ -171,6 +191,7 @@ public class HeroSceneManager : MonoBehaviour {
         var currentLevel = combatHero.CurrentLevel;
 
         heroLabel.text = baseHero.HeroName;
+        positionLabel.text = string.Format("({0} of {1})", currentPosition + 1, filteredList.Count);
         factionIconLeft.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
         factionIconRight.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
 
@@ -202,12 +223,6 @@ public class HeroSceneManager : MonoBehaviour {
     private void SetupFusePanel() {
         var currentHero = filteredList[currentPosition];
         var baseHero = currentHero.GetBaseHero();
-
-        int currentHeroRequirement = 0;
-        int factionHeroRequirement = 0;
-
-        int currentHeroLevelRequirement = 0;
-        int factionHeroLevelRequirement = 0;
 
         switch (currentHero.AwakeningLevel) {
             case 1:
@@ -276,6 +291,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void RequestPopup(FusionSelectionBehavior fusionButton, FactionEnum faction, int levelRequirement, HeroEnum? specificHero) {
+        if (ButtonsBlocked()) return;
         List<AccountHero> alreadySelected = GetSelectedFusionHeroes();
         alreadySelected.Add(centerFusion.GetSelectedHero());
         var selected = fusionButton.GetSelectedHero();
@@ -283,5 +299,29 @@ public class HeroSceneManager : MonoBehaviour {
 
         var popup = Instantiate(fusionPopupPrefab, detailContainer.transform).GetComponent<FusionPopupBehavior>();
         popup.LaunchPopup(faction, levelRequirement, specificHero, alreadySelected, fusionButton);
+    }
+
+    public void RequestFusion() {
+        if (ButtonsBlocked()) return;
+        var selected = filteredList[currentPosition];
+        var destroyedHeroes = new List<AccountHero>();
+        if (topLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(topLeftFusion.GetSelectedHero());
+        if (topRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(topRightFusion.GetSelectedHero());
+        if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
+        if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
+        if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
+        StateManager.FuseHero(selected, destroyedHeroes, OnFusionComplete);
+    }
+
+    public void OnFusionComplete(bool successful) {
+        Debug.Log("Attempted fusion: " + successful);
+        if (!successful) return;
+        ResetListPosition();
+        BindDetailView();
+        StartCoroutine("FusionFanfare");
+    }
+
+    IEnumerator FusionFanfare() {
+        yield return null;
     }
 }
