@@ -100,6 +100,7 @@ public class StateManager {
     }
 
     public static void LevelUpHero(AccountHero hero, Action handler) {
+        if (hero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(hero.AwakeningLevel)) return;
         long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
         if (currentState.CurrentGold > cost && currentState.CurrentSouls > cost && hero.CurrentLevel < 200) {
             currentState.CurrentGold -= cost;
@@ -126,7 +127,7 @@ public class StateManager {
         handler.Invoke(true);
     }
 
-    private static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+    public static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
         int currentHeroRequirement;
         int factionHeroRequirement;
         int currentHeroLevelRequirement;
@@ -169,7 +170,6 @@ public class StateManager {
             default:
                 return false;
         }
-        Debug.Log("Fusion requirements: " + currentHeroRequirement + ", " + factionHeroRequirement);
 
         int selectedSameHeroes = 0;
         int selectedFactionHeroes = 0;
@@ -183,8 +183,6 @@ public class StateManager {
                 return false;
             }
         }
-
-        Debug.Log("Fusion components: " + selectedSameHeroes + ", " + selectedFactionHeroes);
         return selectedSameHeroes == currentHeroRequirement && selectedFactionHeroes == factionHeroRequirement;
     }
 }

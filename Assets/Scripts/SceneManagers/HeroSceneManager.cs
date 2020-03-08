@@ -22,6 +22,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public RarityBehavior rarityView;
     public Text levelLabel;
+    public UnityEngine.UI.Button levelButton;
     public Text currentGold;
     public Text currentSouls;
     public Text goldCost;
@@ -42,6 +43,7 @@ public class HeroSceneManager : MonoBehaviour {
     public FusionSelectionBehavior bottomLeftFusion;
     public FusionSelectionBehavior bottomMiddleFusion;
     public FusionSelectionBehavior bottomRightFusion;
+    public UnityEngine.UI.Button completeFusionButton;
 
     public GameObject heroListItemPrefab;
     public GameObject fusionPopupPrefab;
@@ -196,6 +198,7 @@ public class HeroSceneManager : MonoBehaviour {
         factionIconRight.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
+        levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
         currentGold.text = CustomFormatter.Format(state.CurrentGold);
         currentSouls.text = CustomFormatter.Format(state.CurrentSouls);
         goldCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
@@ -278,6 +281,8 @@ public class HeroSceneManager : MonoBehaviour {
         bottomMiddleFusion.gameObject.SetActive(factionHeroRequirement >= 3);
         bottomMiddleFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
         bottomMiddleFusion.SetEmpty();
+
+        HandleCompleteFusionButton();
     }
 
     private List<AccountHero> GetSelectedFusionHeroes() {
@@ -301,6 +306,21 @@ public class HeroSceneManager : MonoBehaviour {
         popup.LaunchPopup(faction, levelRequirement, specificHero, alreadySelected, fusionButton);
     }
 
+    public void OnFusionHeroSelected() {
+        HandleCompleteFusionButton();
+    }
+
+    private void HandleCompleteFusionButton() {
+        var selected = filteredList[currentPosition];
+        var destroyedHeroes = new List<AccountHero>();
+        if (topLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(topLeftFusion.GetSelectedHero());
+        if (topRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(topRightFusion.GetSelectedHero());
+        if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
+        if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
+        if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
+        completeFusionButton.gameObject.SetActive(StateManager.FusionIsLegal(selected, destroyedHeroes));
+    }
+
     public void RequestFusion() {
         if (ButtonsBlocked()) return;
         var selected = filteredList[currentPosition];
@@ -310,6 +330,7 @@ public class HeroSceneManager : MonoBehaviour {
         if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
         if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
         if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
+        if (!StateManager.FusionIsLegal(selected, destroyedHeroes)) return;
         StateManager.FuseHero(selected, destroyedHeroes, OnFusionComplete);
     }
 
@@ -319,6 +340,53 @@ public class HeroSceneManager : MonoBehaviour {
         ResetListPosition();
         BindDetailView();
         StartCoroutine("FusionFanfare");
+    }
+
+    public void OnSuggestFusion() {
+        SetupFusePanel();
+        var alreadySelected = new List<AccountHero>();
+        alreadySelected.Add(filteredList[currentPosition]);
+
+        if (currentHeroRequirement >= 1) {
+            SelectSameHero(topLeftFusion, alreadySelected);
+        }
+        if (currentHeroRequirement >= 2) {
+            SelectSameHero(topRightFusion, alreadySelected);
+        }
+        if (factionHeroRequirement >= 1) {
+            SelectFactionHero(bottomLeftFusion, alreadySelected);
+        }
+        if (factionHeroRequirement >= 2) {
+            SelectFactionHero(bottomRightFusion, alreadySelected);
+        }
+        if (factionHeroRequirement >= 3) {
+            SelectFactionHero(bottomMiddleFusion, alreadySelected);
+        }
+        HandleCompleteFusionButton();
+    }
+
+    private void SelectSameHero(FusionSelectionBehavior fusion, List<AccountHero> alreadySelected) {
+        var baseHero = filteredList[currentPosition].GetBaseHero();
+        var allHeroes = StateManager.GetCurrentState().AccountHeroes;
+        var firstSelectable = allHeroes.Find(delegate (AccountHero hero) {
+            return !alreadySelected.Contains(hero) && hero.GetBaseHero().Hero == baseHero.Hero && hero.AwakeningLevel == currentHeroLevelRequirement;
+        });
+        if (firstSelectable != null) {
+            fusion.SetAccountHero(firstSelectable);
+            alreadySelected.Add(firstSelectable);
+        }
+    }
+
+    private void SelectFactionHero(FusionSelectionBehavior fusion, List<AccountHero> alreadySelected) {
+        var baseHero = filteredList[currentPosition].GetBaseHero();
+        var allHeroes = StateManager.GetCurrentState().AccountHeroes;
+        var firstSelectable = allHeroes.Find(delegate (AccountHero hero) {
+            return !alreadySelected.Contains(hero) && hero.GetBaseHero().Faction == baseHero.Faction && hero.AwakeningLevel == factionHeroLevelRequirement;
+        });
+        if (firstSelectable != null) {
+            fusion.SetAccountHero(firstSelectable);
+            alreadySelected.Add(firstSelectable);
+        }
     }
 
     IEnumerator FusionFanfare() {

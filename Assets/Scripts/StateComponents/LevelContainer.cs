@@ -17,4 +17,10 @@ public class LevelContainer {
     public static int HeroExperienceRequirement(float level) {
         return (int)(heroBaseValue * Mathf.Pow(heroModifier, level - 1f));
     }
+
+    public static int MaxLevelForAwakeningValue(int awakeningValue) {
+        if (awakeningValue <= 5) return 50 + (awakeningValue * 10);
+        awakeningValue -= 5;
+        return 100 + (awakeningValue * 20);
+    }
 }

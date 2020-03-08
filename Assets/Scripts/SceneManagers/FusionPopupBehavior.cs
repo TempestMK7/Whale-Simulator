@@ -12,9 +12,11 @@ public class FusionPopupBehavior : MonoBehaviour {
     private HeroEnum? filteredHero;
     private List<AccountHero> alreadySelected;
     private FusionSelectionBehavior summoner;
+    private HeroSceneManager sceneManager;
 
     public void Awake() {
         transform.localScale = new Vector3(0f, 0f);
+        sceneManager = FindObjectOfType<HeroSceneManager>();
     }
 
     private void BuildList() {
@@ -58,11 +60,13 @@ public class FusionPopupBehavior : MonoBehaviour {
 
     public void OnCancelPressed() {
         summoner.SetEmpty();
+        if (sceneManager != null) sceneManager.OnFusionHeroSelected();
         StartCoroutine("ShrinkToNothing");
     }
 
     public void OnFusionListItemPressed(AccountHero hero) {
         summoner.SetAccountHero(hero);
+        if (sceneManager != null) sceneManager.OnFusionHeroSelected();
         StartCoroutine("ShrinkToNothing");
     }
 
