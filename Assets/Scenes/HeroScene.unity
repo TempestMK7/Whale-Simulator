@@ -1001,7 +1001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &166681411
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4788,13 +4788,14 @@ MonoBehaviour:
   positionLabel: {fileID: 1717203422}
   factionIconLeft: {fileID: 65692601}
   factionIconRight: {fileID: 1879206793}
+  fuseButton: {fileID: 444925134}
   fuseButtonText: {fileID: 726596387}
   statPanel: {fileID: 1396137738}
   fusePanel: {fileID: 965961754}
   heroAnimation: {fileID: 569763818}
   heroAnimationLayer:
     serializedVersion: 2
-    m_Bits: 1048577
+    m_Bits: 1048576
   fusionFanfare: {fileID: 1858836604}
   levelupFanfare: {fileID: 2002260278}
   rarityView: {fileID: 383500560112260521}

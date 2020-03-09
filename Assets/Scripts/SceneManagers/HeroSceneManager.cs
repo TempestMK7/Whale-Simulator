@@ -16,6 +16,7 @@ public class HeroSceneManager : MonoBehaviour {
     public Text positionLabel;
     public Image factionIconLeft;
     public Image factionIconRight;
+    public UnityEngine.UI.Button fuseButton;
     public Text fuseButtonText;
     public GameObject statPanel;
     public GameObject fusePanel;
@@ -58,10 +59,7 @@ public class HeroSceneManager : MonoBehaviour {
     private int currentPosition;
     private bool fanfarePlaying = false;
 
-    private int currentHeroRequirement;
-    private int factionHeroRequirement;
-    private int currentHeroLevelRequirement;
-    private int factionHeroLevelRequirement;
+    private FusionRequirement? currentFusionRequirement;
 
     public void Awake() {
         var state = StateManager.GetCurrentState();
@@ -231,6 +229,8 @@ public class HeroSceneManager : MonoBehaviour {
         speedLabel.text = string.Format("Speed: {0}", combatHero.Speed.ToString("0"));
 
         rarityView.SetLevel(baseHero.Rarity, currentHero.AwakeningLevel, true);
+        currentFusionRequirement = LevelContainer.GetFusionRequirementForLevel(currentHero.AwakeningLevel);
+        fuseButton.gameObject.SetActive(currentFusionRequirement != null);
         ToggleStatPanel(true);
     }
 
@@ -245,60 +245,28 @@ public class HeroSceneManager : MonoBehaviour {
     private void SetupFusePanel() {
         var currentHero = filteredList[currentPosition];
         var baseHero = currentHero.GetBaseHero();
-
-        switch (currentHero.AwakeningLevel) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                currentHeroRequirement = 2;
-                factionHeroRequirement = 2;
-                currentHeroLevelRequirement = currentHero.AwakeningLevel;
-                factionHeroLevelRequirement = currentHero.AwakeningLevel;
-                break;
-            case 6:
-                currentHeroRequirement = 0;
-                factionHeroRequirement = 1;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            case 7:
-                currentHeroRequirement = 0;
-                factionHeroRequirement = 2;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            case 8:
-                currentHeroRequirement = 0;
-                factionHeroRequirement = 3;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            case 9:
-                currentHeroRequirement = 2;
-                factionHeroRequirement = 2;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
+        if (currentFusionRequirement == null) {
+            ToggleStatPanel(true);
+            return;
         }
-
         centerFusion.SetAccountHero(currentHero);
 
-        topLeftFusion.gameObject.SetActive(currentHeroRequirement >= 1);
-        topLeftFusion.SetCardRequirements(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        FactionEnum? requiredFaction = null;
+        if (currentFusionRequirement?.RequireSameFaction == true) requiredFaction = baseHero.Faction;
+        topLeftFusion.gameObject.SetActive(currentFusionRequirement?.SameHeroRequirement >= 1);
+        topLeftFusion.SetCardRequirements(baseHero.Faction, currentFusionRequirement?.SameHeroLevel ?? 5, baseHero.Hero);
         topLeftFusion.SetEmpty();
-        topRightFusion.gameObject.SetActive(currentHeroRequirement >= 2);
-        topRightFusion.SetCardRequirements(baseHero.Faction, currentHeroLevelRequirement, baseHero.Hero);
+        topRightFusion.gameObject.SetActive(currentFusionRequirement?.SameHeroRequirement >= 2);
+        topRightFusion.SetCardRequirements(baseHero.Faction, currentFusionRequirement?.SameHeroLevel ?? 5, baseHero.Hero);
         topRightFusion.SetEmpty();
-        bottomLeftFusion.gameObject.SetActive(factionHeroRequirement >= 1);
-        bottomLeftFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomLeftFusion.gameObject.SetActive(currentFusionRequirement?.FactionHeroRequirement >= 1);
+        bottomLeftFusion.SetCardRequirements(requiredFaction, currentFusionRequirement?.FactionHeroLevel ?? 5, null);
         bottomLeftFusion.SetEmpty();
-        bottomRightFusion.gameObject.SetActive(factionHeroRequirement >= 2);
-        bottomRightFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomRightFusion.gameObject.SetActive(currentFusionRequirement?.FactionHeroRequirement >= 2);
+        bottomRightFusion.SetCardRequirements(requiredFaction, currentFusionRequirement?.FactionHeroLevel ?? 5, null);
         bottomRightFusion.SetEmpty();
-        bottomMiddleFusion.gameObject.SetActive(factionHeroRequirement >= 3);
-        bottomMiddleFusion.SetCardRequirements(baseHero.Faction, factionHeroLevelRequirement, null);
+        bottomMiddleFusion.gameObject.SetActive(currentFusionRequirement?.FactionHeroRequirement >= 3);
+        bottomMiddleFusion.SetCardRequirements(requiredFaction, currentFusionRequirement?.FactionHeroLevel ?? 5, null);
         bottomMiddleFusion.SetEmpty();
 
         HandleCompleteFusionButton();
@@ -314,7 +282,7 @@ public class HeroSceneManager : MonoBehaviour {
         return selected;
     }
 
-    public void RequestPopup(FusionSelectionBehavior fusionButton, FactionEnum faction, int levelRequirement, HeroEnum? specificHero) {
+    public void RequestPopup(FusionSelectionBehavior fusionButton, FactionEnum? faction, int levelRequirement, HeroEnum? specificHero) {
         if (ButtonsBlocked()) return;
         List<AccountHero> alreadySelected = GetSelectedFusionHeroes();
         alreadySelected.Add(centerFusion.GetSelectedHero());
@@ -361,23 +329,25 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void OnSuggestFusion() {
+        if (currentFusionRequirement == null) return;
         SetupFusePanel();
-        var alreadySelected = new List<AccountHero>();
-        alreadySelected.Add(filteredList[currentPosition]);
+        var alreadySelected = new List<AccountHero> {
+            filteredList[currentPosition]
+        };
 
-        if (currentHeroRequirement >= 1) {
+        if (currentFusionRequirement?.SameHeroRequirement >= 1) {
             SelectSameHero(topLeftFusion, alreadySelected);
         }
-        if (currentHeroRequirement >= 2) {
+        if (currentFusionRequirement?.SameHeroRequirement >= 2) {
             SelectSameHero(topRightFusion, alreadySelected);
         }
-        if (factionHeroRequirement >= 1) {
+        if (currentFusionRequirement?.FactionHeroRequirement >= 1) {
             SelectFactionHero(bottomLeftFusion, alreadySelected);
         }
-        if (factionHeroRequirement >= 2) {
+        if (currentFusionRequirement?.FactionHeroRequirement >= 2) {
             SelectFactionHero(bottomRightFusion, alreadySelected);
         }
-        if (factionHeroRequirement >= 3) {
+        if (currentFusionRequirement?.FactionHeroRequirement >= 3) {
             SelectFactionHero(bottomMiddleFusion, alreadySelected);
         }
         HandleCompleteFusionButton();
@@ -387,7 +357,7 @@ public class HeroSceneManager : MonoBehaviour {
         var baseHero = filteredList[currentPosition].GetBaseHero();
         var allHeroes = StateManager.GetCurrentState().AccountHeroes;
         var firstSelectable = allHeroes.Find(delegate (AccountHero hero) {
-            return !alreadySelected.Contains(hero) && hero.GetBaseHero().Hero == baseHero.Hero && hero.AwakeningLevel == currentHeroLevelRequirement;
+            return !alreadySelected.Contains(hero) && hero.GetBaseHero().Hero == baseHero.Hero && hero.AwakeningLevel == currentFusionRequirement?.SameHeroLevel;
         });
         if (firstSelectable != null) {
             fusion.SetAccountHero(firstSelectable);
@@ -399,7 +369,9 @@ public class HeroSceneManager : MonoBehaviour {
         var baseHero = filteredList[currentPosition].GetBaseHero();
         var allHeroes = StateManager.GetCurrentState().AccountHeroes;
         var firstSelectable = allHeroes.Find(delegate (AccountHero hero) {
-            return !alreadySelected.Contains(hero) && hero.GetBaseHero().Faction == baseHero.Faction && hero.AwakeningLevel == factionHeroLevelRequirement;
+            bool meetsRequirements = !alreadySelected.Contains(hero) && hero.AwakeningLevel == currentFusionRequirement?.FactionHeroLevel;
+            if (currentFusionRequirement?.RequireSameFaction == true) meetsRequirements = meetsRequirements && hero.GetBaseHero().Faction == baseHero.Faction;
+            return meetsRequirements;
         });
         if (firstSelectable != null) {
             fusion.SetAccountHero(firstSelectable);

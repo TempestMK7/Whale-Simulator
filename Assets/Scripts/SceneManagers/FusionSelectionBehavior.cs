@@ -17,7 +17,7 @@ public class FusionSelectionBehavior : MonoBehaviour {
     private Sprite addSprite;
     private HeroSceneManager parentManager;
     private AccountHero selectedHero;
-    private FactionEnum requiredFaction;
+    private FactionEnum? requiredFaction;
     private int requiredLevel;
     private HeroEnum? requiredHero;
 
@@ -26,7 +26,7 @@ public class FusionSelectionBehavior : MonoBehaviour {
         parentManager = FindObjectOfType<HeroSceneManager>();
     }
 
-    public void SetCardRequirements(FactionEnum faction, int level, HeroEnum? hero) {
+    public void SetCardRequirements(FactionEnum? faction, int level, HeroEnum? hero) {
         requiredFaction = faction;
         requiredLevel = level;
         requiredHero = hero;
@@ -36,14 +36,27 @@ public class FusionSelectionBehavior : MonoBehaviour {
         selectedHero = hero;
         blurryBorder.color = ColorContainer.ColorFromFaction(hero.GetBaseHero().Faction);
         heroIcon.sprite = (hero.GetBaseHero().HeroIcon);
+        heroIcon.color = new Color(1, 1, 1, 1);
         rarityView.SetLevel(hero.GetBaseHero().Rarity, hero.AwakeningLevel, false);
         levelText.text = hero.CurrentLevel.ToString();
     }
 
     public void SetEmpty() {
         selectedHero = null;
-        blurryBorder.color = ColorContainer.ColorFromFaction(requiredFaction);
-        heroIcon.sprite = addSprite;
+        if (requiredFaction != null) {
+            blurryBorder.enabled = true;
+            blurryBorder.color = ColorContainer.ColorFromFaction(requiredFaction ?? FactionEnum.WATER);
+        } else {
+            blurryBorder.enabled = false;
+        }
+        if (requiredHero == null) {
+            heroIcon.sprite = addSprite;
+            heroIcon.color = new Color(1, 1, 1, 1);
+        } else {
+            var baseHero = BaseHeroContainer.GetBaseHero(requiredHero ?? HeroEnum.VAPOR_CLOUD);
+            heroIcon.sprite = baseHero.HeroIcon;
+            heroIcon.color = new Color(1, 1, 1, 0.5f);
+        }
         rarityView.SetLevel(0, requiredLevel, false);
         levelText.text = "";
     }

@@ -7,7 +7,7 @@ public class FusionPopupBehavior : MonoBehaviour {
     public RectTransform heroListContent;
     public GameObject heroListItemPrefab;
 
-    private FactionEnum faction;
+    private FactionEnum? faction;
     private int level;
     private HeroEnum? filteredHero;
     private List<AccountHero> alreadySelected;
@@ -24,7 +24,9 @@ public class FusionPopupBehavior : MonoBehaviour {
         var filteredList = allHeroes.FindAll(delegate (AccountHero hero) {
             var baseHero = hero.GetBaseHero();
             if (filteredHero != null && baseHero.Hero != filteredHero) return false;
-            return baseHero.Faction == faction && hero.AwakeningLevel == level && !alreadySelected.Contains(hero);
+            bool fitsRequirements = hero.AwakeningLevel == level && !alreadySelected.Contains(hero);
+            if (faction != null) fitsRequirements = fitsRequirements && baseHero.Faction == faction;
+            return fitsRequirements;
         });
 
         var listItemTransform = heroListItemPrefab.transform as RectTransform;
@@ -70,7 +72,7 @@ public class FusionPopupBehavior : MonoBehaviour {
         StartCoroutine("ShrinkToNothing");
     }
 
-    public void LaunchPopup(FactionEnum faction, int level, HeroEnum? filteredHero, List<AccountHero> alreadySelected, FusionSelectionBehavior summoner) {
+    public void LaunchPopup(FactionEnum? faction, int level, HeroEnum? filteredHero, List<AccountHero> alreadySelected, FusionSelectionBehavior summoner) {
         this.faction = faction;
         this.level = level;
         this.filteredHero = filteredHero;

@@ -147,61 +147,22 @@ public class StateManager {
     }
 
     public static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
-        int currentHeroRequirement;
-        int factionHeroRequirement;
-        int currentHeroLevelRequirement;
-        int factionHeroLevelRequirement;
-        switch (fusedHero.AwakeningLevel) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                currentHeroRequirement = 2;
-                factionHeroRequirement = 2;
-                currentHeroLevelRequirement = fusedHero.AwakeningLevel;
-                factionHeroLevelRequirement = fusedHero.AwakeningLevel;
-                break;
-            case 6:
-                currentHeroRequirement = 0;
-                factionHeroRequirement = 1;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            case 7:
-                currentHeroRequirement = 0;
-                factionHeroRequirement = 2;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            case 8:
-                currentHeroRequirement = 0;
-                factionHeroRequirement = 3;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            case 9:
-                currentHeroRequirement = 2;
-                factionHeroRequirement = 2;
-                currentHeroLevelRequirement = 5;
-                factionHeroLevelRequirement = 6;
-                break;
-            default:
-                return false;
-        }
+        FusionRequirement? requirement = LevelContainer.GetFusionRequirementForLevel(fusedHero.AwakeningLevel);
+        if (requirement == null) return false;
 
         int selectedSameHeroes = 0;
         int selectedFactionHeroes = 0;
         foreach (AccountHero destroyed in destroyedHeroes) {
             if (destroyed == fusedHero) return false;
-            if (destroyed.GetBaseHero().Hero == fusedHero.GetBaseHero().Hero && destroyed.AwakeningLevel == currentHeroLevelRequirement && selectedSameHeroes != currentHeroRequirement) {
+            if (destroyed.GetBaseHero().Hero == fusedHero.GetBaseHero().Hero && destroyed.AwakeningLevel == requirement?.SameHeroLevel && selectedSameHeroes != requirement?.SameHeroRequirement) {
                 selectedSameHeroes++;
-            } else if (destroyed.GetBaseHero().Faction == fusedHero.GetBaseHero().Faction && destroyed.AwakeningLevel == factionHeroLevelRequirement) {
-                selectedFactionHeroes++;
+            } else if (destroyed.AwakeningLevel == requirement?.FactionHeroLevel) {
+                if (requirement?.RequireSameFaction == false || destroyed.GetBaseHero().Faction == fusedHero.GetBaseHero().Faction) selectedFactionHeroes++;
+                else return false;
             } else {
                 return false;
             }
         }
-        return selectedSameHeroes == currentHeroRequirement && selectedFactionHeroes == factionHeroRequirement;
+        return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
     }
 }
