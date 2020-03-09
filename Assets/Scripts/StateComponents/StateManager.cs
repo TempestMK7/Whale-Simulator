@@ -68,7 +68,7 @@ public class StateManager {
     public static void CheatIdleCurrency(long millis) {
         var state = GetCurrentState();
         state.LastClaimTimeStamp -= millis;
-        state.ClaimMaterials();
+        SaveState();
     }
 
     public static void CheatSummons(int summons) {

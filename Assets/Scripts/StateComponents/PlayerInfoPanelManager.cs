@@ -12,6 +12,8 @@ public class PlayerInfoPanelManager : MonoBehaviour {
     public Text soulsText;
     public ProgressBarPro levelBar;
 
+    private int displayedLevel;
+
     public void Awake() {
         BindStateToUi();
     }
@@ -27,6 +29,27 @@ public class PlayerInfoPanelManager : MonoBehaviour {
         gemText.text = CustomFormatter.Format(accountState.CurrentGems);
         goldText.text = CustomFormatter.Format(accountState.CurrentGold);
         soulsText.text = CustomFormatter.Format(accountState.CurrentSouls);
-        levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
+
+        HandleLevelBar();
+    }
+
+    private void HandleLevelBar() {
+        AccountStateContainer accountState = StateManager.GetCurrentState();
+        if (displayedLevel == 0) {
+            levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
+            displayedLevel = accountState.CurrentLevel;
+        } else {
+            if (levelBar.Value == 1f) {
+                levelBar.EmptyBar();
+            }
+
+            var differential = accountState.CurrentLevel - displayedLevel;
+            if (differential > 0) {
+                displayedLevel++;
+                levelBar.SetValue(100f, 100f, HandleLevelBar);
+            } else {
+                levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
+            }
+        }
     }
 }

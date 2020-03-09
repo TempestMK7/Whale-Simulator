@@ -1498,11 +1498,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114907845258825128, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: animationType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114907845258825128, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: m_value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114907845258825128, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
+      propertyPath: animTime
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224018724721067600, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: m_AnchorMin.x

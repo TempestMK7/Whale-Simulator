@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using PlayfulSystems;
 using PlayfulSystems.ProgressBar;
@@ -22,6 +23,7 @@ public class ProgressBarPro : MonoBehaviour {
     [SerializeField] ProgressBarProView[] views;
 
     private Coroutine sizeAnim;
+    private Action animationCompleteListener;
 
     public void Start() {
         if (views == null || views.Length == 0)
@@ -46,6 +48,11 @@ public class ProgressBarPro : MonoBehaviour {
         }
     }
 
+    public void SetValue(float value, float maxValue, Action animationCompleteListener) {
+        this.animationCompleteListener = animationCompleteListener;
+        SetValue(value, maxValue);
+    }
+
     public void SetValue(float value, float maxValue) {
         if (maxValue != 0f)
             SetValue(value / maxValue);
@@ -53,11 +60,21 @@ public class ProgressBarPro : MonoBehaviour {
             SetValue(0f);
     }
 
+    public void SetValue(int value, int maxValue, Action animationCompleteListener) {
+        this.animationCompleteListener = animationCompleteListener;
+        SetValue(value, maxValue);
+    }
+
     public void SetValue(int value, int maxValue) {
         if (maxValue != 0)
             SetValue((float)value / (float)maxValue);
         else
             SetValue(0f);
+    }
+
+    public void SetValue(float percentage, Action animationCompleteListener, bool forceUpdate = false) {
+        this.animationCompleteListener = animationCompleteListener;
+        SetValue(percentage, forceUpdate);
     }
 
     public void SetValue(float percentage, bool forceUpdate = false) {
@@ -104,6 +121,11 @@ public class ProgressBarPro : MonoBehaviour {
         float change = m_value - displayValue;
         float duration = (animationType == AnimationType.FixedTimeForChange ? animTime : Mathf.Abs(change) / animTime);
 
+        if (change < 0) {
+            time = duration;
+            SetDisplayValue(m_value, true);
+        }
+
         while (time < duration) {
             time += Time.deltaTime;
             SetDisplayValue(Utils.EaseSinInOut(time/duration, startValue, change));
@@ -112,11 +134,22 @@ public class ProgressBarPro : MonoBehaviour {
 
         SetDisplayValue(m_value, true);
         sizeAnim = null;
+
+        if (animationCompleteListener != null) {
+            var listener = animationCompleteListener;
+            animationCompleteListener = null;
+            listener.Invoke();
+        }
     }
 
     // Set Value & Update Views
 
-	void SetDisplayValue(float value, bool forceUpdate = false) {
+    public void EmptyBar() {
+        m_value = 0;
+        SetDisplayValue(0);
+    }
+
+	public void SetDisplayValue(float value, bool forceUpdate = false) {
         // If the value hasn't changed don't update any views.
         if (!forceUpdate && displayValue >= 0f && Mathf.Approximately(displayValue, value))
             return;
