@@ -21,6 +21,7 @@ public class HeroSceneManager : MonoBehaviour {
     public GameObject fusePanel;
 
     public GameObject heroAnimation;
+    public LayerMask heroAnimationLayer;
     public FusionFanfareBehavior fusionFanfare;
     public LevelupFanfareBehavior levelupFanfare;
 
@@ -69,6 +70,16 @@ public class HeroSceneManager : MonoBehaviour {
         masterContainer.SetActive(true);
         heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
+    }
+
+    public void Update() {
+        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
+                var animator = hit.transform.gameObject.GetComponent<Animator>();
+                if (animator != null) animator.SetTrigger("Attack");
+            }
+        }
     }
 
     // Master List Stuff
