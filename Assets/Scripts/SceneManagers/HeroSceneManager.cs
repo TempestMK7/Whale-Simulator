@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class HeroSceneManager : MonoBehaviour {
 
     public GameObject masterContainer;
-    public RectTransform heroListContent;
+    public RecyclerView heroRecycler;
 
     public GameObject detailContainer;
     public Text heroLabel;
@@ -52,6 +52,7 @@ public class HeroSceneManager : MonoBehaviour {
     public GameObject heroListItemPrefab;
     public GameObject fusionPopupPrefab;
 
+    private HeroAdapter heroAdapter;
     private FactionEnum? currentFilter;
     private List<AccountHero> unfilteredList;
     private List<AccountHero> filteredList;
@@ -64,10 +65,12 @@ public class HeroSceneManager : MonoBehaviour {
     public void Awake() {
         var state = StateManager.GetCurrentState();
         unfilteredList = state.AccountHeroes;
-        BuildList();
         masterContainer.SetActive(true);
         heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
+        heroAdapter = new HeroAdapter(heroListItemPrefab, this);
+        heroRecycler.SetAdapter(heroAdapter);
+        BuildList();
     }
 
     public void Update() {
@@ -83,39 +86,9 @@ public class HeroSceneManager : MonoBehaviour {
     // Master List Stuff
 
     private void BuildList() {
-        for (int x = heroListContent.childCount - 1; x >= 0; x--) {
-            Destroy(heroListContent.GetChild(x).gameObject);
-        }
-
         filteredList = FilterList();
-        var listItemTransform = heroListItemPrefab.transform as RectTransform;
-        var listItemWidth = listItemTransform.rect.width;
-        var listItemHeight = listItemTransform.rect.height;
-        var listAreaWidth = heroListContent.rect.width;
-
-        int numItemsPerRow = (int)(listAreaWidth / (listItemWidth + 8));
-        int numRows = filteredList.Count / numItemsPerRow;
-        if (filteredList.Count % numItemsPerRow != 0) numRows++;
-        float anchorMultiple = 1f / (numItemsPerRow + 1f);
-
-        int heightPerRow = (int)listItemHeight + 8;
-        int totalHeight = numRows * heightPerRow;
-        heroListContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalHeight);
-
-        for (int x = 0; x < filteredList.Count; x++) {
-            var hero = filteredList[x];
-            var listItem = Instantiate(heroListItemPrefab);
-            listItem.GetComponent<HeroListItemBehavior>().SetHero(hero, x);
-            listItem.GetComponent<HeroListItemBehavior>().SetHeroSceneManager(this);
-            listItem.transform.SetParent(heroListContent);
-            var transform = listItem.transform as RectTransform;
-            float rowPosition = x % numItemsPerRow;
-            transform.anchorMin = new Vector2((rowPosition + 1) * anchorMultiple, 1f);
-            transform.anchorMax = transform.anchorMin;
-            int rowNum = x / numItemsPerRow;
-            float verticalPosition = (rowNum + 0.5f) * heightPerRow * -1f;
-            transform.anchoredPosition = new Vector2(0f, verticalPosition);
-        }
+        heroAdapter.SetNewList(filteredList);
+        heroRecycler.NotifyDataSetChanged();
     }
 
     private List<AccountHero> FilterList() {
@@ -385,5 +358,34 @@ public class HeroSceneManager : MonoBehaviour {
         yield return new WaitForSeconds(2f);
         fanfarePlaying = false;
         yield return null;
+    }
+}
+
+public class HeroAdapter : RecyclerViewAdapter {
+
+    private List<AccountHero> heroes;
+    private readonly GameObject listItemPrefab;
+    private readonly HeroSceneManager sceneManager;
+
+    public HeroAdapter(GameObject listItemPrefab, HeroSceneManager sceneManager) {
+        this.listItemPrefab = listItemPrefab;
+        this.sceneManager = sceneManager;
+    }
+
+    public void SetNewList(List<AccountHero> heroes) {
+        this.heroes = heroes;
+    }
+
+    public override ViewHolder OnCreateViewHolder(RectTransform contentArea) {
+        return UnityEngine.Object.Instantiate(listItemPrefab, contentArea).GetComponent<ViewHolder>();
+    }
+
+    public override void OnBindViewHolder(ViewHolder viewHolder, int position) {
+        viewHolder.GetComponent<HeroListItemBehavior>().SetHero(heroes[position], position);
+        viewHolder.GetComponent<HeroListItemBehavior>().SetHeroSceneManager(sceneManager);
+    }
+
+    public override int GetItemCount() {
+        return heroes != null ? heroes.Count : 0;
     }
 }
