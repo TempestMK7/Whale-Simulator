@@ -23,7 +23,7 @@ public class PlayerInfoPanelManager : MonoBehaviour {
     }
 
     private void BindStateToUi() {
-        AccountStateContainer accountState = StateManager.GetCurrentState();
+        var accountState = StateManager.GetCurrentState();
         nameText.text = accountState.PlayerName;
         levelText.text = "Level " + accountState.CurrentLevel.ToString("0");
         gemText.text = CustomFormatter.Format(accountState.CurrentGems);
@@ -34,7 +34,7 @@ public class PlayerInfoPanelManager : MonoBehaviour {
     }
 
     private void HandleLevelBar() {
-        AccountStateContainer accountState = StateManager.GetCurrentState();
+        var accountState = StateManager.GetCurrentState();
         if (displayedLevel == 0) {
             levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
             displayedLevel = accountState.CurrentLevel;

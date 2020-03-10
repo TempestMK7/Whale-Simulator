@@ -9,9 +9,9 @@ using UnityEngine;
 public class StateManager {
 
     private static string fileName = Application.persistentDataPath + "/WhaleState.dat";
-    private static AccountStateContainer currentState;
+    private static AccountState currentState;
 
-    public static AccountStateContainer GetCurrentState() {
+    public static AccountState GetCurrentState() {
         LoadCurrentState();
         return currentState;
     }
@@ -27,7 +27,7 @@ public class StateManager {
         FileStream stream = new FileStream(fileName, FileMode.Open);
         try {
             BinaryFormatter formatter = new BinaryFormatter();
-            currentState = (AccountStateContainer)formatter.Deserialize(stream);
+            currentState = (AccountState)formatter.Deserialize(stream);
         } catch (Exception e) {
             UnityEngine.Debug.Log(e.Message);
         } finally {
@@ -41,7 +41,7 @@ public class StateManager {
     }
 
     private static void CreateEmptyContainer() {
-        AccountStateContainer container = new AccountStateContainer();
+        AccountState container = new AccountState();
         container.InitializeAccount();
         currentState = container;
         SaveState();
@@ -77,7 +77,7 @@ public class StateManager {
     }
 
     public static void RequestSummon(int numSummons, Action<List<AccountHero>> handler) {
-        AccountStateContainer state = GetCurrentState();
+        AccountState state = GetCurrentState();
         if (state.CurrentSummons < numSummons) return;
         state.CurrentSummons -= numSummons;
         System.Random rand = new System.Random((int)EpochTime.CurrentTimeMillis());

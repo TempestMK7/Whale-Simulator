@@ -1470,11 +1470,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114103528721598330, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: showMaxValue
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114103528721598330, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: numberUnit
-      value: 
+      value: '%'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114103528721598330, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
+      propertyPath: numDecimals
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114665445561552194, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: m_FontData.m_Font
@@ -1487,6 +1491,10 @@ PrefabInstance:
     - target: {fileID: 114665445561552194, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: m_FontData.m_MinSize
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114665445561552194, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
+      propertyPath: m_Text
+      value: 100%
       objectReference: {fileID: 0}
     - target: {fileID: 114718762171772398, guid: e338ec519c5667c40b163a27c5a3cfd2, type: 3}
       propertyPath: m_PreferredHeight

@@ -17,23 +17,19 @@ public class SanctumSceneManager : MonoBehaviour {
     public Text experienceRateLabel;
     public Text experienceUnclaimedLabel;
 
-    private AccountStateContainer state;
-
-    void Awake() {
-        this.state = StateManager.GetCurrentState();
-    }
-
     void Update() {
-        double unformattedTime = (double)(EpochTime.CurrentTimeMillis() - state.LastClaimTimeStamp) / 1000.0;
+        var state = StateManager.GetCurrentState();
+        var generation = MissionContainer.GetGenerationInfo();
+        double unformattedTime = (EpochTime.CurrentTimeMillis() - state.LastClaimTimeStamp);
 
-        goldRateLabel.text = string.Format("Gold: {0} / min.", state.GoldRate * 60.0);
-        goldUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * state.GoldRate);
+        goldRateLabel.text = string.Format("Gold: {0} / min.", generation.GoldPerMinute);
+        goldUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * GenerationInfo.GenerationPerMillisecond(generation.GoldPerMinute));
 
-        soulsRateLabel.text = string.Format("Souls: {0} / min.", state.SoulsRate * 60.0);
-        soulsUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * state.SoulsRate);
+        soulsRateLabel.text = string.Format("Souls: {0} / min.", generation.SoulsPerMinute);
+        soulsUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * GenerationInfo.GenerationPerMillisecond(generation.SoulsPerMinute));
 
-        experienceRateLabel.text = string.Format("Exp: {0} / min.", state.ExperienceRate * 60.0);
-        experienceUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * state.ExperienceRate);
+        experienceRateLabel.text = string.Format("Exp: {0} / min.", generation.ExperiencePerMinute);
+        experienceUnclaimedLabel.text = CustomFormatter.Format(unformattedTime * GenerationInfo.GenerationPerMillisecond(generation.ExperiencePerMinute));
 
         // This is a bit of a mess, I need to see if there's a time formatter out there that works.
         long elapsedTime = (EpochTime.CurrentTimeMillis() - state.LastClaimTimeStamp) / 1000;

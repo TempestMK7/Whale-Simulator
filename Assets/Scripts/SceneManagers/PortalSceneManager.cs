@@ -19,10 +19,8 @@ public class PortalSceneManager : MonoBehaviour {
     public AudioSource portalOpenEffect;
     public AudioSource portalLoopEffect;
 
-    private AccountStateContainer state;
-
     public void Awake() {
-        state = StateManager.GetCurrentState();
+        var state = StateManager.GetCurrentState();
         nameText.text = state.PlayerName;
         levelText.text = string.Format("Level {0}", state.CurrentLevel);
         summonText.text = CustomFormatter.Format(state.CurrentSummons);
@@ -49,6 +47,7 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {
+        var state = StateManager.GetCurrentState();
         summonText.text = CustomFormatter.Format(state.CurrentSummons);
         if (summonedHeroes.Count == 1) {
             var hero = summonedHeroes[0];
