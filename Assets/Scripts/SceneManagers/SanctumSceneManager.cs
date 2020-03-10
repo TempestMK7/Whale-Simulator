@@ -63,6 +63,6 @@ public class SanctumSceneManager : MonoBehaviour {
     }
 
     public void OnBackPressed() {
-        SceneManager.LoadScene("HubScene");
+        SceneManager.LoadSceneAsync("HubScene");
     }
 }

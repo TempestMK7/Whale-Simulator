@@ -25,12 +25,6 @@ public class HubSceneManager : MonoBehaviour {
     private bool settingsOpen = false;
     private bool cheaterOpen = false;
 
-    public void Awake() {
-        Application.targetFrameRate = 60;
-        BaseHeroContainer.InitializeHeroes();
-        StateManager.GetCurrentState();
-    }
-
     void Update() {
         HandleClickEvents();
     }
@@ -43,7 +37,7 @@ public class HubSceneManager : MonoBehaviour {
     }
     
     public void OnHeroClicked() {
-        SceneManager.LoadScene("HeroScene");
+        SceneManager.LoadSceneAsync("HeroScene");
     }
 
     public void OnCheatPressed() {

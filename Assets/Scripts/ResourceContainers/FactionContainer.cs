@@ -13,14 +13,7 @@ public class FactionContainer {
 
     private static Dictionary<FactionEnum, Sprite> factionSprites;
 
-    public static Sprite GetIconForFaction(FactionEnum faction) {
-        if (factionSprites == null) {
-            InitializeSprites();
-        }
-        return factionSprites[faction];
-    }
-
-    private static void InitializeSprites() {
+    public static void Initialize() {
         factionSprites = new Dictionary<FactionEnum, Sprite>();
         factionSprites.Add(FactionEnum.WATER, Resources.Load<Sprite>(waterIcon));
         factionSprites.Add(FactionEnum.GRASS, Resources.Load<Sprite>(grassIcon));
@@ -28,5 +21,12 @@ public class FactionContainer {
         factionSprites.Add(FactionEnum.ICE, Resources.Load<Sprite>(iceIcon));
         factionSprites.Add(FactionEnum.EARTH, Resources.Load<Sprite>(earthIcon));
         factionSprites.Add(FactionEnum.ELECTRIC, Resources.Load<Sprite>(electricIcon));
+    }
+
+    public static Sprite GetIconForFaction(FactionEnum faction) {
+        if (factionSprites == null) {
+            Initialize();
+        }
+        return factionSprites[faction];
     }
 }

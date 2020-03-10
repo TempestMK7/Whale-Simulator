@@ -59,6 +59,6 @@ public struct GenerationInfo {
     }
 
     public static double GenerationPerMillisecond(int generation) {
-        return (double)(generation) / (60.0 * 1000.0);
+        return generation / (60.0 * 1000.0);
     }
 }

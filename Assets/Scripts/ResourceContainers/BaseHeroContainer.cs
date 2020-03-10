@@ -12,7 +12,7 @@ public class BaseHeroContainer {
     public static List<HeroEnum> rarityFour;
     public static List<HeroEnum> rarityFive;
 
-    public static void InitializeHeroes() {
+    public static void Initialize() {
         allHeroes = new Dictionary<HeroEnum, BaseHero>();
         rarityOne = new List<HeroEnum>();
         rarityTwo = new List<HeroEnum>();
@@ -45,7 +45,7 @@ public class BaseHeroContainer {
 
     public static BaseHero GetBaseHero(HeroEnum hero) {
         if (allHeroes == null || allHeroes.Count == 0) {
-            InitializeHeroes();
+            Initialize();
         }
         return allHeroes[hero];
     }

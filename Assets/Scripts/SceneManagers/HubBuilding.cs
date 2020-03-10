@@ -8,6 +8,6 @@ public class HubBuilding : MonoBehaviour {
     public string targetScene;
 
     public void OnClickEvent() {
-        if (targetScene.Length > 0) SceneManager.LoadScene(targetScene);
+        if (targetScene.Length > 0) SceneManager.LoadSceneAsync(targetScene);
     }
 }

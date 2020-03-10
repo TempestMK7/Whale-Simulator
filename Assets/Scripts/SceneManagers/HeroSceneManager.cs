@@ -15,7 +15,7 @@ public class HeroSceneManager : MonoBehaviour {
     public Text heroLabel;
     public Text positionLabel;
     public Image factionIconLeft;
-    public Image factionIconRight;
+    public Image roleIconRight;
     public UnityEngine.UI.Button fuseButton;
     public Text fuseButtonText;
     public GameObject statPanel;
@@ -141,7 +141,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void OnBackPressed() {
         if (ButtonsBlocked()) return;
-        SceneManager.LoadScene("HubScene");
+        SceneManager.LoadSceneAsync("HubScene");
     }
 
     public void OnFilterPressed(int filterPosition) {
@@ -209,7 +209,7 @@ public class HeroSceneManager : MonoBehaviour {
         heroLabel.text = baseHero.HeroName;
         positionLabel.text = string.Format("({0} of {1})", currentPosition + 1, filteredList.Count);
         factionIconLeft.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
-        factionIconRight.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
+        roleIconRight.sprite = RoleContainer.GetIconForRole(baseHero.Role);
 
         var animator = baseHero.HeroAnimator;
         heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;

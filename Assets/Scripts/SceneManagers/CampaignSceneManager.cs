@@ -71,7 +71,7 @@ public class CampaignSceneManager : MonoBehaviour {
     }
 
     public void OnBackPressed() {
-        SceneManager.LoadScene("HubScene");
+        SceneManager.LoadSceneAsync("HubScene");
     }
 
     private void HandleClickEvents() {

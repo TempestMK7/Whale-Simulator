@@ -33,7 +33,7 @@ public class PortalSceneManager : MonoBehaviour {
 
     public void OnBackPressed() {
         if (PopupExists()) return;
-        SceneManager.LoadScene("HubScene");
+        SceneManager.LoadSceneAsync("HubScene");
     }
 
     public void OnSummon() {
