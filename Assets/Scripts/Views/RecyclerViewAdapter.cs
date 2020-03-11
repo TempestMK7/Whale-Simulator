@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class RecyclerViewAdapter {
 
-    public abstract ViewHolder OnCreateViewHolder(RectTransform contentHolder);
+    public abstract GameObject OnCreateViewHolder(RectTransform contentHolder);
 
-    public abstract void OnBindViewHolder(ViewHolder viewHolder, int position);
+    public abstract void OnBindViewHolder(GameObject viewHolder, int position);
 
     public abstract int GetItemCount();
 }

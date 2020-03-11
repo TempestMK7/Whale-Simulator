@@ -376,11 +376,11 @@ public class HeroAdapter : RecyclerViewAdapter {
         this.heroes = heroes;
     }
 
-    public override ViewHolder OnCreateViewHolder(RectTransform contentArea) {
-        return UnityEngine.Object.Instantiate(listItemPrefab, contentArea).GetComponent<ViewHolder>();
+    public override GameObject OnCreateViewHolder(RectTransform contentArea) {
+        return UnityEngine.Object.Instantiate(listItemPrefab, contentArea);
     }
 
-    public override void OnBindViewHolder(ViewHolder viewHolder, int position) {
+    public override void OnBindViewHolder(GameObject viewHolder, int position) {
         viewHolder.GetComponent<HeroListItemBehavior>().SetHero(heroes[position], position);
         viewHolder.GetComponent<HeroListItemBehavior>().SetHeroSceneManager(sceneManager);
     }

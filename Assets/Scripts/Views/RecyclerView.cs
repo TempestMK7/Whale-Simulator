@@ -8,8 +8,8 @@ public class RecyclerView: MonoBehaviour {
     public RectTransform contentArea;
 
     private RecyclerViewAdapter adapter;
-    private ViewHolder[] currentViewHolders;
-    private List<ViewHolder> recyclableViewHolders = new List<ViewHolder>();
+    private GameObject[] currentViewHolders;
+    private List<GameObject> recyclableViewHolders = new List<GameObject>();
 
     private int currentCount;
     private int numItemsPerRow;
@@ -26,23 +26,21 @@ public class RecyclerView: MonoBehaviour {
 
         // This clears all existing view holders from the list and adds them to the recyclable pool.
         if (currentViewHolders != null) {
-            foreach (ViewHolder existing in currentViewHolders) {
+            foreach (GameObject existing in currentViewHolders) {
                 if (existing == null) continue;
-                existing.CanBeRecycled = true;
                 existing.gameObject.SetActive(false);
                 recyclableViewHolders.Add(existing);
             }
         }
-        currentViewHolders = new ViewHolder[currentCount];
+        currentViewHolders = new GameObject[currentCount];
         if (currentCount == 0) return;
 
         // This loads a sample view holder from the pool if available and uses it to size the scrollable content area.
-        ViewHolder sampleHolder;
+        GameObject sampleHolder;
         if (recyclableViewHolders.Count > 0) {
             sampleHolder = recyclableViewHolders[0];
         } else {
             sampleHolder = adapter.OnCreateViewHolder(contentArea);
-            sampleHolder.CanBeRecycled = true;
             recyclableViewHolders.Add(sampleHolder);
         }
         var listItemTransform = sampleHolder.transform as RectTransform;
@@ -66,8 +64,8 @@ public class RecyclerView: MonoBehaviour {
         var highestViewable = contentArea.anchoredPosition.y * -1f;
         var lowestViewable = highestViewable - viewportHeight;
 
-        highestViewable += heightPerRow * 2f;
-        lowestViewable -= heightPerRow * 2f;
+        highestViewable += heightPerRow * 0.5f;
+        lowestViewable -= heightPerRow * 0.5f;
 
         for (int x = 0; x < currentCount; x++) {
             int rowNum = x / numItemsPerRow;
@@ -76,17 +74,15 @@ public class RecyclerView: MonoBehaviour {
 
             if (validPosition) {
                 var current = currentViewHolders[x];
-                if (current != null && current.LastBoundPosition == x) continue;
-                if (current == null) {
-                    if (recyclableViewHolders.Count > 0) {
-                        current = recyclableViewHolders[0];
-                        recyclableViewHolders.RemoveAt(0);
-                    } else {
-                        current = adapter.OnCreateViewHolder(contentArea);
-                    }
-                    currentViewHolders[x] = current;
+                if (current != null) continue;
+                if (recyclableViewHolders.Count > 0) {
+                    current = recyclableViewHolders[0];
+                    recyclableViewHolders.RemoveAt(0);
+                } else {
+                    current = adapter.OnCreateViewHolder(contentArea);
                 }
-                current.CanBeRecycled = false;
+                currentViewHolders[x] = current;
+                
                 current.gameObject.SetActive(true);
                 current.transform.SetParent(contentArea);
                 adapter.OnBindViewHolder(current, x);
@@ -100,8 +96,6 @@ public class RecyclerView: MonoBehaviour {
                 var current = currentViewHolders[x];
                 if (current != null) {
                     currentViewHolders[x] = null;
-                    current.CanBeRecycled = true;
-                    current.LastBoundPosition = ViewHolder.Unbound;
                     current.gameObject.SetActive(false);
                     recyclableViewHolders.Add(current);
                 }
