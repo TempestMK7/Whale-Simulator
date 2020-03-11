@@ -65,9 +65,8 @@ public class CampaignSceneManager : MonoBehaviour {
     }
 
     public void LaunchNextMission() {
-        var state = StateManager.GetCurrentState();
-        var currentMission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
-        Debug.Log(string.Format("Launching Chapter {0} Mission {1}", state.CurrentChapter, state.CurrentMission));
+        BattleManager.SelectBattleType(BattleEnum.CAMPAIGN);
+        SceneManager.LoadSceneAsync("BattleScene");
     }
 
     public void OnBackPressed() {

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 459560549163757836}
   - component: {fileID: 3892426357749537444}
   - component: {fileID: 4871754574086914967}
-  - component: {fileID: 3284914790325927398}
   - component: {fileID: 4195754226397252337}
+  - component: {fileID: 5555443797076150868}
   m_Layer: 20
   m_Name: HeroPlaceholder
   m_TagString: Untagged
@@ -104,19 +104,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &3284914790325927398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3467328855974847574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 373ed33528a411c48a249c3789c9e402, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 4871754574086914967}
 --- !u!65 &4195754226397252337
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -130,3 +117,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 0.2}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &5555443797076150868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3467328855974847574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373ed33528a411c48a249c3789c9e402, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4871754574086914967}

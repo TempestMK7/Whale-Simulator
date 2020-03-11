@@ -10,9 +10,13 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
     public Image heroIcon;
     public Text levelText;
     public RarityBehavior rarityView;
+    public Image selectionIcon;
 
     private AccountHero accountHero;
     private int listPosition;
+    private bool isSelectable = false;
+    private bool isSelected = false;
+
     private FusionPopupBehavior fusionPopup;
     private HeroSceneManager heroSceneManager;
     private BattleSceneManager battleSceneManager;
@@ -25,6 +29,17 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         blurryBorder.color = ColorContainer.ColorFromFaction(baseHero.Faction);
         levelText.text = accountHero.CurrentLevel.ToString();
         rarityView.SetLevel(baseHero.Rarity, accountHero.AwakeningLevel, false);
+        HandleSelectionIcon();
+    }
+
+    private void HandleSelectionIcon() {
+        selectionIcon.enabled = isSelected;
+    }
+
+    public void SetSelectionStatus(bool isSelected, bool isSelectable) {
+        this.isSelected = isSelected;
+        this.isSelectable = isSelectable;
+        HandleSelectionIcon();
     }
 
     public void SetHeroSceneManager(HeroSceneManager manager) {
@@ -40,14 +55,16 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData eventData) {
+        if (isSelectable && battleSceneManager != null && battleSceneManager.OnHeroSelected(accountHero, !isSelected)) {
+            isSelected = !isSelected;
+            HandleSelectionIcon();
+        }
+
         if (fusionPopup != null) {
             fusionPopup.OnFusionListItemPressed(accountHero);
         }
         if (heroSceneManager != null) {
             heroSceneManager.NotifyListSelection(listPosition);
-        }
-        if (battleSceneManager != null) {
-            
         }
     }
 }

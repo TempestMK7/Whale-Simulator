@@ -49,6 +49,7 @@ public class RecyclerView: MonoBehaviour {
         var listAreaWidth = contentArea.rect.width;
 
         numItemsPerRow = (int)(listAreaWidth / (listItemWidth + 8));
+        if (numItemsPerRow == 0) numItemsPerRow = 1;
         int numRows = currentCount / numItemsPerRow;
         if (currentCount % numItemsPerRow != 0) numRows++;
         anchorMultiple = 1f / (numItemsPerRow + 1f);
