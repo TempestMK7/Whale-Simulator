@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FusionPopupBehavior : MonoBehaviour {
 
-    public RectTransform heroListContent;
+    public RecyclerView recyclerView;
     public GameObject heroListItemPrefab;
 
     private FactionEnum? faction;
@@ -14,9 +14,13 @@ public class FusionPopupBehavior : MonoBehaviour {
     private FusionSelectionBehavior summoner;
     private HeroSceneManager sceneManager;
 
+    private FusionPopupAdapter adapter;
+
     public void Awake() {
         transform.localScale = new Vector3(0f, 0f);
         sceneManager = FindObjectOfType<HeroSceneManager>();
+        adapter = new FusionPopupAdapter(heroListItemPrefab, this);
+        recyclerView.SetAdapter(adapter);
     }
 
     private void BuildList() {
@@ -28,36 +32,8 @@ public class FusionPopupBehavior : MonoBehaviour {
             if (faction != null) fitsRequirements = fitsRequirements && baseHero.Faction == faction;
             return fitsRequirements;
         });
-
-        var listItemTransform = heroListItemPrefab.transform as RectTransform;
-        var listItemWidth = listItemTransform.rect.width;
-        var listItemHeight = listItemTransform.rect.height;
-        var listAreaWidth = heroListContent.rect.width;
-
-        int numItemsPerRow = (int)(listAreaWidth / (listItemWidth + 8));
-        int numRows = filteredList.Count / numItemsPerRow;
-        if (filteredList.Count % numItemsPerRow != 0) numRows++;
-        float anchorMultiple = 1f / (numItemsPerRow + 1f);
-
-        int heightPerRow = (int)listItemHeight + 8;
-        int totalHeight = numRows * heightPerRow;
-        heroListContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalHeight);
-
-        for (int x = 0; x < filteredList.Count; x++) {
-            var hero = filteredList[x];
-            var listItem = Instantiate(heroListItemPrefab);
-            listItem.GetComponent<HeroListItemBehavior>().SetHero(hero, x);
-            listItem.GetComponent<HeroListItemBehavior>().SetFusionPopup(this);
-            listItem.transform.SetParent(heroListContent);
-            var transform = listItem.transform as RectTransform;
-            float rowPosition = x % numItemsPerRow;
-            transform.anchorMin = new Vector2((rowPosition + 1) * anchorMultiple, 1f);
-            transform.anchorMax = transform.anchorMin;
-            int rowNum = x / numItemsPerRow;
-            float verticalPosition = (rowNum + 0.5f) * heightPerRow * -1f;
-            transform.anchoredPosition = new Vector2(0f, verticalPosition);
-        }
-        heroListContent.anchoredPosition = new Vector2();
+        adapter.SetList(filteredList);
+        recyclerView.NotifyDataSetChanged();
     }
 
     public void OnCancelPressed() {
@@ -99,5 +75,33 @@ public class FusionPopupBehavior : MonoBehaviour {
             yield return null;
         }
         Destroy(gameObject);
+    }
+}
+
+public class FusionPopupAdapter : RecyclerViewAdapter {
+
+    private GameObject listItemPrefab;
+    private FusionPopupBehavior parent;
+    private List<AccountHero> heroes;
+
+    public FusionPopupAdapter(GameObject listItemPrefab, FusionPopupBehavior parent) {
+        this.listItemPrefab = listItemPrefab;
+        this.parent = parent;
+    }
+
+    public void SetList(List<AccountHero> heroes) {
+        this.heroes = heroes;
+    }
+
+    public override GameObject OnCreateViewHolder(RectTransform contentHolder) {
+        return Object.Instantiate(listItemPrefab, contentHolder);
+    }
+
+    public override void OnBindViewHolder(GameObject viewHolder, int position) {
+        viewHolder.GetComponent<HeroListItemBehavior>().SetHero(heroes[position], position);
+        viewHolder.GetComponent<HeroListItemBehavior>().SetFusionPopup(parent);
+    }
+    public override int GetItemCount() {
+        return heroes == null ? 0 : heroes.Count;
     }
 }
