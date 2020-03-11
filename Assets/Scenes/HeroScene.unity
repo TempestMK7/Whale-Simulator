@@ -2490,29 +2490,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 471750663}
     m_Modifications:
-    - target: {fileID: 2805546082383191832, guid: b700594135de7d94e8ee5e858909156b, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3500662596442288126, guid: b700594135de7d94e8ee5e858909156b, type: 3}
       propertyPath: m_Color.a
       value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 4026940319490193987, guid: b700594135de7d94e8ee5e858909156b, type: 3}
-      propertyPath: m_Horizontal
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4026940319490193987, guid: b700594135de7d94e8ee5e858909156b, type: 3}
-      propertyPath: m_DecelerationRate
-      value: 0.03
-      objectReference: {fileID: 0}
-    - target: {fileID: 6210608469726432830, guid: b700594135de7d94e8ee5e858909156b, type: 3}
-      propertyPath: m_ShowMaskGraphic
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6210608469726432830, guid: b700594135de7d94e8ee5e858909156b, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6464582605021598853, guid: b700594135de7d94e8ee5e858909156b, type: 3}
       propertyPath: m_LocalPosition.x
