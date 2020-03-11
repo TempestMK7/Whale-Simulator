@@ -124,7 +124,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3704714214907441649}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7349502885a9c14e9a6a2836995723d, type: 3}
+  m_Script: {fileID: 11500000, guid: 083e2911499632c429fb6218020cb3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   blurryBorder: {fileID: 3704714214884885435}
@@ -627,6 +627,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c05d1ed7a57a7eb4d937607bd2e59232, type: 3}
+  m_Script: {fileID: 11500000, guid: 5c4afaaddc5328646bdcae42e2905e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

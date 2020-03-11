@@ -273,7 +273,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 180420982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 447c5160bc05f0046a219f9fe6d2b5f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: SanctumScene
@@ -1021,7 +1021,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1173181356}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 447c5160bc05f0046a219f9fe6d2b5f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: 
@@ -1093,7 +1093,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1259774197}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 447c5160bc05f0046a219f9fe6d2b5f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: CampaignScene
@@ -1165,7 +1165,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1274407069}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 447c5160bc05f0046a219f9fe6d2b5f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: PortalScene
@@ -1722,7 +1722,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1811205745}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 447c5160bc05f0046a219f9fe6d2b5f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: 

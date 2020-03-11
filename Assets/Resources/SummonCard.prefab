@@ -123,7 +123,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5418121634706048157}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 327fdd3538c0ad54a8e8825bcbed9dd9, type: 3}
+  m_Script: {fileID: 11500000, guid: 00fe37dc324e64744b90ebccf8951e25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   glowingBorder: {fileID: 5418121635269733456}

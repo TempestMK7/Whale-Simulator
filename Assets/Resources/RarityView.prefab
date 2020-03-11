@@ -795,7 +795,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3620776673245928096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c05d1ed7a57a7eb4d937607bd2e59232, type: 3}
+  m_Script: {fileID: 11500000, guid: 5c4afaaddc5328646bdcae42e2905e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   starImages:

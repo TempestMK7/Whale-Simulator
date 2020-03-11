@@ -15,6 +15,7 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
     private int listPosition;
     private FusionPopupBehavior fusionPopup;
     private HeroSceneManager heroSceneManager;
+    private BattleSceneManager battleSceneManager;
 
     public void SetHero(AccountHero accountHero, int listPosition) {
         this.accountHero = accountHero;
@@ -34,12 +35,19 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         fusionPopup = popup;
     }
 
+    public void SetBattleSceneManager(BattleSceneManager manager) {
+        battleSceneManager = manager;
+    }
+
     public void OnPointerClick(PointerEventData eventData) {
         if (fusionPopup != null) {
             fusionPopup.OnFusionListItemPressed(accountHero);
         }
         if (heroSceneManager != null) {
             heroSceneManager.NotifyListSelection(listPosition);
+        }
+        if (battleSceneManager != null) {
+            
         }
     }
 }

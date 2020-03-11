@@ -686,6 +686,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1168294473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1168294475}
+  - component: {fileID: 1168294474}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1168294474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168294473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb92cf9a0a0f9294791bf82b761c45e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recyclerView: {fileID: 5272195590379231819}
+  listItemPrefab: {fileID: 3704714214907441649, guid: d0f5e57624b45a84184b17651e7db052, type: 3}
+--- !u!4 &1168294475
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168294473}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1485736069
 GameObject:
   m_ObjectHideFlags: 0
@@ -1027,6 +1072,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6464582605021598853, guid: b700594135de7d94e8ee5e858909156b, type: 3}
   m_PrefabInstance: {fileID: 5272195590379231817}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5272195590379231819 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4591285569743666089, guid: b700594135de7d94e8ee5e858909156b, type: 3}
+  m_PrefabInstance: {fileID: 5272195590379231817}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dae377952c2d71f42bd98b3293998374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7649130222179211296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,8 +1145,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+      - m_Target: {fileID: 1168294474}
+        m_TargetAssemblyTypeName: BattleSceneManager, Assembly-CSharp
         m_MethodName: OnFilterPressed
         m_Mode: 3
         m_Arguments:
@@ -1299,8 +1355,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+      - m_Target: {fileID: 1168294474}
+        m_TargetAssemblyTypeName: BattleSceneManager, Assembly-CSharp
         m_MethodName: OnFilterPressed
         m_Mode: 3
         m_Arguments:
@@ -1485,8 +1541,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+      - m_Target: {fileID: 1168294474}
+        m_TargetAssemblyTypeName: BattleSceneManager, Assembly-CSharp
         m_MethodName: OnFilterPressed
         m_Mode: 3
         m_Arguments:
@@ -1559,8 +1615,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+      - m_Target: {fileID: 1168294474}
+        m_TargetAssemblyTypeName: BattleSceneManager, Assembly-CSharp
         m_MethodName: OnFilterPressed
         m_Mode: 3
         m_Arguments:
@@ -1737,8 +1793,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+      - m_Target: {fileID: 1168294474}
+        m_TargetAssemblyTypeName: BattleSceneManager, Assembly-CSharp
         m_MethodName: OnFilterPressed
         m_Mode: 3
         m_Arguments:
@@ -1867,8 +1923,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+      - m_Target: {fileID: 1168294474}
+        m_TargetAssemblyTypeName: BattleSceneManager, Assembly-CSharp
         m_MethodName: OnFilterPressed
         m_Mode: 3
         m_Arguments:
