@@ -25,6 +25,7 @@ public class CombatHero : IComparable<CombatHero> {
     [SerializeField] public double currentReflection;
     [SerializeField] public double currentSpeed;
     [SerializeField] public double currentEnergy;
+    [SerializeField] public List<StatusContainer> currentStatus;
 
     public CombatHero(AccountHero accountHero) {
         baseHero = accountHero.GetBaseHero();
@@ -46,6 +47,7 @@ public class CombatHero : IComparable<CombatHero> {
         currentReflection = reflection;
         currentSpeed = speed;
         currentEnergy = 50.0;
+        currentStatus = new List<StatusContainer>();
     }
 
     public CombatHero(CombatHero other) {
@@ -68,6 +70,10 @@ public class CombatHero : IComparable<CombatHero> {
         currentReflection = other.currentReflection;
         currentSpeed = other.currentSpeed;
         currentEnergy = other.currentEnergy;
+        currentStatus = new List<StatusContainer>();
+        foreach (StatusContainer container in other.currentStatus) {
+            currentStatus.Add(new StatusContainer(container));
+        }
     }
 
     private double GetBigStat(double baseStat) {
@@ -90,5 +96,38 @@ public class CombatHero : IComparable<CombatHero> {
         int awakeningComp = other.awakeningLevel.CompareTo(awakeningLevel);
         if (awakeningComp != 0) return awakeningComp;
         return other.baseHero.HeroName.CompareTo(baseHero.HeroName);
+    }
+
+    public bool IsAlive() {
+        return currentHealth > 0;
+    }
+
+    public bool HasAbility(AbilityEnum ability) {
+        return baseHero.PassiveAbility == ability;
+    }
+
+    public bool HasStatus(StatusEnum status) {
+        foreach (StatusContainer container in currentStatus) {
+            if (container.status == status) return true;
+        }
+        return false;
+    }
+
+    public void AddStatus(StatusContainer status) {
+        currentStatus.Add(status);
+    }
+
+    public void CountDownStatus() {
+        var newStatus = new List<StatusContainer>();
+        foreach (StatusContainer status in currentStatus) {
+            if (status.turnsRemaining == StatusContainer.INDEFINITE) {
+                newStatus.Add(status);
+            } else {
+                status.turnsRemaining--;
+                if (status.turnsRemaining > 0) {
+                    newStatus.Add(status);
+                }
+            }
+        }
     }
 }

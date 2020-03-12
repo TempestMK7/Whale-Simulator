@@ -12,6 +12,11 @@ public class SpecialAttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy -= 100;
+
+                    var damageInstance = new DamageInstance(null, attacker.baseHero.SpecialAttack, null, attacker, target);
+                    damageInstance.damage = damage;
+                    damageInstance.wasCritical = false;
+                    step.damageInstances.Add(damageInstance);
                 }
                 break;
             case SpecialAttackEnum.BASIC_MAGIC:
@@ -20,6 +25,11 @@ public class SpecialAttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy -= 100;
+
+                    var damageInstance = new DamageInstance(null, attacker.baseHero.SpecialAttack, null, attacker, target);
+                    damageInstance.damage = damage;
+                    damageInstance.wasCritical = false;
+                    step.damageInstances.Add(damageInstance);
                 }
                 break;
         }
