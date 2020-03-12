@@ -176,8 +176,8 @@ public class HeroSceneManager : MonoBehaviour {
         var state = StateManager.GetCurrentState();
         var currentHero = filteredList[currentPosition];
         var combatHero = currentHero.GetCombatHero();
-        var baseHero = combatHero.Base;
-        var currentLevel = combatHero.CurrentLevel;
+        var baseHero = combatHero.baseHero;
+        var currentLevel = combatHero.currentLevel;
 
         heroLabel.text = baseHero.HeroName;
         positionLabel.text = string.Format("({0} of {1})", currentPosition + 1, filteredList.Count);
@@ -194,12 +194,12 @@ public class HeroSceneManager : MonoBehaviour {
         goldCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
         soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
 
-        healthLabel.text = string.Format("Health: {0}", combatHero.Health.ToString("0"));
-        attackLabel.text = string.Format("Attack: {0}", combatHero.Attack.ToString("0"));
-        magicLabel.text = string.Format("Magic: {0}", combatHero.Magic.ToString("0"));
-        defenseLabel.text = string.Format("Defense: {0}", combatHero.Defense.ToString("0.0"));
-        reflectionLabel.text = string.Format("Reflection: {0}", combatHero.Reflection.ToString("0.0"));
-        speedLabel.text = string.Format("Speed: {0}", combatHero.Speed.ToString("0"));
+        healthLabel.text = string.Format("Health: {0}", combatHero.health.ToString("0"));
+        attackLabel.text = string.Format("Attack: {0}", combatHero.attack.ToString("0"));
+        magicLabel.text = string.Format("Magic: {0}", combatHero.magic.ToString("0"));
+        defenseLabel.text = string.Format("Defense: {0}", combatHero.defense.ToString("0.0"));
+        reflectionLabel.text = string.Format("Reflection: {0}", combatHero.reflection.ToString("0.0"));
+        speedLabel.text = string.Format("Speed: {0}", combatHero.speed.ToString("0"));
 
         rarityView.SetLevel(baseHero.Rarity, currentHero.AwakeningLevel, true);
         currentFusionRequirement = LevelContainer.GetFusionRequirementForLevel(currentHero.AwakeningLevel);
