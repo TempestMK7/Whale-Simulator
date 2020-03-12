@@ -13,5 +13,12 @@ public class AbilityContainer {
 }
 
 public enum AbilityEnum {
-    NONE, FASTER_ENERGY, STACKING_ATTACK
+    NONE = 0,
+    STACKING_ATTACK,
+    STACKING_MAGIC,
+    STACKING_DEFENSE,
+    STACKING_REFLECTION,
+    STACKING_SPEED,
+    STACKING_CRIT,
+    FASTER_ENERGY
 }

@@ -40,9 +40,8 @@ public class SpecialAttackContainer {
         var targets = new List<CombatHero>();
         switch (attacker.baseHero.SpecialAttack) {
             case SpecialAttackEnum.BASIC_PHYSICAL:
-                targets.Add(CombatMath.FirstAlive(enemies));
-                break;
             case SpecialAttackEnum.BASIC_MAGIC:
+            default:
                 targets.Add(CombatMath.FirstAlive(enemies));
                 break;
         }
@@ -51,5 +50,5 @@ public class SpecialAttackContainer {
 }
 
 public enum SpecialAttackEnum {
-    BASIC_PHYSICAL, BASIC_MAGIC
+    BASIC_PHYSICAL = 1, BASIC_MAGIC = 2
 }
