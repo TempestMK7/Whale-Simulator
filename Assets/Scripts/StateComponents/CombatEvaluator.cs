@@ -17,10 +17,11 @@ public class CombatEvaluator {
 
         var report = new CombatReport(combatAllies, combatEnemies);
         int turnNumber = 0;
-        while (TeamAlive(combatAllies) && TeamAlive(combatEnemies)) {
+        while (TeamAlive(combatAllies) && TeamAlive(combatEnemies) && turnNumber < 20) {
             turnNumber++;
+            Debug.Log("Generating turn: " + turnNumber);
             var turn = new CombatTurn(combatAllies, combatEnemies);
-            turn.steps = PerformTurn(combatAllies, combatAllies);
+            turn.steps = PerformTurn(combatAllies, combatEnemies);
             report.turns.Add(turn);
         }
         report.alliesWon = TeamAlive(combatAllies);
@@ -29,28 +30,51 @@ public class CombatEvaluator {
 
     public static List<CombatStep> PerformTurn(CombatHero[] allies, CombatHero[] enemies) {
         var steps = new List<CombatStep>();
+
         var haveNotMoved = new List<CombatHero>();
         haveNotMoved.AddRange(allies);
         haveNotMoved.AddRange(enemies);
         haveNotMoved.Sort();
-        while (haveNotMoved.Count > 0) {
+
+        while (haveNotMoved.Count > 0 && TeamAlive(allies) && TeamAlive(enemies)) {
             var next = haveNotMoved[0];
+            haveNotMoved.RemoveAt(0);
+            if (next.currentHealth <= 0) continue;
+
+            CombatHero[] allyTeam;
+            CombatHero[] enemyTeam;
+            if (ContainsHero(allies, next)) {
+                allyTeam = allies;
+                enemyTeam = enemies;
+            } else {
+                allyTeam = enemies;
+                enemyTeam = allies;
+            }
+
             if (next.currentEnergy >= 100) {
-                var targets = SpecialAttackContainer.DecideTargets(next, allies, enemies);
+                var targets = SpecialAttackContainer.DecideTargets(next, allyTeam, enemyTeam);
                 var step = SpecialAttackContainer.PerformSpecialAttack(next, targets);
                 steps.Add(step);
             } else {
-                var targets = AttackContainer.DecideTargets(next, allies, enemies);
+                var targets = AttackContainer.DecideTargets(next, allyTeam, enemyTeam);
                 var step = AttackContainer.PerformAttack(next, targets);
                 steps.Add(step);
             }
         }
+
+        foreach (CombatHero hero in allies) {
+            AbilityContainer.EvaluatePassives(hero);
+        }
+        foreach (CombatHero hero in enemies) {
+            AbilityContainer.EvaluatePassives(hero);
+        }
+
         return steps;
     }
 
     public static bool TeamAlive(CombatHero[] heroes) {
         foreach (CombatHero hero in heroes) {
-            if (hero.health > 0) return true;
+            if (hero.currentHealth > 0) return true;
         }
         return false;
     }
@@ -61,6 +85,13 @@ public class CombatEvaluator {
             output[x] = new CombatHero(heroes[x]);
         }
         return output;
+    }
+
+    public static bool ContainsHero(CombatHero[] team, CombatHero hero) {
+        foreach (CombatHero teamHero in team) {
+            if (teamHero == hero) return true;
+        }
+        return false;
     }
 }
 
@@ -104,8 +135,11 @@ public class CombatStep {
     [SerializeField] public double totalEffects;
 
     public CombatStep(CombatHero attacker, List<CombatHero> targets, bool wasSpecial) {
-        this.attacker = attacker;
-        this.targets = targets;
+        this.attacker = new CombatHero(attacker);
+        this.targets = new List<CombatHero>();
+        foreach (CombatHero target in targets) {
+            this.targets.Add(new CombatHero(target));
+        }
         this.wasSpecial = wasSpecial;
     }
 }

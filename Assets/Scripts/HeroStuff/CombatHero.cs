@@ -7,6 +7,7 @@ public class CombatHero : IComparable<CombatHero> {
 
     [NonSerialized] public BaseHero baseHero;
 
+    [SerializeField] public HeroEnum heroEnum;
     [SerializeField] public int awakeningLevel;
     [SerializeField] public int currentLevel;
 
@@ -27,6 +28,7 @@ public class CombatHero : IComparable<CombatHero> {
 
     public CombatHero(AccountHero accountHero) {
         baseHero = accountHero.GetBaseHero();
+        heroEnum = baseHero.Hero;
         awakeningLevel = accountHero.AwakeningLevel;
         currentLevel = accountHero.CurrentLevel;
 
@@ -48,6 +50,7 @@ public class CombatHero : IComparable<CombatHero> {
 
     public CombatHero(CombatHero other) {
         baseHero = other.baseHero;
+        heroEnum = other.heroEnum;
         awakeningLevel = other.awakeningLevel;
         currentLevel = other.currentLevel;
 

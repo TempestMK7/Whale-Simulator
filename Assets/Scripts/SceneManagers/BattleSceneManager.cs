@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -58,7 +59,6 @@ public class BattleSceneManager : MonoBehaviour {
                 // TODO: Launch error popup.
                 break;
         }
-        Debug.Log("Enemy count: " + selectedEnemies.Count);
         for (int x = 0; x < selectedEnemies.Count; x++) {
             enemyHolders[x].SetHero(selectedEnemies[x].HeroType);
             enemyHolders[x].gameObject.SetActive(true);
@@ -130,6 +130,16 @@ public class BattleSceneManager : MonoBehaviour {
 
     private void HandleFightButton() {
         fightButton.gameObject.SetActive(selectedAllies.Count > 0);
+    }
+
+    public void OnFight() {
+        var combatReport = CombatEvaluator.GenerateCombatReport(selectedAllies, selectedEnemies);
+        Debug.Log("Combat report generated with " + combatReport.turns.Count + " turns.");
+        var fileName = "/CombatReport.txt";
+        StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
+        writer.WriteLine(JsonUtility.ToJson(combatReport));
+        writer.Close();
+        Debug.Log("Done writing file.");
     }
 }
 
