@@ -8,19 +8,28 @@ public class StatusContainer {
     [NonSerialized] public const int INDEFINITE = -1;
 
     [SerializeField] public StatusEnum status;
+    [SerializeField] public Guid inflicterGuid;
     [SerializeField] public double value;
     [SerializeField] public int turnsRemaining;
 
-    public StatusContainer(StatusEnum status, double value, int turnsRemaining) {
+    public StatusContainer(StatusEnum status, Guid inflicterGuid, double value, int turnsRemaining) {
         this.status = status;
+        this.inflicterGuid = inflicterGuid;
         this.value = value;
         this.turnsRemaining = turnsRemaining;
     }
 
     public StatusContainer(StatusContainer other) {
         status = other.status;
+        inflicterGuid = other.inflicterGuid;
         value = other.value;
         turnsRemaining = other.turnsRemaining;
+    }
+
+    public string ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
+        var inflicterName = heroDict[inflicterGuid].HeroName;
+        var valueSuffix = value == 0 ? "." : string.Format(" with a value of {0}", value.ToString("0"));
+        return string.Format("{0} inflicted {1} for {2} turns{3}", inflicterName, status, turnsRemaining, valueSuffix);
     }
 
     public static List<DamageInstance> EvaluateStatus(CombatHero hero) {
@@ -33,7 +42,7 @@ public class StatusContainer {
                     var damage = status.value;
                     hero.currentHealth -= damage;
 
-                    var damageInstance = new DamageInstance(null, null, status.status, null, null);
+                    var damageInstance = new DamageInstance(null, null, status.status, status.inflicterGuid, hero.combatHeroGuid);
                     damageInstance.damage = damage;
                     instances.Add(damageInstance);
                     break;
@@ -41,7 +50,7 @@ public class StatusContainer {
                     var healing = status.value;
                     hero.currentHealth += healing;
 
-                    damageInstance = new DamageInstance(null, null, status.status, null, null);
+                    damageInstance = new DamageInstance(null, null, status.status, status.inflicterGuid, hero.combatHeroGuid);
                     damageInstance.healing = healing;
                     instances.Add(damageInstance);
                     break;
@@ -54,7 +63,8 @@ public class StatusContainer {
     public static bool BlocksMelee(StatusEnum status) {
         switch (status) {
             case StatusEnum.STUN:
-            case StatusEnum.BLIND:
+            case StatusEnum.ROOT:
+            case StatusEnum.FROZEN:
                 return true;
             default: return false;
         }
@@ -64,6 +74,7 @@ public class StatusContainer {
         switch (status) {
             case StatusEnum.STUN:
             case StatusEnum.BLIND:
+            case StatusEnum.FROZEN:
                 return true;
             default: return false;
         }
@@ -71,34 +82,34 @@ public class StatusContainer {
 }
 
 public enum StatusEnum {
-    STUN = 1,
-    BLIND = 2,
-    ROOT = 3,
+    STUN =              1,
+    BLIND =             2,
+    ROOT =              3,
 
-    BLEED = 4,
-    BURN = 5,
-    POISON = 6,
+    BLEED =             4,
+    BURN =              5,
+    POISON =            6,
 
-    HEALING = 7,
+    HEALING =           7,
 
-    THORN_ARMOR,
-    LAVA_SHIELD,
-    ICE_ARMOR = 8,
-    EARTH_ARMOR = 9,
+    THORN_ARMOR =       8,
+    LAVA_SHIELD =       9,
+    ICE_ARMOR =         10,
+    EARTH_ARMOR =       11,
 
-    DOWSE,
-    CHILLED,
-    FROZEN,
+    DOWSE =             12,
+    CHILLED =           13,
+    FROZEN =            14,
 
-    ATTACK_UP = 10,
-    MAGIC_UP = 11,
-    DEFNSE_UP = 12,
-    REFLECTION_UP = 13,
-    SPEED_UP = 14,
+    ATTACK_UP =         15,
+    MAGIC_UP =          16,
+    DEFENSE_UP =         17,
+    REFLECTION_UP =     18,
+    SPEED_UP =          19,
 
-    ATTACK_DOWN = 15,
-    MAGIC_DOWN = 16,
-    DEFENSE_DOWN = 17,
-    REFLECTION_DOWN = 18,
-    SPEED_DOWN = 19
+    ATTACK_DOWN =       20,
+    MAGIC_DOWN =        21,
+    DEFENSE_DOWN =      22,
+    REFLECTION_DOWN =   23,
+    SPEED_DOWN =        24
 }

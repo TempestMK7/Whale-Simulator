@@ -7,6 +7,7 @@ public class CombatHero : IComparable<CombatHero> {
 
     [NonSerialized] public BaseHero baseHero;
 
+    [SerializeField] public Guid combatHeroGuid;
     [SerializeField] public HeroEnum heroEnum;
     [SerializeField] public int awakeningLevel;
     [SerializeField] public int currentLevel;
@@ -19,16 +20,12 @@ public class CombatHero : IComparable<CombatHero> {
     [SerializeField] public double speed;
 
     [SerializeField] public double currentHealth;
-    [SerializeField] public double currentAttack;
-    [SerializeField] public double currentMagic;
-    [SerializeField] public double currentDefense;
-    [SerializeField] public double currentReflection;
-    [SerializeField] public double currentSpeed;
     [SerializeField] public double currentEnergy;
     [SerializeField] public List<StatusContainer> currentStatus;
 
     public CombatHero(AccountHero accountHero) {
         baseHero = accountHero.GetBaseHero();
+        combatHeroGuid = Guid.NewGuid();
         heroEnum = baseHero.Hero;
         awakeningLevel = accountHero.AwakeningLevel;
         currentLevel = accountHero.CurrentLevel;
@@ -41,17 +38,13 @@ public class CombatHero : IComparable<CombatHero> {
         speed = GetBigStat(baseHero.BaseSpeed);
 
         currentHealth = health;
-        currentAttack = attack;
-        currentMagic = magic;
-        currentDefense = defense;
-        currentReflection = reflection;
-        currentSpeed = speed;
         currentEnergy = 50.0;
         currentStatus = new List<StatusContainer>();
     }
 
     public CombatHero(CombatHero other) {
         baseHero = other.baseHero;
+        combatHeroGuid = other.combatHeroGuid;
         heroEnum = other.heroEnum;
         awakeningLevel = other.awakeningLevel;
         currentLevel = other.currentLevel;
@@ -64,11 +57,6 @@ public class CombatHero : IComparable<CombatHero> {
         speed = other.speed;
 
         currentHealth = other.currentHealth;
-        currentAttack = other.currentAttack;
-        currentMagic = other.currentMagic;
-        currentDefense = other.currentDefense;
-        currentReflection = other.currentReflection;
-        currentSpeed = other.currentSpeed;
         currentEnergy = other.currentEnergy;
         currentStatus = new List<StatusContainer>();
         foreach (StatusContainer container in other.currentStatus) {
@@ -85,10 +73,8 @@ public class CombatHero : IComparable<CombatHero> {
     }
 
     public int CompareTo(CombatHero other) {
-        int currentSpeedComp = other.currentSpeed.CompareTo(currentSpeed);
+        int currentSpeedComp = other.GetModifiedSpeed().CompareTo(GetModifiedSpeed());
         if (currentSpeedComp != 0) return currentSpeedComp;
-        int speedComp = other.speed.CompareTo(speed);
-        if (speedComp != 0) return speedComp;
         int energyComp = other.currentEnergy.CompareTo(currentEnergy);
         if (energyComp != 0) return energyComp;
         int levelComp = other.currentLevel.CompareTo(currentLevel);
@@ -129,5 +115,67 @@ public class CombatHero : IComparable<CombatHero> {
                 }
             }
         }
+    }
+
+    public double GetModifiedAttack() {
+        var multiplier = 1.0;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.ATTACK_UP) {
+                multiplier += status.value;
+            } else if (status.status == StatusEnum.ATTACK_DOWN) {
+                multiplier -= status.value;
+            }
+        }
+        return multiplier * attack;
+    }
+
+    public double GetModifiedMagic() {
+        var multiplier = 1.0;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.MAGIC_UP) {
+                multiplier += status.value;
+            } else if (status.status == StatusEnum.MAGIC_DOWN) {
+                multiplier -= status.value;
+            }
+        }
+        return multiplier * magic;
+    }
+
+    public double GetModifiedDefense() {
+        var multiplier = 1.0;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.DEFENSE_UP) {
+                multiplier += status.value;
+            } else if (status.status == StatusEnum.DEFENSE_DOWN) {
+                multiplier -= status.value;
+            }
+        }
+        return defense * multiplier;
+    }
+
+    public double GetModifiedReflection() {
+        var multiplier = 1.0;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.REFLECTION_UP) {
+                multiplier += status.value;
+            } else if (status.status == StatusEnum.REFLECTION_DOWN) {
+                multiplier -= status.value;
+            }
+        }
+        return reflection * multiplier;
+    }
+
+    public double GetModifiedSpeed() {
+        var multiplier = 1.0;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.SPEED_UP) {
+                multiplier += status.value;
+            } else if (status.status == StatusEnum.SPEED_DOWN) {
+                multiplier -= status.value;
+            } else if (status.status == StatusEnum.CHILLED) {
+                multiplier -= status.value;
+            }
+        }
+        return multiplier * speed;
     }
 }

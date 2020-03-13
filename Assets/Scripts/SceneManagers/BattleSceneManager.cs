@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -137,7 +138,17 @@ public class BattleSceneManager : MonoBehaviour {
         Debug.Log("Combat report generated with " + combatReport.turns.Count + " turns.");
         var fileName = "/CombatReport.txt";
         StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        writer.WriteLine(JsonUtility.ToJson(combatReport));
+        writer.WriteLine(JsonConvert.SerializeObject(combatReport));
+        writer.Close();
+        Debug.Log("Done writing file.");
+
+        Debug.Log("Writing human readable report.");
+        var readableReport = combatReport.ToHumanReadableReport();
+        fileName = "/ReadableCombatReport.txt";
+        writer = new StreamWriter(Application.persistentDataPath + fileName, false);
+        foreach (string line in readableReport) {
+            writer.WriteLine(line);
+        }
         writer.Close();
         Debug.Log("Done writing file.");
     }
