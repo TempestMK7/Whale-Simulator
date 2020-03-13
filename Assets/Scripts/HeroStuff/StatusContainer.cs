@@ -55,6 +55,17 @@ public class StatusContainer {
                     instances.Add(damageInstance);
                     break;
             }
+
+            if (!hero.IsAlive()) {
+                hero.currentHealth = 0;
+                hero.currentEnergy = 0;
+                hero.currentStatus.Clear();
+
+                var damageInstance = new DamageInstance(null, null, null, hero.combatHeroGuid, status.inflicterGuid);
+                damageInstance.wasFatal = true;
+                instances.Add(damageInstance);
+                return instances;
+            }
         }
         hero.CountDownStatus();
         return instances;

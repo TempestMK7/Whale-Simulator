@@ -15,6 +15,27 @@ public class CombatMath {
         return heroes[0];
     }
 
+    public static List<CombatHero> AllLiving(CombatHero[] heroes) {
+        var newList = new List<CombatHero>();
+        foreach (CombatHero hero in heroes) {
+            if (hero.IsAlive()) newList.Add(hero);
+        }
+        return newList;
+    }
+
+    public static List<CombatHero> SelectAtRandom(CombatHero[] heroes, int number) {
+        var alive = AllLiving(heroes);
+        if (alive.Count <= number) return alive;
+        var random = new Random((int)EpochTime.CurrentTimeMillis());
+        var output = new List<CombatHero>();
+        for (int x = 0; x < number; x++) {
+            int selected = random.Next(alive.Count);
+            output.Add(alive[selected]);
+            alive.RemoveAt(selected);
+        }
+        return output;
+    }
+
     public static List<DamageInstance> EvaluateNegativeSideEffects(CombatHero attacker, List<CombatHero> enemies) {
         var output = new List<DamageInstance>();
         foreach (CombatHero enemy in enemies) {
@@ -24,16 +45,25 @@ public class CombatMath {
                         if (attacker.HasStatus(StatusEnum.CHILLED)) {
                             var frozen = new StatusContainer(StatusEnum.FROZEN, status.inflicterGuid, 0, 1);
                             attacker.AddStatus(frozen);
-                            output.Add(new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
+
+                            var instance = new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                            instance.AddStatus(frozen);
+                            output.Add(instance);
                         } else {
                             var chilled = new StatusContainer(StatusEnum.CHILLED, status.inflicterGuid, 0.4, 3);
                             attacker.AddStatus(chilled);
-                            output.Add(new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
+
+                            var instance = new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                            instance.AddStatus(chilled);
+                            output.Add(instance);
                         }
                         break;
                     case StatusEnum.LAVA_SHIELD:
                         var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 3);
                         attacker.AddStatus(burn);
+
+                        var damageInstance = new DamageInstance(null, null, StatusEnum.LAVA_SHIELD, status.inflicterGuid, attacker.combatHeroGuid);
+                        damageInstance.AddStatus(burn);
                         output.Add(new DamageInstance(null, null, StatusEnum.LAVA_SHIELD, status.inflicterGuid, attacker.combatHeroGuid));
                         break;
                     case StatusEnum.THORN_ARMOR:

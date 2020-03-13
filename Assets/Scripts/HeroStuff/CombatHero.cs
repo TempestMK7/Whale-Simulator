@@ -148,6 +148,8 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier += status.value;
             } else if (status.status == StatusEnum.DEFENSE_DOWN) {
                 multiplier -= status.value;
+            } else if (status.status == StatusEnum.ICE_ARMOR) {
+                multiplier += status.value / 2.0;
             }
         }
         return defense * multiplier;
@@ -160,6 +162,8 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier += status.value;
             } else if (status.status == StatusEnum.REFLECTION_DOWN) {
                 multiplier -= status.value;
+            } else if (status.status == StatusEnum.ICE_ARMOR) {
+                multiplier += status.value;
             }
         }
         return reflection * multiplier;

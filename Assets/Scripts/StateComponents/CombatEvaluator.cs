@@ -39,7 +39,7 @@ public class CombatEvaluator {
         while (haveNotMoved.Count > 0 && TeamAlive(allies) && TeamAlive(enemies)) {
             var next = haveNotMoved[0];
             haveNotMoved.RemoveAt(0);
-            if (next.currentHealth <= 0) continue;
+            if (!next.IsAlive()) continue;
 
             CombatHero[] allyTeam;
             CombatHero[] enemyTeam;
@@ -52,11 +52,13 @@ public class CombatEvaluator {
             }
 
             if (next.currentEnergy >= 100) {
+                if (!SpecialAttackContainer.CanAttack(next)) continue;
                 var enemyTargets = SpecialAttackContainer.DecideTargets(next, enemyTeam);
                 var allyTargets = SpecialAttackContainer.DecideAllies(next, allyTeam);
                 var step = SpecialAttackContainer.PerformSpecialAttack(next, allyTargets, enemyTargets);
                 steps.Add(step);
             } else {
+                if (!AttackContainer.CanAttack(next)) continue;
                 var enemyTargets = AttackContainer.DecideTargets(next, enemyTeam);
                 var allyTargets = AttackContainer.DecideAllies(next, allyTeam);
                 var step = AttackContainer.PerformAttack(next, allyTargets, enemyTargets);
@@ -230,6 +232,7 @@ public class DamageInstance {
     [SerializeField] public double healing = 0;
     [SerializeField] public bool wasCritical = false;
     [SerializeField] public bool wasBlocked = false;
+    [SerializeField] public bool wasFatal = false;
 
     public DamageInstance(AttackEnum? attackUsed, SpecialAttackEnum? specialUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
         this.attackUsed = attackUsed;
@@ -240,8 +243,18 @@ public class DamageInstance {
         inflictedStatus = new List<StatusContainer>();
     }
 
+    public void AddStatus(StatusContainer status) {
+        inflictedStatus.Add(new StatusContainer(status));
+    }
+
     public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
         var output = new List<string>();
+
+        if (wasFatal) {
+            output.Add(string.Format("{0} died to attack from {1}.", heroDict[targetGuid].HeroName, heroDict[attackerGuid].HeroName));
+            return output;
+        }
+
         string type = healing == 0 ? "damaged" : "healed";
         string value = healing == 0 ? damage.ToString("0") : healing.ToString("0");
         output.Add(string.Format("{0} {1} {2} for {3}.", heroDict[attackerGuid].HeroName, type, heroDict[targetGuid].HeroName, value));

@@ -65,7 +65,7 @@ public class BaseHero {
                 return new BaseHero(hero, "Feesh", "Icons/Element02_256_04", "Characters/WaterOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.WATER, 3,
                     85, 70, 50, 48, 42, 50, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.MIST_CALLER:
                 return new BaseHero(hero, "Mist Caller", "Icons/Element02_256_04", "Characters/WaterOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.WATER, 4,
@@ -95,7 +95,7 @@ public class BaseHero {
                 return new BaseHero(hero, "Lava Golem", "Icons/Element02_256_01", "Characters/FireOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.FIRE, 4,
                     85, 80, 60, 48, 40, 60, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.INFERNOMANCER:
                 return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
@@ -105,52 +105,52 @@ public class BaseHero {
                 return new BaseHero(hero, "Happy Flower", "Icons/Element02_256_10", "Characters/GrassOverrideController",
                     RoleEnum.SUPPORT, FactionEnum.GRASS, 1,
                     70, 70, 55, 38, 36, 55, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.BUSH_WHACKER:
                 return new BaseHero(hero, "Bush Whacker", "Icons/Element02_256_10", "Characters/GrassOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.GRASS, 2,
                     75, 80, 60, 36, 34, 80, 0.2,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.BALL_OF_ROOTS:
                 return new BaseHero(hero, "Ball Of Roots", "Icons/Element02_256_10", "Characters/GrassOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.GRASS, 3,
                     90, 65, 60, 36, 34, 80, 0.15,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.DRYAD:
                 return new BaseHero(hero, "Dryad", "Icons/Element02_256_10", "Characters/GrassOverrideController",
                     RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
                     80, 85, 85, 38, 38, 80, 0.15,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
             case HeroEnum.ANGERY_TREANT:
                 return new BaseHero(hero, "Angery Treant", "Icons/Element02_256_10", "Characters/GrassOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.GRASS, 5,
                     100, 75, 60, 46, 42, 50, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.SNOW_MAN:
                 return new BaseHero(hero, "Snow Man", "Icons/Element02_256_19", "Characters/IceOverrideController",
                     RoleEnum.SUPPORT, FactionEnum.ICE, 1,
                     70, 70, 65, 36, 40, 60, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.ICE_CUBE:
                 return new BaseHero(hero, "Ice Cube", "Icons/Element02_256_19", "Characters/IceOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.ICE, 2,
                     85, 75, 55, 40, 45, 55, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.ICICLE_FLINGER:
                 return new BaseHero(hero, "Icicle Flinger", "Icons/Element02_256_19", "Characters/IceOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.ICE, 3,
                     65, 90, 60, 35, 38, 85, 0.2,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.BLIZZARD_WIZZARD:
                 return new BaseHero(hero, "Blizzard Wizard", "Icons/Element02_256_19", "Characters/IceOverrideController",
                     RoleEnum.SUPPORT, FactionEnum.ICE, 4,
                     75, 60, 95, 32, 38, 90, 0.25,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.MAGIC_ICE, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
             case HeroEnum.REFLECTOR:
                 return new BaseHero(hero, "Reflector", "Icons/Element02_256_19", "Characters/IceOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.ICE, 5,
                     95, 75, 80, 42, 50, 55, 0.15,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.FROZEN_MIRROR, AbilityEnum.NONE);
             case HeroEnum.STATIC_CLING:
                 return new BaseHero(hero, "Static Cling", "Icons/Element02_256_16", "Characters/ElectricOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 1,
@@ -180,33 +180,33 @@ public class BaseHero {
                 return new BaseHero(hero, "Pebble Elemental", "Icons/Element02_256_22", "Characters/EarthOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.EARTH, 1,
                     80, 75, 50, 45, 35, 55, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.BOULDER:
                 return new BaseHero(hero, "Boulder", "Icons/Element02_256_22", "Characters/EarthOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.EARTH, 2,
                     90, 70, 66, 46, 38, 60, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.PEBBLE_FLINGER:
                 return new BaseHero(hero, "Pebble Flinger", "Icons/Element02_256_22", "Characters/EarthOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.EARTH, 3,
                     70, 85, 60, 38, 32, 75, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.LIVING_WALL:
                 return new BaseHero(hero, "Living Wall", "Icons/Element02_256_22", "Characters/EarthOverrideController",
                     RoleEnum.PROTECTION, FactionEnum.EARTH, 4,
                     95, 75, 60, 48, 38, 50, 0.1,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             case HeroEnum.EARTHZERKER:
                 return new BaseHero(hero, "Earthzerker", "Icons/Element02_256_22", "Characters/EarthOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.EARTH, 5,
                     75, 100, 50, 38, 31, 85, 0.2,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
             default:
                 return new BaseHero(hero, "Unknown", "Icons/icon_gem", "Characters/FacelessOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.WATER, 1,
                     50, 50, 50,
                     30, 30, 50, 0.10,
-                    AttackEnum.BASIC_MAGIC, SpecialAttackEnum.BASIC_MAGIC, AbilityEnum.NONE);
+                    AttackEnum.BASIC_PHYSICAL, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
         }
     }
 
