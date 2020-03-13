@@ -18,6 +18,8 @@ public class CombatHero : IComparable<CombatHero> {
     [SerializeField] public double defense;
     [SerializeField] public double reflection;
     [SerializeField] public double speed;
+    [SerializeField] public double critChance;
+    [SerializeField] public double deflectionChance;
 
     [SerializeField] public double currentHealth;
     [SerializeField] public double currentEnergy;
@@ -181,5 +183,36 @@ public class CombatHero : IComparable<CombatHero> {
             }
         }
         return multiplier * speed;
+    }
+
+    public double GetModifiedCrit() {
+        var modified = critChance;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.DAZE) {
+                modified -= status.value;
+            }
+        }
+        return modified;
+    }
+
+    public double GetModifiedDeflection() {
+        var modified = deflectionChance;
+        foreach (StatusContainer status in currentStatus) {
+            if (status.status == StatusEnum.DAZE) {
+                modified -= status.value;
+            }
+        }
+        return modified;
+    }
+
+    public double ReceiveHealing(double healing) {
+        double missingHealth = health - currentHealth;
+        if (missingHealth >= healing) {
+            currentHealth += healing;
+            return healing;
+        } else {
+            currentHealth = health;
+            return missingHealth;
+        }
     }
 }

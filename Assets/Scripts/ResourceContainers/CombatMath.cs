@@ -3,9 +3,45 @@ using System.Collections.Generic;
 
 public class CombatMath {
 
-    public static double Damage(double attack, double defense) {
-        var mitigation = Math.Pow(0.5, defense / 100);
+    public static double Damage(double attack, double defense, HitType hitType) {
+        var modifiedDefense = defense;
+        if (hitType == HitType.CRITICAL) {
+            modifiedDefense = 0.0;
+        } else if (hitType == HitType.DEFLECTION) {
+            modifiedDefense *= 2.0;
+        }
+        var mitigation = Math.Pow(0.5, modifiedDefense / 200);
         return attack * mitigation;
+    }
+
+    public static HitType RollHitType(CombatHero attacker, CombatHero defender) {
+        double critChance = attacker.GetModifiedCrit() - defender.GetModifiedDeflection();
+        if (critChance == 0) return HitType.NORMAL;
+        else if (critChance > 0) {
+            var random = new Random((int)EpochTime.CurrentTimeMillis());
+            var roll = random.NextDouble();
+            return roll < critChance ? HitType.CRITICAL : HitType.NORMAL;
+        } else {
+            var deflectionChance = Math.Abs(critChance);
+            var random = new Random((int)EpochTime.CurrentTimeMillis());
+            var roll = random.NextDouble();
+            return roll < deflectionChance ? HitType.DEFLECTION : HitType.NORMAL;
+        }
+    }
+
+    public static HitType RollHitType(CombatHero attacker) {
+        double critChance = attacker.GetModifiedCrit();
+        if (critChance == 0) return HitType.NORMAL;
+        else if (critChance > 0) {
+            var random = new Random((int)EpochTime.CurrentTimeMillis());
+            var roll = random.NextDouble();
+            return roll < critChance ? HitType.CRITICAL : HitType.NORMAL;
+        } else {
+            var deflectionChance = Math.Abs(critChance);
+            var random = new Random((int)EpochTime.CurrentTimeMillis());
+            var roll = random.NextDouble();
+            return roll < deflectionChance ? HitType.DEFLECTION : HitType.NORMAL;
+        }
     }
 
     public static CombatHero FirstAlive(CombatHero[] heroes) {
@@ -13,6 +49,42 @@ public class CombatMath {
             if (hero.currentHealth > 0) return hero;
         }
         return heroes[0];
+    }
+
+    public static CombatHero LowestHealth(CombatHero[] heroes) {
+        double lowestHealth = double.MaxValue;
+        CombatHero selection = null;
+        foreach (CombatHero hero in heroes) {
+            if (hero.IsAlive() && hero.currentHealth < lowestHealth) {
+                lowestHealth = hero.currentHealth;
+                selection = hero;
+            }
+        }
+        return selection;
+    }
+
+    public static CombatHero HighestHealth(CombatHero[] heroes) {
+        double highestHealth = double.MinValue;
+        CombatHero selection = null;
+        foreach (CombatHero hero in heroes) {
+            if (hero.IsAlive() && hero.currentHealth > highestHealth) {
+                highestHealth = hero.currentHealth;
+                selection = hero;
+            }
+        }
+        return selection;
+    }
+
+    public static CombatHero HighestEnergy(CombatHero[] heroes) {
+        double highestEnergy = double.MinValue;
+        CombatHero selection = null;
+        foreach (CombatHero hero in heroes) {
+            if (hero.IsAlive() && hero.currentEnergy > highestEnergy) {
+                highestEnergy = hero.currentEnergy;
+                selection = hero;
+            }
+        }
+        return selection;
     }
 
     public static List<CombatHero> AllLiving(CombatHero[] heroes) {
@@ -42,7 +114,7 @@ public class CombatMath {
             foreach (StatusContainer status in enemy.currentStatus) {
                 switch (status.status) {
                     case StatusEnum.ICE_ARMOR:
-                        if (attacker.HasStatus(StatusEnum.CHILLED)) {
+                        if (attacker.HasStatus(StatusEnum.CHILLED) || attacker.HasStatus(StatusEnum.DOWSE)) {
                             var frozen = new StatusContainer(StatusEnum.FROZEN, status.inflicterGuid, 0, 1);
                             attacker.AddStatus(frozen);
 
@@ -76,4 +148,8 @@ public class CombatMath {
         }
         return output;
     }
+}
+
+public enum HitType {
+    NORMAL = 1, CRITICAL = 2, DEFLECTION = 3
 }

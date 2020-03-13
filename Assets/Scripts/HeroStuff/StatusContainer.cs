@@ -28,7 +28,7 @@ public class StatusContainer {
 
     public string ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
         var inflicterName = heroDict[inflicterGuid].HeroName;
-        var valueSuffix = value == 0 ? "." : string.Format(" with a value of {0}", value.ToString("0"));
+        var valueSuffix = value == 0 ? "." : string.Format(" with a value of {0}", value.ToString("0.0"));
         return string.Format("{0} inflicted {1} for {2} turns{3}", inflicterName, status, turnsRemaining, valueSuffix);
     }
 
@@ -112,15 +112,17 @@ public enum StatusEnum {
     CHILLED =           13,
     FROZEN =            14,
 
-    ATTACK_UP =         15,
-    MAGIC_UP =          16,
-    DEFENSE_UP =         17,
-    REFLECTION_UP =     18,
-    SPEED_UP =          19,
+    DAZE =              15,
 
-    ATTACK_DOWN =       20,
-    MAGIC_DOWN =        21,
-    DEFENSE_DOWN =      22,
-    REFLECTION_DOWN =   23,
-    SPEED_DOWN =        24
+    ATTACK_UP =         16,
+    MAGIC_UP =          17,
+    DEFENSE_UP =        18,
+    REFLECTION_UP =     19,
+    SPEED_UP =          20,
+
+    ATTACK_DOWN =       21,
+    MAGIC_DOWN =        22,
+    DEFENSE_DOWN =      23,
+    REFLECTION_DOWN =   24,
+    SPEED_DOWN =        25
 }

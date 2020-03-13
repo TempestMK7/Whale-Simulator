@@ -230,8 +230,7 @@ public class DamageInstance {
     [SerializeField] public List<StatusContainer> inflictedStatus;
     [SerializeField] public double damage = 0;
     [SerializeField] public double healing = 0;
-    [SerializeField] public bool wasCritical = false;
-    [SerializeField] public bool wasBlocked = false;
+    [SerializeField] public HitType hitType = HitType.NORMAL;
     [SerializeField] public bool wasFatal = false;
 
     public DamageInstance(AttackEnum? attackUsed, SpecialAttackEnum? specialUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
@@ -257,7 +256,16 @@ public class DamageInstance {
 
         string type = healing == 0 ? "damaged" : "healed";
         string value = healing == 0 ? damage.ToString("0") : healing.ToString("0");
-        output.Add(string.Format("{0} {1} {2} for {3}.", heroDict[attackerGuid].HeroName, type, heroDict[targetGuid].HeroName, value));
+        string typeString = "";
+        switch (hitType) {
+            case HitType.CRITICAL:
+                typeString = " (critical)";
+                break;
+            case HitType.DEFLECTION:
+                typeString = " (deflection)";
+                break;
+        }
+        output.Add(string.Format("{0} {1} {2} for {3}{4}.", heroDict[attackerGuid].HeroName, type, heroDict[targetGuid].HeroName, value, typeString));
         foreach (StatusContainer inflicted in inflictedStatus) {
             output.Add(inflicted.ToHumanReadableString(heroDict));
         }

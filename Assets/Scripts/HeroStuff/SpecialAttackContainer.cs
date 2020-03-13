@@ -10,26 +10,28 @@ public class SpecialAttackContainer {
         switch (attacker.baseHero.SpecialAttack) {
             case SpecialAttackEnum.BASIC_PHYSICAL:
                 foreach (CombatHero target in enemies) {
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack() * 3.0, target.GetModifiedDefense());
+                    var hitType = CombatMath.RollHitType(attacker, target);
+                    var damage = CombatMath.Damage(attacker.GetModifiedAttack() * 3.0, target.GetModifiedDefense(), hitType);
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
 
                     var damageInstance = new DamageInstance(null, attacker.baseHero.SpecialAttack, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
-                    damageInstance.wasCritical = false;
+                    damageInstance.hitType = hitType;
                     step.damageInstances.Add(damageInstance);
                 }
                 attacker.currentEnergy -= 100;
                 break;
             case SpecialAttackEnum.BASIC_MAGIC:
                 foreach (CombatHero target in enemies) {
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 3.0, target.GetModifiedReflection());
+                    var hitType = CombatMath.RollHitType(attacker, target);
+                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 3.0, target.GetModifiedReflection(), hitType);
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
 
                     var damageInstance = new DamageInstance(null, attacker.baseHero.SpecialAttack, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
-                    damageInstance.wasCritical = false;
+                    damageInstance.hitType = hitType;
                     step.damageInstances.Add(damageInstance);
                 }
                 attacker.currentEnergy -= 100;
