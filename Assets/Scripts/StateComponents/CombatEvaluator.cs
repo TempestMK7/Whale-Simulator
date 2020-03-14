@@ -194,6 +194,7 @@ public class CombatStep {
     [SerializeField] public bool wasSpecial;
     [SerializeField] public double totalDamage;
     [SerializeField] public double totalHealing;
+    [SerializeField] public double energyGained;
     [SerializeField] public List<DamageInstance> damageInstances;
 
     public CombatStep(CombatHero attacker, List<CombatHero> allyTargets, List<CombatHero> enemyTargets, bool wasSpecial) {

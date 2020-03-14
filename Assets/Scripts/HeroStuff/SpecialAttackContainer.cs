@@ -21,6 +21,7 @@ public class SpecialAttackContainer {
                     step.damageInstances.Add(damageInstance);
                 }
                 attacker.currentEnergy -= 100;
+                step.energyGained -= 100;
                 break;
             case SpecialAttackEnum.BASIC_MAGIC:
                 foreach (CombatHero target in enemies) {
@@ -35,6 +36,7 @@ public class SpecialAttackContainer {
                     step.damageInstances.Add(damageInstance);
                 }
                 attacker.currentEnergy -= 100;
+                step.energyGained -= 100;
                 break;
             case SpecialAttackEnum.FROZEN_MIRROR:
                 foreach (CombatHero ally in allies) {
@@ -46,6 +48,7 @@ public class SpecialAttackContainer {
                     step.damageInstances.Add(damageInstance);
                 }
                 attacker.currentEnergy -= 100;
+                step.energyGained -= 100;
                 break;
         }
 

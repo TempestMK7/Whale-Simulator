@@ -16,20 +16,17 @@ public class BattleSceneManager : MonoBehaviour {
     public GameObject selectionPrefab;
 
     public GameObject statusPanel;
-    public RecyclerView statusRecyclerView;
-    public GameObject statusPrefab;
 
     public HeroPlaceholderBehavior[] allyHolders;
     public HeroPlaceholderBehavior[] enemyHolders;
 
     public UnityEngine.UI.Button fightButton;
 
-    private BattleSelectionAdapter selectionAdapter;
-    private BattleStatusAdapter statusAdapter;
-
     private BattleEnum battleType;
 
     // These are used in selection mode.
+    private BattleSelectionAdapter selectionAdapter;
+
     private List<AccountHero> unfilteredList;
     private List<AccountHero> filteredList;
     private FactionEnum? currentFilter;
@@ -38,8 +35,7 @@ public class BattleSceneManager : MonoBehaviour {
     private AccountHero[] selectedEnemies;
 
     // These are used in combat mode.
-    private AccountHero[] combatAllies;
-    private AccountHero[] combatEnemies;
+    private Dictionary<Guid, HeroPlaceholderBehavior> placeHolders;
 
     public void Awake() {
         battleType = BattleManager.GetBattleType();
@@ -245,37 +241,69 @@ public class BattleSceneManager : MonoBehaviour {
         selectionPanel.SetActive(false);
         statusPanel.SetActive(true);
 
-        statusAdapter = new BattleStatusAdapter(statusPrefab);
-        statusAdapter.SetNewHeroState(report.allies, report.enemies);
-        statusRecyclerView.SetAdapter(statusAdapter);
-        statusRecyclerView.NotifyDataSetChanged();
-
         StartCoroutine(PlayCombatReport(report));
     }
 
     private System.Collections.IEnumerator PlayCombatReport(CombatReport report) {
-        statusAdapter = new BattleStatusAdapter(statusPrefab);
-        statusAdapter.SetNewHeroState(report.allies, report.enemies);
-        statusRecyclerView.SetAdapter(statusAdapter);
-        statusRecyclerView.NotifyDataSetChanged();
-        yield return new WaitForSeconds(0.5f);
+        placeHolders = new Dictionary<Guid, HeroPlaceholderBehavior>();
+
+        for (int x = 0; x < report.allies.Length; x++) {
+            if (report.allies[x] != null) {
+                allyHolders[x].gameObject.SetActive(true);
+                allyHolders[x].SetHero(report.allies[x]);
+                placeHolders[report.allies[x].combatHeroGuid] = allyHolders[x];
+            } else {
+                allyHolders[x].gameObject.SetActive(false);
+            }
+        } for (int x = report.allies.Length; x < allyHolders.Length; x++) {
+            allyHolders[x].gameObject.SetActive(false);
+        }
+
+        for (int x = 0; x < report.enemies.Length; x++) {
+            if (report.enemies[x] != null) {
+                enemyHolders[x].gameObject.SetActive(true);
+                enemyHolders[x].SetHero(report.enemies[x]);
+                placeHolders[report.enemies[x].combatHeroGuid] = enemyHolders[x];
+            } else {
+                enemyHolders[x].gameObject.SetActive(false);
+            }
+        }
+        for (int x = report.enemies.Length; x < enemyHolders.Length; x++) {
+            enemyHolders[x].gameObject.SetActive(false);
+        }
+        yield return new WaitForSeconds(1f);
 
         foreach (CombatTurn turn in report.turns) {
             yield return StartCoroutine(PlayCombatTurn(turn));
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
         }
     }
 
     private System.Collections.IEnumerator PlayCombatTurn(CombatTurn turn) {
-        statusAdapter.SetNewHeroState(turn.allies, turn.enemies);
-
         foreach (CombatStep step in turn.steps) {
             yield return StartCoroutine(PlayCombatStep(step));
+        }
+        
+        foreach (DamageInstance instance in turn.endOfTurn) {
+            placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
     private System.Collections.IEnumerator PlayCombatStep(CombatStep step) {
-        yield return null;
+        // Animate the attacker.
+        placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step);
+
+        // Animate all defenders.
+        foreach (DamageInstance damageInstance in step.damageInstances) {
+            var target = damageInstance.targetGuid;
+            if (target != null) {
+                placeHolders[target].AnimateDamageInstance(damageInstance);
+            }
+        }
+
+        // Wait for everything to finish playing.
+        yield return new WaitForSeconds(1f);
     }
 
     #endregion
@@ -320,39 +348,5 @@ public class BattleSelectionAdapter : RecyclerViewAdapter {
 
     public override int GetItemCount() {
         return heroList == null ? 0 : heroList.Count;
-    }
-}
-
-public class BattleStatusAdapter : RecyclerViewAdapter {
-
-    private GameObject listItemPrefab;
-    private List<CombatHero> allHeroes;
-
-    public BattleStatusAdapter(GameObject listItemPrefab) {
-        this.listItemPrefab = listItemPrefab;
-    }
-
-    public void SetNewHeroState(CombatHero[] allies, CombatHero[] enemies) {
-        allHeroes = new List<CombatHero>();
-        foreach (CombatHero ally in allies) {
-            if (ally != null) allHeroes.Add(ally);
-        }
-        foreach (CombatHero enemy in enemies) {
-            if (enemy != null) allHeroes.Add(enemy);
-        }
-    }
-
-    public override GameObject OnCreateViewHolder(RectTransform contentHolder) {
-        return UnityEngine.Object.Instantiate(listItemPrefab, contentHolder);
-    }
-
-    public override void OnBindViewHolder(GameObject viewHolder, int position) {
-        var hero = allHeroes[position];
-        var behavior = viewHolder.GetComponent<HeroStatusHolder>();
-        behavior.SetHero(hero);
-    }
-
-    public override int GetItemCount() {
-        return allHeroes == null ? 0 : allHeroes.Count;
     }
 }

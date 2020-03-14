@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,7 +27,27 @@ public class HeroStatusHolder : MonoBehaviour {
         this.hero = hero;
         heroIcon.sprite = hero.baseHero.HeroIcon;
         blurryBorder.color = ColorContainer.ColorFromFaction(hero.baseHero.Faction);
+        SetBarsWithoutAnimation();
+    }
+
+    private void SetBarsWithoutAnimation() {
+        float healthPercent = (float)(hero.currentHealth / hero.health);
+        if (healthPercent < 0f) healthPercent = 0f;
+        float energyPercent = (float)(hero.currentEnergy / 100f);
+        if (energyPercent > 1f) energyPercent = 1f;
+        float endingHealthWidth = healthWidth * healthPercent;
+        float endingEnergyWidth = energyWidth * energyPercent;
+        heroHealth.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, endingHealthWidth);
+        heroEnergy.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, endingEnergyWidth);
+    }
+
+    public void Animate(CombatHero hero) {
+        this.hero = hero;
         StartCoroutine(AnimateHealthBars());
+    }
+
+    public Guid GetCurrentHeroGuid() {
+        return hero.combatHeroGuid;
     }
 
     private IEnumerator AnimateHealthBars() {

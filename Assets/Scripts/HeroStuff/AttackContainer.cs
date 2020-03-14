@@ -21,6 +21,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
@@ -36,6 +37,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
@@ -50,6 +52,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var dowseStatus = new StatusContainer(StatusEnum.DOWSE, attacker.combatHeroGuid, 0.0, 3);
                     target.AddStatus(dowseStatus);
@@ -68,6 +71,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var defenseDownStatus = new StatusContainer(StatusEnum.DEFENSE_DOWN, attacker.combatHeroGuid, 0.2, 2);
                     target.AddStatus(defenseDownStatus);
@@ -86,6 +90,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 15;
+                    step.energyGained += 15;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
@@ -110,6 +115,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var poisonStatus = new StatusContainer(StatusEnum.POISON, attacker.combatHeroGuid, attacker.GetModifiedAttack() * 0.2, 2);
                     target.AddStatus(poisonStatus);
@@ -128,6 +134,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var poisonStatus = new StatusContainer(StatusEnum.POISON, attacker.combatHeroGuid, attacker.GetModifiedAttack() * 0.1, 2);
                     target.AddStatus(poisonStatus);
@@ -146,6 +153,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     StatusContainer status;
                     // Note that branch slam only checks for daze and not dowse when applying stun.
@@ -170,6 +178,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 15;
+                    step.energyGained += 15;
 
                     var burnStatus = new StatusContainer(StatusEnum.BURN, attacker.combatHeroGuid, attacker.GetModifiedMagic() * 0.2f, 3);
                     target.AddStatus(burnStatus);
@@ -188,6 +197,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     var burnStatus = new StatusContainer(StatusEnum.BURN, attacker.combatHeroGuid, attacker.GetModifiedMagic() * 0.25f, 5);
                     target.AddStatus(burnStatus);
@@ -205,6 +215,8 @@ public class AttackContainer {
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
+                    attacker.currentEnergy += 15;
+                    step.energyGained += 15;
 
                     StatusContainer status;
                     if (target.HasStatus(StatusEnum.CHILLED) || target.HasStatus(StatusEnum.DOWSE)) {
@@ -220,7 +232,6 @@ public class AttackContainer {
                     damageInstance.AddStatus(status);
                     step.damageInstances.Add(damageInstance);
                 }
-                attacker.currentEnergy += 25;
                 break;
             case AttackEnum.SPARK:
                 foreach (CombatHero target in enemies) {
@@ -229,6 +240,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     StatusContainer status;
                     if (target.HasStatus(StatusEnum.DAZE) || target.HasStatus(StatusEnum.DOWSE)) {
@@ -252,7 +264,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 35;
-                    target.currentEnergy -= 10;
+                    step.energyGained += 35;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
@@ -267,6 +279,7 @@ public class AttackContainer {
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
+                    step.energyGained += 25;
 
                     StatusContainer status;
                     if (target.HasStatus(StatusEnum.DAZE) || target.HasStatus(StatusEnum.DOWSE)) {

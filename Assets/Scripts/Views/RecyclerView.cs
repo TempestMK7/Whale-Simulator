@@ -16,6 +16,8 @@ public class RecyclerView: MonoBehaviour {
     private float anchorMultiple;
     private int heightPerRow;
 
+    private int lastNumberOfRows;
+
     public void SetAdapter(RecyclerViewAdapter adapter) {
         this.adapter = adapter;
         NotifyDataSetChanged();
@@ -56,7 +58,10 @@ public class RecyclerView: MonoBehaviour {
 
         heightPerRow = (int)listItemHeight + 8;
         contentArea.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, numRows * heightPerRow);
-        contentArea.anchoredPosition = new Vector3();
+        if (numRows != lastNumberOfRows) {
+            contentArea.anchoredPosition = new Vector3();
+            lastNumberOfRows = numRows;
+        }
         BindViewHoldersInViewport();
     }
 
@@ -65,8 +70,8 @@ public class RecyclerView: MonoBehaviour {
         var highestViewable = contentArea.anchoredPosition.y * -1f;
         var lowestViewable = highestViewable - viewportHeight;
 
-        highestViewable += heightPerRow * 0.5f;
-        lowestViewable -= heightPerRow * 0.5f;
+        highestViewable += heightPerRow * 1f;
+        lowestViewable -= heightPerRow * 1f;
 
         for (int x = 0; x < currentCount; x++) {
             int rowNum = x / numItemsPerRow;
@@ -100,6 +105,14 @@ public class RecyclerView: MonoBehaviour {
                     current.gameObject.SetActive(false);
                     recyclableViewHolders.Add(current);
                 }
+            }
+        }
+    }
+
+    public void PlayAnimations() {
+        for (int x = 0; x < currentViewHolders.Length; x++) {
+            if (currentViewHolders[x] != null) {
+                adapter.PlayAnimations(currentViewHolders[x], x);
             }
         }
     }

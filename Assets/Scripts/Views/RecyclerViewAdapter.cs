@@ -8,5 +8,7 @@ public abstract class RecyclerViewAdapter {
 
     public abstract void OnBindViewHolder(GameObject viewHolder, int position);
 
+    public virtual void PlayAnimations(GameObject viewHolder, int position) { }
+
     public abstract int GetItemCount();
 }
