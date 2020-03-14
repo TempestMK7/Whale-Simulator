@@ -54,7 +54,7 @@ public class CombatMath {
 
     public static CombatHero FirstAlive(CombatHero[] heroes) {
         foreach (CombatHero hero in heroes) {
-            if (hero.currentHealth > 0) return hero;
+            if (hero != null && hero.currentHealth > 0) return hero;
         }
         return heroes[0];
     }
@@ -63,7 +63,7 @@ public class CombatMath {
         double lowestHealth = double.MaxValue;
         CombatHero selection = null;
         foreach (CombatHero hero in heroes) {
-            if (hero.IsAlive() && hero.currentHealth < lowestHealth) {
+            if (hero != null && hero.IsAlive() && hero.currentHealth < lowestHealth) {
                 lowestHealth = hero.currentHealth;
                 selection = hero;
             }
@@ -75,7 +75,7 @@ public class CombatMath {
         double highestHealth = double.MinValue;
         CombatHero selection = null;
         foreach (CombatHero hero in heroes) {
-            if (hero.IsAlive() && hero.currentHealth > highestHealth) {
+            if (hero != null && hero.IsAlive() && hero.currentHealth > highestHealth) {
                 highestHealth = hero.currentHealth;
                 selection = hero;
             }
@@ -87,7 +87,7 @@ public class CombatMath {
         double highestEnergy = double.MinValue;
         CombatHero selection = null;
         foreach (CombatHero hero in heroes) {
-            if (hero.IsAlive() && hero.currentEnergy > highestEnergy) {
+            if (hero != null && hero.IsAlive() && hero.currentEnergy > highestEnergy) {
                 highestEnergy = hero.currentEnergy;
                 selection = hero;
             }
@@ -98,7 +98,7 @@ public class CombatMath {
     public static List<CombatHero> AllLiving(CombatHero[] heroes) {
         var newList = new List<CombatHero>();
         foreach (CombatHero hero in heroes) {
-            if (hero.IsAlive()) newList.Add(hero);
+            if (hero != null && hero.IsAlive()) newList.Add(hero);
         }
         return newList;
     }

@@ -943,6 +943,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb92cf9a0a0f9294791bf82b761c45e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroAnimationLayer:
+    serializedVersion: 2
+    m_Bits: 1048576
   recyclerView: {fileID: 5272195590379231819}
   listItemPrefab: {fileID: 3704714214907441649, guid: d0f5e57624b45a84184b17651e7db052, type: 3}
   allyHolders:

@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class BattleSceneManager : MonoBehaviour {
+
+    public LayerMask heroAnimationLayer;
 
     public RecyclerView recyclerView;
     public GameObject listItemPrefab;
@@ -22,8 +25,8 @@ public class BattleSceneManager : MonoBehaviour {
     private FactionEnum? currentFilter;
 
     private BattleEnum battleType;
-    private List<AccountHero> selectedAllies = new List<AccountHero>();
-    private List<AccountHero> selectedEnemies = new List<AccountHero>();
+    private AccountHero[] selectedAllies;
+    private AccountHero[] selectedEnemies;
 
     public void Awake() {
         var state = StateManager.GetCurrentState();
@@ -36,47 +39,80 @@ public class BattleSceneManager : MonoBehaviour {
         recyclerView.NotifyDataSetChanged();
 
         battleType = BattleManager.GetBattleType();
+        switch (battleType) {
+            case BattleEnum.TOWER:
+            case BattleEnum.CAMPAIGN:
+            default:
+                selectedAllies = new AccountHero[5];
+                break;
+        }
         SelectEnemiesFromBattleType();
         FillInSelectedAlliesFromState();
         HandleFightButton();
     }
 
+    public void Update() {
+        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
+                var placeHolder = hit.transform.gameObject.GetComponent<HeroPlaceholderBehavior>();
+                placeHolder.OnClick();
+            }
+        }
+    }
+
     private void SelectEnemiesFromBattleType() {
-        selectedEnemies = new List<AccountHero>();
         var state = StateManager.GetCurrentState();
         switch (battleType) {
             case BattleEnum.CAMPAIGN:
                 var mission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
-                foreach (HeroEnum hero in mission.MissionHeroes) {
-                    var accountHero = new AccountHero(hero) {
+                selectedEnemies = new AccountHero[mission.MissionHeroes.Length];
+                for (int x = 0; x < selectedEnemies.Length; x++) {
+                    var accountHero = new AccountHero(mission.MissionHeroes[x]) {
                         AwakeningLevel = mission.HeroAwakening,
                         CurrentLevel = mission.HeroLevel
                     };
-                    selectedEnemies.Add(accountHero);
+                    selectedEnemies[x] = accountHero;
                 }
                 break;
             default:
-                selectedEnemies = new List<AccountHero>();
+                selectedEnemies = new AccountHero[0];
                 // TODO: Launch error popup.
                 break;
         }
-        for (int x = 0; x < selectedEnemies.Count; x++) {
+        for (int x = 0; x < selectedEnemies.Length; x++) {
             enemyHolders[x].SetHero(selectedEnemies[x].HeroType);
             enemyHolders[x].gameObject.SetActive(true);
         }
-        for (int x = selectedEnemies.Count; x < enemyHolders.Length; x++) {
+        for (int x = selectedEnemies.Length; x < enemyHolders.Length; x++) {
             enemyHolders[x].gameObject.SetActive(false);
         }
     }
 
     private void FillInSelectedAlliesFromState() {
-        for (int x = 0; x < selectedAllies.Count; x++) {
-            allyHolders[x].SetHero(selectedAllies[x].HeroType);
-            allyHolders[x].gameObject.SetActive(true);
+        for (int x = 0; x < selectedAllies.Length; x++) {
+            var ally = selectedAllies[x];
+            if (ally == null) {
+                allyHolders[x].RegisterOnClick(null, null);
+                allyHolders[x].gameObject.SetActive(false);
+            } else {
+                allyHolders[x].RegisterOnClick(RemoveSelectedAlly, selectedAllies[x]);
+                allyHolders[x].SetHero(selectedAllies[x].HeroType);
+                allyHolders[x].gameObject.SetActive(true);
+            }
         }
-        for (int x = selectedAllies.Count; x < allyHolders.Length; x++) {
+        for (int x = selectedAllies.Length; x < allyHolders.Length; x++) {
             allyHolders[x].gameObject.SetActive(false);
         }
+    }
+
+    public void RemoveSelectedAlly(AccountHero hero) {
+        for (int x = 0; x < selectedAllies.Length; x++) {
+            if (selectedAllies[x] == hero) selectedAllies[x] = null;
+        }
+        FillInSelectedAlliesFromState();
+        adapter.SetSelectedList(selectedAllies);
+        recyclerView.NotifyDataSetChanged();
     }
 
     private void BuildList() {
@@ -116,21 +152,39 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public bool OnHeroSelected(AccountHero hero, bool isSelected) {
-        if (isSelected && selectedAllies.Count >= 5) { return false; }
-
         if (isSelected) {
-            selectedAllies.Add(hero);
+            for (int x = 0; x < selectedAllies.Length; x++) {
+                if (selectedAllies[x] == null) {
+                    selectedAllies[x] = hero;
+                    HandleFightButton();
+                    FillInSelectedAlliesFromState();
+                    adapter.SetSelectedList(selectedAllies);
+                    return true;
+                }
+            }
+            return false;
         } else {
-            selectedAllies.Remove(hero);
+            for (int x = 0; x < selectedAllies.Length; x++) {
+                if (selectedAllies[x] == hero) {
+                    selectedAllies[x] = null;
+                    HandleFightButton();
+                    FillInSelectedAlliesFromState();
+                    adapter.SetSelectedList(selectedAllies);
+                    return true;
+                }
+            }
+            return false;
         }
-        HandleFightButton();
-        FillInSelectedAlliesFromState();
-        adapter.SetSelectedList(selectedAllies);
-        return true;
     }
 
     private void HandleFightButton() {
-        fightButton.gameObject.SetActive(selectedAllies.Count > 0);
+        for (int x = 0; x < selectedAllies.Length; x++) {
+            if (selectedAllies != null) {
+                fightButton.gameObject.SetActive(true);
+                return;
+            }
+        }
+        fightButton.gameObject.SetActive(false);
     }
 
     public async void OnFight() {
@@ -169,8 +223,13 @@ public class BattleAdapter : RecyclerViewAdapter {
         this.heroList = heroList;
     }
 
-    public void SetSelectedList(List<AccountHero> selectedHeroes) {
-        this.selectedHeroes = selectedHeroes;
+    public void SetSelectedList(AccountHero[] heroArray) {
+        selectedHeroes = new List<AccountHero>();
+        foreach (AccountHero hero in heroArray) {
+            if (hero != null) {
+                selectedHeroes.Add(hero);
+            }
+        }
     }
 
     public override GameObject OnCreateViewHolder(RectTransform contentHolder) {

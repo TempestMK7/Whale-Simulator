@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class CombatEvaluator {
 
-    public static async Task<CombatReport> GenerateCombatReport(List<AccountHero> allies, List<AccountHero> enemies) {
-        CombatHero[] combatAllies = new CombatHero[allies.Count];
+    public static async Task<CombatReport> GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies) {
+        CombatHero[] combatAllies = new CombatHero[allies.Length];
         for (int x = 0; x < combatAllies.Length; x++) {
-            combatAllies[x] = allies[x].GetCombatHero();
+            if (allies[x] != null) {
+                combatAllies[x] = allies[x].GetCombatHero();
+            }
         }
 
-        CombatHero[] combatEnemies = new CombatHero[enemies.Count];
+        CombatHero[] combatEnemies = new CombatHero[enemies.Length];
         for (int x = 0; x < combatEnemies.Length; x++) {
-            combatEnemies[x] = enemies[x].GetCombatHero();
+            if (enemies[x] != null) {
+                combatEnemies[x] = enemies[x].GetCombatHero();
+            }
         }
 
         var report = new CombatReport(combatAllies, combatEnemies);
@@ -42,7 +46,7 @@ public class CombatEvaluator {
         while (haveNotMoved.Count > 0 && TeamAlive(allies) && TeamAlive(enemies)) {
             var next = haveNotMoved[0];
             haveNotMoved.RemoveAt(0);
-            if (!next.IsAlive()) continue;
+            if (next == null || !next.IsAlive()) continue;
 
             CombatHero[] allyTeam;
             CombatHero[] enemyTeam;
@@ -84,19 +88,23 @@ public class CombatEvaluator {
     public static List<DamageInstance> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {
         var instances = new List<DamageInstance>();
         foreach (CombatHero hero in allies) {
-            instances.AddRange(AbilityContainer.EvaluatePassives(hero));
-            instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
+            if (hero != null) {
+                instances.AddRange(AbilityContainer.EvaluatePassives(hero));
+                instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
+            }
         }
         foreach (CombatHero hero in enemies) {
-            instances.AddRange(AbilityContainer.EvaluatePassives(hero));
-            instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
+            if (hero != null) {
+                instances.AddRange(AbilityContainer.EvaluatePassives(hero));
+                instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
+            }
         }
         return instances;
     }
 
     public static bool TeamAlive(CombatHero[] heroes) {
         foreach (CombatHero hero in heroes) {
-            if (hero.currentHealth > 0) return true;
+            if (hero != null && hero.currentHealth > 0) return true;
         }
         return false;
     }
@@ -104,7 +112,7 @@ public class CombatEvaluator {
     public static CombatHero[] SnapShotTeam(CombatHero[] heroes) {
         var output = new CombatHero[heroes.Length];
         for (int x = 0; x < heroes.Length; x++) {
-            output[x] = new CombatHero(heroes[x]);
+            if (heroes[x] != null) output[x] = new CombatHero(heroes[x]);
         }
         return output;
     }
@@ -134,10 +142,10 @@ public class CombatReport {
     public List<string> ToHumanReadableReport() {
         var heroDict = new Dictionary<Guid, BaseHero>();
         foreach (CombatHero ally in allies) {
-            heroDict[ally.combatHeroGuid] = ally.baseHero;
+            if (ally != null) heroDict[ally.combatHeroGuid] = ally.baseHero;
         }
         foreach (CombatHero enemy in enemies) {
-            heroDict[enemy.combatHeroGuid] = enemy.baseHero;
+            if (enemy != null) heroDict[enemy.combatHeroGuid] = enemy.baseHero;
         }
         List<string> report = new List<string>();
         foreach (CombatTurn turn in turns) {
