@@ -21,4 +21,12 @@ public class ColorContainer {
             default: return waterColor;
         }
     }
+
+    public static Color HealthColor() {
+        return new Color32(32, 232, 160, 255);
+    }
+
+    public static Color EnergyColor() {
+        return new Color32(232, 64, 192, 255);
+    }
 }
