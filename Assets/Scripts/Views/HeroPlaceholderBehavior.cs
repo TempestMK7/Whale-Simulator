@@ -31,7 +31,6 @@ public class HeroPlaceholderBehavior : MonoBehaviour {
             handler.Invoke();
         }
         if (heroHandler != null && selectedHero != null) {
-            Debug.Log("Called invoker.");
             heroHandler.Invoke(selectedHero);
         }
     }
