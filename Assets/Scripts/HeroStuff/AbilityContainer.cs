@@ -3,12 +3,18 @@ using System.Collections.Generic;
 
 public class AbilityContainer {
 
-    public static void EvaluatePassives(CombatHero hero) {
+    public static List<DamageInstance> EvaluatePassives(CombatHero hero) {
+        List<DamageInstance> output = new List<DamageInstance>();
         switch (hero.baseHero.PassiveAbility) {
             case AbilityEnum.STACKING_ATTACK:
-                hero.AddStatus(new StatusContainer(StatusEnum.ATTACK_UP, hero.combatHeroGuid, 1.1, StatusContainer.INDEFINITE));
+                var status = new StatusContainer(StatusEnum.ATTACK_UP, hero.combatHeroGuid, 0.2, StatusContainer.INDEFINITE);
+                hero.AddStatus(status);
+                var damageInstance = new DamageInstance(null, null, null, hero.combatHeroGuid, hero.combatHeroGuid);
+                damageInstance.AddStatus(status);
+                output.Add(damageInstance);
                 break;
         }
+        return output;
     }
 }
 

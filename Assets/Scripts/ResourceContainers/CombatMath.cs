@@ -3,6 +3,18 @@ using System.Collections.Generic;
 
 public class CombatMath {
 
+    private static Random randomGen;
+
+    public static double RandomDouble() {
+        if (randomGen == null) randomGen = new Random((int)EpochTime.CurrentTimeMillis());
+        return randomGen.NextDouble();
+    }
+
+    public static int RandomInt(int lower, int upper) {
+        if (randomGen == null) randomGen = new Random((int)EpochTime.CurrentTimeMillis());
+        return randomGen.Next(lower, upper);
+    }
+
     public static double Damage(double attack, double defense, HitType hitType) {
         var modifiedDefense = defense;
         if (hitType == HitType.CRITICAL) {
@@ -18,13 +30,11 @@ public class CombatMath {
         double critChance = attacker.GetModifiedCrit() - defender.GetModifiedDeflection();
         if (critChance == 0) return HitType.NORMAL;
         else if (critChance > 0) {
-            var random = new Random((int)EpochTime.CurrentTimeMillis());
-            var roll = random.NextDouble();
+            var roll = RandomDouble();
             return roll < critChance ? HitType.CRITICAL : HitType.NORMAL;
         } else {
             var deflectionChance = Math.Abs(critChance);
-            var random = new Random((int)EpochTime.CurrentTimeMillis());
-            var roll = random.NextDouble();
+            var roll = RandomDouble();
             return roll < deflectionChance ? HitType.DEFLECTION : HitType.NORMAL;
         }
     }
@@ -33,13 +43,11 @@ public class CombatMath {
         double critChance = attacker.GetModifiedCrit();
         if (critChance == 0) return HitType.NORMAL;
         else if (critChance > 0) {
-            var random = new Random((int)EpochTime.CurrentTimeMillis());
-            var roll = random.NextDouble();
+            var roll = RandomDouble();
             return roll < critChance ? HitType.CRITICAL : HitType.NORMAL;
         } else {
             var deflectionChance = Math.Abs(critChance);
-            var random = new Random((int)EpochTime.CurrentTimeMillis());
-            var roll = random.NextDouble();
+            var roll = RandomDouble();
             return roll < deflectionChance ? HitType.DEFLECTION : HitType.NORMAL;
         }
     }
@@ -98,10 +106,9 @@ public class CombatMath {
     public static List<CombatHero> SelectAtRandom(CombatHero[] heroes, int number) {
         var alive = AllLiving(heroes);
         if (alive.Count <= number) return alive;
-        var random = new Random((int)EpochTime.CurrentTimeMillis());
         var output = new List<CombatHero>();
         for (int x = 0; x < number; x++) {
-            int selected = random.Next(alive.Count);
+            int selected = RandomInt(0, alive.Count);
             output.Add(alive[selected]);
             alive.RemoveAt(selected);
         }

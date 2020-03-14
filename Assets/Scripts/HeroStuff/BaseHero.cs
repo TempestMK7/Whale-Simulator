@@ -202,7 +202,7 @@ public class BaseHero {
                 return new BaseHero(hero, "Earthzerker", "Icons/Element02_256_22", "Characters/EarthOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.EARTH, 5,
                     75, 100, 50, 38, 31, 85, 0.2, 0,
-                    AttackEnum.AXE_SLASH, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.NONE);
+                    AttackEnum.AXE_SLASH, SpecialAttackEnum.BASIC_PHYSICAL, AbilityEnum.STACKING_ATTACK);
             default:
                 return new BaseHero(hero, "Unknown", "Icons/icon_gem", "Characters/FacelessOverrideController",
                     RoleEnum.DAMAGE, FactionEnum.WATER, 1,

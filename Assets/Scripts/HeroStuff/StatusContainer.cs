@@ -32,7 +32,7 @@ public class StatusContainer {
         return string.Format("{0} inflicted {1} for {2} turns{3}", inflicterName, status, turnsRemaining, valueSuffix);
     }
 
-    public static List<DamageInstance> EvaluateStatus(CombatHero hero) {
+    public static List<DamageInstance> EvaluateStatusEndOfTurn(CombatHero hero) {
         List<DamageInstance> instances = new List<DamageInstance>();
         foreach (StatusContainer status in hero.currentStatus) {
             switch (status.status) {
@@ -67,7 +67,7 @@ public class StatusContainer {
                 return instances;
             }
         }
-        hero.CountDownStatus();
+        hero.CountDownStatus(false);
         return instances;
     }
 
@@ -88,6 +88,29 @@ public class StatusContainer {
             case StatusEnum.FROZEN:
                 return true;
             default: return false;
+        }
+    }
+
+    // These effects are counted down whenever the owner tries to attack.
+    // The others are counted down at end of turn.
+    public static bool ModifiesAttack(StatusEnum status) {
+        switch (status) {
+            case StatusEnum.STUN:
+            case StatusEnum.BLIND:
+            case StatusEnum.ROOT:
+            case StatusEnum.DOWSE:
+            case StatusEnum.CHILLED:
+            case StatusEnum.FROZEN:
+            case StatusEnum.DAZE:
+            case StatusEnum.ATTACK_UP:
+            case StatusEnum.MAGIC_UP:
+            case StatusEnum.SPEED_UP:
+            case StatusEnum.ATTACK_DOWN:
+            case StatusEnum.MAGIC_DOWN:
+            case StatusEnum.SPEED_DOWN:
+                return true;
+            default:
+                return false;
         }
     }
 }

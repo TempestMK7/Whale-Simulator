@@ -133,16 +133,15 @@ public class BattleSceneManager : MonoBehaviour {
         fightButton.gameObject.SetActive(selectedAllies.Count > 0);
     }
 
-    public void OnFight() {
-        var combatReport = CombatEvaluator.GenerateCombatReport(selectedAllies, selectedEnemies);
-        Debug.Log("Combat report generated with " + combatReport.turns.Count + " turns.");
+    public async void OnFight() {
+        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedAllies, selectedEnemies);
+
+        // TODO: Remove this when I'm done debugging.
         var fileName = "/CombatReport.txt";
         StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
         writer.WriteLine(JsonConvert.SerializeObject(combatReport));
         writer.Close();
-        Debug.Log("Done writing file.");
 
-        Debug.Log("Writing human readable report.");
         var readableReport = combatReport.ToHumanReadableReport();
         fileName = "/ReadableCombatReport.txt";
         writer = new StreamWriter(Application.persistentDataPath + fileName, false);

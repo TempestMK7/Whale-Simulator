@@ -38,6 +38,8 @@ public class CombatHero : IComparable<CombatHero> {
         defense = GetSmallStat(baseHero.BaseDefense);
         reflection = GetSmallStat(baseHero.BaseReflection);
         speed = GetBigStat(baseHero.BaseSpeed);
+        critChance = baseHero.BaseCritChance;
+        deflectionChance = baseHero.BaseDeflectionChance;
 
         currentHealth = health;
         currentEnergy = 50.0;
@@ -57,6 +59,8 @@ public class CombatHero : IComparable<CombatHero> {
         defense = other.defense;
         reflection = other.reflection;
         speed = other.speed;
+        critChance = other.critChance;
+        deflectionChance = other.deflectionChance;
 
         currentHealth = other.currentHealth;
         currentEnergy = other.currentEnergy;
@@ -105,12 +109,12 @@ public class CombatHero : IComparable<CombatHero> {
         currentStatus.Add(status);
     }
 
-    public void CountDownStatus() {
+    public void CountDownStatus(bool modifiesAttack) {
         var newStatus = new List<StatusContainer>();
         foreach (StatusContainer status in currentStatus) {
             if (status.turnsRemaining == StatusContainer.INDEFINITE) {
                 newStatus.Add(status);
-            } else {
+            } else if (modifiesAttack == StatusContainer.ModifiesAttack(status.status)) {
                 status.turnsRemaining--;
                 if (status.turnsRemaining > 0) {
                     newStatus.Add(status);

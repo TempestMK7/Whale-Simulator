@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class CombatEvaluator {
 
-    public static CombatReport GenerateCombatReport(List<AccountHero> allies, List<AccountHero> enemies) {
+    public static async Task<CombatReport> GenerateCombatReport(List<AccountHero> allies, List<AccountHero> enemies) {
         CombatHero[] combatAllies = new CombatHero[allies.Count];
         for (int x = 0; x < combatAllies.Length; x++) {
             combatAllies[x] = allies[x].GetCombatHero();
@@ -16,15 +17,17 @@ public class CombatEvaluator {
         }
 
         var report = new CombatReport(combatAllies, combatEnemies);
-        int turnNumber = 0;
-        while (TeamAlive(combatAllies) && TeamAlive(combatEnemies) && turnNumber < 20) {
-            turnNumber++;
-            var turn = new CombatTurn(turnNumber, combatAllies, combatEnemies);
-            turn.steps = PerformTurn(combatAllies, combatEnemies);
-            turn.endOfTurn = EndOfTurn(combatAllies, combatEnemies);
-            report.turns.Add(turn);
-        }
-        report.alliesWon = TeamAlive(combatAllies) && !TeamAlive(combatEnemies);
+        await Task.Run(() => {
+            int turnNumber = 0;
+            while (TeamAlive(combatAllies) && TeamAlive(combatEnemies) && turnNumber < 20) {
+                turnNumber++;
+                var turn = new CombatTurn(turnNumber, combatAllies, combatEnemies);
+                turn.steps = PerformTurn(combatAllies, combatEnemies);
+                turn.endOfTurn = EndOfTurn(combatAllies, combatEnemies);
+                report.turns.Add(turn);
+            }
+            report.alliesWon = TeamAlive(combatAllies) && !TeamAlive(combatEnemies);
+        });
         return report;
     }
 
@@ -52,18 +55,27 @@ public class CombatEvaluator {
             }
 
             if (next.currentEnergy >= 100) {
-                if (!SpecialAttackContainer.CanAttack(next)) continue;
+                if (!SpecialAttackContainer.CanAttack(next)) {
+                    next.CountDownStatus(true);
+                    continue;
+                }
                 var enemyTargets = SpecialAttackContainer.DecideTargets(next, enemyTeam);
                 var allyTargets = SpecialAttackContainer.DecideAllies(next, allyTeam);
                 var step = SpecialAttackContainer.PerformSpecialAttack(next, allyTargets, enemyTargets);
                 steps.Add(step);
+                next.CountDownStatus(true);
             } else {
-                if (!AttackContainer.CanAttack(next)) continue;
+                if (!AttackContainer.CanAttack(next)) {
+                    next.CountDownStatus(true);
+                    continue;
+                }
                 var enemyTargets = AttackContainer.DecideTargets(next, enemyTeam);
                 var allyTargets = AttackContainer.DecideAllies(next, allyTeam);
                 var step = AttackContainer.PerformAttack(next, allyTargets, enemyTargets);
                 steps.Add(step);
+                next.CountDownStatus(true);
             }
+            haveNotMoved.Sort();
         }
 
         return steps;
@@ -72,12 +84,12 @@ public class CombatEvaluator {
     public static List<DamageInstance> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {
         var instances = new List<DamageInstance>();
         foreach (CombatHero hero in allies) {
-            AbilityContainer.EvaluatePassives(hero);
-            instances.AddRange(StatusContainer.EvaluateStatus(hero));
+            instances.AddRange(AbilityContainer.EvaluatePassives(hero));
+            instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
         }
         foreach (CombatHero hero in enemies) {
-            AbilityContainer.EvaluatePassives(hero);
-            instances.AddRange(StatusContainer.EvaluateStatus(hero));
+            instances.AddRange(AbilityContainer.EvaluatePassives(hero));
+            instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
         }
         return instances;
     }
@@ -254,21 +266,25 @@ public class DamageInstance {
             return output;
         }
 
-        string type = healing == 0 ? "damaged" : "healed";
-        string value = healing == 0 ? damage.ToString("0") : healing.ToString("0");
-        string typeString = "";
-        switch (hitType) {
-            case HitType.CRITICAL:
-                typeString = " (critical)";
-                break;
-            case HitType.DEFLECTION:
-                typeString = " (deflection)";
-                break;
+        if (damage != 0 || healing != 0) {
+            string type = healing == 0 ? "damaged" : "healed";
+            string value = healing == 0 ? damage.ToString("0") : healing.ToString("0");
+            string typeString = "";
+            switch (hitType) {
+                case HitType.CRITICAL:
+                    typeString = " (critical)";
+                    break;
+                case HitType.DEFLECTION:
+                    typeString = " (deflection)";
+                    break;
+            }
+            output.Add(string.Format("{0} {1} {2} for {3}{4}.", heroDict[attackerGuid].HeroName, type, heroDict[targetGuid].HeroName, value, typeString));
         }
-        output.Add(string.Format("{0} {1} {2} for {3}{4}.", heroDict[attackerGuid].HeroName, type, heroDict[targetGuid].HeroName, value, typeString));
+
         foreach (StatusContainer inflicted in inflictedStatus) {
             output.Add(inflicted.ToHumanReadableString(heroDict));
         }
+
         return output;
     }
 }
