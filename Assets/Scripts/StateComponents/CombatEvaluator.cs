@@ -58,26 +58,14 @@ public class CombatEvaluator {
                 enemyTeam = allies;
             }
 
-            if (next.currentEnergy >= 100) {
-                if (!SpecialAttackContainer.CanAttack(next)) {
-                    next.CountDownStatus(true);
-                    continue;
-                }
-                var enemyTargets = SpecialAttackContainer.DecideTargets(next, enemyTeam);
-                var allyTargets = SpecialAttackContainer.DecideAllies(next, allyTeam);
-                var step = SpecialAttackContainer.PerformSpecialAttack(next, allyTargets, enemyTargets);
-                steps.Add(step);
-                next.CountDownStatus(true);
-            } else {
-                if (AttackContainer.CanBasicAttack(next)) {
-                    var attackInfo = AttackInfoContainer.GetAttackInfo(next.baseHero.BasicAttack);
-                    var enemyTargets = CombatMath.DecideTargets(attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
-                    var allyTargets = CombatMath.DecideTargets(attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
-                    var step = AttackContainer.PerformAttack(next, allyTargets, enemyTargets);
-                    steps.Add(step);
-                }
-                next.CountDownStatus(true);
-            }
+            var attack = next.currentEnergy >= 100 ? next.baseHero.SpecialAttack : next.baseHero.BasicAttack;
+            var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
+            var enemyTargets = CombatMath.DecideTargets(attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
+            var allyTargets = CombatMath.DecideTargets(attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
+            var step = AttackContainer.PerformAttack(next, attack, allyTargets, enemyTargets);
+            steps.Add(step);
+            
+            next.CountDownStatus(true);
             haveNotMoved.Sort();
         }
 
@@ -190,13 +178,15 @@ public class CombatStep {
     [SerializeField] public CombatHero attacker;
     [SerializeField] public List<CombatHero> allyTargets;
     [SerializeField] public List<CombatHero> enemyTargets;
-    [SerializeField] public bool wasSpecial;
+    [SerializeField] public AttackEnum attackUsed;
+
+    [SerializeField] public bool skippedTurn;
     [SerializeField] public double totalDamage;
     [SerializeField] public double totalHealing;
     [SerializeField] public double energyGained;
     [SerializeField] public List<DamageInstance> damageInstances;
 
-    public CombatStep(CombatHero attacker, List<CombatHero> allyTargets, List<CombatHero> enemyTargets, bool wasSpecial) {
+    public CombatStep(CombatHero attacker, List<CombatHero> allyTargets, List<CombatHero> enemyTargets, AttackEnum attackUsed) {
         this.attacker = new CombatHero(attacker);
         this.allyTargets = new List<CombatHero>();
         foreach (CombatHero target in allyTargets) {
@@ -206,13 +196,19 @@ public class CombatStep {
         foreach (CombatHero target in enemyTargets) {
             this.enemyTargets.Add(new CombatHero(target));
         }
-        this.wasSpecial = wasSpecial;
+        this.attackUsed = attackUsed;
         damageInstances = new List<DamageInstance>();
     }
 
     public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
         List<string> output = new List<string>();
-        string attack = wasSpecial ? attacker.baseHero.SpecialAttack.ToString() : attacker.baseHero.BasicAttack.ToString();
+        string attack = AttackInfoContainer.GetAttackInfo(attackUsed).AttackName;
+
+        if (skippedTurn) {
+            output.Add(string.Format("{0} attempted to use {1}, but was unable.", attacker.baseHero.HeroName, attack));
+            return output;
+        }
+
         string enemyNames = "";
         foreach (CombatHero enemy in enemyTargets) {
             if (enemyNames.Length > 0) enemyNames += ", ";
@@ -243,7 +239,6 @@ public class CombatStep {
 public class DamageInstance {
 
     [SerializeField] public AttackEnum? attackUsed;
-    [SerializeField] public SpecialAttackEnum? specialUsed;
     [SerializeField] public StatusEnum? triggeringStatus;
     [SerializeField] public Guid attackerGuid;
     [SerializeField] public Guid targetGuid;
@@ -254,9 +249,8 @@ public class DamageInstance {
     [SerializeField] public HitType hitType = HitType.NORMAL;
     [SerializeField] public bool wasFatal = false;
 
-    public DamageInstance(AttackEnum? attackUsed, SpecialAttackEnum? specialUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
+    public DamageInstance(AttackEnum? attackUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
         this.attackUsed = attackUsed;
-        this.specialUsed = specialUsed;
         this.triggeringStatus = triggeringStatus;
         this.attackerGuid = attackerGuid;
         this.targetGuid = targetGuid;
@@ -270,21 +264,13 @@ public class DamageInstance {
     public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
         var output = new List<string>();
 
-        if (wasFatal) {
-            output.Add(string.Format("{0} died to attack from {1}.", heroDict[targetGuid].HeroName, heroDict[attackerGuid].HeroName));
-            return output;
-        }
-
         if (triggeringStatus != null) {
             var statusDisplay = StatusDisplayContainer.GetStatusDisplay(triggeringStatus.GetValueOrDefault());
-            string type = healing == 0 ? "damaged" : "healed";
-            string value = healing == 0 ? damage.ToString("0") : healing.ToString("0");
+            string type = damage == 0 ? "healing" : "damage";
+            string value = damage == 0 ? healing.ToString("0") : damage.ToString("0");
             string inflicter = attackerGuid == null ? "" : string.Format(" ({0})", heroDict[attackerGuid].HeroName);
             output.Add(string.Format("{0} received {1} {2} from {3}{4} at end of turn.", heroDict[targetGuid].HeroName, value, type, statusDisplay.StatusName, inflicter));
-            return output;
-        }
-
-        if (damage != 0 || healing != 0) {
+        } else if (damage != 0 || healing != 0) {
             string type = healing == 0 ? "damaged" : "healed";
             string value = healing == 0 ? damage.ToString("0") : healing.ToString("0");
             string typeString = "";
@@ -299,8 +285,13 @@ public class DamageInstance {
             output.Add(string.Format("{0} {1} {2} for {3}{4}.", heroDict[attackerGuid].HeroName, type, heroDict[targetGuid].HeroName, value, typeString));
         }
 
-        foreach (StatusContainer inflicted in inflictedStatus) {
-            output.Add(inflicted.ToHumanReadableString(heroDict));
+        if (wasFatal) {
+            string cause = triggeringStatus == null ? "attack" : StatusDisplayContainer.GetStatusDisplay(triggeringStatus.GetValueOrDefault()).StatusName;
+            output.Add(string.Format("{0} died to {1} from {2}.", heroDict[targetGuid].HeroName, cause, heroDict[attackerGuid].HeroName));
+        } else {
+            foreach (StatusContainer inflicted in inflictedStatus) {
+                output.Add(inflicted.ToHumanReadableString(heroDict));
+            }
         }
 
         return output;

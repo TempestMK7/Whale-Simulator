@@ -9,7 +9,7 @@ public class AbilityContainer {
             case AbilityEnum.STACKING_ATTACK:
                 var status = new StatusContainer(StatusEnum.ATTACK_UP, hero.combatHeroGuid, 0.2, StatusContainer.INDEFINITE);
                 hero.AddStatus(status);
-                var damageInstance = new DamageInstance(null, null, null, hero.combatHeroGuid, hero.combatHeroGuid);
+                var damageInstance = new DamageInstance(null, null, hero.combatHeroGuid, hero.combatHeroGuid);
                 damageInstance.AddStatus(status);
                 output.Add(damageInstance);
                 break;

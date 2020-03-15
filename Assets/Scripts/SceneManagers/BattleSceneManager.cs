@@ -295,7 +295,7 @@ public class BattleSceneManager : MonoBehaviour {
         turnText.text = string.Format("Turn {0}", turn.turnNumber);
 
         foreach (CombatStep step in turn.steps) {
-            yield return StartCoroutine(PlayCombatStep(step));
+            if (!step.skippedTurn) yield return StartCoroutine(PlayCombatStep(step));
         }
         
         foreach (DamageInstance instance in turn.endOfTurn) {

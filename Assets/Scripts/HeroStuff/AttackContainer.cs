@@ -5,9 +5,12 @@ using UnityEngine.UI;
 
 public class AttackContainer {
     
-    public static CombatStep PerformAttack(CombatHero attacker, List<CombatHero> allies, List<CombatHero> enemies) {
-        var step = new CombatStep(attacker, allies, enemies, false);
-        if (!CanBasicAttack(attacker)) return step;
+    public static CombatStep PerformAttack(CombatHero attacker, AttackEnum attack, List<CombatHero> allies, List<CombatHero> enemies) {
+        var step = new CombatStep(attacker, allies, enemies, attack);
+        if (!CanAttack(attacker)) {
+            step.skippedTurn = true;
+            return step;
+        }
 
         var attackInfo = AttackInfoContainer.GetAttackInfo(attacker.baseHero.BasicAttack);
 
@@ -18,7 +21,7 @@ public class AttackContainer {
                 target.currentEnergy = 0;
                 target.currentStatus.Clear();
 
-                var damageInstance = new DamageInstance(attackInfo.Attack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
+                var damageInstance = new DamageInstance(attackInfo.Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
                 damageInstance.wasFatal = true;
                 step.damageInstances.Add(damageInstance);
             }
@@ -32,8 +35,9 @@ public class AttackContainer {
         return step;
     }
 
-    public static bool CanBasicAttack(CombatHero hero) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(hero.baseHero.BasicAttack);
+    public static bool CanAttack(CombatHero hero) {
+        var attack = hero.currentEnergy >= 100 ? hero.baseHero.SpecialAttack : hero.baseHero.BasicAttack;
+        var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
 
         if (attackInfo.IsMelee) {
             foreach (StatusContainer status in hero.currentStatus) {
@@ -74,7 +78,11 @@ public enum AttackEnum {
     FORKED_LIGHTNING = 18,
     ROCK_SLAM = 19,
     PEBBLE_TOSS = 20,
-    AXE_SLASH = 21
+    AXE_SLASH = 21,
+
+    SPECIAL_PHYSICAL = 100,
+    SPECIAL_MAGIC = 101,
+    FROZEN_MIRROR = 200
 }
 
 public class AttackInfoContainer {
@@ -87,25 +95,25 @@ public class AttackInfoContainer {
         attackDict[AttackEnum.BASIC_PHYSICAL] = new AttackInfo(
             AttackEnum.BASIC_PHYSICAL, "Basic Physical", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.BASIC_MAGIC] = new AttackInfo(
             AttackEnum.BASIC_MAGIC, "Basic Magic", "Icons/RoleDamage",
             false, true, false,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.VAPOR_CLOUD] = new AttackInfo(
             AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/RoleDamage",
             false, true, false,
-            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.5, 0, 15, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
             AttackEnum.FISH_SLAP, "Fish Slap", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.WATER_RENEW] = new AttackInfo(
@@ -117,61 +125,61 @@ public class AttackInfoContainer {
         attackDict[AttackEnum.PETAL_SLAP] = new AttackInfo(
             AttackEnum.PETAL_SLAP, "Petal Slap", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.NEEDLE_STAB] = new AttackInfo(
             AttackEnum.NEEDLE_STAB, "Needle Stab", "Icons/RoleDamage",
             true, false, true,
-            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.POISON, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.SPEAR_THROW] = new AttackInfo(
             AttackEnum.SPEAR_THROW, "Spear Throw", "Icons/RoleDamage",
             false, true, true,
-            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.POISON, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.BRANCH_SLAM] = new AttackInfo(
             AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.SCORCH] = new AttackInfo(
             AttackEnum.SCORCH, "Scorch", "Icons/RoleDamage",
             false, true, false,
-            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.BURN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.FIRE_PUNCH] = new AttackInfo(
             AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             0.8, 0, 25, 10, 0,
             StatusEnum.BURN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ICE_PUNCH] = new AttackInfo(
             AttackEnum.ICE_PUNCH, "Ice Slam", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             0.8, 0, 25, 10, 0,
             StatusEnum.CHILL, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ICICLE_THROW] = new AttackInfo(
             AttackEnum.ICICLE_THROW, "Icicle Throw", "Icons/RoleDamage",
             false, true, true,
-            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.SNOWY_WIND] = new AttackInfo(
             AttackEnum.SNOWY_WIND, "Snowy Wind", "Icons/RoleDamage",
             false, true, false,
-            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.CHILL, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.SPARK] = new AttackInfo(
             AttackEnum.SPARK, "Spark", "Icons/RoleDamage",
             true, false, false,
-            TargetType.RANDOM, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.RANDOM, 1, TargetType.NONE, 0,
             0.8, 0, 25, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ENERGY_DRAIN] = new AttackInfo(
@@ -183,33 +191,53 @@ public class AttackInfoContainer {
         attackDict[AttackEnum.LIGHTNING_BOLT] = new AttackInfo(
             AttackEnum.LIGHTNING_BOLT, "Lightning Bolt", "Icons/RoleDamage",
             false, true, false,
-            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.FORKED_LIGHTNING] = new AttackInfo(
             AttackEnum.FORKED_LIGHTNING, "Forked Lightning", "Icons/RoleDamage",
             false, true, false,
-            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ROCK_SLAM] = new AttackInfo(
             AttackEnum.ROCK_SLAM, "Rock Slam", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.ATTACK_DOWN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.PEBBLE_TOSS] = new AttackInfo(
             AttackEnum.PEBBLE_TOSS, "Pebble Toss", "Icons/RoleDamage",
             false, true, true,
-            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.AXE_SLASH] = new AttackInfo(
             AttackEnum.AXE_SLASH, "Axe Slash", "Icons/RoleDamage",
             true, false, true,
-            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.DEFENSE_DOWN, 0.2, 3, null, 0, 0);
+
+        // These are all special attacks.
+        attackDict[AttackEnum.SPECIAL_PHYSICAL] = new AttackInfo(
+            AttackEnum.SPECIAL_PHYSICAL, "Special Physical", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+            3, 0, -100, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.SPECIAL_MAGIC] = new AttackInfo(
+            AttackEnum.SPECIAL_MAGIC, "Special Magic", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+            3, 0, -100, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.FROZEN_MIRROR] = new AttackInfo(
+            AttackEnum.FROZEN_MIRROR, "Frozen Mirror", "Icons/RoleDamage",
+            false, false, false,
+            TargetType.RANDOM, 0, TargetType.LOWEST_HEALTH, 10,
+            0, 0, -100, 0, 0,
+            null, 0, 0, StatusEnum.ICE_ARMOR, 0.5, 2);
     }
 
     public static AttackInfo GetAttackInfo(AttackEnum attack) {
@@ -289,10 +317,20 @@ public class AttackInfo {
         target.currentEnergy += TargetEnergyGained;
         attacker.currentEnergy += AttackerEnergyGained;
 
-        var damageInstance = new DamageInstance(Attack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
+        var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
         damageInstance.damage = damage;
         damageInstance.energy = TargetEnergyGained;
         damageInstance.hitType = hitType;
+
+        // If the target died from this attack, bail before applying status.
+        if (!target.IsAlive()) {
+            target.currentHealth = 0;
+            target.currentEnergy = 0;
+            target.currentStatus.Clear();
+
+            damageInstance.wasFatal = true;
+            return damageInstance;
+        }
 
         if (TargetStatus != null) {
             var inflictedStatus = TargetStatus.GetValueOrDefault();
@@ -336,13 +374,23 @@ public class AttackInfo {
     public DamageInstance ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
         var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
         var healing = attackValue * HealingMultiplier;
-        ally.currentHealth += healing;
+        healing = ally.ReceiveHealing(healing);
         ally.currentEnergy += AllyEnergyGained;
         attacker.currentEnergy += AttackerEnergyGained;
 
-        var damageInstance = new DamageInstance(Attack, null, null, attacker.combatHeroGuid, ally.combatHeroGuid);
+        var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, ally.combatHeroGuid);
         damageInstance.healing = healing;
         damageInstance.energy = AllyEnergyGained;
+
+        // If the ally died from this attack somehow, bail before applying status.
+        if (!ally.IsAlive()) {
+            ally.currentHealth = 0;
+            ally.currentEnergy = 0;
+            ally.currentStatus.Clear();
+
+            damageInstance.wasFatal = true;
+            return damageInstance;
+        }
 
         if (AllyStatus != null) {
             var bestowedStatus = AllyStatus.GetValueOrDefault();

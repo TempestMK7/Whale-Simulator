@@ -211,14 +211,14 @@ public class CombatMath {
                             var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, 0, 1);
                             attacker.AddStatus(frozen);
 
-                            var instance = new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
                             instance.AddStatus(frozen);
                             output.Add(instance);
                         } else {
                             var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, 0.4, 3);
                             attacker.AddStatus(chilled);
 
-                            var instance = new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
                             instance.AddStatus(chilled);
                             output.Add(instance);
                         }
@@ -227,14 +227,14 @@ public class CombatMath {
                         var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 3);
                         attacker.AddStatus(burn);
 
-                        var damageInstance = new DamageInstance(null, null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                        var damageInstance = new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
                         damageInstance.AddStatus(burn);
-                        output.Add(new DamageInstance(null, null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
+                        output.Add(new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
                         break;
                     case StatusEnum.THORN_ARMOR:
                         var damage = status.value;
                         attacker.currentHealth -= damage;
-                        output.Add(new DamageInstance(null, null, StatusEnum.THORN_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
+                        output.Add(new DamageInstance(null, StatusEnum.THORN_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
                         break;
                 }
             }
@@ -252,5 +252,5 @@ public enum HitEffectivity {
 }
 
 public enum TargetType {
-    FIRST_ALIVE = 1, RANDOM = 2, LOWEST_HEALTH = 3, HIGHEST_HEALTH = 4, LOWEST_ENERGY = 5, HIGHEST_ENERGY = 6
+    NONE = 0, FIRST_ALIVE = 1, RANDOM = 2, LOWEST_HEALTH = 3, HIGHEST_HEALTH = 4, LOWEST_ENERGY = 5, HIGHEST_ENERGY = 6
 }

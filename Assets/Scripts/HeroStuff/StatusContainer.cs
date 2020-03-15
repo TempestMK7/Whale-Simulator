@@ -43,30 +43,29 @@ public class StatusContainer {
                 case StatusEnum.POISON:
                     var damage = status.value;
                     hero.currentHealth -= damage;
-
-                    var damageInstance = new DamageInstance(null, null, status.status, status.inflicterGuid, hero.combatHeroGuid);
+                    var damageInstance = new DamageInstance(null, status.status, status.inflicterGuid, hero.combatHeroGuid);
                     damageInstance.damage = damage;
+
+                    // We bail immediately if a status kills a hero to prevent future stati from bringing them back somehow.
+                    if (!hero.IsAlive()) {
+                        hero.currentHealth = 0;
+                        hero.currentEnergy = 0;
+                        damageInstance.wasFatal = true;
+                        instances.Add(damageInstance);
+                        hero.currentStatus.Clear();
+                        return instances;
+                    }
+
                     instances.Add(damageInstance);
                     break;
                 case StatusEnum.REGENERATION:
                     var healing = status.value;
-                    hero.currentHealth += healing;
+                    healing = hero.ReceiveHealing(healing);
 
-                    damageInstance = new DamageInstance(null, null, status.status, status.inflicterGuid, hero.combatHeroGuid);
+                    damageInstance = new DamageInstance(null, status.status, status.inflicterGuid, hero.combatHeroGuid);
                     damageInstance.healing = healing;
                     instances.Add(damageInstance);
                     break;
-            }
-
-            if (!hero.IsAlive()) {
-                hero.currentHealth = 0;
-                hero.currentEnergy = 0;
-                hero.currentStatus.Clear();
-
-                var damageInstance = new DamageInstance(null, null, null, status.inflicterGuid, hero.combatHeroGuid);
-                damageInstance.wasFatal = true;
-                instances.Add(damageInstance);
-                return instances;
             }
         }
         hero.CountDownStatus(false);
