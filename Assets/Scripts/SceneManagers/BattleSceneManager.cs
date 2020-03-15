@@ -20,8 +20,8 @@ public class BattleSceneManager : MonoBehaviour {
     public UnityEngine.UI.Button saveReportButton;
     public UnityEngine.UI.Button continueButton;
 
-    public HeroPlaceholderBehavior[] allyHolders;
-    public HeroPlaceholderBehavior[] enemyHolders;
+    public AnimatedHero[] allyHolders;
+    public AnimatedHero[] enemyHolders;
 
     public UnityEngine.UI.Button fightButton;
 
@@ -38,7 +38,7 @@ public class BattleSceneManager : MonoBehaviour {
     private AccountHero[] selectedEnemies;
 
     // These are used in combat mode.
-    private Dictionary<Guid, HeroPlaceholderBehavior> placeHolders;
+    private Dictionary<Guid, AnimatedHero> placeHolders;
 
     public void Awake() {
         battleType = BattleManager.GetBattleType();
@@ -55,7 +55,7 @@ public class BattleSceneManager : MonoBehaviour {
         if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
-                var placeHolder = hit.transform.gameObject.GetComponent<HeroPlaceholderBehavior>();
+                var placeHolder = hit.transform.gameObject.GetComponent<AnimatedHero>();
                 placeHolder.OnClick();
             }
         }
@@ -255,7 +255,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     private System.Collections.IEnumerator PlayCombatReport(CombatReport report) {
-        placeHolders = new Dictionary<Guid, HeroPlaceholderBehavior>();
+        placeHolders = new Dictionary<Guid, AnimatedHero>();
 
         for (int x = 0; x < report.allies.Length; x++) {
             if (report.allies[x] != null) {
@@ -300,25 +300,21 @@ public class BattleSceneManager : MonoBehaviour {
         
         foreach (DamageInstance instance in turn.endOfTurn) {
             placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
     private System.Collections.IEnumerator PlayCombatStep(CombatStep step) {
         // Animate the attacker.
-        placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step);
-        yield return new WaitForSeconds(0.3f);
-
-        // Animate all defenders.
-        foreach (DamageInstance damageInstance in step.damageInstances) {
-            var target = damageInstance.targetGuid;
-            if (target != null) {
-                placeHolders[target].AnimateDamageInstance(damageInstance);
-            }
+        List<AnimatedHero> allyTargets = new List<AnimatedHero>();
+        foreach (CombatHero ally in step.allyTargets) {
+            allyTargets.Add(placeHolders[ally.combatHeroGuid]);
         }
-
-        // Wait for everything to finish playing.
-        yield return new WaitForSeconds(1.2f);
+        List<AnimatedHero> enemyTargets = new List<AnimatedHero>();
+        foreach (CombatHero enemy in step.enemyTargets) {
+            enemyTargets.Add(placeHolders[enemy.combatHeroGuid]);
+        }
+        yield return placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step, placeHolders);
     }
 
     private void OnEndOfCombat(CombatReport report) {

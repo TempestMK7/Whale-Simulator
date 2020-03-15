@@ -17,7 +17,7 @@ public class CampaignSceneManager : MonoBehaviour {
     public Text chapterText;
     public Text missionText;
 
-    public HeroPlaceholderBehavior[] heroPlaceholders;
+    public AnimatedHero[] heroPlaceholders;
 
     public GameObject fieldBackgroundPrefab;
     public GameObject crystalCaveBackgroundPrefab;
@@ -50,16 +50,20 @@ public class CampaignSceneManager : MonoBehaviour {
 
         for (int x = 0; x < heroPlaceholders.Length; x++) {
             var mission = MissionContainer.GetMission(state.CurrentChapter, x + 1);
-            heroPlaceholders[x].SetHero(mission.FaceOfMission);
-
-            if (state.CurrentMission > x + 1) {
-                heroPlaceholders[x].PlayDead();
-            }
-
-            if (x == state.CurrentMission - 1) {
-                heroPlaceholders[x].RegisterOnClick(LaunchNextMission);
+            if (mission == null) {
+                heroPlaceholders[x].gameObject.SetActive(false);
             } else {
-                heroPlaceholders[x].RegisterOnClick(null);
+                heroPlaceholders[x].SetHero(mission.FaceOfMission);
+
+                if (state.CurrentMission > x + 1) {
+                    heroPlaceholders[x].PlayDead();
+                }
+
+                if (x == state.CurrentMission - 1) {
+                    heroPlaceholders[x].RegisterOnClick(LaunchNextMission);
+                } else {
+                    heroPlaceholders[x].RegisterOnClick(null);
+                }
             }
         }
     }
@@ -122,7 +126,7 @@ public class CampaignSceneManager : MonoBehaviour {
     private void PerformClick() {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, LayerMask.NameToLayer("Hero"))) {
-            var placeholder = hit.transform.gameObject.GetComponent<HeroPlaceholderBehavior>();
+            var placeholder = hit.transform.gameObject.GetComponent<AnimatedHero>();
             if (placeholder != null) placeholder.OnClick();
         }
     }

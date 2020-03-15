@@ -12,19 +12,10 @@ public class AttackContainer {
             return step;
         }
 
-        var attackInfo = AttackInfoContainer.GetAttackInfo(attacker.baseHero.BasicAttack);
+        var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
 
         foreach (CombatHero target in enemies) {
             step.damageInstances.Add(attackInfo.ApplyAttackToEnemy(attacker, target));
-            if (!target.IsAlive()) {
-                target.currentHealth = 0;
-                target.currentEnergy = 0;
-                target.currentStatus.Clear();
-
-                var damageInstance = new DamageInstance(attackInfo.Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                damageInstance.wasFatal = true;
-                step.damageInstances.Add(damageInstance);
-            }
         }
 
         foreach (CombatHero ally in allies) {
@@ -32,6 +23,13 @@ public class AttackContainer {
         }
 
         step.damageInstances.AddRange(CombatMath.EvaluateNegativeSideEffects(attacker, enemies));
+
+        foreach (DamageInstance instance in step.damageInstances) {
+            step.totalDamage += instance.damage;
+            step.totalHealing += instance.healing;
+            step.energyGained += instance.attackerEnergy;
+        }
+
         return step;
     }
 
@@ -93,127 +91,127 @@ public class AttackInfoContainer {
         if (attackDict != null) return;
         attackDict = new Dictionary<AttackEnum, AttackInfo>();
         attackDict[AttackEnum.BASIC_PHYSICAL] = new AttackInfo(
-            AttackEnum.BASIC_PHYSICAL, "Basic Physical", "Icons/RoleDamage",
+            AttackEnum.BASIC_PHYSICAL, "Basic Physical", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.BASIC_MAGIC] = new AttackInfo(
-            AttackEnum.BASIC_MAGIC, "Basic Magic", "Icons/RoleDamage",
+            AttackEnum.BASIC_MAGIC, "Basic Magic", "Icons/RoleDamage", "AttackSounds/BasicMagic",
             false, true, false,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.VAPOR_CLOUD] = new AttackInfo(
-            AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/RoleDamage",
+            AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/RoleDamage", "AttackSounds/VaporCloud",
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.5, 0, 15, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
-            AttackEnum.FISH_SLAP, "Fish Slap", "Icons/RoleDamage",
+            AttackEnum.FISH_SLAP, "Fish Slap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.WATER_RENEW] = new AttackInfo(
-            AttackEnum.WATER_RENEW, "Water Renew", "Icons/RoleDamage",
+            AttackEnum.WATER_RENEW, "Water Renew", "Icons/RoleDamage", "AttackSounds/WaterRenew",
             false, true, false,
             TargetType.RANDOM, 1, TargetType.LOWEST_HEALTH, 1,
             0.6, 0.2, 15, 10, 0,
             null, 0, 0, StatusEnum.REGENERATION, 0.2, 2);
         attackDict[AttackEnum.PETAL_SLAP] = new AttackInfo(
-            AttackEnum.PETAL_SLAP, "Petal Slap", "Icons/RoleDamage",
+            AttackEnum.PETAL_SLAP, "Petal Slap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.NEEDLE_STAB] = new AttackInfo(
-            AttackEnum.NEEDLE_STAB, "Needle Stab", "Icons/RoleDamage",
+            AttackEnum.NEEDLE_STAB, "Needle Stab", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.POISON, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.SPEAR_THROW] = new AttackInfo(
-            AttackEnum.SPEAR_THROW, "Spear Throw", "Icons/RoleDamage",
+            AttackEnum.SPEAR_THROW, "Spear Throw", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             false, true, true,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.POISON, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.BRANCH_SLAM] = new AttackInfo(
-            AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage",
+            AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.SCORCH] = new AttackInfo(
-            AttackEnum.SCORCH, "Scorch", "Icons/RoleDamage",
+            AttackEnum.SCORCH, "Scorch", "Icons/RoleDamage", "AttackSounds/Scorch",
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.BURN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.FIRE_PUNCH] = new AttackInfo(
-            AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage",
+            AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             0.8, 0, 25, 10, 0,
             StatusEnum.BURN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ICE_PUNCH] = new AttackInfo(
-            AttackEnum.ICE_PUNCH, "Ice Slam", "Icons/RoleDamage",
+            AttackEnum.ICE_PUNCH, "Ice Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             0.8, 0, 25, 10, 0,
             StatusEnum.CHILL, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ICICLE_THROW] = new AttackInfo(
-            AttackEnum.ICICLE_THROW, "Icicle Throw", "Icons/RoleDamage",
+            AttackEnum.ICICLE_THROW, "Icicle Throw", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             false, true, true,
             TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.SNOWY_WIND] = new AttackInfo(
-            AttackEnum.SNOWY_WIND, "Snowy Wind", "Icons/RoleDamage",
+            AttackEnum.SNOWY_WIND, "Snowy Wind", "Icons/RoleDamage", "AttackSounds/SnowyWind2",
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.CHILL, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.SPARK] = new AttackInfo(
-            AttackEnum.SPARK, "Spark", "Icons/RoleDamage",
+            AttackEnum.SPARK, "Spark", "Icons/RoleDamage", "AttackSounds/Spark",
             true, false, false,
             TargetType.RANDOM, 1, TargetType.NONE, 0,
             0.8, 0, 25, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ENERGY_DRAIN] = new AttackInfo(
-            AttackEnum.ENERGY_DRAIN, "Energy Drain", "Icons/RoleDamage",
+            AttackEnum.ENERGY_DRAIN, "Energy Drain", "Icons/RoleDamage", "AttackSounds/EnergyDrain",
             false, true, false,
             TargetType.RANDOM, 1, TargetType.RANDOM, 1,
             0.6, 0, 35, -10, 10,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.LIGHTNING_BOLT] = new AttackInfo(
-            AttackEnum.LIGHTNING_BOLT, "Lightning Bolt", "Icons/RoleDamage",
+            AttackEnum.LIGHTNING_BOLT, "Lightning Bolt", "Icons/RoleDamage", "AttackSounds/LightningBolt",
             false, true, false,
             TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.FORKED_LIGHTNING] = new AttackInfo(
-            AttackEnum.FORKED_LIGHTNING, "Forked Lightning", "Icons/RoleDamage",
+            AttackEnum.FORKED_LIGHTNING, "Forked Lightning", "Icons/RoleDamage", "AttackSounds/LightningBolt",
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.4, 0, 15, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.ROCK_SLAM] = new AttackInfo(
-            AttackEnum.ROCK_SLAM, "Rock Slam", "Icons/RoleDamage",
+            AttackEnum.ROCK_SLAM, "Rock Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.ATTACK_DOWN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.PEBBLE_TOSS] = new AttackInfo(
-            AttackEnum.PEBBLE_TOSS, "Pebble Toss", "Icons/RoleDamage",
+            AttackEnum.PEBBLE_TOSS, "Pebble Toss", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             false, true, true,
             TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.AXE_SLASH] = new AttackInfo(
-            AttackEnum.AXE_SLASH, "Axe Slash", "Icons/RoleDamage",
+            AttackEnum.AXE_SLASH, "Axe Slash", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
@@ -221,19 +219,19 @@ public class AttackInfoContainer {
 
         // These are all special attacks.
         attackDict[AttackEnum.SPECIAL_PHYSICAL] = new AttackInfo(
-            AttackEnum.SPECIAL_PHYSICAL, "Special Physical", "Icons/RoleDamage",
+            AttackEnum.SPECIAL_PHYSICAL, "Special Physical", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             3, 0, -100, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.SPECIAL_MAGIC] = new AttackInfo(
-            AttackEnum.SPECIAL_MAGIC, "Special Magic", "Icons/RoleDamage",
+            AttackEnum.SPECIAL_MAGIC, "Special Magic", "Icons/RoleDamage", "AttackSounds/BasicMagic",
             false, true, false,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             3, 0, -100, 10, 0,
             null, 0, 0, null, 0, 0);
         attackDict[AttackEnum.FROZEN_MIRROR] = new AttackInfo(
-            AttackEnum.FROZEN_MIRROR, "Frozen Mirror", "Icons/RoleDamage",
+            AttackEnum.FROZEN_MIRROR, "Frozen Mirror", "Icons/RoleDamage", "AttackSounds/FrozenMirror",
             false, false, false,
             TargetType.RANDOM, 0, TargetType.LOWEST_HEALTH, 10,
             0, 0, -100, 0, 0,
@@ -251,6 +249,7 @@ public class AttackInfo {
     public AttackEnum Attack { get; }
     public string AttackName { get; }
     public Sprite AttackIcon { get; }
+    public AudioClip AttackSound { get; }
     public bool IsMelee { get; }
     public bool IsRanged { get; }
     public bool IsPhysical { get; }
@@ -270,7 +269,7 @@ public class AttackInfo {
     public double AllyStatusValue { get; }
     public int AllyStatusDuration { get; }
 
-    public AttackInfo(AttackEnum attack, string attackName, string attackIcon,
+    public AttackInfo(AttackEnum attack, string attackName, string attackIcon, string attackSound,
         bool isMelee, bool isRanged, bool isPhysical,
         TargetType enemyTargetType, int enemyTargetCount, TargetType allyTargetType, int allyTargetCount,
         double damageMultiplier, double healingMultiplier,
@@ -281,6 +280,7 @@ public class AttackInfo {
         Attack = attack;
         AttackName = attackName;
         AttackIcon = Resources.Load<Sprite>(attackIcon);
+        AttackSound = Resources.Load<AudioClip>(attackSound);
 
         IsMelee = isMelee;
         IsRanged = isRanged;
@@ -319,7 +319,8 @@ public class AttackInfo {
 
         var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
         damageInstance.damage = damage;
-        damageInstance.energy = TargetEnergyGained;
+        damageInstance.attackerEnergy = AttackerEnergyGained;
+        damageInstance.targetEnergy = TargetEnergyGained;
         damageInstance.hitType = hitType;
 
         // If the target died from this attack, bail before applying status.
@@ -380,7 +381,8 @@ public class AttackInfo {
 
         var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, ally.combatHeroGuid);
         damageInstance.healing = healing;
-        damageInstance.energy = AllyEnergyGained;
+        damageInstance.attackerEnergy = AttackerEnergyGained;
+        damageInstance.targetEnergy = AllyEnergyGained;
 
         // If the ally died from this attack somehow, bail before applying status.
         if (!ally.IsAlive()) {
