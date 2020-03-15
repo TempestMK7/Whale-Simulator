@@ -115,13 +115,15 @@ public class SpecialAttackContainer {
 
         if (isMelee) {
             foreach (StatusContainer status in hero.currentStatus) {
-                if (StatusContainer.BlocksMelee(status.status)) return false;
+                var display = StatusDisplayContainer.GetStatusDisplay(status.status);
+                if (display.BlocksMelee) return false;
             }
         }
 
         if (isRanged) {
             foreach (StatusContainer status in hero.currentStatus) {
-                if (StatusContainer.BlocksRanged(status.status)) return false;
+                var display = StatusDisplayContainer.GetStatusDisplay(status.status);
+                if (display.BlocksRanged) return false;
             }
         }
 

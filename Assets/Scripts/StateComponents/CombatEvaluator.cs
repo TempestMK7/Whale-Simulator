@@ -251,6 +251,7 @@ public class DamageInstance {
     [SerializeField] public List<StatusContainer> inflictedStatus;
     [SerializeField] public double damage = 0;
     [SerializeField] public double healing = 0;
+    [SerializeField] public double energy = 0;
     [SerializeField] public HitType hitType = HitType.NORMAL;
     [SerializeField] public bool wasFatal = false;
 

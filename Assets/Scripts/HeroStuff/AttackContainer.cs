@@ -18,13 +18,16 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     step.damageInstances.Add(damageInstance);
                 }
@@ -34,13 +37,16 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic(), target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     step.damageInstances.Add(damageInstance);
                 }
@@ -49,16 +55,19 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.5, target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
+                    attacker.currentEnergy += 15;
+                    step.energyGained += 15;
+                    target.currentEnergy += energy;
 
                     var dowseStatus = new StatusContainer(StatusEnum.DOWSE, attacker.combatHeroGuid, 0.0, 3);
                     target.AddStatus(dowseStatus);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(dowseStatus);
                     step.damageInstances.Add(damageInstance);
@@ -68,16 +77,19 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     var defenseDownStatus = new StatusContainer(StatusEnum.DEFENSE_DOWN, attacker.combatHeroGuid, 0.2, 2);
                     target.AddStatus(defenseDownStatus);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(defenseDownStatus);
                     step.damageInstances.Add(damageInstance);
@@ -87,13 +99,16 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.75, target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 15;
                     step.energyGained += 15;
+                    target.currentEnergy += energy;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     step.damageInstances.Add(damageInstance);
                 }
@@ -112,16 +127,19 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     var poisonStatus = new StatusContainer(StatusEnum.POISON, attacker.combatHeroGuid, attacker.GetModifiedAttack() * 0.2, 2);
                     target.AddStatus(poisonStatus);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(poisonStatus);
                     step.damageInstances.Add(damageInstance);
@@ -131,16 +149,19 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedAttack() * 0.5, target.GetModifiedDefense(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     var poisonStatus = new StatusContainer(StatusEnum.POISON, attacker.combatHeroGuid, attacker.GetModifiedAttack() * 0.1, 2);
                     target.AddStatus(poisonStatus);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(poisonStatus);
                     step.damageInstances.Add(damageInstance);
@@ -150,10 +171,12 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     StatusContainer status;
                     // Note that branch slam only checks for daze and not dowse when applying stun.
@@ -166,6 +189,7 @@ public class AttackContainer {
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(status);
                     step.damageInstances.Add(damageInstance);
@@ -175,16 +199,19 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 15;
                     step.energyGained += 15;
+                    target.currentEnergy += energy;
 
                     var burnStatus = new StatusContainer(StatusEnum.BURN, attacker.combatHeroGuid, attacker.GetModifiedMagic() * 0.2f, 3);
                     target.AddStatus(burnStatus);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(burnStatus);
                     step.damageInstances.Add(damageInstance);
@@ -194,16 +221,19 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     var burnStatus = new StatusContainer(StatusEnum.BURN, attacker.combatHeroGuid, attacker.GetModifiedMagic() * 0.25f, 5);
                     target.AddStatus(burnStatus);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(burnStatus);
                     step.damageInstances.Add(damageInstance);
@@ -213,21 +243,24 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 15;
                     step.energyGained += 15;
+                    target.currentEnergy += energy;
 
                     StatusContainer status;
-                    if (target.HasStatus(StatusEnum.CHILLED) || target.HasStatus(StatusEnum.DOWSE)) {
-                        status = new StatusContainer(StatusEnum.FROZEN, attacker.combatHeroGuid, 0.0, 1);
+                    if (target.HasStatus(StatusEnum.CHILL) || target.HasStatus(StatusEnum.DOWSE)) {
+                        status = new StatusContainer(StatusEnum.FREEZE, attacker.combatHeroGuid, 0.0, 1);
                     } else {
-                        status = new StatusContainer(StatusEnum.CHILLED, attacker.combatHeroGuid, 0.2, 2);
+                        status = new StatusContainer(StatusEnum.CHILL, attacker.combatHeroGuid, 0.2, 2);
                     }
                     target.AddStatus(status);
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(status);
                     step.damageInstances.Add(damageInstance);
@@ -237,10 +270,12 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic(), target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     StatusContainer status;
                     if (target.HasStatus(StatusEnum.DAZE) || target.HasStatus(StatusEnum.DOWSE)) {
@@ -252,6 +287,7 @@ public class AttackContainer {
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(status);
                     step.damageInstances.Add(damageInstance);
@@ -261,13 +297,16 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic(), target.GetModifiedReflection(), hitType);
+                    var energy = -5;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 35;
                     step.energyGained += 35;
+                    target.currentEnergy += energy;
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     step.damageInstances.Add(damageInstance);
                 }
@@ -276,10 +315,12 @@ public class AttackContainer {
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
                     var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
+                    var energy = 10;
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
                     attacker.currentEnergy += 25;
                     step.energyGained += 25;
+                    target.currentEnergy += energy;
 
                     StatusContainer status;
                     if (target.HasStatus(StatusEnum.DAZE) || target.HasStatus(StatusEnum.DOWSE)) {
@@ -291,6 +332,7 @@ public class AttackContainer {
 
                     var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                     damageInstance.damage = damage;
+                    damageInstance.energy = energy;
                     damageInstance.hitType = hitType;
                     damageInstance.AddStatus(status);
                     step.damageInstances.Add(damageInstance);
@@ -403,13 +445,15 @@ public class AttackContainer {
 
         if (isMelee) {
             foreach (StatusContainer status in hero.currentStatus) {
-                if (StatusContainer.BlocksMelee(status.status)) return false;
+                var display = StatusDisplayContainer.GetStatusDisplay(status.status);
+                if (display.BlocksMelee) return false;
             }
         } 
 
         if (isRanged) {
             foreach (StatusContainer status in hero.currentStatus) {
-                if (StatusContainer.BlocksRanged(status.status)) return false;
+                var display = StatusDisplayContainer.GetStatusDisplay(status.status);
+                if (display.BlocksRanged) return false;
             }
         }
 

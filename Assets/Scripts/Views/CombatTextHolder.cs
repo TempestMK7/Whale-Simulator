@@ -7,13 +7,26 @@ public class CombatTextHolder : MonoBehaviour {
     public Canvas container;
     public GameObject combatTextPrefab;
 
-    public void AnimateDamage(double damage) {
-        var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
-        combatText.GetComponent<CombatText>().SetText(damage, ColorContainer.EnergyColor());
+    public void AnimateDamageInstance(DamageInstance instance) {
+        StartCoroutine(AnimateAllComponents(instance));
     }
 
-    public void AnimateHealing(double healing) {
-        var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
-        combatText.GetComponent<CombatText>().SetText(healing, ColorContainer.HealthColor());
+    private IEnumerator AnimateAllComponents(DamageInstance instance) {
+        if (instance.damage > 0) {
+            var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
+            combatText.GetComponent<CombatText>().SetText(instance.damage, ColorContainer.EnergyColor());
+            yield return new WaitForSeconds(0.3f);
+        }
+        if (instance.healing > 0) {
+            var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
+            combatText.GetComponent<CombatText>().SetText(instance.healing, ColorContainer.HealthColor());
+            yield return new WaitForSeconds(0.3f);
+        }
+        foreach (StatusContainer status in instance.inflictedStatus) {
+            var statusDisplay = StatusDisplayContainer.GetStatusDisplay(status.status);
+            var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
+            combatText.GetComponent<CombatText>().SetText(statusDisplay.StatusName, ColorContainer.ColorFromFaction(statusDisplay.AssociatedFaction));
+            yield return new WaitForSeconds(0.3f);
+        }
     }
 }

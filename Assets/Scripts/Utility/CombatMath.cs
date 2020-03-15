@@ -121,15 +121,15 @@ public class CombatMath {
             foreach (StatusContainer status in enemy.currentStatus) {
                 switch (status.status) {
                     case StatusEnum.ICE_ARMOR:
-                        if (attacker.HasStatus(StatusEnum.CHILLED) || attacker.HasStatus(StatusEnum.DOWSE)) {
-                            var frozen = new StatusContainer(StatusEnum.FROZEN, status.inflicterGuid, 0, 1);
+                        if (attacker.HasStatus(StatusEnum.CHILL) || attacker.HasStatus(StatusEnum.DOWSE)) {
+                            var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, 0, 1);
                             attacker.AddStatus(frozen);
 
                             var instance = new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
                             instance.AddStatus(frozen);
                             output.Add(instance);
                         } else {
-                            var chilled = new StatusContainer(StatusEnum.CHILLED, status.inflicterGuid, 0.4, 3);
+                            var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, 0.4, 3);
                             attacker.AddStatus(chilled);
 
                             var instance = new DamageInstance(null, null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
@@ -137,13 +137,13 @@ public class CombatMath {
                             output.Add(instance);
                         }
                         break;
-                    case StatusEnum.LAVA_SHIELD:
+                    case StatusEnum.LAVA_ARMOR:
                         var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 3);
                         attacker.AddStatus(burn);
 
-                        var damageInstance = new DamageInstance(null, null, StatusEnum.LAVA_SHIELD, status.inflicterGuid, attacker.combatHeroGuid);
+                        var damageInstance = new DamageInstance(null, null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
                         damageInstance.AddStatus(burn);
-                        output.Add(new DamageInstance(null, null, StatusEnum.LAVA_SHIELD, status.inflicterGuid, attacker.combatHeroGuid));
+                        output.Add(new DamageInstance(null, null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
                         break;
                     case StatusEnum.THORN_ARMOR:
                         var damage = status.value;

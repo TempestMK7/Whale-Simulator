@@ -112,9 +112,10 @@ public class CombatHero : IComparable<CombatHero> {
     public void CountDownStatus(bool modifiesAttack) {
         var newStatus = new List<StatusContainer>();
         foreach (StatusContainer status in currentStatus) {
+            var statusDisplay = StatusDisplayContainer.GetStatusDisplay(status.status);
             if (status.turnsRemaining == StatusContainer.INDEFINITE) {
                 newStatus.Add(status);
-            } else if (modifiesAttack == StatusContainer.ModifiesAttack(status.status)) {
+            } else if (modifiesAttack == statusDisplay.ModifiesAttack) {
                 status.turnsRemaining--;
                 if (status.turnsRemaining > 0) {
                     newStatus.Add(status);
@@ -182,7 +183,7 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier += status.value;
             } else if (status.status == StatusEnum.SPEED_DOWN) {
                 multiplier -= status.value;
-            } else if (status.status == StatusEnum.CHILLED) {
+            } else if (status.status == StatusEnum.CHILL) {
                 multiplier -= status.value;
             }
         }

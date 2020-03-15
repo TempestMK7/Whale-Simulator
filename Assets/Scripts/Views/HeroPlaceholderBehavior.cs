@@ -85,10 +85,21 @@ public class HeroPlaceholderBehavior : MonoBehaviour {
     public void AnimateDamageInstance(DamageInstance damageInstance) {
         combatHero.currentHealth -= damageInstance.damage;
         combatHero.currentHealth += damageInstance.healing;
+        combatHero.currentEnergy += damageInstance.energy;
+        combatTextHolder.AnimateDamageInstance(damageInstance);
+
         if (damageInstance.damage > 0) {
-            combatTextHolder.AnimateDamage(damageInstance.damage);
-        } else if (damageInstance.healing > 0) {
-            combatTextHolder.AnimateHealing(damageInstance.healing);
+            animator.SetTrigger("TakeDamage");
         }
+
+        if (damageInstance.wasFatal) {
+            animator.SetTrigger("Die");
+            StartCoroutine(FadeOutHealthCanvas());
+        }
+    }
+
+    private IEnumerator FadeOutHealthCanvas() {
+        yield return new WaitForSeconds(1f);
+        healthCanvas.gameObject.SetActive(false);
     }
 }

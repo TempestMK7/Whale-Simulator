@@ -15,6 +15,11 @@ public class CombatText : MonoBehaviour {
         display.color = textColor;
     }
 
+    public void SetText(string text, Color textColor) {
+        display.text = text;
+        display.color = textColor;
+    }
+
     public void Awake() {
         StartCoroutine(FloatUpwards());
         StartCoroutine(AnimateFontSize());

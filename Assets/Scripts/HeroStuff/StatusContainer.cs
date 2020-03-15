@@ -27,9 +27,11 @@ public class StatusContainer {
     }
 
     public string ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
+        var display = StatusDisplayContainer.GetStatusDisplay(status);
         var inflicterName = heroDict[inflicterGuid].HeroName;
+        var verb = display.IsBeneficial ? "bestowed" : "inflicted";
         var valueSuffix = value == 0 ? "." : string.Format(" with a value of {0}", value.ToString("0.0"));
-        return string.Format("{0} inflicted {1} for {2} turns{3}", inflicterName, status, turnsRemaining, valueSuffix);
+        return string.Format("{0} {1} {2} for {3} turns{4}", inflicterName, verb, display.StatusName, turnsRemaining, valueSuffix);
     }
 
     public static List<DamageInstance> EvaluateStatusEndOfTurn(CombatHero hero) {
@@ -46,7 +48,7 @@ public class StatusContainer {
                     damageInstance.damage = damage;
                     instances.Add(damageInstance);
                     break;
-                case StatusEnum.HEALING:
+                case StatusEnum.REGENERATION:
                     var healing = status.value;
                     hero.currentHealth += healing;
 
@@ -70,49 +72,6 @@ public class StatusContainer {
         hero.CountDownStatus(false);
         return instances;
     }
-
-    public static bool BlocksMelee(StatusEnum status) {
-        switch (status) {
-            case StatusEnum.STUN:
-            case StatusEnum.ROOT:
-            case StatusEnum.FROZEN:
-                return true;
-            default: return false;
-        }
-    }
-
-    public static bool BlocksRanged(StatusEnum status) {
-        switch (status) {
-            case StatusEnum.STUN:
-            case StatusEnum.BLIND:
-            case StatusEnum.FROZEN:
-                return true;
-            default: return false;
-        }
-    }
-
-    // These effects are counted down whenever the owner tries to attack.
-    // The others are counted down at end of turn.
-    public static bool ModifiesAttack(StatusEnum status) {
-        switch (status) {
-            case StatusEnum.STUN:
-            case StatusEnum.BLIND:
-            case StatusEnum.ROOT:
-            case StatusEnum.DOWSE:
-            case StatusEnum.CHILLED:
-            case StatusEnum.FROZEN:
-            case StatusEnum.DAZE:
-            case StatusEnum.ATTACK_UP:
-            case StatusEnum.MAGIC_UP:
-            case StatusEnum.SPEED_UP:
-            case StatusEnum.ATTACK_DOWN:
-            case StatusEnum.MAGIC_DOWN:
-            case StatusEnum.SPEED_DOWN:
-                return true;
-            default:
-                return false;
-        }
-    }
 }
 
 public enum StatusEnum {
@@ -124,16 +83,16 @@ public enum StatusEnum {
     BURN =              5,
     POISON =            6,
 
-    HEALING =           7,
+    REGENERATION =      7,
 
     THORN_ARMOR =       8,
-    LAVA_SHIELD =       9,
+    LAVA_ARMOR =        9,
     ICE_ARMOR =         10,
     EARTH_ARMOR =       11,
 
     DOWSE =             12,
-    CHILLED =           13,
-    FROZEN =            14,
+    CHILL =             13,
+    FREEZE =            14,
 
     DAZE =              15,
 
@@ -148,4 +107,90 @@ public enum StatusEnum {
     DEFENSE_DOWN =      23,
     REFLECTION_DOWN =   24,
     SPEED_DOWN =        25
+}
+
+public class StatusDisplay {
+
+    public StatusEnum Status { get; }
+    public string StatusName { get; }
+    public FactionEnum AssociatedFaction { get; }
+    public bool IsBeneficial { get; }
+    public bool ModifiesAttack { get; }
+    public bool BlocksMelee { get; }
+    public bool BlocksRanged { get; }
+
+    public StatusDisplay(StatusEnum status, string statusName, FactionEnum associatedFaction,
+        bool isBeneficial, bool modifiesAttack, bool blocksMelee, bool blocksRanged) {
+        Status = status;
+        StatusName = statusName;
+        AssociatedFaction = associatedFaction;
+        IsBeneficial = isBeneficial;
+        ModifiesAttack = modifiesAttack;
+        BlocksMelee = blocksMelee;
+        BlocksRanged = blocksRanged;
+    }
+}
+
+public class StatusDisplayContainer {
+
+    private static Dictionary<StatusEnum, StatusDisplay> statusDict;
+
+    public static void Intialize() {
+        statusDict = new Dictionary<StatusEnum, StatusDisplay>();
+        statusDict[StatusEnum.STUN] = new StatusDisplay(StatusEnum.STUN, "Stun", FactionEnum.ELECTRIC,
+            false, true, true, true);
+        statusDict[StatusEnum.BLIND] = new StatusDisplay(StatusEnum.BLIND, "Blind", FactionEnum.ELECTRIC,
+            false, true, false, true);
+        statusDict[StatusEnum.ROOT] = new StatusDisplay(StatusEnum.ROOT, "Entangle", FactionEnum.GRASS,
+            false, true, true, false);
+        statusDict[StatusEnum.BLEED] = new StatusDisplay(StatusEnum.BLEED, "Bleed", FactionEnum.GRASS,
+            false, false, false, false);
+        statusDict[StatusEnum.BURN] = new StatusDisplay(StatusEnum.BURN, "Burn", FactionEnum.FIRE,
+            false, false, false, false);
+        statusDict[StatusEnum.POISON] = new StatusDisplay(StatusEnum.POISON, "Poison", FactionEnum.GRASS,
+            false, false, false, false);
+        statusDict[StatusEnum.REGENERATION] = new StatusDisplay(StatusEnum.REGENERATION, "Regeneration", FactionEnum.WATER,
+            true, false, false, false);
+        statusDict[StatusEnum.THORN_ARMOR] = new StatusDisplay(StatusEnum.THORN_ARMOR, "Thorn Armor", FactionEnum.GRASS,
+            true, false, false, false);
+        statusDict[StatusEnum.LAVA_ARMOR] = new StatusDisplay(StatusEnum.LAVA_ARMOR, "Lava Armor", FactionEnum.FIRE,
+            true, false, false, false);
+        statusDict[StatusEnum.ICE_ARMOR] = new StatusDisplay(StatusEnum.ICE_ARMOR, "Ice Armor", FactionEnum.ICE,
+            true, false, false, false);
+        statusDict[StatusEnum.EARTH_ARMOR] = new StatusDisplay(StatusEnum.EARTH_ARMOR, "Earth Armor", FactionEnum.EARTH,
+            true, false, false, false);
+        statusDict[StatusEnum.DOWSE] = new StatusDisplay(StatusEnum.DOWSE, "Dowse", FactionEnum.WATER,
+            false, true, false, false);
+        statusDict[StatusEnum.CHILL] = new StatusDisplay(StatusEnum.CHILL, "Chill", FactionEnum.ICE,
+            false, true, false, false);
+        statusDict[StatusEnum.FREEZE] = new StatusDisplay(StatusEnum.FREEZE, "Freeze", FactionEnum.ICE,
+            false, true, true, true);
+        statusDict[StatusEnum.DAZE] = new StatusDisplay(StatusEnum.DAZE, "Daze", FactionEnum.ELECTRIC,
+            false, true, false, false);
+        statusDict[StatusEnum.ATTACK_UP] = new StatusDisplay(StatusEnum.ATTACK_UP, "Attack Up", FactionEnum.GRASS,
+            true, true, false, false);
+        statusDict[StatusEnum.MAGIC_UP] = new StatusDisplay(StatusEnum.MAGIC_UP, "Magic Up", FactionEnum.FIRE,
+            true, true, false, false);
+        statusDict[StatusEnum.DEFENSE_UP] = new StatusDisplay(StatusEnum.DEFENSE_UP, "Defense Up", FactionEnum.EARTH,
+            true, false, false, false);
+        statusDict[StatusEnum.REFLECTION_UP] = new StatusDisplay(StatusEnum.REFLECTION_UP, "Reflection Up", FactionEnum.ICE,
+            true, false, false, false);
+        statusDict[StatusEnum.SPEED_UP] = new StatusDisplay(StatusEnum.SPEED_UP, "Speed Up", FactionEnum.ELECTRIC,
+            true, true, false, false);
+        statusDict[StatusEnum.ATTACK_DOWN] = new StatusDisplay(StatusEnum.ATTACK_DOWN, "Attack Down", FactionEnum.GRASS,
+            false, true, false, false);
+        statusDict[StatusEnum.MAGIC_DOWN] = new StatusDisplay(StatusEnum.MAGIC_DOWN, "Magic Down", FactionEnum.FIRE,
+            false, true, false, false);
+        statusDict[StatusEnum.DEFENSE_DOWN] = new StatusDisplay(StatusEnum.DEFENSE_DOWN, "Defense Down", FactionEnum.EARTH,
+            false, false, false, false);
+        statusDict[StatusEnum.REFLECTION_DOWN] = new StatusDisplay(StatusEnum.REFLECTION_DOWN, "Reflection Down", FactionEnum.ICE,
+            false, false, false, false);
+        statusDict[StatusEnum.SPEED_DOWN] = new StatusDisplay(StatusEnum.SPEED_DOWN, "Speed Down", FactionEnum.ELECTRIC,
+            false, true, false, false);
+    }
+
+    public static StatusDisplay GetStatusDisplay(StatusEnum status) {
+        if (statusDict == null) Intialize();
+        return statusDict[status];
+    }
 }
