@@ -1,456 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class AttackContainer {
     
     public static CombatStep PerformAttack(CombatHero attacker, List<CombatHero> allies, List<CombatHero> enemies) {
         var step = new CombatStep(attacker, allies, enemies, false);
-        if (!CanAttack(attacker)) return step;
+        if (!CanBasicAttack(attacker)) return step;
 
-        switch (attacker.baseHero.BasicAttack) {
-            case AttackEnum.BASIC_PHYSICAL:
-            case AttackEnum.PETAL_SLAP:
-            case AttackEnum.ICICLE_THROW:
-            case AttackEnum.ICE_PUNCH:
-            case AttackEnum.ROCK_SLAM:
-            case AttackEnum.PEBBLE_TOSS:
-            case AttackEnum.AXE_SLASH:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.BASIC_MAGIC:
-            case AttackEnum.LIGHTNING_BOLT:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic(), target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.VAPOR_CLOUD:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.5, target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 15;
-                    step.energyGained += 15;
-                    target.currentEnergy += energy;
-
-                    var dowseStatus = new StatusContainer(StatusEnum.DOWSE, attacker.combatHeroGuid, 0.0, 3);
-                    target.AddStatus(dowseStatus);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(dowseStatus);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.FISH_SLAP:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    var defenseDownStatus = new StatusContainer(StatusEnum.DEFENSE_DOWN, attacker.combatHeroGuid, 0.2, 2);
-                    target.AddStatus(defenseDownStatus);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(defenseDownStatus);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.WATER_RENEW:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.75, target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 15;
-                    step.energyGained += 15;
-                    target.currentEnergy += energy;
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    step.damageInstances.Add(damageInstance);
-                }
-                foreach (CombatHero ally in allies) {
-                    var healing = attacker.GetModifiedMagic() * 0.25;
-                    var actualHealing = ally.ReceiveHealing(healing);
-                    step.totalHealing += actualHealing;
-                    attacker.currentEnergy += 15;
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, ally.combatHeroGuid);
-                    damageInstance.healing = actualHealing;
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.NEEDLE_STAB:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    var poisonStatus = new StatusContainer(StatusEnum.POISON, attacker.combatHeroGuid, attacker.GetModifiedAttack() * 0.2, 2);
-                    target.AddStatus(poisonStatus);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(poisonStatus);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.SPEAR_THROW:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack() * 0.5, target.GetModifiedDefense(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    var poisonStatus = new StatusContainer(StatusEnum.POISON, attacker.combatHeroGuid, attacker.GetModifiedAttack() * 0.1, 2);
-                    target.AddStatus(poisonStatus);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(poisonStatus);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.BRANCH_SLAM:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    StatusContainer status;
-                    // Note that branch slam only checks for daze and not dowse when applying stun.
-                    if (target.HasStatus(StatusEnum.DAZE)) {
-                        status = new StatusContainer(StatusEnum.STUN, attacker.combatHeroGuid, 0.0, 1);
-                    } else {
-                        status = new StatusContainer(StatusEnum.DAZE, attacker.combatHeroGuid, 0.2, 2);
-                    }
-                    target.AddStatus(status);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(status);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.SCORCH:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 15;
-                    step.energyGained += 15;
-                    target.currentEnergy += energy;
-
-                    var burnStatus = new StatusContainer(StatusEnum.BURN, attacker.combatHeroGuid, attacker.GetModifiedMagic() * 0.2f, 3);
-                    target.AddStatus(burnStatus);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(burnStatus);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.FIRE_PUNCH:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack(), target.GetModifiedDefense(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    var burnStatus = new StatusContainer(StatusEnum.BURN, attacker.combatHeroGuid, attacker.GetModifiedMagic() * 0.25f, 5);
-                    target.AddStatus(burnStatus);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(burnStatus);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.SNOWY_WIND:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 15;
-                    step.energyGained += 15;
-                    target.currentEnergy += energy;
-
-                    StatusContainer status;
-                    if (target.HasStatus(StatusEnum.CHILL) || target.HasStatus(StatusEnum.DOWSE)) {
-                        status = new StatusContainer(StatusEnum.FREEZE, attacker.combatHeroGuid, 0.0, 1);
-                    } else {
-                        status = new StatusContainer(StatusEnum.CHILL, attacker.combatHeroGuid, 0.2, 2);
-                    }
-                    target.AddStatus(status);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(status);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.SPARK:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic(), target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    StatusContainer status;
-                    if (target.HasStatus(StatusEnum.DAZE) || target.HasStatus(StatusEnum.DOWSE)) {
-                        status = new StatusContainer(StatusEnum.STUN, attacker.combatHeroGuid, 0.0, 1);
-                    } else {
-                        status = new StatusContainer(StatusEnum.DAZE, attacker.combatHeroGuid, 0.2, 2);
-                    }
-                    target.AddStatus(status);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(status);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.ENERGY_DRAIN:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic(), target.GetModifiedReflection(), hitType);
-                    var energy = -5;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 35;
-                    step.energyGained += 35;
-                    target.currentEnergy += energy;
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-            case AttackEnum.FORKED_LIGHTNING:
-                foreach (CombatHero target in enemies) {
-                    var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 0.4, target.GetModifiedReflection(), hitType);
-                    var energy = 10;
-                    target.currentHealth -= damage;
-                    step.totalDamage += damage;
-                    attacker.currentEnergy += 25;
-                    step.energyGained += 25;
-                    target.currentEnergy += energy;
-
-                    StatusContainer status;
-                    if (target.HasStatus(StatusEnum.DAZE) || target.HasStatus(StatusEnum.DOWSE)) {
-                        status = new StatusContainer(StatusEnum.STUN, attacker.combatHeroGuid, 0.0, 1);
-                    } else {
-                        status = new StatusContainer(StatusEnum.DAZE, attacker.combatHeroGuid, 0.2, 2);
-                    }
-                    target.AddStatus(status);
-
-                    var damageInstance = new DamageInstance(attacker.baseHero.BasicAttack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
-                    damageInstance.damage = damage;
-                    damageInstance.energy = energy;
-                    damageInstance.hitType = hitType;
-                    damageInstance.AddStatus(status);
-                    step.damageInstances.Add(damageInstance);
-                }
-                break;
-        }
+        var attackInfo = AttackInfoContainer.GetAttackInfo(attacker.baseHero.BasicAttack);
 
         foreach (CombatHero target in enemies) {
+            step.damageInstances.Add(attackInfo.ApplyAttackToEnemy(attacker, target));
             if (!target.IsAlive()) {
                 target.currentHealth = 0;
                 target.currentEnergy = 0;
                 target.currentStatus.Clear();
 
-                var damageInstance = new DamageInstance(null, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
+                var damageInstance = new DamageInstance(attackInfo.Attack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
                 damageInstance.wasFatal = true;
                 step.damageInstances.Add(damageInstance);
             }
+        }
+
+        foreach (CombatHero ally in allies) {
+            step.damageInstances.Add(attackInfo.ApplyAttackToAlly(attacker, ally));
         }
 
         step.damageInstances.AddRange(CombatMath.EvaluateNegativeSideEffects(attacker, enemies));
         return step;
     }
 
-    public static List<CombatHero> DecideTargets(CombatHero attacker, CombatHero[] enemies) {
-        var targets = new List<CombatHero>();
-        switch (attacker.baseHero.BasicAttack) {
-            case AttackEnum.VAPOR_CLOUD:
-            case AttackEnum.SPEAR_THROW:
-            case AttackEnum.SCORCH:
-            case AttackEnum.SNOWY_WIND:
-            case AttackEnum.FORKED_LIGHTNING:
-                targets.AddRange(CombatMath.SelectAtRandom(enemies, 2));
-                break;
-            case AttackEnum.WATER_RENEW:
-                targets.AddRange(CombatMath.SelectAtRandom(enemies, 1));
-                break;
-            case AttackEnum.NEEDLE_STAB:
-            case AttackEnum.ICICLE_THROW:
-                targets.Add(CombatMath.LowestHealth(enemies));
-                break;
-            case AttackEnum.ENERGY_DRAIN:
-                targets.Add(CombatMath.HighestEnergy(enemies));
-                break;
-            case AttackEnum.BASIC_PHYSICAL:
-            case AttackEnum.BASIC_MAGIC:
-            case AttackEnum.FISH_SLAP:
-            case AttackEnum.PETAL_SLAP:
-            case AttackEnum.BRANCH_SLAM:
-            case AttackEnum.FIRE_PUNCH:
-            case AttackEnum.ICE_PUNCH:
-            case AttackEnum.SPARK:
-            case AttackEnum.LIGHTNING_BOLT:
-            case AttackEnum.ROCK_SLAM:
-            case AttackEnum.PEBBLE_TOSS:
-            case AttackEnum.AXE_SLASH:
-            default:
-                targets.Add(CombatMath.FirstAlive(enemies));
-                break;
-        }
-        return targets;
-    }
+    public static bool CanBasicAttack(CombatHero hero) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(hero.baseHero.BasicAttack);
 
-    public static List<CombatHero> DecideAllies(CombatHero attacker, CombatHero[] allies) {
-        var targets = new List<CombatHero>();
-        switch (attacker.baseHero.BasicAttack) {
-            case AttackEnum.WATER_RENEW:
-                targets.Add(CombatMath.LowestHealth(allies));
-                break;
-            default:
-                break;
-        }
-        return targets;
-    }
-
-    public static bool CanAttack(CombatHero hero) {
-        bool isMelee;
-        bool isRanged;
-        switch (hero.baseHero.BasicAttack) {
-            case AttackEnum.BASIC_PHYSICAL:
-            case AttackEnum.FISH_SLAP:
-            case AttackEnum.FIRE_PUNCH:
-            case AttackEnum.PETAL_SLAP:
-            case AttackEnum.NEEDLE_STAB:
-            case AttackEnum.BRANCH_SLAM:
-            case AttackEnum.ICE_PUNCH:
-            case AttackEnum.SPARK:
-            case AttackEnum.ENERGY_DRAIN:
-            case AttackEnum.ROCK_SLAM:
-            case AttackEnum.AXE_SLASH:
-                isMelee = true;
-                isRanged = false;
-                break;
-            case AttackEnum.BASIC_MAGIC:
-            case AttackEnum.VAPOR_CLOUD:
-            case AttackEnum.WATER_RENEW:
-            case AttackEnum.SCORCH:
-            case AttackEnum.SPEAR_THROW:
-            case AttackEnum.ICICLE_THROW:
-            case AttackEnum.SNOWY_WIND:
-            case AttackEnum.LIGHTNING_BOLT:
-            case AttackEnum.PEBBLE_TOSS:
-                isMelee = false;
-                isRanged = true;
-                break;
-            default:
-                isMelee = true;
-                isRanged = false;
-                break;
-        }
-
-        if (isMelee) {
+        if (attackInfo.IsMelee) {
             foreach (StatusContainer status in hero.currentStatus) {
                 var display = StatusDisplayContainer.GetStatusDisplay(status.status);
                 if (display.BlocksMelee) return false;
             }
         } 
 
-        if (isRanged) {
+        if (attackInfo.IsRanged) {
             foreach (StatusContainer status in hero.currentStatus) {
                 var display = StatusDisplayContainer.GetStatusDisplay(status.status);
                 if (display.BlocksRanged) return false;
@@ -483,4 +75,291 @@ public enum AttackEnum {
     ROCK_SLAM = 19,
     PEBBLE_TOSS = 20,
     AXE_SLASH = 21
+}
+
+public class AttackInfoContainer {
+
+    private static Dictionary<AttackEnum, AttackInfo> attackDict;
+
+    public static void Initialize() {
+        if (attackDict != null) return;
+        attackDict = new Dictionary<AttackEnum, AttackInfo>();
+        attackDict[AttackEnum.BASIC_PHYSICAL] = new AttackInfo(
+            AttackEnum.BASIC_PHYSICAL, "Basic Physical", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.BASIC_MAGIC] = new AttackInfo(
+            AttackEnum.BASIC_MAGIC, "Basic Magic", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.VAPOR_CLOUD] = new AttackInfo(
+            AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            0.5, 0, 15, 10, 0,
+            StatusEnum.DOWSE, 0, 2, null, 0, 0);
+        attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
+            AttackEnum.FISH_SLAP, "Fish Slap", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.WATER_RENEW] = new AttackInfo(
+            AttackEnum.WATER_RENEW, "Water Renew", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.RANDOM, 1, TargetType.LOWEST_HEALTH, 1,
+            0.6, 0.2, 15, 10, 0,
+            null, 0, 0, StatusEnum.REGENERATION, 0.2, 2);
+        attackDict[AttackEnum.PETAL_SLAP] = new AttackInfo(
+            AttackEnum.PETAL_SLAP, "Petal Slap", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.NEEDLE_STAB] = new AttackInfo(
+            AttackEnum.NEEDLE_STAB, "Needle Stab", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            StatusEnum.POISON, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.SPEAR_THROW] = new AttackInfo(
+            AttackEnum.SPEAR_THROW, "Spear Throw", "Icons/RoleDamage",
+            false, true, true,
+            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            0.4, 0, 15, 10, 0,
+            StatusEnum.POISON, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.BRANCH_SLAM] = new AttackInfo(
+            AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.SCORCH] = new AttackInfo(
+            AttackEnum.SCORCH, "Scorch", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            0.4, 0, 15, 10, 0,
+            StatusEnum.BURN, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.FIRE_PUNCH] = new AttackInfo(
+            AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            0.8, 0, 25, 10, 0,
+            StatusEnum.BURN, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.ICE_PUNCH] = new AttackInfo(
+            AttackEnum.ICE_PUNCH, "Ice Slam", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            0.8, 0, 25, 10, 0,
+            StatusEnum.CHILL, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.ICICLE_THROW] = new AttackInfo(
+            AttackEnum.ICICLE_THROW, "Icicle Throw", "Icons/RoleDamage",
+            false, true, true,
+            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.SNOWY_WIND] = new AttackInfo(
+            AttackEnum.SNOWY_WIND, "Snowy Wind", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            0.4, 0, 15, 10, 0,
+            StatusEnum.CHILL, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.SPARK] = new AttackInfo(
+            AttackEnum.SPARK, "Spark", "Icons/RoleDamage",
+            true, false, false,
+            TargetType.RANDOM, 1, TargetType.FIRST_ALIVE, 0,
+            0.8, 0, 25, 10, 0,
+            StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.ENERGY_DRAIN] = new AttackInfo(
+            AttackEnum.ENERGY_DRAIN, "Energy Drain", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.RANDOM, 1, TargetType.RANDOM, 1,
+            0.6, 0, 35, -10, 10,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.LIGHTNING_BOLT] = new AttackInfo(
+            AttackEnum.LIGHTNING_BOLT, "Lightning Bolt", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.FORKED_LIGHTNING] = new AttackInfo(
+            AttackEnum.FORKED_LIGHTNING, "Forked Lightning", "Icons/RoleDamage",
+            false, true, false,
+            TargetType.RANDOM, 2, TargetType.FIRST_ALIVE, 0,
+            0.4, 0, 15, 10, 0,
+            StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.ROCK_SLAM] = new AttackInfo(
+            AttackEnum.ROCK_SLAM, "Rock Slam", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            StatusEnum.ATTACK_DOWN, 0.2, 2, null, 0, 0);
+        attackDict[AttackEnum.PEBBLE_TOSS] = new AttackInfo(
+            AttackEnum.PEBBLE_TOSS, "Pebble Toss", "Icons/RoleDamage",
+            false, true, true,
+            TargetType.LOWEST_HEALTH, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            null, 0, 0, null, 0, 0);
+        attackDict[AttackEnum.AXE_SLASH] = new AttackInfo(
+            AttackEnum.AXE_SLASH, "Axe Slash", "Icons/RoleDamage",
+            true, false, true,
+            TargetType.FIRST_ALIVE, 1, TargetType.FIRST_ALIVE, 0,
+            1, 0, 25, 10, 0,
+            StatusEnum.DEFENSE_DOWN, 0.2, 3, null, 0, 0);
+    }
+
+    public static AttackInfo GetAttackInfo(AttackEnum attack) {
+        if (attackDict == null) Initialize();
+        return attackDict[attack];
+    }
+}
+
+public class AttackInfo {
+
+    public AttackEnum Attack { get; }
+    public string AttackName { get; }
+    public Sprite AttackIcon { get; }
+    public bool IsMelee { get; }
+    public bool IsRanged { get; }
+    public bool IsPhysical { get; }
+    public TargetType EnemyTargetType { get; }
+    public int EnemyTargetCount { get; }
+    public TargetType AllyTargetType { get; }
+    public int AllyTargetCount { get; }
+    public double DamageMultiplier { get; }
+    public double HealingMultiplier { get; }
+    public int AttackerEnergyGained { get; }
+    public int TargetEnergyGained { get; }
+    public int AllyEnergyGained { get; }
+    public StatusEnum? TargetStatus { get; }
+    public double TargetStatusValue { get; }
+    public int TargetStatusDuration { get; }
+    public StatusEnum? AllyStatus { get; }
+    public double AllyStatusValue { get; }
+    public int AllyStatusDuration { get; }
+
+    public AttackInfo(AttackEnum attack, string attackName, string attackIcon,
+        bool isMelee, bool isRanged, bool isPhysical,
+        TargetType enemyTargetType, int enemyTargetCount, TargetType allyTargetType, int allyTargetCount,
+        double damageMultiplier, double healingMultiplier,
+        int attackerEnergyGained, int targetEnergyGained, int allyEnergyGained,
+        StatusEnum? targetStatus, double targetStatusValue, int targetStatusDuration,
+        StatusEnum? allyStatus, double allyStatusValue, int allyStatusDuration) {
+
+        Attack = attack;
+        AttackName = attackName;
+        AttackIcon = Resources.Load<Sprite>(attackIcon);
+
+        IsMelee = isMelee;
+        IsRanged = isRanged;
+        IsPhysical = isPhysical;
+
+        EnemyTargetType = enemyTargetType;
+        EnemyTargetCount = enemyTargetCount;
+        AllyTargetType = allyTargetType;
+        AllyTargetCount = allyTargetCount;
+
+        DamageMultiplier = damageMultiplier;
+        HealingMultiplier = healingMultiplier;
+
+        AttackerEnergyGained = attackerEnergyGained;
+        TargetEnergyGained = targetEnergyGained;
+        AllyEnergyGained = allyEnergyGained;
+
+        TargetStatus = targetStatus;
+        TargetStatusValue = targetStatusValue;
+        TargetStatusDuration = targetStatusDuration;
+
+        AllyStatus = allyStatus;
+        AllyStatusValue = allyStatusValue;
+        AllyStatusDuration = allyStatusDuration;
+    }
+
+    public DamageInstance ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
+        var hitType = CombatMath.RollHitType(attacker, target);
+        var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
+        var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
+        var defenseValue = IsPhysical ? attacker.GetModifiedDefense() : attacker.GetModifiedReflection();
+        var damage = CombatMath.Damage(attackValue * DamageMultiplier, defenseValue, hitType, hitEffectivity);
+        target.currentHealth -= damage;
+        target.currentEnergy += TargetEnergyGained;
+        attacker.currentEnergy += AttackerEnergyGained;
+
+        var damageInstance = new DamageInstance(Attack, null, null, attacker.combatHeroGuid, target.combatHeroGuid);
+        damageInstance.damage = damage;
+        damageInstance.energy = TargetEnergyGained;
+        damageInstance.hitType = hitType;
+
+        if (TargetStatus != null) {
+            var inflictedStatus = TargetStatus.GetValueOrDefault();
+            var statusValue = TargetStatusValue;
+            var statusDuration = TargetStatusDuration;
+            switch (inflictedStatus) {
+                case StatusEnum.BURN:
+                    statusValue *= attacker.GetModifiedMagic();
+                    break;
+                case StatusEnum.BLEED:
+                    statusValue *= attacker.GetModifiedAttack();
+                    break;
+                case StatusEnum.POISON:
+                    statusValue *= attacker.GetModifiedMagic();
+                    break;
+                case StatusEnum.CHILL:
+                    if (target.HasStatus(StatusEnum.CHILL) || target.HasStatus(StatusEnum.DOWSE)) {
+                        inflictedStatus = StatusEnum.FREEZE;
+                        statusValue = 0;
+                        statusDuration = 1;
+                    }
+                    break;
+                case StatusEnum.DAZE:
+                    if (target.HasStatus(StatusEnum.DAZE) || (target.HasStatus(StatusEnum.DOWSE) && attacker.baseHero.Faction == FactionEnum.ELECTRIC)) {
+                        inflictedStatus = StatusEnum.STUN;
+                        statusValue = 0;
+                        statusDuration = 1;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            var statusContainer = new StatusContainer(inflictedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
+            target.AddStatus(statusContainer);
+            damageInstance.AddStatus(statusContainer);
+        }
+
+        return damageInstance;
+    }
+
+    public DamageInstance ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
+        var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
+        var healing = attackValue * HealingMultiplier;
+        ally.currentHealth += healing;
+        ally.currentEnergy += AllyEnergyGained;
+        attacker.currentEnergy += AttackerEnergyGained;
+
+        var damageInstance = new DamageInstance(Attack, null, null, attacker.combatHeroGuid, ally.combatHeroGuid);
+        damageInstance.healing = healing;
+        damageInstance.energy = AllyEnergyGained;
+
+        if (AllyStatus != null) {
+            var bestowedStatus = AllyStatus.GetValueOrDefault();
+            var statusValue = AllyStatusValue;
+            var statusDuration = AllyStatusDuration;
+            switch (bestowedStatus) {
+                case StatusEnum.REGENERATION:
+                    statusValue *= attacker.GetModifiedMagic();
+                    break;
+                default:
+                    break;
+            }
+            var statusContainer = new StatusContainer(bestowedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
+            ally.AddStatus(statusContainer);
+            damageInstance.AddStatus(statusContainer);
+        }
+
+        return damageInstance;
+    }
 }

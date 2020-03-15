@@ -11,7 +11,8 @@ public class SpecialAttackContainer {
             case SpecialAttackEnum.BASIC_PHYSICAL:
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedAttack() * 3.0, target.GetModifiedDefense(), hitType);
+                    var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
+                    var damage = CombatMath.Damage(attacker.GetModifiedAttack() * 3.0, target.GetModifiedDefense(), hitType, hitEffectivity);
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
 
@@ -26,7 +27,8 @@ public class SpecialAttackContainer {
             case SpecialAttackEnum.BASIC_MAGIC:
                 foreach (CombatHero target in enemies) {
                     var hitType = CombatMath.RollHitType(attacker, target);
-                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 3.0, target.GetModifiedReflection(), hitType);
+                    var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
+                    var damage = CombatMath.Damage(attacker.GetModifiedMagic() * 3.0, target.GetModifiedReflection(), hitType, hitEffectivity);
                     target.currentHealth -= damage;
                     step.totalDamage += damage;
 

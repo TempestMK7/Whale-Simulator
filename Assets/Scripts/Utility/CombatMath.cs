@@ -15,7 +15,7 @@ public class CombatMath {
         return randomGen.Next(lower, upper);
     }
 
-    public static double Damage(double attack, double defense, HitType hitType) {
+    public static double Damage(double attack, double defense, HitType hitType, HitEffectivity hitEffectivity) {
         var modifiedDefense = defense;
         if (hitType == HitType.CRITICAL) {
             modifiedDefense = 0.0;
@@ -23,7 +23,13 @@ public class CombatMath {
             modifiedDefense *= 2.0;
         }
         var mitigation = Math.Pow(0.5, modifiedDefense / 200);
-        return attack * mitigation;
+        var damage = attack * mitigation;
+        if (hitEffectivity == HitEffectivity.EMPOWERED) {
+            damage *= 1.5;
+        } else if (hitEffectivity == HitEffectivity.RESISTED) {
+            damage *= 2.0 / 3.0;
+        }
+        return damage;
     }
 
     public static HitType RollHitType(CombatHero attacker, CombatHero defender) {
@@ -52,6 +58,33 @@ public class CombatMath {
         }
     }
 
+    public static HitEffectivity GetEffectivity(CombatHero attacker, CombatHero target) {
+        var attackerFaction = attacker.baseHero.Faction;
+        var targetFaction = target.baseHero.Faction;
+        if (IsEmpowered(attackerFaction, targetFaction)) return HitEffectivity.EMPOWERED;
+        if (IsEmpowered(targetFaction, attackerFaction)) return HitEffectivity.RESISTED;
+        return HitEffectivity.NORMAL;
+    }
+
+    public static bool IsEmpowered(FactionEnum attacking, FactionEnum defending) {
+        switch (attacking) {
+            case FactionEnum.WATER:
+                return defending == FactionEnum.FIRE || defending == FactionEnum.EARTH;
+            case FactionEnum.GRASS:
+                return defending == FactionEnum.WATER || defending == FactionEnum.ELECTRIC;
+            case FactionEnum.FIRE:
+                return defending == FactionEnum.GRASS || defending == FactionEnum.ICE;
+            case FactionEnum.ICE:
+                return defending == FactionEnum.GRASS || defending == FactionEnum.EARTH;
+            case FactionEnum.EARTH:
+                return defending == FactionEnum.FIRE || defending == FactionEnum.ELECTRIC;
+            case FactionEnum.ELECTRIC:
+                return defending == FactionEnum.WATER || defending == FactionEnum.ICE;
+            default:
+                return false;
+        }
+    }
+
     public static CombatHero FirstAlive(CombatHero[] heroes) {
         foreach (CombatHero hero in heroes) {
             if (hero != null && hero.currentHealth > 0) return hero;
@@ -59,40 +92,68 @@ public class CombatMath {
         return heroes[0];
     }
 
-    public static CombatHero LowestHealth(CombatHero[] heroes) {
-        double lowestHealth = double.MaxValue;
-        CombatHero selection = null;
-        foreach (CombatHero hero in heroes) {
-            if (hero != null && hero.IsAlive() && hero.currentHealth < lowestHealth) {
-                lowestHealth = hero.currentHealth;
-                selection = hero;
+    public static List<CombatHero> LowestHealth(CombatHero[] heroes, int targetCount) {
+        var allLiving = AllLiving(heroes);
+        while (allLiving.Count > targetCount) {
+            double highestHealth = double.MinValue;
+            CombatHero selection = null;
+            foreach (CombatHero hero in allLiving) {
+                if (hero.currentHealth > highestHealth) {
+                    highestHealth = hero.currentHealth;
+                    selection = hero;
+                }
             }
+            allLiving.Remove(selection);
         }
-        return selection;
+        return allLiving;
     }
 
-    public static CombatHero HighestHealth(CombatHero[] heroes) {
-        double highestHealth = double.MinValue;
-        CombatHero selection = null;
-        foreach (CombatHero hero in heroes) {
-            if (hero != null && hero.IsAlive() && hero.currentHealth > highestHealth) {
-                highestHealth = hero.currentHealth;
-                selection = hero;
+    public static List<CombatHero> HighestHealth(CombatHero[] heroes, int targetCount) {
+        var allLiving = AllLiving(heroes);
+        while (allLiving.Count > targetCount) {
+            double lowestHealth = double.MaxValue;
+            CombatHero selection = null;
+            foreach (CombatHero hero in allLiving) {
+                if (hero.currentHealth < lowestHealth) {
+                    lowestHealth = hero.currentHealth;
+                    selection = hero;
+                }
             }
+            allLiving.Remove(selection);
         }
-        return selection;
+        return allLiving;
     }
 
-    public static CombatHero HighestEnergy(CombatHero[] heroes) {
-        double highestEnergy = double.MinValue;
-        CombatHero selection = null;
-        foreach (CombatHero hero in heroes) {
-            if (hero != null && hero.IsAlive() && hero.currentEnergy > highestEnergy) {
-                highestEnergy = hero.currentEnergy;
-                selection = hero;
+    public static List<CombatHero> LowestEnergy(CombatHero[] heroes, int targetCount) {
+        var allLiving = AllLiving(heroes);
+        while (allLiving.Count > targetCount) {
+            double highestEnergy = double.MinValue;
+            CombatHero selection = null;
+            foreach (CombatHero hero in allLiving) {
+                if (hero.currentEnergy > highestEnergy) {
+                    highestEnergy = hero.currentEnergy;
+                    selection = hero;
+                }
             }
+            allLiving.Remove(selection);
         }
-        return selection;
+        return allLiving;
+    }
+
+    public static List<CombatHero> HighestEnergy(CombatHero[] heroes, int targetCount) {
+        var allLiving = AllLiving(heroes);
+        while (allLiving.Count > targetCount) {
+            double lowestEnergy = double.MaxValue;
+            CombatHero selection = null;
+            foreach (CombatHero hero in allLiving) {
+                if (hero.currentEnergy < lowestEnergy) {
+                    lowestEnergy = hero.currentEnergy;
+                    selection = hero;
+                }
+            }
+            allLiving.Remove(selection);
+        }
+        return allLiving;
     }
 
     public static List<CombatHero> AllLiving(CombatHero[] heroes) {
@@ -113,6 +174,31 @@ public class CombatMath {
             alive.RemoveAt(selected);
         }
         return output;
+    }
+
+    public static List<CombatHero> DecideTargets(TargetType targetType, int targetCount, CombatHero[] potentialTargets) {
+        var targets = new List<CombatHero>();
+        switch (targetType) {
+            case TargetType.FIRST_ALIVE:
+                targets.Add(FirstAlive(potentialTargets));
+                break;
+            case TargetType.RANDOM:
+                targets.AddRange(SelectAtRandom(potentialTargets, targetCount));
+                break;
+            case TargetType.LOWEST_HEALTH:
+                targets.AddRange(LowestHealth(potentialTargets, targetCount));
+                break;
+            case TargetType.HIGHEST_HEALTH:
+                targets.AddRange(HighestHealth(potentialTargets, targetCount));
+                break;
+            case TargetType.LOWEST_ENERGY:
+                targets.AddRange(LowestEnergy(potentialTargets, targetCount));
+                break;
+            case TargetType.HIGHEST_ENERGY:
+                targets.AddRange(HighestEnergy(potentialTargets, targetCount));
+                break;
+        }
+        return targets;
     }
 
     public static List<DamageInstance> EvaluateNegativeSideEffects(CombatHero attacker, List<CombatHero> enemies) {
@@ -159,4 +245,12 @@ public class CombatMath {
 
 public enum HitType {
     NORMAL = 1, CRITICAL = 2, DEFLECTION = 3
+}
+
+public enum HitEffectivity {
+    NORMAL = 1, EMPOWERED = 2, RESISTED = 3
+}
+
+public enum TargetType {
+    FIRST_ALIVE = 1, RANDOM = 2, LOWEST_HEALTH = 3, HIGHEST_HEALTH = 4, LOWEST_ENERGY = 5, HIGHEST_ENERGY = 6
 }
