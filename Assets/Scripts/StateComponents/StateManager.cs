@@ -62,7 +62,7 @@ public class StateManager {
 
     public static void ClaimRewards(Action<object> handler) {
         GetCurrentState().ClaimMaterials();
-        handler.Invoke(null);
+        if (handler != null) handler.Invoke(null);
     }
 
     public static void CheatIdleCurrency(long millis) {
@@ -164,5 +164,17 @@ public class StateManager {
             }
         }
         return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
+    }
+
+    public static void IncrementCampaignPosition() {
+        ClaimRewards(null);
+        var state = GetCurrentState();
+        if (state.CurrentMission == 10) {
+            state.CurrentMission = 1;
+            state.CurrentChapter++;
+        } else {
+            state.CurrentMission++;
+        }
+        SaveState();
     }
 }

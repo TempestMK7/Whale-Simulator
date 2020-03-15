@@ -102,4 +102,8 @@ public class HeroPlaceholderBehavior : MonoBehaviour {
         yield return new WaitForSeconds(1f);
         healthCanvas.gameObject.SetActive(false);
     }
+
+    public void PlayDead() {
+        animator.SetTrigger("Die");
+    }
 }

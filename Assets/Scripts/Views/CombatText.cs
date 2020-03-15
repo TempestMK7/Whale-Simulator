@@ -38,8 +38,8 @@ public class CombatText : MonoBehaviour {
     }
 
     private IEnumerator AnimateFontSize() {
-        int fadeDuration = totalFrames / 10;
-        int fullDuration = fadeDuration * 8;
+        int fadeDuration = totalFrames / 6;
+        int fullDuration = totalFrames - (fadeDuration * 2);
 
         for (int x = 1; x <= fadeDuration; x++) {
             float percentage = (float)x / fadeDuration;

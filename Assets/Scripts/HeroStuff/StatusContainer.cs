@@ -63,7 +63,7 @@ public class StatusContainer {
                 hero.currentEnergy = 0;
                 hero.currentStatus.Clear();
 
-                var damageInstance = new DamageInstance(null, null, null, hero.combatHeroGuid, status.inflicterGuid);
+                var damageInstance = new DamageInstance(null, null, null, status.inflicterGuid, hero.combatHeroGuid);
                 damageInstance.wasFatal = true;
                 instances.Add(damageInstance);
                 return instances;

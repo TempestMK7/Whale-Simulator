@@ -16,6 +16,9 @@ public class BattleSceneManager : MonoBehaviour {
     public GameObject selectionPrefab;
 
     public GameObject statusPanel;
+    public Text turnText;
+    public UnityEngine.UI.Button saveReportButton;
+    public UnityEngine.UI.Button continueButton;
 
     public HeroPlaceholderBehavior[] allyHolders;
     public HeroPlaceholderBehavior[] enemyHolders;
@@ -228,7 +231,10 @@ public class BattleSceneManager : MonoBehaviour {
             writer.WriteLine(line);
         }
         writer.Close();
-        Debug.Log("Done writing file.");
+
+        if (combatReport.alliesWon) {
+            StateManager.IncrementCampaignPosition();
+        }
 
         SetCombatMode(combatReport);
     }
@@ -240,6 +246,10 @@ public class BattleSceneManager : MonoBehaviour {
     private void SetCombatMode(CombatReport report) {
         selectionPanel.SetActive(false);
         statusPanel.SetActive(true);
+
+        turnText.text = "Turn 1";
+        saveReportButton.gameObject.SetActive(false);
+        continueButton.gameObject.SetActive(false);
 
         StartCoroutine(PlayCombatReport(report));
     }
@@ -277,9 +287,13 @@ public class BattleSceneManager : MonoBehaviour {
             yield return StartCoroutine(PlayCombatTurn(turn));
             yield return new WaitForSeconds(1f);
         }
+
+        OnEndOfCombat(report);
     }
 
     private System.Collections.IEnumerator PlayCombatTurn(CombatTurn turn) {
+        turnText.text = string.Format("Turn {0}", turn.turnNumber);
+
         foreach (CombatStep step in turn.steps) {
             yield return StartCoroutine(PlayCombatStep(step));
         }
@@ -293,6 +307,7 @@ public class BattleSceneManager : MonoBehaviour {
     private System.Collections.IEnumerator PlayCombatStep(CombatStep step) {
         // Animate the attacker.
         placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step);
+        yield return new WaitForSeconds(0.3f);
 
         // Animate all defenders.
         foreach (DamageInstance damageInstance in step.damageInstances) {
@@ -303,7 +318,22 @@ public class BattleSceneManager : MonoBehaviour {
         }
 
         // Wait for everything to finish playing.
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.2f);
+    }
+
+    private void OnEndOfCombat(CombatReport report) {
+        if (report.alliesWon) {
+            turnText.text = "Victory!";
+        } else {
+            turnText.text = "Defeat...";
+        }
+
+        saveReportButton.gameObject.SetActive(true);
+        continueButton.gameObject.SetActive(true);
+    }
+
+    public void OnContinuePressed() {
+        SceneManager.LoadSceneAsync("CampaignScene");
     }
 
     #endregion
