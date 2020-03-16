@@ -120,8 +120,11 @@ public class CombatHero : IComparable<CombatHero> {
                 if (status.turnsRemaining > 0) {
                     newStatus.Add(status);
                 }
+            } else {
+                newStatus.Add(status);
             }
         }
+        currentStatus = newStatus;
     }
 
     public double GetModifiedAttack() {

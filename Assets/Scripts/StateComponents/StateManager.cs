@@ -168,12 +168,27 @@ public class StateManager {
 
     public static void IncrementCampaignPosition() {
         ClaimRewards(null);
+        AddRewardsFromCurrentMission();
         var state = GetCurrentState();
         if (state.CurrentMission == 10) {
             state.CurrentMission = 1;
             state.CurrentChapter++;
         } else {
             state.CurrentMission++;
+        }
+        SaveState();
+    }
+
+    public static void AddRewardsFromCurrentMission() {
+        var state = GetCurrentState();
+        var mission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
+        var rewards = mission.RewardsForMission();
+        state.CurrentGold += rewards.Gold;
+        state.CurrentSouls += rewards.Souls;
+        state.CurrentExperience += rewards.PlayerExperience;
+        state.CurrentSummons += rewards.Summons;
+        if (state.CurrentMission == 10) {
+            state.CurrentSummons += 10;
         }
         SaveState();
     }

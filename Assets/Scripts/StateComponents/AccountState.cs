@@ -32,7 +32,7 @@ public class AccountState {
         CurrentLevel = 1;
         CurrentExperience = 0;
         CurrentGems = 0;
-        CurrentSummons = 0;
+        CurrentSummons = 10;
 
         CurrentChapter = 1;
         CurrentMission = 1;
