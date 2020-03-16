@@ -208,7 +208,7 @@ public class CombatMath {
                 switch (status.status) {
                     case StatusEnum.ICE_ARMOR:
                         if (attacker.HasStatus(StatusEnum.CHILL) || attacker.HasStatus(StatusEnum.DOWSE)) {
-                            var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, 0, 1);
+                            var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, 0, 2);
                             attacker.AddStatus(frozen);
 
                             var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
