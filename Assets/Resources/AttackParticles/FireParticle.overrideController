@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FireParticle
+  m_Controller: {fileID: 9100000, guid: 8b44dd5d9d5ec85479278aabaea01acb, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 247200d07b394c94595732876683a083, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a4f206c48c6f1944682835a92d4e22d9, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a4f206c48c6f1944682835a92d4e22d9, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 247200d07b394c94595732876683a083, type: 2}

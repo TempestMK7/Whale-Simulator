@@ -176,9 +176,12 @@ public class CombatMath {
         return output;
     }
 
-    public static List<CombatHero> DecideTargets(TargetType targetType, int targetCount, CombatHero[] potentialTargets) {
+    public static List<CombatHero> DecideTargets(CombatHero targetter, TargetType targetType, int targetCount, CombatHero[] potentialTargets) {
         var targets = new List<CombatHero>();
         switch (targetType) {
+            case TargetType.SELF:
+                targets.Add(targetter);
+                break;
             case TargetType.FIRST_ALIVE:
                 targets.Add(FirstAlive(potentialTargets));
                 break;
@@ -224,7 +227,7 @@ public class CombatMath {
                         }
                         break;
                     case StatusEnum.LAVA_ARMOR:
-                        var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 3);
+                        var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 2);
                         attacker.AddStatus(burn);
 
                         var damageInstance = new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
@@ -252,5 +255,5 @@ public enum HitEffectivity {
 }
 
 public enum TargetType {
-    NONE = 0, FIRST_ALIVE = 1, RANDOM = 2, LOWEST_HEALTH = 3, HIGHEST_HEALTH = 4, LOWEST_ENERGY = 5, HIGHEST_ENERGY = 6
+    NONE = 0, SELF = 1, FIRST_ALIVE = 2, RANDOM = 3, LOWEST_HEALTH = 4, HIGHEST_HEALTH = 5, LOWEST_ENERGY = 6, HIGHEST_ENERGY = 7
 }

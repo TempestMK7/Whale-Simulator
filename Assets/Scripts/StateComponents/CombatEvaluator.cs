@@ -60,8 +60,8 @@ public class CombatEvaluator {
 
             var attack = next.currentEnergy >= 100 ? next.baseHero.SpecialAttack : next.baseHero.BasicAttack;
             var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
-            var enemyTargets = CombatMath.DecideTargets(attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
-            var allyTargets = CombatMath.DecideTargets(attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
+            var enemyTargets = CombatMath.DecideTargets(next, attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
+            var allyTargets = CombatMath.DecideTargets(next, attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
             var step = AttackContainer.PerformAttack(next, attack, allyTargets, enemyTargets);
             steps.Add(step);
             

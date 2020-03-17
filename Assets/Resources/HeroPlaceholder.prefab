@@ -515,6 +515,7 @@ MonoBehaviour:
   healthBar: {fileID: 2793611557472197501}
   energyBar: {fileID: 1164931404274573395}
   combatTextHolder: {fileID: 196071323597830563}
+  particlePrefab: {fileID: 8155595656461646959, guid: c6dbf07c6d6c54c418f3d9d7299c9edf, type: 3}
   slideDurationFrames: 12
   attackDurationSeconds: 0.5
 --- !u!1 &4785755657005607401

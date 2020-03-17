@@ -153,6 +153,7 @@ public class CombatHero : IComparable<CombatHero> {
 
     public double GetModifiedDefense() {
         var multiplier = 1.0;
+        var flatAmount = 0.0;
         foreach (StatusContainer status in currentStatus) {
             if (status.status == StatusEnum.DEFENSE_UP) {
                 multiplier += status.value;
@@ -160,13 +161,20 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier -= status.value;
             } else if (status.status == StatusEnum.ICE_ARMOR) {
                 multiplier += status.value / 2.0;
+            } else if (status.status == StatusEnum.LAVA_ARMOR) {
+                flatAmount += status.value;
+            } else if (status.status == StatusEnum.THORN_ARMOR) {
+                flatAmount += status.value;
+            } else if (status.status == StatusEnum.EARTH_ARMOR) {
+                multiplier += status.value;
             }
         }
-        return defense * multiplier;
+        return (defense * multiplier) + flatAmount;
     }
 
     public double GetModifiedReflection() {
         var multiplier = 1.0;
+        var flatAmount = 0.0;
         foreach (StatusContainer status in currentStatus) {
             if (status.status == StatusEnum.REFLECTION_UP) {
                 multiplier += status.value;
@@ -174,9 +182,15 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier -= status.value;
             } else if (status.status == StatusEnum.ICE_ARMOR) {
                 multiplier += status.value;
+            } else if (status.status == StatusEnum.LAVA_ARMOR) {
+                flatAmount += status.value;
+            } else if (status.status == StatusEnum.THORN_ARMOR) {
+                flatAmount += status.value / 2.0;
+            } else if (status.status == StatusEnum.EARTH_ARMOR) {
+                multiplier += status.value / 2.0;
             }
         }
-        return reflection * multiplier;
+        return (reflection * multiplier) + flatAmount;
     }
 
     public double GetModifiedSpeed() {

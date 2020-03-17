@@ -13,6 +13,8 @@ public class AnimatedHero : MonoBehaviour {
     public Image energyBar;
     public CombatTextHolder combatTextHolder;
 
+    public GameObject particlePrefab;
+
     public int slideDurationFrames = 20;
     public float attackDurationSeconds = 0.5f;
 
@@ -134,9 +136,43 @@ public class AnimatedHero : MonoBehaviour {
         soundEffect.Play();
         yield return new WaitForSeconds(0.3f);
 
+        if (attackInfo.EnemyParticle != null) {
+            foreach (CombatHero enemy in step.enemyTargets) {
+                var destination = placeholders[enemy.combatHeroGuid].transform.position;
+                destination.y += 0.5f;
+                FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
+            }
+        }
+        if (attackInfo.AllyParticle != null) {
+            foreach (CombatHero ally in step.allyTargets) {
+                var destination = placeholders[ally.combatHeroGuid].transform.position;
+                destination.y += 0.5f;
+                FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
+            }
+        }
+
         combatHero.currentEnergy += step.energyGained;
         SendDamageInstances(step.damageInstances, placeholders);
         yield return new WaitForSeconds(attackDurationSeconds);
+    }
+
+    private void FireParticle(AttackParticleEnum particle, ParticleOriginEnum origin, Vector3 target) {
+        Vector3 originPoint;
+        switch (origin) {
+            case ParticleOriginEnum.OVERHEAD:
+                originPoint = new Vector3(0, 12, 0);
+                break;
+            case ParticleOriginEnum.TARGET:
+                originPoint = target;
+                break;
+            case ParticleOriginEnum.ATTACKER:
+            default:
+                originPoint = new Vector3(transform.position.x, transform.position.y + 0.5f);
+                break;
+        }
+        var animatedParticle = Instantiate(particlePrefab, originPoint, Quaternion.identity).GetComponent<AnimatedParticle>();
+        animatedParticle.SetParticleAnimation(particle);
+        animatedParticle.FlyToTarget(target);
     }
 
     private void SendDamageInstances(List<DamageInstance> instances, Dictionary<Guid, AnimatedHero> placeholders) {

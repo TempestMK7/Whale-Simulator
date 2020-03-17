@@ -12,6 +12,7 @@ public class InitializationSceneManager : MonoBehaviour {
         FactionContainer.Initialize();
         RoleContainer.Initialize();
         AttackInfoContainer.Initialize();
+        AttackParticleContainer.Initialize();
         StateManager.GetCurrentState();
         SettingsManager.GetInstance();
         SceneManager.LoadSceneAsync("HubScene");
