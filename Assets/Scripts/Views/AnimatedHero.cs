@@ -61,7 +61,7 @@ public class AnimatedHero : MonoBehaviour {
         selectedHero = null;
         combatHero = new CombatHero(hero);
         animator.runtimeAnimatorController = hero.baseHero.HeroAnimator;
-        healthCanvas.gameObject.SetActive(true);
+        if (hero.IsAlive()) healthCanvas.gameObject.SetActive(true);
     }
 
     public bool ContainsHero(CombatHero hero) {
@@ -160,7 +160,7 @@ public class AnimatedHero : MonoBehaviour {
         Vector3 originPoint;
         switch (origin) {
             case ParticleOriginEnum.OVERHEAD:
-                originPoint = new Vector3(0, 12, 0);
+                originPoint = new Vector3(0, 14, 0);
                 break;
             case ParticleOriginEnum.TARGET:
                 originPoint = target;

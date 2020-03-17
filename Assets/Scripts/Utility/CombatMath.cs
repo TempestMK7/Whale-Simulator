@@ -85,11 +85,12 @@ public class CombatMath {
         }
     }
 
-    public static CombatHero FirstAlive(CombatHero[] heroes) {
-        foreach (CombatHero hero in heroes) {
-            if (hero != null && hero.currentHealth > 0) return hero;
+    public static List<CombatHero> FirstAlive(CombatHero[] heroes, int targetCount) {
+        var allLiving = AllLiving(heroes);
+        while (allLiving.Count > targetCount && allLiving.Count > 0) {
+            allLiving.RemoveAt(allLiving.Count - 1);
         }
-        return heroes[0];
+        return allLiving;
     }
 
     public static List<CombatHero> LowestHealth(CombatHero[] heroes, int targetCount) {
@@ -183,7 +184,7 @@ public class CombatMath {
                 targets.Add(targetter);
                 break;
             case TargetType.FIRST_ALIVE:
-                targets.Add(FirstAlive(potentialTargets));
+                targets.AddRange(FirstAlive(potentialTargets, targetCount));
                 break;
             case TargetType.RANDOM:
                 targets.AddRange(SelectAtRandom(potentialTargets, targetCount));
@@ -232,12 +233,15 @@ public class CombatMath {
 
                         var damageInstance = new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
                         damageInstance.AddStatus(burn);
-                        output.Add(new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
+                        output.Add(damageInstance);
                         break;
                     case StatusEnum.THORN_ARMOR:
                         var damage = status.value;
                         attacker.currentHealth -= damage;
-                        output.Add(new DamageInstance(null, StatusEnum.THORN_ARMOR, status.inflicterGuid, attacker.combatHeroGuid));
+
+                        damageInstance = new DamageInstance(null, StatusEnum.THORN_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                        damageInstance.damage = damage;
+                        output.Add(damageInstance);
                         break;
                 }
             }

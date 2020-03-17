@@ -22,12 +22,14 @@ public class AttackContainer {
             step.damageInstances.Add(attackInfo.ApplyAttackToAlly(attacker, ally));
         }
 
+        attacker.currentEnergy += attackInfo.AttackerEnergyGained;
+        step.energyGained = attackInfo.AttackerEnergyGained;
+
         step.damageInstances.AddRange(CombatMath.EvaluateNegativeSideEffects(attacker, enemies));
 
         foreach (DamageInstance instance in step.damageInstances) {
             step.totalDamage += instance.damage;
             step.totalHealing += instance.healing;
-            step.energyGained += instance.attackerEnergy;
         }
 
         return step;
@@ -169,7 +171,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
-            0.5, 0, 15, 10, 0,
+            0.5, 0, 25, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
             AttackEnum.FISH_SLAP, "Fish Slap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
@@ -183,7 +185,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER,
             false, true, false,
             TargetType.RANDOM, 1, TargetType.LOWEST_HEALTH, 1,
-            0.6, 0.2, 15, 10, 0,
+            0.6, 0.2, 25, 10, 0,
             null, 0, 0, StatusEnum.REGENERATION, 0.2, 2);
 
         // Grass
@@ -206,7 +208,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null,
             false, true, true,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
-            0.4, 0, 15, 10, 0,
+            0.4, 0, 25, 10, 0,
             StatusEnum.POISON, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.BRANCH_SLAM] = new AttackInfo(
             AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
@@ -229,7 +231,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
-            0.4, 0, 15, 10, 0,
+            0.4, 0, 25, 10, 0,
             StatusEnum.BURN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.FIRE_PUNCH] = new AttackInfo(
             AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
@@ -259,7 +261,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
-            0.4, 0, 15, 10, 0,
+            0.4, 0, 25, 10, 0,
             StatusEnum.CHILL, 0.2, 2, null, 0, 0);
 
         // Earth
@@ -312,7 +314,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
-            0.4, 0, 15, 10, 0,
+            0.4, 0, 25, 10, 0,
             StatusEnum.DAZE, 0.2, 2, null, 0, 0);
 
         // These are all special attacks.
@@ -337,35 +339,35 @@ public class AttackInfoContainer {
             AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
-            1.5, 0, -50, 10, 0,
+            1.5, 0, -100, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.DRENCHING_WAVE] = new AttackInfo(
             AttackEnum.DRENCHING_WAVE, "Drenching Wave", "Icons/RoleDamage", "AttackSounds/BasicMagic",
             AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 3, TargetType.NONE, 0,
-            1, 0, -35, 10, 0,
+            1, 0, -100, 10, 0,
             StatusEnum.REFLECTION_DOWN, 0.3, 3, null, 0, 0);
         attackDict[AttackEnum.ENSCALE_TEAM] = new AttackInfo(
             AttackEnum.ENSCALE_TEAM, "Enscale Team", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             null, null, null, null,
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.RANDOM, 5,
-            2, 0, -20, 10, 0,
+            2, 0, -100, 10, 0,
             StatusEnum.DEFENSE_DOWN, 0.2, 2, StatusEnum.DEFENSE_UP, 0.3, 3);
         attackDict[AttackEnum.TSUNAMI] = new AttackInfo(
             AttackEnum.TSUNAMI, "Tsunami", "Icons/RoleDamage", "AttackSounds/VaporCloud",
             AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 5, TargetType.NONE, 0,
-            0.7, 0, -20, 10, 0,
+            0.7, 0, -100, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.HEALING_WAVE] = new AttackInfo(
             AttackEnum.HEALING_WAVE, "Healing Wave", "Icons/RoleSupport", "AttackSounds/WaterRenew",
             AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD,
             false, false, false,
             TargetType.NONE, 0, TargetType.RANDOM, 5,
-            0, 0.4, -20, 0, 0,
+            0, 0.4, -100, 0, 0,
             null, 0, 0, StatusEnum.REGENERATION, 0.2, 3);
 
         // Grass
@@ -374,35 +376,35 @@ public class AttackInfoContainer {
             null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD,
             false, false, false,
             TargetType.NONE, 0, TargetType.RANDOM, 5,
-            0, 0.4, -20, 0, 0,
+            0, 0.4, -100, 0, 0,
             null, 0, 0, StatusEnum.REGENERATION, 0.2, 3);
         attackDict[AttackEnum.WEED_WHACKER] = new AttackInfo(
              AttackEnum.WEED_WHACKER, "Weed Whacker", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
              null, null, null, null,
              true, false, true,
              TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
-             1.5, 0, -50, 10, 0,
+             1.5, 0, -100, 10, 0,
              StatusEnum.POISON, 0.5, 2, null, 0, 0);
         attackDict[AttackEnum.ENTANGLING_ROOTS] = new AttackInfo(
              AttackEnum.ENTANGLING_ROOTS, "Entangling Roots", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
              null, null, null, null,
              true, false, true,
              TargetType.RANDOM, 5, TargetType.NONE, 0,
-             0.5, 0, -20, 10, 0,
+             0.5, 0, -100, 10, 0,
              StatusEnum.ROOT, 0, 2, null, 0, 0);
         attackDict[AttackEnum.RITUAL_OF_VENOM] = new AttackInfo(
              AttackEnum.RITUAL_OF_VENOM, "Ritual of Venom", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
              AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null,
              false, true, false,
              TargetType.RANDOM, 3, TargetType.NONE, 0,
-             1, 0, -30, 10, 0,
+             1, 0, -100, 10, 0,
              StatusEnum.POISON, 0.2, 3, null, 0, 0);
         attackDict[AttackEnum.GIFT_OF_THORNS] = new AttackInfo(
             AttackEnum.GIFT_OF_THORNS, "Gift of Thorns", "Icons/RoleDamage", "AttackSounds/BasicMagic",
             null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
             false, false, true,
             TargetType.NONE, 0, TargetType.RANDOM, 5,
-            0, 0, -20, 0, 0,
+            0, 0, -100, 0, 0,
             null, 0, 0, StatusEnum.THORN_ARMOR, 0.2, 3);
 
         // Fire
@@ -411,14 +413,14 @@ public class AttackInfoContainer {
             AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.LOWEST_HEALTH, 2, TargetType.NONE,
-            0, 1.5, 0, -50, 10, 0,
+            0, 1.5, -100, 10, 0, 0,
             StatusEnum.BURN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.TURN_UP_THE_HEAT] = new AttackInfo(
             AttackEnum.TURN_UP_THE_HEAT, "Turn Up The Heat", "Icons/RoleSupport", "AttackSounds/BasicMagic",
             AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD,
             false, false, false,
             TargetType.RANDOM, 10, TargetType.RANDOM, 10,
-            0, 0, -10, 0, 0,
+            0, 0, -100, 0, 0,
             StatusEnum.BURN, 0.2, 2, StatusEnum.SPEED_UP, 0.2, 2);
         attackDict[AttackEnum.IMMOLATE] = new AttackInfo(
             AttackEnum.IMMOLATE, "Immolate", "Icons/RoleDamage", "AttackSounds/Scorch",
@@ -432,14 +434,14 @@ public class AttackInfoContainer {
             null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD,
             false, false, false,
             TargetType.NONE, 0, TargetType.RANDOM, 10,
-            0, 0, -20, 0, 0,
+            0, 0, -100, 0, 0,
             null, 0, 0, StatusEnum.LAVA_ARMOR, 0.3, 3);
         attackDict[AttackEnum.FIRE_STORM] = new AttackInfo(
             AttackEnum.FIRE_STORM, "Fire Storm", "Icons/RoleDamage", "AttackSounds/Scorch",
             AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 10, TargetType.NONE, 0,
-            0.25, 0, -20, 10, 0,
+            0.25, 0, -100, 10, 0,
             StatusEnum.BURN, 0.25, 3, null, 0, 0);
 
         // Ice
@@ -448,7 +450,7 @@ public class AttackInfoContainer {
             AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 3, TargetType.NONE, 0,
-            0, 0, -35, 10, 0,
+            0, 0, -100, 10, 0,
             StatusEnum.CHILL, 0.4, 2, null, 0, 0);
         attackDict[AttackEnum.ENCASE_IN_ICE] = new AttackInfo(
             AttackEnum.ENCASE_IN_ICE, "Encase in Ice", "Icons/RoleDamage", "AttackSounds/FrozenMirror",
@@ -462,14 +464,14 @@ public class AttackInfoContainer {
             AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
             false, true, true,
             TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
-            2, 0, -50, 10, 0,
+            2, 0, -100, 10, 0,
             StatusEnum.CHILL, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.BLIZZARD] = new AttackInfo(
             AttackEnum.BLIZZARD, "Blizzard", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             AttackParticleEnum.ICE, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 5, TargetType.NONE, 0,
-            0.6, 0, -20, 10, 0,
+            0.6, 0, -100, 10, 0,
             StatusEnum.CHILL, 0.3, 2, null, 0, 0);
         attackDict[AttackEnum.GIFT_OF_ICE] = new AttackInfo(
             AttackEnum.GIFT_OF_ICE, "Gift of Ice", "Icons/RoleDamage", "AttackSounds/FrozenMirror",
@@ -499,21 +501,21 @@ public class AttackInfoContainer {
             AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, true,
             TargetType.RANDOM, 5, TargetType.NONE, 0,
-            0.5, 0, -20, 10, 0,
+            0.5, 0, -100, 10, 0,
             StatusEnum.BLIND, 0, 1, null, 0, 0);
         attackDict[AttackEnum.GIFT_OF_EARTH] = new AttackInfo(
             AttackEnum.GIFT_OF_EARTH, "Gift of Earth", "Icons/RoleDamage", "AttackSounds/BasicMagic",
             null, null, AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER,
             false, false, true,
             TargetType.NONE, 0, TargetType.RANDOM, 5,
-            0, 0, -20, 0, 0,
+            0, 0, -100, 0, 0,
             null, 0, 0, StatusEnum.EARTH_ARMOR, 0.5, 3);
         attackDict[AttackEnum.SPLIT_SKULL] = new AttackInfo(
             AttackEnum.SPLIT_SKULL, "Split Skull", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
             null, null, null, null,
             true, false, true,
             TargetType.LOWEST_HEALTH, 1, TargetType.SELF, 1,
-            3, 0, -50, 10, 0,
+            3, 0, -100, 10, 0,
             StatusEnum.BLEED, 0.5, 2, StatusEnum.ATTACK_UP, 0.4, StatusContainer.INDEFINITE);
 
         // Electric
@@ -522,14 +524,14 @@ public class AttackInfoContainer {
             AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 3, TargetType.NONE, 0,
-            1, 0, -30, 10, 0,
+            1, 0, -100, 10, 0,
             StatusEnum.BLIND, 0, 1, null, 0, 0);
         attackDict[AttackEnum.CHARGE_TEAM] = new AttackInfo(
             AttackEnum.CHARGE_TEAM, "Charge Team", "Icons/RoleSupport", "AttackSounds/BasicMagic",
             null, null, AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER,
             false, false, false,
             TargetType.NONE, 0, TargetType.LOWEST_ENERGY, 3,
-            0, 0, -30, 0, 40,
+            0, 0, -100, 0, 40,
             null, 0, 0, StatusEnum.MAGIC_UP, 0.2, 3);
         attackDict[AttackEnum.OVERCHARGED_BOLT] = new AttackInfo(
             AttackEnum.OVERCHARGED_BOLT, "Overcharged Bolt", "Icons/RoleDamage", "AttackSounds/BasicMagic",
@@ -543,14 +545,14 @@ public class AttackInfoContainer {
             AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 3, TargetType.NONE, 0,
-            1.2, 0, -30, 10, 0,
+            1.2, 0, -100, 10, 0,
             StatusEnum.BLIND, 0, 1, null, 0, 0);
         attackDict[AttackEnum.BRAIN_STORM] = new AttackInfo(
             AttackEnum.BRAIN_STORM, "Brain Storm", "Icons/RoleDamage", "AttackSounds/BasicMagic",
             AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 5, TargetType.NONE, 0,
-            0.6, 0, -20, 10, 0,
+            0.6, 0, -100, 10, 0,
             StatusEnum.DAZE, 1, 2, null, 0, 0);
     }
 
@@ -641,11 +643,9 @@ public class AttackInfo {
         var damage = CombatMath.Damage(attackValue * DamageMultiplier, defenseValue, hitType, hitEffectivity);
         target.currentHealth -= damage;
         target.currentEnergy += TargetEnergyGained;
-        attacker.currentEnergy += AttackerEnergyGained;
 
         var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
         damageInstance.damage = damage;
-        damageInstance.attackerEnergy = AttackerEnergyGained;
         damageInstance.targetEnergy = TargetEnergyGained;
         damageInstance.hitType = hitType;
 
@@ -703,11 +703,9 @@ public class AttackInfo {
         var healing = attackValue * HealingMultiplier;
         healing = ally.ReceiveHealing(healing);
         ally.currentEnergy += AllyEnergyGained;
-        attacker.currentEnergy += AttackerEnergyGained;
 
         var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, ally.combatHeroGuid);
         damageInstance.healing = healing;
-        damageInstance.attackerEnergy = AttackerEnergyGained;
         damageInstance.targetEnergy = AllyEnergyGained;
 
         // If the ally died from this attack somehow, bail before applying status.

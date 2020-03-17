@@ -257,30 +257,8 @@ public class BattleSceneManager : MonoBehaviour {
     private System.Collections.IEnumerator PlayCombatReport(CombatReport report) {
         placeHolders = new Dictionary<Guid, AnimatedHero>();
 
-        for (int x = 0; x < report.allies.Length; x++) {
-            if (report.allies[x] != null) {
-                allyHolders[x].gameObject.SetActive(true);
-                allyHolders[x].SetHero(report.allies[x]);
-                placeHolders[report.allies[x].combatHeroGuid] = allyHolders[x];
-            } else {
-                allyHolders[x].gameObject.SetActive(false);
-            }
-        } for (int x = report.allies.Length; x < allyHolders.Length; x++) {
-            allyHolders[x].gameObject.SetActive(false);
-        }
-
-        for (int x = 0; x < report.enemies.Length; x++) {
-            if (report.enemies[x] != null) {
-                enemyHolders[x].gameObject.SetActive(true);
-                enemyHolders[x].SetHero(report.enemies[x]);
-                placeHolders[report.enemies[x].combatHeroGuid] = enemyHolders[x];
-            } else {
-                enemyHolders[x].gameObject.SetActive(false);
-            }
-        }
-        for (int x = report.enemies.Length; x < enemyHolders.Length; x++) {
-            enemyHolders[x].gameObject.SetActive(false);
-        }
+        BindAllyTeam(report.allies);
+        BindEnemyTeam(report.enemies);
         yield return new WaitForSeconds(1f);
 
         foreach (CombatTurn turn in report.turns) {
@@ -291,8 +269,41 @@ public class BattleSceneManager : MonoBehaviour {
         OnEndOfCombat(report);
     }
 
+    private void BindAllyTeam(CombatHero[] allies) {
+        for (int x = 0; x < allies.Length; x++) {
+            if (allies[x] != null) {
+                allyHolders[x].gameObject.SetActive(true);
+                allyHolders[x].SetHero(allies[x]);
+                placeHolders[allies[x].combatHeroGuid] = allyHolders[x];
+            } else {
+                allyHolders[x].gameObject.SetActive(false);
+            }
+        }
+        for (int x = allies.Length; x < allyHolders.Length; x++) {
+            allyHolders[x].gameObject.SetActive(false);
+        }
+    }
+
+    private void BindEnemyTeam(CombatHero[] enemies) {
+        for (int x = 0; x < enemies.Length; x++) {
+            if (enemies[x] != null) {
+                enemyHolders[x].gameObject.SetActive(true);
+                enemyHolders[x].SetHero(enemies[x]);
+                placeHolders[enemies[x].combatHeroGuid] = enemyHolders[x];
+            } else {
+                enemyHolders[x].gameObject.SetActive(false);
+            }
+        }
+        for (int x = enemies.Length; x < enemyHolders.Length; x++) {
+            enemyHolders[x].gameObject.SetActive(false);
+        }
+    }
+
     private System.Collections.IEnumerator PlayCombatTurn(CombatTurn turn) {
         turnText.text = string.Format("Turn {0}", turn.turnNumber);
+
+        BindAllyTeam(turn.allies);
+        BindEnemyTeam(turn.enemies);
 
         foreach (CombatStep step in turn.steps) {
             if (!step.skippedTurn) yield return StartCoroutine(PlayCombatStep(step));
@@ -305,15 +316,6 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     private System.Collections.IEnumerator PlayCombatStep(CombatStep step) {
-        // Animate the attacker.
-        List<AnimatedHero> allyTargets = new List<AnimatedHero>();
-        foreach (CombatHero ally in step.allyTargets) {
-            allyTargets.Add(placeHolders[ally.combatHeroGuid]);
-        }
-        List<AnimatedHero> enemyTargets = new List<AnimatedHero>();
-        foreach (CombatHero enemy in step.enemyTargets) {
-            enemyTargets.Add(placeHolders[enemy.combatHeroGuid]);
-        }
         yield return placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step, placeHolders);
     }
 
