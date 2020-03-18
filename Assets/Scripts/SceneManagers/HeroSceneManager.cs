@@ -223,6 +223,18 @@ public class HeroSceneManager : MonoBehaviour {
         ToggleStatPanel(true);
     }
 
+    public void LaunchAttackTooltip() {
+
+    }
+
+    public void LaunchSpecialTooltip() {
+
+    }
+
+    public void LaunchPassiveTooltip() {
+
+    }
+
     private void ToggleStatPanel(bool showStats) {
         fuseButtonText.text = showStats ? "Fuse!" : "Stats";
         statPanel.SetActive(showStats);

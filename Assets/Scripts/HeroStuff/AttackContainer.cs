@@ -798,4 +798,140 @@ public class AttackInfo {
 
         return damageInstance;
     }
+
+    public string GetTooltip() {
+        string output = "";
+
+        if (EnemyTargetType != TargetType.NONE) {
+            string damageMultiplier = (DamageMultiplier * 100).ToString("0");
+            string damageType = IsPhysical ? "attack" : "magic";
+            string targetting = GetTargettingTooltip(EnemyTargetType, EnemyTargetCount, false);
+            string firstPart = DamageMultiplier == 0 ? "Targets" : string.Format("Damages for {0} of {1} to", damageMultiplier, damageType);
+            output = string.Format("{0} {1}.{2}", firstPart, targetting,
+                GetStatusTooltip(TargetStatus.GetValueOrDefault(), TargetStatusDuration, TargetStatusValue, false));
+        }
+
+        if (AllyTargetType != TargetType.NONE) {
+            string healMultiplier = (HealingMultiplier * 100).ToString("0");
+            string damageType = IsPhysical ? "attack" : "magic";
+            string targetting = GetTargettingTooltip(AllyTargetType, AllyTargetCount, true);
+            string firstPart = HealingMultiplier == 0 ? "Targets" : string.Format("Heals for {0} of {1} to", healMultiplier, damageType);
+            string allyTip = string.Format("{0} {1}.{2}", firstPart, targetting,
+                GetStatusTooltip(AllyStatus.GetValueOrDefault(), AllyStatusDuration, AllyStatusValue, true));
+
+            if (output.Length == 0) output = allyTip;
+            else output += "  " + allyTip;
+        }
+
+        return output;
+    }
+
+    private string GetTargettingTooltip(TargetType targetType, int targetCount, bool ally) {
+        string singular = ally ? "ally" : "enemy";
+        string plural = ally ? "allies" : "enemies";
+        string targetting;
+        switch (targetType) {
+            case TargetType.FIRST_ALIVE:
+                string targettingSuffix = targetCount != 1 ? string.Format("{0} {1}", targetCount, plural) : singular;
+                targetting = string.Format("the first {0}", targettingSuffix);
+                break;
+            case TargetType.LOWEST_HEALTH:
+                string count = targetCount != 1 ? string.Format("{0} {1}", targetCount, plural) : singular;
+                targetting = string.Format("the {0} with the lowest health", count);
+                break;
+            case TargetType.HIGHEST_HEALTH:
+                count = targetCount != 1 ? string.Format("{0} {1}", targetCount, plural) : singular;
+                targetting = string.Format("the {0} with the highest health", count);
+                break;
+            case TargetType.LOWEST_ENERGY:
+                count = targetCount != 1 ? string.Format("{0} {1}", targetCount, plural) : singular;
+                targetting = string.Format("the {0} with the lowest energy", count);
+                break;
+            case TargetType.HIGHEST_ENERGY:
+                count = targetCount != 1 ? string.Format("{0} {1}", targetCount, plural) : singular;
+                targetting = string.Format("the {0} with the highest energy", count);
+                break;
+            case TargetType.SELF:
+                return "self";
+            case TargetType.RANDOM:
+            default:
+                count = targetCount != 1 ? plural : singular;
+                targetting = string.Format("{0} {1} at random", targetCount, count);
+                break;
+        }
+        return targetting;
+    }
+
+    private string GetStatusTooltip(StatusEnum statusType, int statusDuration, double value, bool ally) {
+        string turnPlural = statusDuration != 1 ? "turns" : "turn";
+        string statusValue = (value * 100).ToString("0");
+        switch (statusType) {
+            case StatusEnum.BURN:
+            case StatusEnum.BLEED:
+            case StatusEnum.POISON:
+                return GetEnemyDamageStatusTooltip(statusType, statusDuration, value);
+
+            case StatusEnum.ATTACK_UP:
+            case StatusEnum.ATTACK_DOWN:
+            case StatusEnum.MAGIC_UP:
+            case StatusEnum.MAGIC_DOWN:
+            case StatusEnum.DEFENSE_UP:
+            case StatusEnum.DEFENSE_DOWN:
+            case StatusEnum.REFLECTION_UP:
+            case StatusEnum.REFLECTION_DOWN:
+            case StatusEnum.SPEED_UP:
+            case StatusEnum.SPEED_DOWN:
+                return GetStatModStatusTooltip(statusType, statusDuration, value, ally);
+
+            case StatusEnum.CHILL:
+                return string.Format("Chills for {0} {1} reducing speed by {2}%.  If the target is already chilled, freeze the target for 1 turn instead preventing all attacks.",
+                    statusDuration, turnPlural, statusValue);
+            case StatusEnum.DAZE:
+                return string.Format("Dazes for {0} {1} reducing critical and deflection chances by {2}%.  If the target is already dazed, stun the target for 1 turn instead preventing all attacks.",
+                    statusDuration, turnPlural, statusValue);
+            case StatusEnum.FREEZE:
+                return string.Format("Freezes for {0} {1} preventing all attacks.", statusDuration, turnPlural);
+            case StatusEnum.STUN:
+                return string.Format("Stuns for {0} {1} preventing all attacks.", statusDuration, turnPlural);
+            case StatusEnum.BLIND:
+                return string.Format("Stuns for {0} {1} preventing ranged attacks.", statusDuration, turnPlural);
+            case StatusEnum.ROOT:
+                return string.Format("Entangles for {0} {1} preventing melee attacks.", statusDuration, turnPlural);
+            case StatusEnum.DOWSE:
+                return string.Format("Dowses for {0} {1}.  Dowsed targets are stunned when dazed and frozen when chilled.", statusDuration, turnPlural);
+
+            case StatusEnum.REGENERATION:
+                return string.Format("Bestows Regeneration for {0} {1}, healing for {2} of magic each turn.",
+                    statusDuration, turnPlural, statusValue);
+            case StatusEnum.THORN_ARMOR:
+                return string.Format("Bestows Thorn Armor for {0} {1}.  Whenever a hero with thorn armor is attacked, the attacker takes damage equal to {2} of attack.",
+                    statusDuration, turnPlural, statusValue);
+            case StatusEnum.LAVA_ARMOR:
+                return string.Format("Bestows Lava Armor for {0} {1}.  Whenever a hero with lava armor is attacked, the attacker is burned for 2 turns, taking {2} of magic each turn.",
+                    statusDuration, turnPlural, statusValue);
+            case StatusEnum.ICE_ARMOR:
+                return string.Format("Bestows Ice Armor for {0} {1}.  Whenever a hero with ice armor is attacked, the attacker is chilled for 2 turns, reducing speed by {2} (or frozen if already chilled or dowsed).",
+                    statusDuration, turnPlural, statusValue);
+            case StatusEnum.EARTH_ARMOR:
+                return string.Format("Bestows Earth Armor for {0} {1}, raising defense by {2}% and reflection by {3}%.", statusDuration, turnPlural, statusValue, (value * 100 / 2).ToString("0"));
+            default:
+                return "";
+        }
+    }
+
+    private string GetEnemyDamageStatusTooltip(StatusEnum statusType, int duration, double value) {
+        string statusName = StatusDisplayContainer.GetStatusDisplay(statusType).StatusName;
+        string turnPlural = duration != 1 ? "turns" : "turn";
+        string damageType = statusType == StatusEnum.BLEED ? "attack" : "magic";
+        string damageAmount = (value * 100).ToString("0");
+        return string.Format(" Inflicts the {0} status for {1} {2}, dealing {3} of {4} per turn.", statusName, duration, turnPlural, damageAmount, damageType);
+    }
+
+    private string GetStatModStatusTooltip(StatusEnum statusType, int duration, double value, bool ally) {
+        string inflictWord = ally ? "Bestows" : "Inflicts";
+        string statusAmount = (value * 100).ToString("0");
+        string statusName = StatusDisplayContainer.GetStatusDisplay(statusType).StatusName;
+        string turnPlural = duration != 1 ? "turns" : "turn";
+        return string.Format(" {0} {1} {2} for {3} {4}.", inflictWord, statusAmount, statusName, duration, turnPlural);
+    }
 }

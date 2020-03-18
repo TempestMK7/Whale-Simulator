@@ -986,7 +986,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 174865770}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1276627507}
+        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+        m_MethodName: LaunchPassiveTooltip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &174865769
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2681,7 +2693,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 590322488}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1276627507}
+        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+        m_MethodName: LaunchSpecialTooltip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &590322487
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3759,7 +3783,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 889523143}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1276627507}
+        m_TargetAssemblyTypeName: HeroSceneManager, Assembly-CSharp
+        m_MethodName: LaunchAttackTooltip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &889523142
 CanvasRenderer:
   m_ObjectHideFlags: 0
