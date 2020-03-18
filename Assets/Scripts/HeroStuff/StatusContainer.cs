@@ -140,7 +140,7 @@ public class StatusDisplayContainer {
             false, true, true, true);
         statusDict[StatusEnum.BLIND] = new StatusDisplay(StatusEnum.BLIND, "Blind", FactionEnum.ELECTRIC,
             false, true, false, true);
-        statusDict[StatusEnum.ROOT] = new StatusDisplay(StatusEnum.ROOT, "Entangle", FactionEnum.GRASS,
+        statusDict[StatusEnum.ROOT] = new StatusDisplay(StatusEnum.ROOT, "Root", FactionEnum.GRASS,
             false, true, true, false);
         statusDict[StatusEnum.BLEED] = new StatusDisplay(StatusEnum.BLEED, "Bleed", FactionEnum.GRASS,
             false, false, false, false);
@@ -148,15 +148,15 @@ public class StatusDisplayContainer {
             false, false, false, false);
         statusDict[StatusEnum.POISON] = new StatusDisplay(StatusEnum.POISON, "Poison", FactionEnum.GRASS,
             false, false, false, false);
-        statusDict[StatusEnum.REGENERATION] = new StatusDisplay(StatusEnum.REGENERATION, "Regeneration", FactionEnum.WATER,
+        statusDict[StatusEnum.REGENERATION] = new StatusDisplay(StatusEnum.REGENERATION, "Regen", FactionEnum.WATER,
             true, false, false, false);
-        statusDict[StatusEnum.THORN_ARMOR] = new StatusDisplay(StatusEnum.THORN_ARMOR, "Thorn Armor", FactionEnum.GRASS,
+        statusDict[StatusEnum.THORN_ARMOR] = new StatusDisplay(StatusEnum.THORN_ARMOR, "Thorn Arm.", FactionEnum.GRASS,
             true, false, false, false);
-        statusDict[StatusEnum.LAVA_ARMOR] = new StatusDisplay(StatusEnum.LAVA_ARMOR, "Lava Armor", FactionEnum.FIRE,
+        statusDict[StatusEnum.LAVA_ARMOR] = new StatusDisplay(StatusEnum.LAVA_ARMOR, "Lava Arm.", FactionEnum.FIRE,
             true, false, false, false);
-        statusDict[StatusEnum.ICE_ARMOR] = new StatusDisplay(StatusEnum.ICE_ARMOR, "Ice Armor", FactionEnum.ICE,
+        statusDict[StatusEnum.ICE_ARMOR] = new StatusDisplay(StatusEnum.ICE_ARMOR, "Ice Arm.", FactionEnum.ICE,
             true, false, false, false);
-        statusDict[StatusEnum.EARTH_ARMOR] = new StatusDisplay(StatusEnum.EARTH_ARMOR, "Earth Armor", FactionEnum.EARTH,
+        statusDict[StatusEnum.EARTH_ARMOR] = new StatusDisplay(StatusEnum.EARTH_ARMOR, "Earth Arm.", FactionEnum.EARTH,
             true, false, false, false);
         statusDict[StatusEnum.DOWSE] = new StatusDisplay(StatusEnum.DOWSE, "Dowse", FactionEnum.WATER,
             false, true, false, false);
@@ -166,25 +166,25 @@ public class StatusDisplayContainer {
             false, true, true, true);
         statusDict[StatusEnum.DAZE] = new StatusDisplay(StatusEnum.DAZE, "Daze", FactionEnum.ELECTRIC,
             false, true, false, false);
-        statusDict[StatusEnum.ATTACK_UP] = new StatusDisplay(StatusEnum.ATTACK_UP, "Attack Up", FactionEnum.GRASS,
+        statusDict[StatusEnum.ATTACK_UP] = new StatusDisplay(StatusEnum.ATTACK_UP, "Att. Up", FactionEnum.GRASS,
             true, true, false, false);
-        statusDict[StatusEnum.MAGIC_UP] = new StatusDisplay(StatusEnum.MAGIC_UP, "Magic Up", FactionEnum.FIRE,
+        statusDict[StatusEnum.MAGIC_UP] = new StatusDisplay(StatusEnum.MAGIC_UP, "Mag. Up", FactionEnum.FIRE,
             true, true, false, false);
-        statusDict[StatusEnum.DEFENSE_UP] = new StatusDisplay(StatusEnum.DEFENSE_UP, "Defense Up", FactionEnum.EARTH,
+        statusDict[StatusEnum.DEFENSE_UP] = new StatusDisplay(StatusEnum.DEFENSE_UP, "Def. Up", FactionEnum.EARTH,
             true, false, false, false);
-        statusDict[StatusEnum.REFLECTION_UP] = new StatusDisplay(StatusEnum.REFLECTION_UP, "Reflection Up", FactionEnum.ICE,
+        statusDict[StatusEnum.REFLECTION_UP] = new StatusDisplay(StatusEnum.REFLECTION_UP, "Ref. Up", FactionEnum.ICE,
             true, false, false, false);
-        statusDict[StatusEnum.SPEED_UP] = new StatusDisplay(StatusEnum.SPEED_UP, "Speed Up", FactionEnum.ELECTRIC,
+        statusDict[StatusEnum.SPEED_UP] = new StatusDisplay(StatusEnum.SPEED_UP, "Spe. Up", FactionEnum.ELECTRIC,
             true, true, false, false);
-        statusDict[StatusEnum.ATTACK_DOWN] = new StatusDisplay(StatusEnum.ATTACK_DOWN, "Attack Down", FactionEnum.GRASS,
+        statusDict[StatusEnum.ATTACK_DOWN] = new StatusDisplay(StatusEnum.ATTACK_DOWN, "Att. Down", FactionEnum.GRASS,
             false, true, false, false);
-        statusDict[StatusEnum.MAGIC_DOWN] = new StatusDisplay(StatusEnum.MAGIC_DOWN, "Magic Down", FactionEnum.FIRE,
+        statusDict[StatusEnum.MAGIC_DOWN] = new StatusDisplay(StatusEnum.MAGIC_DOWN, "Mag. Down", FactionEnum.FIRE,
             false, true, false, false);
-        statusDict[StatusEnum.DEFENSE_DOWN] = new StatusDisplay(StatusEnum.DEFENSE_DOWN, "Defense Down", FactionEnum.EARTH,
+        statusDict[StatusEnum.DEFENSE_DOWN] = new StatusDisplay(StatusEnum.DEFENSE_DOWN, "Def. Down", FactionEnum.EARTH,
             false, false, false, false);
-        statusDict[StatusEnum.REFLECTION_DOWN] = new StatusDisplay(StatusEnum.REFLECTION_DOWN, "Reflection Down", FactionEnum.ICE,
+        statusDict[StatusEnum.REFLECTION_DOWN] = new StatusDisplay(StatusEnum.REFLECTION_DOWN, "Ref. Down", FactionEnum.ICE,
             false, false, false, false);
-        statusDict[StatusEnum.SPEED_DOWN] = new StatusDisplay(StatusEnum.SPEED_DOWN, "Speed Down", FactionEnum.ELECTRIC,
+        statusDict[StatusEnum.SPEED_DOWN] = new StatusDisplay(StatusEnum.SPEED_DOWN, "Spe. Down", FactionEnum.ELECTRIC,
             false, true, false, false);
     }
 

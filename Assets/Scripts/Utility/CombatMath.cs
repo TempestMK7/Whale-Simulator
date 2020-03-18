@@ -205,33 +205,52 @@ public class CombatMath {
         return targets;
     }
 
-    public static List<DamageInstance> EvaluateNegativeSideEffects(CombatHero attacker, List<CombatHero> enemies) {
+    public static List<DamageInstance> EvaluateNegativeSideEffects(CombatHero attacker, List<CombatHero> enemies, CombatStep step) {
         var output = new List<DamageInstance>();
         foreach (CombatHero enemy in enemies) {
+            var newEnemyStatus = new List<StatusContainer>();
+            var tempAttacker = attacker;
+            bool statusingSelf = attacker.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE;
+            if (statusingSelf) tempAttacker = enemy;
+
             foreach (StatusContainer status in enemy.currentStatus) {
                 switch (status.status) {
                     case StatusEnum.ICE_ARMOR:
-                        if (attacker.HasStatus(StatusEnum.CHILL) || attacker.HasStatus(StatusEnum.DOWSE)) {
+                        if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.COLD_BLOODED) break;
+                        if (tempAttacker.HasStatus(StatusEnum.CHILL) || tempAttacker.HasStatus(StatusEnum.DOWSE)) {
                             var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, 0, 2);
-                            attacker.AddStatus(frozen);
+                            if (statusingSelf) {
+                                newEnemyStatus.Add(frozen);
+                            } else {
+                                attacker.AddStatus(frozen);
+                            }
 
-                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
                             instance.AddStatus(frozen);
                             output.Add(instance);
                         } else {
                             var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, 0.4, 3);
-                            attacker.AddStatus(chilled);
+                            if (statusingSelf) {
+                                newEnemyStatus.Add(chilled);
+                            } else {
+                                attacker.AddStatus(chilled);
+                            }
 
-                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
                             instance.AddStatus(chilled);
                             output.Add(instance);
                         }
                         break;
                     case StatusEnum.LAVA_ARMOR:
+                        if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.WATER_BODY) break;
                         var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 2);
-                        attacker.AddStatus(burn);
+                        if (statusingSelf) {
+                            newEnemyStatus.Add(burn);
+                        } else {
+                            attacker.AddStatus(burn);
+                        }
 
-                        var damageInstance = new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
+                        var damageInstance = new DamageInstance(null, StatusEnum.LAVA_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
                         damageInstance.AddStatus(burn);
                         output.Add(damageInstance);
                         break;
@@ -244,6 +263,83 @@ public class CombatMath {
                         output.Add(damageInstance);
                         break;
                 }
+            }
+            foreach (StatusContainer newStatus in newEnemyStatus) {
+                enemy.AddStatus(newStatus);
+            }
+
+            switch (enemy.baseHero.PassiveAbility) {
+                case AbilityEnum.VAPORIZE:
+                    if (attacker.baseHero.Faction == FactionEnum.FIRE) {
+                        var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
+                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var reflectionUp = new StatusContainer(StatusEnum.REFLECTION_UP, attacker.combatHeroGuid, 0.2, 2);
+                        enemy.AddStatus(magicUp);
+                        enemy.AddStatus(reflectionUp);
+                        damageInstance.AddStatus(magicUp);
+                        damageInstance.AddStatus(reflectionUp);
+                        output.Add(damageInstance);
+                    }
+                    break;
+                case AbilityEnum.BARK_SKIN:
+                    var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
+                    if (attackInfo.IsPhysical) {
+                        var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
+                        var attackUp = new StatusContainer(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, 0.2, 2);
+                        enemy.AddStatus(attackUp);
+                        damageInstance.AddStatus(attackUp);
+                        output.Add(damageInstance);
+                    }
+                    break;
+                case AbilityEnum.ABSORB_RAIN:
+                    if (attacker.baseHero.Faction == FactionEnum.WATER) {
+                        var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
+                        var attackUp = new StatusContainer(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var defenseUp = new StatusContainer(StatusEnum.DEFENSE_UP, attacker.combatHeroGuid, 0.2, 2);
+                        enemy.AddStatus(attackUp);
+                        enemy.AddStatus(defenseUp);
+                        damageInstance.AddStatus(attackUp);
+                        damageInstance.AddStatus(defenseUp);
+                        output.Add(damageInstance);
+                    }
+                    break;
+                case AbilityEnum.KINDLING:
+                    if (attacker.baseHero.Faction == FactionEnum.GRASS) {
+                        var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
+                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var speedUp = new StatusContainer(StatusEnum.SPEED_UP, attacker.combatHeroGuid, 0.2, 2);
+                        enemy.AddStatus(magicUp);
+                        enemy.AddStatus(speedUp);
+                        damageInstance.AddStatus(magicUp);
+                        damageInstance.AddStatus(speedUp);
+                        output.Add(damageInstance);
+                    }
+                    break;
+                case AbilityEnum.JAGGED_SURFACE:
+                    var cumulativeInstance = new DamageInstance(null, null, enemy.combatHeroGuid, attacker.combatHeroGuid);
+                    foreach (DamageInstance instance in step.damageInstances) {
+                        if (instance.attackerGuid.Equals(attacker.combatHeroGuid) && instance.targetGuid.Equals(enemy.combatHeroGuid) && instance.attackUsed != null) {
+                            attackInfo = AttackInfoContainer.GetAttackInfo(instance.attackUsed.GetValueOrDefault());
+                            if (attackInfo.IsMelee) {
+                                cumulativeInstance.damage += instance.damage * 0.2;
+                            }
+                        }
+                    }
+                    if (cumulativeInstance.damage > 0) {
+                        attacker.currentHealth -= cumulativeInstance.damage;
+                        output.Add(cumulativeInstance);
+                    }
+                    break;
+                case AbilityEnum.CONDUCTIVITY:
+                    attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
+                    if (!attackInfo.IsPhysical) {
+                        var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
+                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, 0.2, 2);
+                        enemy.AddStatus(magicUp);
+                        damageInstance.AddStatus(magicUp);
+                        output.Add(damageInstance);
+                    }
+                    break;
             }
         }
         return output;

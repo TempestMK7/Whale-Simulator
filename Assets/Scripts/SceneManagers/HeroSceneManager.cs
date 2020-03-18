@@ -37,9 +37,15 @@ public class HeroSceneManager : MonoBehaviour {
     public Text healthLabel;
     public Text defenseLabel;
     public Text reflectionLabel;
+    public Text deflectionLabel;
     public Text speedLabel;
     public Text attackLabel;
     public Text magicLabel;
+    public Text critLabel;
+
+    public Image basicAttackImage;
+    public Image specialAttackImage;
+    public Image passiveImage;
 
     public FusionSelectionBehavior centerFusion;
     public FusionSelectionBehavior topLeftFusion;
@@ -200,6 +206,16 @@ public class HeroSceneManager : MonoBehaviour {
         defenseLabel.text = string.Format("Defense: {0}", combatHero.defense.ToString("0.0"));
         reflectionLabel.text = string.Format("Reflection: {0}", combatHero.reflection.ToString("0.0"));
         speedLabel.text = string.Format("Speed: {0}", combatHero.speed.ToString("0"));
+        deflectionLabel.text = string.Format("Deflection: {0}%", (combatHero.deflectionChance * 100).ToString("0"));
+        critLabel.text = string.Format("Critical: {0}%", (combatHero.critChance* 100).ToString("0"));
+
+        var basicAttack = AttackInfoContainer.GetAttackInfo(baseHero.BasicAttack);
+        var specialAttack = AttackInfoContainer.GetAttackInfo(baseHero.SpecialAttack);
+        var passiveAbility = AbilityInfoContainer.GetAbilityInfo(baseHero.PassiveAbility);
+
+        basicAttackImage.sprite = basicAttack.AttackIcon;
+        specialAttackImage.sprite = specialAttack.AttackIcon;
+        passiveImage.sprite = passiveAbility.AbilityIcon;
 
         rarityView.SetLevel(baseHero.Rarity, currentHero.AwakeningLevel, true);
         currentFusionRequirement = LevelContainer.GetFusionRequirementForLevel(currentHero.AwakeningLevel);

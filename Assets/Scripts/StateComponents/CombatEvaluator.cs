@@ -28,6 +28,8 @@ public class CombatEvaluator {
                 var turn = new CombatTurn(turnNumber, combatAllies, combatEnemies);
                 turn.steps = PerformTurn(combatAllies, combatEnemies);
                 turn.endOfTurn = EndOfTurn(combatAllies, combatEnemies);
+                // This ability is so well designed that it deserves its own evaluation step.
+                EvaluateFeedTheInferno(turn);
                 report.turns.Add(turn);
             }
             report.alliesWon = TeamAlive(combatAllies) && !TeamAlive(combatEnemies);
@@ -87,6 +89,46 @@ public class CombatEvaluator {
             }
         }
         return instances;
+    }
+
+    public static void EvaluateFeedTheInferno(CombatTurn turn) {
+        var allInferno = new List<CombatHero>();
+        foreach (CombatHero hero in turn.allies) {
+            if (hero != null && hero.IsAlive() && hero.baseHero.PassiveAbility == AbilityEnum.FEED_THE_INFERNO) {
+                allInferno.Add(hero);
+            }
+        }
+        foreach (CombatHero hero in turn.enemies) {
+            if (hero != null && hero.IsAlive() && hero.baseHero.PassiveAbility == AbilityEnum.FEED_THE_INFERNO) {
+                allInferno.Add(hero);
+            }
+        }
+        if (allInferno.Count == 0) return;
+
+        int burnCount = 0;
+        foreach (CombatStep step in turn.steps) {
+            foreach (DamageInstance stepInstance in step.damageInstances) {
+                foreach (StatusContainer status in stepInstance.inflictedStatus) {
+                    if (status.status == StatusEnum.BURN) burnCount++;
+                }
+            }
+        }
+        foreach (DamageInstance endOfTurnInstance in turn.endOfTurn) {
+            foreach (StatusContainer status in endOfTurnInstance.inflictedStatus) {
+                if (status.status == StatusEnum.BURN) burnCount++;
+            }
+        }
+
+        List<DamageInstance> infernoEndOfTurn = new List<DamageInstance>();
+        foreach (CombatHero inferno in allInferno) {
+            var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, inferno.combatHeroGuid, 0.05 * burnCount, StatusContainer.INDEFINITE);
+            inferno.AddStatus(magicUp);
+
+            var infernoInstance = new DamageInstance(null, null, inferno.combatHeroGuid, inferno.combatHeroGuid);
+            infernoInstance.AddStatus(magicUp);
+            infernoEndOfTurn.Add(infernoInstance);
+        }
+        turn.endOfTurn.AddRange(infernoEndOfTurn);
     }
 
     public static bool TeamAlive(CombatHero[] heroes) {

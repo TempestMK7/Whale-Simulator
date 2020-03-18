@@ -15,7 +15,7 @@ public class AttackContainer {
         var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
 
         foreach (CombatHero target in enemies) {
-            step.damageInstances.Add(attackInfo.ApplyAttackToEnemy(attacker, target));
+            step.damageInstances.AddRange(attackInfo.ApplyAttackToEnemy(attacker, target));
         }
 
         foreach (CombatHero ally in allies) {
@@ -25,7 +25,7 @@ public class AttackContainer {
         attacker.currentEnergy += attackInfo.AttackerEnergyGained;
         step.energyGained = attackInfo.AttackerEnergyGained;
 
-        step.damageInstances.AddRange(CombatMath.EvaluateNegativeSideEffects(attacker, enemies));
+        step.damageInstances.AddRange(CombatMath.EvaluateNegativeSideEffects(attacker, enemies, step));
 
         foreach (DamageInstance instance in step.damageInstances) {
             step.totalDamage += instance.damage;
@@ -635,7 +635,7 @@ public class AttackInfo {
         AllyStatusDuration = allyStatusDuration;
     }
 
-    public DamageInstance ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
+    public List<DamageInstance> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
         var hitType = CombatMath.RollHitType(attacker, target);
         var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
         var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
@@ -648,6 +648,8 @@ public class AttackInfo {
         damageInstance.damage = damage;
         damageInstance.targetEnergy = TargetEnergyGained;
         damageInstance.hitType = hitType;
+        var allInstances = new List<DamageInstance>();
+        allInstances.Add(damageInstance);
 
         // If the target died from this attack, bail before applying status.
         if (!target.IsAlive()) {
@@ -656,10 +658,28 @@ public class AttackInfo {
             target.currentStatus.Clear();
 
             damageInstance.wasFatal = true;
-            return damageInstance;
+            return allInstances;
         }
 
         if (TargetStatus != null) {
+            switch (target.baseHero.PassiveAbility) {
+                case AbilityEnum.WATER_BODY:
+                    if (TargetStatus == StatusEnum.BURN) {
+                        return allInstances;
+                    }
+                    break;
+                case AbilityEnum.HOT_BLOODED:
+                    if (TargetStatus == StatusEnum.POISON) {
+                        return allInstances;
+                    }
+                    break;
+                case AbilityEnum.COLD_BLOODED:
+                    if (TargetStatus == StatusEnum.CHILL || TargetStatus == StatusEnum.FREEZE) {
+                        return allInstances;
+                    }
+                    break;
+            }
+
             var inflictedStatus = TargetStatus.GetValueOrDefault();
             var statusValue = TargetStatusValue;
             var statusDuration = TargetStatusDuration;
@@ -690,12 +710,30 @@ public class AttackInfo {
                 default:
                     break;
             }
-            var statusContainer = new StatusContainer(inflictedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
-            target.AddStatus(statusContainer);
-            damageInstance.AddStatus(statusContainer);
+
+            if (target.baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                if (inflictedStatus == StatusEnum.MAGIC_DOWN) {
+                    inflictedStatus = StatusEnum.MAGIC_UP;
+                } else if (inflictedStatus == StatusEnum.SPEED_DOWN) {
+                    inflictedStatus = StatusEnum.SPEED_UP;
+                }
+            }
+
+            // This is going to break everything.
+            if (target.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE && !IsPhysical) {
+                var statusContainer = new StatusContainer(inflictedStatus, target.combatHeroGuid, statusValue, statusDuration);
+                attacker.AddStatus(statusContainer);
+                var mirrorInstance = new DamageInstance(null, null, target.combatHeroGuid, attacker.combatHeroGuid);
+                mirrorInstance.AddStatus(statusContainer);
+                allInstances.Add(mirrorInstance);
+            } else {
+                var statusContainer = new StatusContainer(inflictedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
+                target.AddStatus(statusContainer);
+                damageInstance.AddStatus(statusContainer);
+            }
         }
 
-        return damageInstance;
+        return allInstances;
     }
 
     public DamageInstance ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
@@ -738,6 +776,24 @@ public class AttackInfo {
             var statusContainer = new StatusContainer(bestowedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
             ally.AddStatus(statusContainer);
             damageInstance.AddStatus(statusContainer);
+        }
+
+        if (attacker.baseHero.PassiveAbility == AbilityEnum.CLEANSING_RAIN) {
+            var newStatus = new List<StatusContainer>();
+            foreach (StatusContainer status in ally.currentStatus) {
+                var statusDisplay = StatusDisplayContainer.GetStatusDisplay(status.status);
+                if (status.turnsRemaining == StatusContainer.INDEFINITE) {
+                    newStatus.Add(status);
+                } else if (statusDisplay.IsBeneficial) {
+                    newStatus.Add(status);
+                } else {
+                    status.turnsRemaining -= 1;
+                    if (status.turnsRemaining > 0) {
+                        newStatus.Add(status);
+                    }
+                }
+            }
+            ally.currentStatus = newStatus;
         }
 
         return damageInstance;

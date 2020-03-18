@@ -201,7 +201,11 @@ public class CombatHero : IComparable<CombatHero> {
             } else if (status.status == StatusEnum.SPEED_DOWN) {
                 multiplier -= status.value;
             } else if (status.status == StatusEnum.CHILL) {
-                multiplier -= status.value;
+                if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                    multiplier += status.value;
+                } else {
+                    multiplier -= status.value;
+                }
             }
         }
         return multiplier * speed;
