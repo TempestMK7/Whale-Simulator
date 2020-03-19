@@ -57,6 +57,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public GameObject heroListItemPrefab;
     public GameObject fusionPopupPrefab;
+    public TooltipPopup tooltipPrefab;
 
     private HeroAdapter heroAdapter;
     private FactionEnum? currentFilter;
@@ -115,7 +116,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null;
+        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null;
     }
 
     public void OnBackPressed() {
@@ -224,15 +225,26 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void LaunchAttackTooltip() {
-
+        if (ButtonsBlocked()) return;
+        var attack = filteredList[currentPosition].GetBaseHero().BasicAttack;
+        var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
+        var popup = Instantiate(tooltipPrefab, detailContainer.transform);
+        popup.SetTooltip(attackInfo.AttackName, attackInfo.GetTooltip());
     }
 
     public void LaunchSpecialTooltip() {
-
+        if (ButtonsBlocked()) return;
+        var attack = filteredList[currentPosition].GetBaseHero().SpecialAttack;
+        var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
+        var popup = Instantiate(tooltipPrefab, detailContainer.transform);
+        popup.SetTooltip(attackInfo.AttackName, attackInfo.GetTooltip());
     }
 
     public void LaunchPassiveTooltip() {
-
+        if (ButtonsBlocked()) return;
+        var passive = AbilityInfoContainer.GetAbilityInfo(filteredList[currentPosition].GetBaseHero().PassiveAbility);
+        var popup = Instantiate(tooltipPrefab, detailContainer.transform);
+        popup.SetTooltip(passive.AbilityName, passive.AbilityDescription);
     }
 
     private void ToggleStatPanel(bool showStats) {
