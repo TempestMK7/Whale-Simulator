@@ -66,7 +66,7 @@ public class AbilityInfoContainer {
         if (abilityDict != null) return;
         abilityDict = new Dictionary<AbilityEnum, AbilityInfo>();
         abilityDict[AbilityEnum.NONE] = new AbilityInfo(
-            AbilityEnum.NONE, "None", "Icons/RoleDamage",
+            AbilityEnum.NONE, "None", "Icons/Passives/PassiveNone",
             "I haven't gotten around to giving this hero an ability yet.");
 
         // Water
@@ -82,48 +82,48 @@ public class AbilityInfoContainer {
 
         // Grass
         abilityDict[AbilityEnum.BARK_SKIN] = new AbilityInfo(
-            AbilityEnum.BARK_SKIN, "Bark Skin", "Icons/RoleProtection",
+            AbilityEnum.BARK_SKIN, "Bark Skin", "Icons/Passives/PassiveBarkSkin",
             "Taking damage from a physical attack raises defense by 20% for 2 turns.");
         abilityDict[AbilityEnum.ABSORB_RAIN] = new AbilityInfo(
-            AbilityEnum.ABSORB_RAIN, "Absorb Rain", "Icons/RoleDamage",
+            AbilityEnum.ABSORB_RAIN, "Absorb Rain", "Icons/Passives/AbsorbRain",
             "Taking damage from a water ability raises attack and defense by 20% for 2 turns.");
         abilityDict[AbilityEnum.DEEP_ROOTS] = new AbilityInfo(
-            AbilityEnum.DEEP_ROOTS, "Deep Roots", "Icons/RoleProtection",
+            AbilityEnum.DEEP_ROOTS, "Deep Roots", "Icons/Passives/PassiveDeepRoots",
             "Recover 5% of missing health at the end of each turn.");
 
         // Fire
         abilityDict[AbilityEnum.HOT_BLOODED] = new AbilityInfo(
-            AbilityEnum.HOT_BLOODED, "Hot Blooded", "Icons/RoleDamage",
+            AbilityEnum.HOT_BLOODED, "Hot Blooded", "Icons/Passives/PassiveHotBlooded",
             "This hero cannot be affected by the poison status.");
         abilityDict[AbilityEnum.KINDLING] = new AbilityInfo(
-            AbilityEnum.KINDLING, "Kindling", "Icons/RoleDamage",
+            AbilityEnum.KINDLING, "Kindling", "Icons/Passives/PassiveKindling",
             "Taking damage from a grass ability raises magic and speed by 20% for 2 turns.");
         abilityDict[AbilityEnum.FEED_THE_INFERNO] = new AbilityInfo(
-            AbilityEnum.FEED_THE_INFERNO, "Feed the Inferno", "Icons/RoleDamage",
+            AbilityEnum.FEED_THE_INFERNO, "Feed the Inferno", "Icons/Passives/PassiveFeedTheInferno",
             "Whenever any hero receives the burn status, raise magic by 5% for the rest of the encounter.");
 
         // Ice
         abilityDict[AbilityEnum.MIRROR_ICE] = new AbilityInfo(
-            AbilityEnum.MIRROR_ICE, "Mirror Ice", "Icons/RoleProtection",
+            AbilityEnum.MIRROR_ICE, "Mirror Ice", "Icons/Passives/PassiveMirrorIce",
             "Negative status caused by magic abilities get reflected back to the attacker.");
         abilityDict[AbilityEnum.COLD_BLOODED] = new AbilityInfo(
-            AbilityEnum.COLD_BLOODED, "Cold Blooded", "Icons/RoleSupport",
+            AbilityEnum.COLD_BLOODED, "Cold Blooded", "Icons/Passives/PassiveColdBlooded",
             "This hero cannot be affected by the chill or freeze status.");
 
         // Earth
         abilityDict[AbilityEnum.JAGGED_SURFACE] = new AbilityInfo(
-            AbilityEnum.JAGGED_SURFACE, "Jagged Surface", "Icons/RoleProtection",
+            AbilityEnum.JAGGED_SURFACE, "Jagged Surface", "Icons/Passives/PassiveJaggedSurface",
             "20% of damage taken from melee attacks is inflicted to the attacker.");
         abilityDict[AbilityEnum.MOUNTING_RAGE] = new AbilityInfo(
-            AbilityEnum.MOUNTING_RAGE, "Mounting Rage", "Icons/RoleDamage",
+            AbilityEnum.MOUNTING_RAGE, "Mounting Rage", "Icons/Passives/PassiveMountingRage",
             "Permanently increase attack by 20% at the end of each round.");
 
         // Electric
         abilityDict[AbilityEnum.CONDUCTIVITY] = new AbilityInfo(
-            AbilityEnum.CONDUCTIVITY, "Conductivity", "Icons/RoleDamage",
+            AbilityEnum.CONDUCTIVITY, "Conductivity", "Icons/Passives/PassiveConductivity",
             "Taking damage from a magic ability raises magic by 20% for 2 turns.");
         abilityDict[AbilityEnum.MENTAL_GYMNASTICS] = new AbilityInfo(
-            AbilityEnum.MENTAL_GYMNASTICS, "Mental Gymnastics", "Icons/RoleSupport",
+            AbilityEnum.MENTAL_GYMNASTICS, "Mental Gymnastics", "Icons/Passives/PassiveMentalGymnastics",
             "Any time a magic down or speed down status would be applied to this hero, receive a magic up or speed up for the same amount.");
     }
 
