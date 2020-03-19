@@ -71,13 +71,13 @@ public class AbilityInfoContainer {
 
         // Water
         abilityDict[AbilityEnum.WATER_BODY] = new AbilityInfo(
-            AbilityEnum.WATER_BODY, "Water Body", "Icons/RoleSupport",
+            AbilityEnum.WATER_BODY, "Water Body", "Icons/Passives/PassiveWaterBody",
             "This hero cannot be affected by the burn status.");
         abilityDict[AbilityEnum.VAPORIZE] = new AbilityInfo(
-            AbilityEnum.VAPORIZE, "Vaporize", "Icons/RoleDamage",
+            AbilityEnum.VAPORIZE, "Vaporize", "Icons/Passives/PassiveVaporize",
             "Taking damage from a fire ability raises magic and reflection by 20% for 2 turns.");
         abilityDict[AbilityEnum.CLEANSING_RAIN] = new AbilityInfo(
-            AbilityEnum.CLEANSING_RAIN, "Cleansing Rain", "Icons/RoleSupport",
+            AbilityEnum.CLEANSING_RAIN, "Cleansing Rain", "Icons/Passives/PassiveCleansingRain",
             "Whenever this hero heals an ally, reduce all negative status effects on that ally by 1 turn.");
 
         // Grass
