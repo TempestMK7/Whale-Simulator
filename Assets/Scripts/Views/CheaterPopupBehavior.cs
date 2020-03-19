@@ -41,6 +41,5 @@ public class CheaterPopupBehavior : MonoBehaviour {
             yield return null;
         }
         Destroy(gameObject);
-        FindObjectOfType<HubSceneManager>().NotifyCheaterClosed();
     }
 }

@@ -167,21 +167,21 @@ public class AttackInfoContainer {
 
         // Water
         attackDict[AttackEnum.VAPOR_CLOUD] = new AttackInfo(
-            AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/Attacks/AttackVaporCloud", "AttackSounds/VaporCloud",
+            AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
             AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             0.5, 0, 25, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
-            AttackEnum.FISH_SLAP, "Fish Slap", "Icons/Attacks/AttackFishSlap", "AttackSounds/BasicPhysical",
+            AttackEnum.FISH_SLAP, "Fish Slap", "Icons/Attacks/Slap", "AttackSounds/BasicPhysical",
             null, null, null, null,
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
             1, 0, 25, 10, 0,
             StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
         attackDict[AttackEnum.WATER_RENEW] = new AttackInfo(
-            AttackEnum.WATER_RENEW, "Water Renew", "Icons/Attacks/AttackWaterRenew", "AttackSounds/WaterRenew",
+            AttackEnum.WATER_RENEW, "Water Renew", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
             AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER,
             false, true, false,
             TargetType.RANDOM, 1, TargetType.LOWEST_HEALTH, 1,
@@ -335,35 +335,35 @@ public class AttackInfoContainer {
 
         // Water
         attackDict[AttackEnum.WATER_SHOT] = new AttackInfo(
-            AttackEnum.WATER_SHOT, "Water Shot", "Icons/Attacks/AttackWaterShot", "AttackSounds/BasicMagic",
+            AttackEnum.WATER_SHOT, "Water Shot", "Icons/Attacks/WaterSwirl", "AttackSounds/BasicMagic",
             AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
             false, true, false,
             TargetType.RANDOM, 2, TargetType.NONE, 0,
             1.5, 0, -100, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.DRENCHING_WAVE] = new AttackInfo(
-            AttackEnum.DRENCHING_WAVE, "Drenching Wave", "Icons/Attacks/AttackDrenchingWave", "AttackSounds/BasicMagic",
+            AttackEnum.DRENCHING_WAVE, "Drenching Wave", "Icons/Attacks/Trident", "AttackSounds/BasicMagic",
             AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 3, TargetType.NONE, 0,
             1, 0, -100, 10, 0,
             StatusEnum.REFLECTION_DOWN, 0.3, 3, null, 0, 0);
         attackDict[AttackEnum.ENSCALE_TEAM] = new AttackInfo(
-            AttackEnum.ENSCALE_TEAM, "Enscale Team", "Icons/Attacks/AttackEnscaleTeam", "AttackSounds/BasicPhysical",
+            AttackEnum.ENSCALE_TEAM, "Enscale Team", "Icons/Attacks/WaterScale", "AttackSounds/BasicPhysical",
             null, null, null, null,
             true, false, true,
             TargetType.FIRST_ALIVE, 1, TargetType.RANDOM, 5,
             2, 0, -100, 10, 0,
             StatusEnum.DEFENSE_DOWN, 0.2, 2, StatusEnum.DEFENSE_UP, 0.3, 3);
         attackDict[AttackEnum.TSUNAMI] = new AttackInfo(
-            AttackEnum.TSUNAMI, "Tsunami", "Icons/Attacks/AttackTsunami", "AttackSounds/VaporCloud",
+            AttackEnum.TSUNAMI, "Tsunami", "Icons/Attacks/Rainstorm", "AttackSounds/VaporCloud",
             AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, null, null,
             false, true, false,
             TargetType.RANDOM, 5, TargetType.NONE, 0,
             0.7, 0, -100, 10, 0,
             StatusEnum.DOWSE, 0, 2, null, 0, 0);
         attackDict[AttackEnum.HEALING_WAVE] = new AttackInfo(
-            AttackEnum.HEALING_WAVE, "Healing Wave", "Icons/Attacks/AttackHealingWave", "AttackSounds/WaterRenew",
+            AttackEnum.HEALING_WAVE, "Healing Wave", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
             AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD,
             false, false, false,
             TargetType.NONE, 0, TargetType.RANDOM, 5,
@@ -456,7 +456,7 @@ public class AttackInfoContainer {
             AttackEnum.ENCASE_IN_ICE, "Encase in Ice", "Icons/RoleDamage", "AttackSounds/FrozenMirror",
             null, null, AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER,
             false, false, true,
-            TargetType.NONE, 0, TargetType.NONE, 0,
+            TargetType.NONE, 0, TargetType.SELF, 1,
             0, 0, -100, 0, 0,
             null, 0, 0, StatusEnum.ICE_ARMOR, 1, 3);
         attackDict[AttackEnum.FLINGING_SPREE] = new AttackInfo(

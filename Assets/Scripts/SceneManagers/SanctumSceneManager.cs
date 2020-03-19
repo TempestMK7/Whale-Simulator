@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class SanctumSceneManager : MonoBehaviour {
 
+    public Canvas mainCanvas;
+
     public PlayerInfoPanelManager infoPanel;
 
     public Text timeElapsedLabel;
@@ -16,6 +18,17 @@ public class SanctumSceneManager : MonoBehaviour {
     public Text soulsUnclaimedLabel;
     public Text experienceRateLabel;
     public Text experienceUnclaimedLabel;
+
+    public TooltipPopup tooltipPrefab;
+
+    public void Start() {
+        var state = StateManager.GetCurrentState();
+        if (!state.HasEnteredSanctum) {
+            var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+            tooltip.SetTooltip("This is the Sanctum.", "This is where you claim materials which you can use to upgrade your heroes and purchase things you need.\nProgressing through the campaign will increase the rate at which you accumulate materials.");
+            StateManager.NotifySanctumEntered();
+        }
+    }
 
     void Update() {
         var state = StateManager.GetCurrentState();
@@ -54,11 +67,17 @@ public class SanctumSceneManager : MonoBehaviour {
         timeElapsedLabel.text = formatted;
     }
 
+    private bool ButtonsBlocked() {
+        return FindObjectOfType<TooltipPopup>() != null;
+    }
+
     public void OnClaimRewards() {
+        if (ButtonsBlocked()) return;
         StateManager.ClaimRewards(OnRewardsClaimed);
     }
 
     public void OnRewardsClaimed(object sender) {
+        if (ButtonsBlocked()) return;
         infoPanel.NotifyUpdate();
     }
 

@@ -16,16 +16,25 @@ public class HubSceneManager : MonoBehaviour {
 
     public GameObject settingsPopupPrefab;
     public GameObject cheaterPopupPrefab;
+    public TooltipPopup tooltipPopupPrefab;
 
     public float usableWidth = 1.0f;
     public float usableHeight = 1.0f;
 
     private Vector3? clickPosition;
     private Vector3? startingClickPosition;
-    private bool settingsOpen = false;
-    private bool cheaterOpen = false;
 
-    void Update() {
+    public void Start() {
+        var state = StateManager.GetCurrentState();
+        if (!state.HasEnteredHub) {
+            var tooltip = Instantiate(tooltipPopupPrefab, mainCanvas.transform);
+            tooltip.SetTooltip("Welcome to W.H.A.L.E.",
+                "Welcome to the World of Horrors And Legends Eternal!\nWe need to get you started with some heroes that you can use to fight against all of the terrible things that have been attacking our village.\nClick on the portal in the middle of the screen.");
+            StateManager.NotifyHubEntered();
+        }
+    }
+
+    public void Update() {
         HandleClickEvents();
     }
 
@@ -33,7 +42,6 @@ public class HubSceneManager : MonoBehaviour {
         if (PopupOpened()) return;
         var settingsPopup = Instantiate(settingsPopupPrefab, mainCanvas.transform).GetComponent<SettingsPopupManager>();
         settingsPopup.LaunchPopup();
-        settingsOpen = true;
     }
     
     public void OnHeroClicked() {
@@ -44,19 +52,10 @@ public class HubSceneManager : MonoBehaviour {
         if (PopupOpened()) return;
         var cheaterPopup = Instantiate(cheaterPopupPrefab, mainCanvas.transform).GetComponent<CheaterPopupBehavior>();
         cheaterPopup.LaunchPopup();
-        cheaterOpen = true;
     }
 
     private bool PopupOpened() {
-        return settingsOpen || cheaterOpen;
-    }
-
-    public void NotifySettingsClosed() {
-        settingsOpen = false;
-    }
-
-    public void NotifyCheaterClosed() {
-        cheaterOpen = false;
+        return FindObjectOfType<SettingsPopupManager>() != null || FindObjectOfType<CheaterPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null;
     }
 
     private void HandleClickEvents() {

@@ -1056,6 +1056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67d4b90b2e88854781841e14fe571c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCanvas: {fileID: 2121806814}
   infoPanel: {fileID: 2074254655}
   timeElapsedLabel: {fileID: 1254588263}
   goldRateLabel: {fileID: 190248973}
@@ -1064,6 +1065,7 @@ MonoBehaviour:
   soulsUnclaimedLabel: {fileID: 714475168}
   experienceRateLabel: {fileID: 177712425}
   experienceUnclaimedLabel: {fileID: 1223176117}
+  tooltipPrefab: {fileID: 3895851472678222692, guid: 559c1197b1f7499489c3c486b1f239dd, type: 3}
 --- !u!4 &846104987
 Transform:
   m_ObjectHideFlags: 0

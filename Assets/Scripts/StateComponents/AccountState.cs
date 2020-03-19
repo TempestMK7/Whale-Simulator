@@ -22,6 +22,11 @@ public class AccountState {
 
     [SerializeField] public List<AccountHero> AccountHeroes { get; set; }
 
+    [SerializeField] public bool HasEnteredHub { get; set; }
+    [SerializeField] public bool HasEnteredSanctum { get; set; }
+    [SerializeField] public bool HasEnteredPortal { get; set; }
+    [SerializeField] public bool HasEnteredCampaign { get; set; }
+
     public void InitializeAccount() {
         PlayerName = "Unregistered Account";
 

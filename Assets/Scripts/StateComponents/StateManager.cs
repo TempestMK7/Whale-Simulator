@@ -60,6 +60,26 @@ public class StateManager {
         }
     }
 
+    public static void NotifyHubEntered() {
+        currentState.HasEnteredHub = true;
+        SaveState();
+    }
+
+    public static void NotifyPortalEntered() {
+        currentState.HasEnteredPortal = true;
+        SaveState();
+    }
+
+    public static void NotifySanctumEntered() {
+        currentState.HasEnteredSanctum = true;
+        SaveState();
+    }
+
+    public static void NotifyCampaignEntered() {
+        currentState.HasEnteredCampaign = true;
+        SaveState();
+    }
+
     public static void ClaimRewards(Action<object> handler) {
         GetCurrentState().ClaimMaterials();
         if (handler != null) handler.Invoke(null);

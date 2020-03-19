@@ -55,6 +55,5 @@ public class SettingsPopupManager : MonoBehaviour {
             yield return null;
         }
         Destroy(gameObject);
-        FindObjectOfType<HubSceneManager>().NotifySettingsClosed();
     }
 }

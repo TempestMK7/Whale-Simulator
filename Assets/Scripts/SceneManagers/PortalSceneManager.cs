@@ -14,6 +14,7 @@ public class PortalSceneManager : MonoBehaviour {
 
     public GameObject singleSummonPopupPrefab;
     public GameObject tenSummonPopupPrefab;
+    public TooltipPopup tooltipPopupPrefab;
 
     public ParticleSystem portalParticle;
     public AudioSource portalOpenEffect;
@@ -29,6 +30,15 @@ public class PortalSceneManager : MonoBehaviour {
         portalLoopEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         portalLoopEffect.Play();
         portalParticle.Play();
+    }
+
+    public void Start() {
+        var state = StateManager.GetCurrentState();
+        if (!state.HasEnteredPortal) {
+            var tooltip = Instantiate(tooltipPopupPrefab, sceneUiCanvas.transform);
+            tooltip.SetTooltip("This is the Portal.", "This is where you summon new heroes.\nWe'll give you 10 basic summoning stones to get started.");
+            StateManager.NotifyPortalEntered();
+        }
     }
 
     public void OnBackPressed() {
@@ -62,6 +72,6 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     private bool PopupExists() {
-        return FindObjectsOfType<SummonPopupBehavior>().Length > 0 || FindObjectsOfType<TenSummonPopupBehavior>().Length > 0;
+        return FindObjectOfType<SummonPopupBehavior>() != null || FindObjectOfType<TenSummonPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null;
     }
 }
