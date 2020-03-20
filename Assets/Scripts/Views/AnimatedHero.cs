@@ -93,7 +93,10 @@ public class AnimatedHero : MonoBehaviour {
 
     public IEnumerator AnimateCombatStep(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
         var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
-        if (attackInfo.IsMelee && step.enemyTargets.Count == 1) {
+        if (step.skippedTurn) {
+            combatTextHolder.AnimateSkippedTurn();
+            yield return new WaitForSeconds(0.3f);
+        } else if (attackInfo.IsMelee && step.enemyTargets.Count == 1) {
             yield return StartCoroutine(AnimateMeleeAttack(step, placeholders));
         } else {
             yield return StartCoroutine(AnimateOtherAttacks(step, placeholders));

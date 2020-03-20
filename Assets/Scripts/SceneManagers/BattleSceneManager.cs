@@ -314,7 +314,7 @@ public class BattleSceneManager : MonoBehaviour {
         BindEnemyTeam(turn.enemies);
 
         foreach (CombatStep step in turn.steps) {
-            if (!step.skippedTurn && !skipBattle) yield return StartCoroutine(PlayCombatStep(step));
+            if (!skipBattle) yield return StartCoroutine(PlayCombatStep(step));
         }
         
         foreach (DamageInstance instance in turn.endOfTurn) {

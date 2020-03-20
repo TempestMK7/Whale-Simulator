@@ -11,6 +11,11 @@ public class CombatTextHolder : MonoBehaviour {
         StartCoroutine(AnimateAllComponents(instance));
     }
 
+    public void AnimateSkippedTurn() {
+        var skipText = Instantiate(combatTextPrefab, container.transform as RectTransform);
+        skipText.GetComponent<CombatText>().SetText("Skipped.", ColorContainer.LightTextColor());
+    }
+
     private IEnumerator AnimateAllComponents(DamageInstance instance) {
         if (instance.damage > 0) {
             var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);

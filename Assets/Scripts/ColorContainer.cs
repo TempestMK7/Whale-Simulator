@@ -29,4 +29,8 @@ public class ColorContainer {
     public static Color EnergyColor() {
         return new Color32(232, 64, 192, 255);
     }
+
+    public static Color LightTextColor() {
+        return new Color32(221, 221, 221, 255);
+    }
 }
