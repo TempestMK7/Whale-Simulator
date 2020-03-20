@@ -123,7 +123,7 @@ public class CombatEvaluator {
 
         List<DamageInstance> infernoEndOfTurn = new List<DamageInstance>();
         foreach (CombatHero inferno in allInferno) {
-            var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, inferno.combatHeroGuid, 0.05 * burnCount, StatusContainer.INDEFINITE);
+            var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, inferno.combatHeroGuid, inferno.combatHeroGuid, 0.05 * burnCount, StatusContainer.INDEFINITE);
             inferno.AddStatus(magicUp);
 
             var infernoInstance = new DamageInstance(null, null, inferno.combatHeroGuid, inferno.combatHeroGuid);

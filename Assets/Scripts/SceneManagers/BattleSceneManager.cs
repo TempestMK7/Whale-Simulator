@@ -11,6 +11,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     public LayerMask heroAnimationLayer;
 
+    public Canvas mainCanvas;
     public GameObject selectionPanel;
     public RecyclerView selectionRecyclerView;
     public GameObject selectionPrefab;
@@ -22,6 +23,7 @@ public class BattleSceneManager : MonoBehaviour {
     public UnityEngine.UI.Button continueButton;
 
     public GameObject skipPanel;
+    public CombatReportPopup reportPopupPrefab;
 
     public AnimatedHero[] allyHolders;
     public AnimatedHero[] enemyHolders;
@@ -43,6 +45,7 @@ public class BattleSceneManager : MonoBehaviour {
     // These are used in combat mode.
     private Dictionary<Guid, AnimatedHero> placeHolders;
     private bool skipBattle = false;
+    private CombatReport displayedReport;
 
     public void Awake() {
         battleType = BattleManager.GetBattleType();
@@ -241,6 +244,7 @@ public class BattleSceneManager : MonoBehaviour {
             StateManager.IncrementCampaignPosition();
         }
 
+        displayedReport = combatReport;
         SetCombatMode(combatReport);
     }
 
@@ -345,8 +349,21 @@ public class BattleSceneManager : MonoBehaviour {
         continueButton.gameObject.SetActive(true);
     }
 
+    private bool ButtonsBlocked() {
+        return FindObjectOfType<CombatReportPopup>() != null;
+    }
+
     public void OnContinuePressed() {
+        if (ButtonsBlocked()) return;
         SceneManager.LoadSceneAsync("CampaignScene");
+    }
+
+    public void OnReportPressed() {
+        if (ButtonsBlocked()) return;
+        if (displayedReport != null) {
+            var reportPopup = Instantiate(reportPopupPrefab, mainCanvas.transform);
+            reportPopup.SetReport(displayedReport.ToHumanReadableReport());
+        }
     }
 
     public void OnSkipBattlePressed() {

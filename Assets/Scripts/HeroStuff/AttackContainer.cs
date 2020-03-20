@@ -721,13 +721,13 @@ public class AttackInfo {
 
             // This is going to break everything.
             if (target.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE && !IsPhysical) {
-                var statusContainer = new StatusContainer(inflictedStatus, target.combatHeroGuid, statusValue, statusDuration);
+                var statusContainer = new StatusContainer(inflictedStatus, target.combatHeroGuid, attacker.combatHeroGuid, statusValue, statusDuration);
                 attacker.AddStatus(statusContainer);
                 var mirrorInstance = new DamageInstance(null, null, target.combatHeroGuid, attacker.combatHeroGuid);
                 mirrorInstance.AddStatus(statusContainer);
                 allInstances.Add(mirrorInstance);
             } else {
-                var statusContainer = new StatusContainer(inflictedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
+                var statusContainer = new StatusContainer(inflictedStatus, attacker.combatHeroGuid, target.combatHeroGuid, statusValue, statusDuration);
                 target.AddStatus(statusContainer);
                 damageInstance.AddStatus(statusContainer);
             }
@@ -773,7 +773,7 @@ public class AttackInfo {
                 default:
                     break;
             }
-            var statusContainer = new StatusContainer(bestowedStatus, attacker.combatHeroGuid, statusValue, statusDuration);
+            var statusContainer = new StatusContainer(bestowedStatus, attacker.combatHeroGuid, ally.combatHeroGuid, statusValue, statusDuration);
             ally.AddStatus(statusContainer);
             damageInstance.AddStatus(statusContainer);
         }

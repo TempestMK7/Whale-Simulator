@@ -8,7 +8,7 @@ public class AbilityContainer {
         List<DamageInstance> output = new List<DamageInstance>();
         switch (hero.baseHero.PassiveAbility) {
             case AbilityEnum.MOUNTING_RAGE:
-                var status = new StatusContainer(StatusEnum.ATTACK_UP, hero.combatHeroGuid, 0.2, StatusContainer.INDEFINITE);
+                var status = new StatusContainer(StatusEnum.ATTACK_UP, hero.combatHeroGuid, hero.combatHeroGuid, 0.2, StatusContainer.INDEFINITE);
                 hero.AddStatus(status);
                 var damageInstance = new DamageInstance(null, null, hero.combatHeroGuid, hero.combatHeroGuid);
                 damageInstance.AddStatus(status);

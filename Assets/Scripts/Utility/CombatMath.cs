@@ -210,15 +210,19 @@ public class CombatMath {
         foreach (CombatHero enemy in enemies) {
             var newEnemyStatus = new List<StatusContainer>();
             var tempAttacker = attacker;
+            var tempTarget = enemy;
             bool statusingSelf = attacker.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE;
-            if (statusingSelf) tempAttacker = enemy;
+            if (statusingSelf) {
+                tempAttacker = enemy;
+                tempTarget = attacker;
+            }
 
             foreach (StatusContainer status in enemy.currentStatus) {
                 switch (status.status) {
                     case StatusEnum.ICE_ARMOR:
                         if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.COLD_BLOODED) break;
                         if (tempAttacker.HasStatus(StatusEnum.CHILL) || tempAttacker.HasStatus(StatusEnum.DOWSE)) {
-                            var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, 0, 2);
+                            var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, tempTarget.combatHeroGuid, 0, 2);
                             if (statusingSelf) {
                                 newEnemyStatus.Add(frozen);
                             } else {
@@ -229,7 +233,7 @@ public class CombatMath {
                             instance.AddStatus(frozen);
                             output.Add(instance);
                         } else {
-                            var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, 0.4, 3);
+                            var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, tempTarget.combatHeroGuid, 0.4, 3);
                             if (statusingSelf) {
                                 newEnemyStatus.Add(chilled);
                             } else {
@@ -243,7 +247,7 @@ public class CombatMath {
                         break;
                     case StatusEnum.LAVA_ARMOR:
                         if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.WATER_BODY) break;
-                        var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, status.value, 2);
+                        var burn = new StatusContainer(StatusEnum.BURN, status.inflicterGuid, tempTarget.combatHeroGuid, status.value, 2);
                         if (statusingSelf) {
                             newEnemyStatus.Add(burn);
                         } else {
@@ -272,8 +276,8 @@ public class CombatMath {
                 case AbilityEnum.VAPORIZE:
                     if (attacker.baseHero.Faction == FactionEnum.FIRE) {
                         var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, 0.2, 2);
-                        var reflectionUp = new StatusContainer(StatusEnum.REFLECTION_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                        var reflectionUp = new StatusContainer(StatusEnum.REFLECTION_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
                         enemy.AddStatus(magicUp);
                         enemy.AddStatus(reflectionUp);
                         damageInstance.AddStatus(magicUp);
@@ -285,7 +289,7 @@ public class CombatMath {
                     var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
                     if (attackInfo.IsPhysical) {
                         var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                        var attackUp = new StatusContainer(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var attackUp = new StatusContainer(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
                         enemy.AddStatus(attackUp);
                         damageInstance.AddStatus(attackUp);
                         output.Add(damageInstance);
@@ -294,8 +298,8 @@ public class CombatMath {
                 case AbilityEnum.ABSORB_RAIN:
                     if (attacker.baseHero.Faction == FactionEnum.WATER) {
                         var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                        var attackUp = new StatusContainer(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, 0.2, 2);
-                        var defenseUp = new StatusContainer(StatusEnum.DEFENSE_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var attackUp = new StatusContainer(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                        var defenseUp = new StatusContainer(StatusEnum.DEFENSE_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
                         enemy.AddStatus(attackUp);
                         enemy.AddStatus(defenseUp);
                         damageInstance.AddStatus(attackUp);
@@ -306,8 +310,8 @@ public class CombatMath {
                 case AbilityEnum.KINDLING:
                     if (attacker.baseHero.Faction == FactionEnum.GRASS) {
                         var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, 0.2, 2);
-                        var speedUp = new StatusContainer(StatusEnum.SPEED_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                        var speedUp = new StatusContainer(StatusEnum.SPEED_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
                         enemy.AddStatus(magicUp);
                         enemy.AddStatus(speedUp);
                         damageInstance.AddStatus(magicUp);
@@ -334,7 +338,7 @@ public class CombatMath {
                     attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
                     if (!attackInfo.IsPhysical) {
                         var damageInstance = new DamageInstance(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, 0.2, 2);
+                        var magicUp = new StatusContainer(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
                         enemy.AddStatus(magicUp);
                         damageInstance.AddStatus(magicUp);
                         output.Add(damageInstance);

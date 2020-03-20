@@ -9,12 +9,14 @@ public class StatusContainer {
 
     [SerializeField] public StatusEnum status;
     [SerializeField] public Guid inflicterGuid;
+    [SerializeField] public Guid targetGuid;
     [SerializeField] public double value;
     [SerializeField] public int turnsRemaining;
 
-    public StatusContainer(StatusEnum status, Guid inflicterGuid, double value, int turnsRemaining) {
+    public StatusContainer(StatusEnum status, Guid inflicterGuid, Guid targetGuid, double value, int turnsRemaining) {
         this.status = status;
         this.inflicterGuid = inflicterGuid;
+        this.targetGuid = targetGuid;
         this.value = value;
         this.turnsRemaining = turnsRemaining;
     }
@@ -22,16 +24,40 @@ public class StatusContainer {
     public StatusContainer(StatusContainer other) {
         status = other.status;
         inflicterGuid = other.inflicterGuid;
+        targetGuid = other.targetGuid;
         value = other.value;
         turnsRemaining = other.turnsRemaining;
     }
 
     public string ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
         var display = StatusDisplayContainer.GetStatusDisplay(status);
+
         var inflicterName = heroDict[inflicterGuid].HeroName;
+        var targetName = heroDict[targetGuid].HeroName;
         var verb = display.IsBeneficial ? "bestowed" : "inflicted";
-        var valueSuffix = value == 0 ? "." : string.Format(" with a value of {0}", value.ToString("0.0"));
-        return string.Format("{0} {1} {2} for {3} turns{4}", inflicterName, verb, display.StatusName, turnsRemaining, valueSuffix);
+        var statusPrefix = inflicterGuid.Equals(targetGuid) ? 
+            string.Format("{0} gained {1}", heroDict[targetGuid].HeroName, display.StatusName) : 
+            string.Format("{0} {1} {2} on {3}", inflicterName, verb, display.StatusName, targetName);
+
+        var turnSuffix = turnsRemaining == INDEFINITE ? "" : string.Format(" for {0} turns", turnsRemaining);
+
+        string printableValue;
+        switch(status) {
+            case StatusEnum.BURN:
+            case StatusEnum.BLEED:
+            case StatusEnum.POISON:
+            case StatusEnum.REGENERATION:
+            case StatusEnum.LAVA_ARMOR:
+            case StatusEnum.THORN_ARMOR:
+                printableValue = value.ToString("0");
+                break;
+            default:
+                printableValue = string.Format("{0}%", value * 100);
+                break;
+        }
+        var valueSuffix = value == 0 ? "" : string.Format(" with a value of {0}", printableValue);
+
+        return string.Format("{0}{1}{2}.", statusPrefix, turnSuffix, valueSuffix);
     }
 
     public static List<DamageInstance> EvaluateStatusEndOfTurn(CombatHero hero) {
