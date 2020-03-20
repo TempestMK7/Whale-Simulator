@@ -17,8 +17,11 @@ public class BattleSceneManager : MonoBehaviour {
 
     public GameObject statusPanel;
     public Text turnText;
+    public UnityEngine.UI.Button skipFightButton;
     public UnityEngine.UI.Button saveReportButton;
     public UnityEngine.UI.Button continueButton;
+
+    public GameObject skipPanel;
 
     public AnimatedHero[] allyHolders;
     public AnimatedHero[] enemyHolders;
@@ -39,6 +42,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     // These are used in combat mode.
     private Dictionary<Guid, AnimatedHero> placeHolders;
+    private bool skipBattle = false;
 
     public void Awake() {
         battleType = BattleManager.GetBattleType();
@@ -49,6 +53,7 @@ public class BattleSceneManager : MonoBehaviour {
                 SetSelectionMode();
                 break;
         }
+        skipPanel.SetActive(false);
     }
 
     public void Update() {
@@ -206,8 +211,8 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     private void HandleFightButton() {
-        for (int x = 0; x < selectedAllies.Length; x++) {
-            if (selectedAllies != null) {
+        foreach (AccountHero ally in selectedAllies) {
+            if (ally != null) {
                 fightButton.gameObject.SetActive(true);
                 return;
             }
@@ -248,6 +253,7 @@ public class BattleSceneManager : MonoBehaviour {
         statusPanel.SetActive(true);
 
         turnText.text = "Turn 1";
+        skipFightButton.gameObject.SetActive(true);
         saveReportButton.gameObject.SetActive(false);
         continueButton.gameObject.SetActive(false);
 
@@ -262,8 +268,10 @@ public class BattleSceneManager : MonoBehaviour {
         yield return new WaitForSeconds(1f);
 
         foreach (CombatTurn turn in report.turns) {
-            yield return StartCoroutine(PlayCombatTurn(turn));
-            yield return new WaitForSeconds(1f);
+            if (!skipBattle) {
+                yield return StartCoroutine(PlayCombatTurn(turn));
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         OnEndOfCombat(report);
@@ -306,12 +314,14 @@ public class BattleSceneManager : MonoBehaviour {
         BindEnemyTeam(turn.enemies);
 
         foreach (CombatStep step in turn.steps) {
-            if (!step.skippedTurn) yield return StartCoroutine(PlayCombatStep(step));
+            if (!step.skippedTurn && !skipBattle) yield return StartCoroutine(PlayCombatStep(step));
         }
         
         foreach (DamageInstance instance in turn.endOfTurn) {
-            placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
-            yield return new WaitForSeconds(0.3f);
+            if (!skipBattle) {
+                placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
+                yield return new WaitForSeconds(0.3f);
+            }
         }
     }
 
@@ -320,18 +330,37 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     private void OnEndOfCombat(CombatReport report) {
+        BindAllyTeam(report.alliesEnd);
+        BindEnemyTeam(report.enemiesEnd);
+
         if (report.alliesWon) {
             turnText.text = "Victory!";
         } else {
             turnText.text = "Defeat...";
         }
 
+        skipPanel.SetActive(false);
+        skipFightButton.gameObject.SetActive(false);
         saveReportButton.gameObject.SetActive(true);
         continueButton.gameObject.SetActive(true);
     }
 
     public void OnContinuePressed() {
         SceneManager.LoadSceneAsync("CampaignScene");
+    }
+
+    public void OnSkipBattlePressed() {
+        skipPanel.SetActive(true);
+    }
+
+    public void OnSkipConfirmPressed() {
+        skipPanel.SetActive(false);
+        skipFightButton.gameObject.SetActive(false);
+        skipBattle = true;
+    }
+
+    public void OnSkipCancelPressed() {
+        skipPanel.SetActive(false);
     }
 
     #endregion

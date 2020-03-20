@@ -33,6 +33,8 @@ public class CombatEvaluator {
                 report.turns.Add(turn);
             }
             report.alliesWon = TeamAlive(combatAllies) && !TeamAlive(combatEnemies);
+            report.alliesEnd = SnapShotTeam(combatAllies);
+            report.enemiesEnd = SnapShotTeam(combatEnemies);
         });
         return report;
     }
@@ -161,6 +163,8 @@ public class CombatReport {
     [SerializeField] public CombatHero[] enemies;
     [SerializeField] public List<CombatTurn> turns;
     [SerializeField] public bool alliesWon;
+    [SerializeField] public CombatHero[] alliesEnd;
+    [SerializeField] public CombatHero[] enemiesEnd;
 
     public CombatReport(CombatHero[] allies, CombatHero[] enemies) {
         this.allies = CombatEvaluator.SnapShotTeam(allies);

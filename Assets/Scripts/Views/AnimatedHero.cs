@@ -61,7 +61,12 @@ public class AnimatedHero : MonoBehaviour {
         selectedHero = null;
         combatHero = new CombatHero(hero);
         animator.runtimeAnimatorController = hero.baseHero.HeroAnimator;
-        if (hero.IsAlive()) healthCanvas.gameObject.SetActive(true);
+        if (hero.IsAlive()) {
+            healthCanvas.gameObject.SetActive(true);
+        } else {
+            healthCanvas.gameObject.SetActive(false);
+            animator.SetTrigger("Die");
+        }
     }
 
     public bool ContainsHero(CombatHero hero) {
