@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 public class StateManager {
 
-    private static string fileName = Application.persistentDataPath + "/WhaleState.dat";
+    private static string fileName = Application.persistentDataPath + "/WhaleState.txt";
     private static AccountState currentState;
 
     public static AccountState GetCurrentState() {
@@ -24,14 +25,13 @@ public class StateManager {
             return;
         }
 
-        FileStream stream = new FileStream(fileName, FileMode.Open);
+        StreamReader reader = new StreamReader(fileName);
         try {
-            BinaryFormatter formatter = new BinaryFormatter();
-            currentState = (AccountState)formatter.Deserialize(stream);
-        } catch (Exception e) {
+            currentState = JsonConvert.DeserializeObject<AccountState>(reader.ReadLine());
+        }catch (Exception e) {
             UnityEngine.Debug.Log(e.Message);
         } finally {
-            stream.Close();
+            reader.Close();
         }
 
         if (currentState == null) {
@@ -50,14 +50,9 @@ public class StateManager {
     public static void SaveState() {
         currentState.AccountHeroes.Sort();
 
-        FileStream stream = new FileStream(fileName, FileMode.Create);
-        BinaryFormatter formatter = new BinaryFormatter();
-
-        try {
-            formatter.Serialize(stream, currentState);
-        } finally {
-            stream.Close();
-        }
+        StreamWriter writer = new StreamWriter(fileName, false);
+        writer.WriteLine(JsonConvert.SerializeObject(currentState));
+        writer.Close();
     }
 
     public static void NotifyHubEntered() {
@@ -187,8 +182,8 @@ public class StateManager {
     }
 
     public static void IncrementCampaignPosition() {
-        ClaimRewards(null);
         AddRewardsFromCurrentMission();
+        ClaimRewards(null);
         var state = GetCurrentState();
         if (state.CurrentMission == 10) {
             state.CurrentMission = 1;
@@ -211,5 +206,28 @@ public class StateManager {
             state.CurrentSummons += 10;
         }
         SaveState();
+    }
+
+    public static void SetLastUsedTeam(AccountHero[] team) {
+        var state = GetCurrentState();
+        state.LastTeamSelection = new Guid?[team.Length];
+        for (int x = 0; x < team.Length; x++) {
+            if (team[x] == null) state.LastTeamSelection[x] = null;
+            else state.LastTeamSelection[x] = team[x].HeroGuid;
+        }
+    }
+
+    public static AccountHero[] GetLastUsedTeam() {
+        var state = GetCurrentState();
+        var team = new AccountHero[5];
+        if (state.LastTeamSelection == null) return team;
+        for (int x = 0; x < state.LastTeamSelection.Length; x++) {
+            var guid = state.LastTeamSelection[x];
+            var matchingHero = state.AccountHeroes.Find((AccountHero hero) => {
+                return hero.HeroGuid.Equals(state.LastTeamSelection[x]);
+            });
+            team[x] = matchingHero;
+        }
+        return team;
     }
 }

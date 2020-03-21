@@ -89,7 +89,9 @@ public class BattleSceneManager : MonoBehaviour {
             case BattleEnum.TOWER:
             case BattleEnum.CAMPAIGN:
             default:
-                selectedAllies = new AccountHero[5];
+                selectedAllies = StateManager.GetLastUsedTeam();
+                selectionAdapter.SetSelectedList(selectedAllies);
+                selectionRecyclerView.NotifyDataSetChanged();
                 break;
         }
         SelectEnemiesFromBattleType();
@@ -224,6 +226,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public async void OnFight() {
+        StateManager.SetLastUsedTeam(selectedAllies);
         var combatReport = await CombatEvaluator.GenerateCombatReport(selectedAllies, selectedEnemies);
 
         // TODO: Remove this when I'm done debugging.

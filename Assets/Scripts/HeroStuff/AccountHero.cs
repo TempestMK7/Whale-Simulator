@@ -14,7 +14,7 @@ public class AccountHero : IComparable<AccountHero> {
     [NonSerialized] private BaseHero baseHero;
 
     public AccountHero(HeroEnum heroType) {
-        HeroGuid = new Guid();
+        HeroGuid = Guid.NewGuid();
         HeroType = heroType;
         baseHero = BaseHeroContainer.GetBaseHero(HeroType);
         AwakeningLevel = baseHero.Rarity;

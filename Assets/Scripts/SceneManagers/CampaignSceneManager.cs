@@ -72,6 +72,11 @@ public class CampaignSceneManager : MonoBehaviour {
 
                 if (x == state.CurrentMission - 1) {
                     heroPlaceholders[x].RegisterOnClick(LaunchNextMission);
+                    mainCamera.transform.position = new Vector3(heroPlaceholders[x].transform.position.x, -2f, -10f);
+
+                    var vertExtent = mainCamera.orthographicSize;
+                    var horzExtent = vertExtent * Screen.width / Screen.height;
+                    ClampCameraToPlayableArea(horzExtent, vertExtent);
                 } else {
                     heroPlaceholders[x].RegisterOnClick(null);
                 }

@@ -27,6 +27,9 @@ public class AccountState {
     [SerializeField] public bool HasEnteredPortal { get; set; }
     [SerializeField] public bool HasEnteredCampaign { get; set; }
 
+    [SerializeField] public Guid?[] LastTeamSelection { get; set; }
+    [SerializeField] public Guid?[] LastRaidSelection { get; set; }
+
     public void InitializeAccount() {
         PlayerName = "Unregistered Account";
 
