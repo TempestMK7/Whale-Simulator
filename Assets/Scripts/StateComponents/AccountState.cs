@@ -21,6 +21,7 @@ public class AccountState {
     [SerializeField] public int CurrentMission { get; set; }
 
     [SerializeField] public List<AccountHero> AccountHeroes { get; set; }
+    [SerializeField] public List<AccountEquipment> AccountEquipment { get; set; }
 
     [SerializeField] public bool HasEnteredHub { get; set; }
     [SerializeField] public bool HasEnteredSanctum { get; set; }
@@ -46,6 +47,7 @@ public class AccountState {
         CurrentMission = 1;
 
         AccountHeroes = new List<AccountHero>();
+        AccountEquipment = new List<AccountEquipment>();
     }
 
     public void ClaimMaterials() {
@@ -57,17 +59,24 @@ public class AccountState {
         CurrentSouls += GenerationInfo.GenerationPerMillisecond(generation.SoulsPerMinute) * timeElapsed;
         CurrentExperience += GenerationInfo.GenerationPerMillisecond(generation.ExperiencePerMinute) * timeElapsed;
 
+        FixLevelsFromExperience();
+
+        StateManager.SaveState();
+    }
+
+    public void FixLevelsFromExperience() {
         while (CurrentExperience > LevelContainer.ExperienceRequirement(CurrentLevel)) {
             CurrentExperience -= LevelContainer.ExperienceRequirement(CurrentLevel);
             CurrentLevel++;
         }
-
-        StateManager.SaveState();
     }
 
     public void RetrieveDataAfterLoad() {
         foreach (AccountHero hero in AccountHeroes) {
             hero.LoadBaseHero();
+        }
+        foreach (AccountEquipment equipment in AccountEquipment) {
+            equipment.LoadBaseEquipment();
         }
     }
 }

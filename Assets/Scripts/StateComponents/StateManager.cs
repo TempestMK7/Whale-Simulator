@@ -3,8 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class StateManager {
@@ -28,7 +27,8 @@ public class StateManager {
         StreamReader reader = new StreamReader(fileName);
         try {
             currentState = JsonConvert.DeserializeObject<AccountState>(reader.ReadLine());
-        }catch (Exception e) {
+            currentState.RetrieveDataAfterLoad();
+        } catch (Exception e) {
             UnityEngine.Debug.Log(e.Message);
         } finally {
             reader.Close();
@@ -36,8 +36,8 @@ public class StateManager {
 
         if (currentState == null) {
             CreateEmptyContainer();
+            currentState.RetrieveDataAfterLoad();
         }
-        currentState.RetrieveDataAfterLoad();
     }
 
     private static void CreateEmptyContainer() {
@@ -181,31 +181,76 @@ public class StateManager {
         return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
     }
 
+    public static async Task<MissionReport> AttemptCurrentMissionWithTeam(AccountHero[] selectedTeam) {
+        SetLastUsedTeam(selectedTeam);
+        var missionInfo = MissionContainer.GetMission(currentState.CurrentChapter, currentState.CurrentMission);
+        var enemyTeam = new AccountHero[missionInfo.MissionHeroes.Length];
+        for (int x = 0; x < enemyTeam.Length; x++) {
+            var accountHero = new AccountHero(missionInfo.MissionHeroes[x]) {
+                AwakeningLevel = missionInfo.HeroAwakening,
+                CurrentLevel = missionInfo.HeroLevel
+            };
+            enemyTeam[x] = accountHero;
+        }
+        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam);
+
+        // TODO: Remove these temp files when I'm done debugging.
+        var fileName = "/CombatReport.txt";
+        StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
+        writer.WriteLine(JsonConvert.SerializeObject(combatReport));
+        writer.Close();
+
+        // TODO: Remove these temp files when I'm done debugging.
+        var readableReport = combatReport.ToHumanReadableReport();
+        fileName = "/ReadableCombatReport.txt";
+        writer = new StreamWriter(Application.persistentDataPath + fileName, false);
+        foreach (string line in readableReport) {
+            writer.WriteLine(line);
+        }
+        writer.Close();
+
+        if (combatReport.alliesWon) {
+            var earnedRewards = AddRewardsFromCurrentMission();
+            IncrementCampaignPosition();
+            return new MissionReport(combatReport, earnedRewards);
+        }
+
+        return new MissionReport(combatReport, null);
+    }
+
     public static void IncrementCampaignPosition() {
-        AddRewardsFromCurrentMission();
-        ClaimRewards(null);
-        var state = GetCurrentState();
-        if (state.CurrentMission == 10) {
-            state.CurrentMission = 1;
-            state.CurrentChapter++;
+        if (currentState.CurrentMission == 10) {
+            ClaimRewards(null);
+            currentState.CurrentMission = 1;
+            currentState.CurrentChapter++;
         } else {
-            state.CurrentMission++;
+            currentState.CurrentMission++;
         }
         SaveState();
     }
 
-    public static void AddRewardsFromCurrentMission() {
-        var state = GetCurrentState();
-        var mission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
+    public static EarnedRewardsContainer AddRewardsFromCurrentMission() {
+        var mission = MissionContainer.GetMission(currentState.CurrentChapter, currentState.CurrentMission);
         var rewards = mission.RewardsForMission();
-        state.CurrentGold += rewards.Gold;
-        state.CurrentSouls += rewards.Souls;
-        state.CurrentExperience += rewards.PlayerExperience;
-        state.CurrentSummons += rewards.Summons;
-        if (state.CurrentMission == 10) {
-            state.CurrentSummons += 10;
+        currentState.CurrentGold += rewards.Gold;
+        currentState.CurrentSouls += rewards.Souls;
+        currentState.CurrentExperience += rewards.PlayerExperience;
+        currentState.CurrentSummons += rewards.Summons;
+        if (currentState.CurrentMission == 10) {
+            currentState.CurrentSummons += 10;
+        }
+        currentState.FixLevelsFromExperience();
+        var equipmentRewards = new List<AccountEquipment>();
+        var allEquipment = (EquipmentType[])Enum.GetValues(typeof(EquipmentType));
+        for (int x = 0; x < rewards.NumberEquipment; x++) {
+            var randomIndex = CombatMath.RandomInt(0, allEquipment.Length);
+            var randomLevel = CombatMath.RandomInt(1, rewards.MaxEquipmentLevel + 1);
+            var newEquipment = new AccountEquipment(allEquipment[randomIndex], randomLevel);
+            currentState.AccountEquipment.Add(newEquipment);
+            equipmentRewards.Add(newEquipment);
         }
         SaveState();
+        return new EarnedRewardsContainer(rewards.Summons, rewards.Gold, rewards.Souls, rewards.PlayerExperience, equipmentRewards);
     }
 
     public static void SetLastUsedTeam(AccountHero[] team) {

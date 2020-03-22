@@ -45,7 +45,7 @@ public class BattleSceneManager : MonoBehaviour {
     // These are used in combat mode.
     private Dictionary<Guid, AnimatedHero> placeHolders;
     private bool skipBattle = false;
-    private CombatReport displayedReport;
+    private MissionReport displayedReport;
 
     public void Awake() {
         battleType = BattleManager.GetBattleType();
@@ -226,29 +226,10 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public async void OnFight() {
-        StateManager.SetLastUsedTeam(selectedAllies);
-        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedAllies, selectedEnemies);
+        var missionReport = await StateManager.AttemptCurrentMissionWithTeam(selectedAllies);
 
-        // TODO: Remove this when I'm done debugging.
-        var fileName = "/CombatReport.txt";
-        StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        writer.WriteLine(JsonConvert.SerializeObject(combatReport));
-        writer.Close();
-
-        var readableReport = combatReport.ToHumanReadableReport();
-        fileName = "/ReadableCombatReport.txt";
-        writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        foreach (string line in readableReport) {
-            writer.WriteLine(line);
-        }
-        writer.Close();
-
-        if (combatReport.alliesWon) {
-            StateManager.IncrementCampaignPosition();
-        }
-
-        displayedReport = combatReport;
-        SetCombatMode(combatReport);
+        displayedReport = missionReport;
+        SetCombatMode(missionReport.Combat);
     }
 
     #endregion
@@ -365,7 +346,7 @@ public class BattleSceneManager : MonoBehaviour {
         if (ButtonsBlocked()) return;
         if (displayedReport != null) {
             var reportPopup = Instantiate(reportPopupPrefab, mainCanvas.transform);
-            reportPopup.SetReport(displayedReport.ToHumanReadableReport());
+            reportPopup.SetReport(displayedReport.Combat.ToHumanReadableReport());
         }
     }
 

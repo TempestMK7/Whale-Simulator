@@ -86,9 +86,9 @@ public class MissionInfo {
         MissionHeroes = missionHeroes;
     }
 
-    public RewardsContainer RewardsForMission() {
+    public PotentialRewardsContainer RewardsForMission() {
         var heroRequirement = LevelContainer.HeroExperienceRequirement(HeroLevel);
-        return new RewardsContainer(1, heroRequirement * 3, heroRequirement * 2, 200 * HeroAwakening);
+        return new PotentialRewardsContainer(1, heroRequirement * 3, heroRequirement * 2, 200 * HeroAwakening, 2, HeroAwakening);
     }
 }
 
