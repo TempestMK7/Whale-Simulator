@@ -9,6 +9,7 @@ public class AccountEquipment : IComparable<AccountEquipment> {
     [SerializeField] public EquipmentType EquipType { get; set; }
     [SerializeField] public int Level { get; set; }
     [SerializeField] public Guid? EquippedHeroGuid { get; set; }
+    [SerializeField] public EquipmentSlot? EquippedSlot { get; set; }
 
     [NonSerialized] private BaseEquipment baseEquipment;
 
@@ -17,6 +18,7 @@ public class AccountEquipment : IComparable<AccountEquipment> {
         EquipType = equipType;
         Level = level;
         EquippedHeroGuid = null;
+        EquippedSlot = null;
         baseEquipment = BaseEquipmentContainer.GetBaseEquipment(equipType);
     }
 

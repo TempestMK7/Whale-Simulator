@@ -26,6 +26,12 @@ public class HeroSceneManager : MonoBehaviour {
     public FusionFanfareBehavior fusionFanfare;
     public LevelupFanfareBehavior levelupFanfare;
 
+    public EquipmentListItem headEquipment;
+    public EquipmentListItem chestEquipment;
+    public EquipmentListItem legEquipment;
+    public EquipmentListItem mainHandEquipment;
+    public EquipmentListItem offHandEquipment;
+
     public RarityBehavior rarityView;
     public Text levelLabel;
     public UnityEngine.UI.Button levelButton;
@@ -193,6 +199,27 @@ public class HeroSceneManager : MonoBehaviour {
 
         var animator = baseHero.HeroAnimator;
         heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
+
+        var equipped = state.AccountEquipment.FindAll((AccountEquipment matchable) => {
+            return currentHero.HeroGuid.Equals(matchable.EquippedHeroGuid);
+        });
+        headEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.HEAD; }),
+            false, null);
+        chestEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.CHEST; }),
+            false, null);
+        legEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.LEGS; }),
+            false, null);
+        mainHandEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) =>
+            { return matchable.EquippedSlot == EquipmentSlot.MAIN_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
+            false, null);
+        offHandEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) =>
+            { return matchable.EquippedSlot == EquipmentSlot.OFF_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
+            false, null);
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
         levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
