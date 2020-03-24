@@ -49,6 +49,7 @@ public class StateManager {
 
     public static void SaveState() {
         currentState.AccountHeroes.Sort();
+        currentState.AccountEquipment.Sort();
 
         StreamWriter writer = new StreamWriter(fileName, false);
         writer.WriteLine(JsonConvert.SerializeObject(currentState));

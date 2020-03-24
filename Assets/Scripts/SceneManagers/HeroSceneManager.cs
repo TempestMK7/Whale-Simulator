@@ -62,6 +62,7 @@ public class HeroSceneManager : MonoBehaviour {
     public UnityEngine.UI.Button completeFusionButton;
 
     public GameObject heroListItemPrefab;
+    public GameObject equipmentPopupPrefab;
     public GameObject fusionPopupPrefab;
     public TooltipPopup tooltipPrefab;
 
@@ -205,21 +206,21 @@ public class HeroSceneManager : MonoBehaviour {
         });
         headEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.HEAD; }),
-            false, null);
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.HEAD);
         chestEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.CHEST; }),
-            false, null);
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.CHEST);
         legEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.LEGS; }),
-            false, null);
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.LEGS);
         mainHandEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) =>
             { return matchable.EquippedSlot == EquipmentSlot.MAIN_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
-            false, null);
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.MAIN_HAND);
         offHandEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) =>
             { return matchable.EquippedSlot == EquipmentSlot.OFF_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
-            false, null);
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.OFF_HAND);
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
         levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
@@ -249,6 +250,17 @@ public class HeroSceneManager : MonoBehaviour {
         currentFusionRequirement = LevelContainer.GetFusionRequirementForLevel(currentHero.AwakeningLevel);
         fuseButton.gameObject.SetActive(currentFusionRequirement != null);
         ToggleStatPanel(true);
+    }
+
+    public void LaunchEquipmentPopup(int slot) {
+        var selectedSlot = (EquipmentSlot)slot;
+        var popup = Instantiate(equipmentPopupPrefab, detailContainer.transform).GetComponent<EquipmentSelectPopup>();
+        popup.SetHeroAndSlot(filteredList[currentPosition], selectedSlot);
+    }
+
+    public void NotifyEquipmentSelected() {
+        StateManager.SaveState();
+        BindDetailView();
     }
 
     public void LaunchAttackTooltip() {

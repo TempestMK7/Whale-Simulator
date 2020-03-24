@@ -64,46 +64,46 @@ public class BaseEquipmentContainer {
 
         // Cloth Armor
         equipDict[EquipmentType.CLOTH_CHEST] = new BaseEquipment(
-            EquipmentType.CLOTH_CHEST, EquipmentSlot.CHEST, "Cloth Chest", "Icons/RoleProtection",
+            EquipmentType.CLOTH_CHEST, EquipmentSlot.CHEST, "Cloth Chest", "Icons/Equipment/ClothChest",
             0, 30, 5, 5, 0, 0);
         equipDict[EquipmentType.CLOTH_PANTS] = new BaseEquipment(
-            EquipmentType.CLOTH_PANTS, EquipmentSlot.LEGS, "Cloth Pants", "Icons/RoleProtection",
+            EquipmentType.CLOTH_PANTS, EquipmentSlot.LEGS, "Cloth Pants", "Icons/Equipment/ClothPants",
             0, 30, 5, 5, 0, 0);
         equipDict[EquipmentType.CLOTH_HAT] = new BaseEquipment(
-            EquipmentType.CLOTH_HAT, EquipmentSlot.HEAD, "Cloth Hat", "Icons/RoleProtection",
+            EquipmentType.CLOTH_HAT, EquipmentSlot.HEAD, "Cloth Hat", "Icons/Equipment/ClothHelm",
             0, 30, 5, 5, 0, 0);
 
         // Leather Armor
         equipDict[EquipmentType.LEATHER_CHEST] = new BaseEquipment(
-            EquipmentType.LEATHER_CHEST, EquipmentSlot.CHEST, "Leather Chest", "Icons/RoleProtection",
+            EquipmentType.LEATHER_CHEST, EquipmentSlot.CHEST, "Leather Chest", "Icons/Equipment/LeatherChest",
             30, 0, 5, 5, 0, 0);
         equipDict[EquipmentType.LEATHER_PANTS] = new BaseEquipment(
-            EquipmentType.LEATHER_PANTS, EquipmentSlot.LEGS, "Leather Pants", "Icons/RoleProtection",
+            EquipmentType.LEATHER_PANTS, EquipmentSlot.LEGS, "Leather Pants", "Icons/Equipment/LeatherPants",
             30, 0, 5, 5, 0, 0);
         equipDict[EquipmentType.LEATHER_HAT] = new BaseEquipment(
-            EquipmentType.LEATHER_HAT, EquipmentSlot.HEAD, "Leather Hat", "Icons/RoleProtection",
+            EquipmentType.LEATHER_HAT, EquipmentSlot.HEAD, "Leather Hat", "Icons/Equipment/LeatherHelm",
             30, 0, 5, 5, 0, 0);
 
         // Plate Armor
         equipDict[EquipmentType.PLATE_CHEST] = new BaseEquipment(
-            EquipmentType.PLATE_CHEST, EquipmentSlot.CHEST, "Plate Chest", "Icons/RoleProtection",
+            EquipmentType.PLATE_CHEST, EquipmentSlot.CHEST, "Plate Chest", "Icons/Equipment/PlateChest",
             0, 0, 30, 10, 0, 0);
         equipDict[EquipmentType.PLATE_PANTS] = new BaseEquipment(
-            EquipmentType.PLATE_PANTS, EquipmentSlot.LEGS, "Plate Pants", "Icons/RoleProtection",
+            EquipmentType.PLATE_PANTS, EquipmentSlot.LEGS, "Plate Pants", "Icons/Equipment/PlatePants",
             0, 0, 30, 10, 0, 0);
         equipDict[EquipmentType.PLATE_HELMET] = new BaseEquipment(
-            EquipmentType.PLATE_HELMET, EquipmentSlot.HEAD, "Plate Hat", "Icons/RoleProtection",
+            EquipmentType.PLATE_HELMET, EquipmentSlot.HEAD, "Plate Hat", "Icons/Equipment/PlateHelm",
             0, 0, 30, 10, 0, 0);
 
         // Crystal Armor
         equipDict[EquipmentType.CRYSTAL_CHEST] = new BaseEquipment(
-            EquipmentType.CRYSTAL_CHEST, EquipmentSlot.CHEST, "Crystal Chest", "Icons/RoleProtection",
+            EquipmentType.CRYSTAL_CHEST, EquipmentSlot.CHEST, "Crystal Chest", "Icons/Equipment/CrystalChest",
             0, 0, 10, 30, 0, 0);
         equipDict[EquipmentType.CRYSTAL_PANTS] = new BaseEquipment(
-            EquipmentType.CRYSTAL_PANTS, EquipmentSlot.LEGS, "Crystal Pants", "Icons/RoleProtection",
+            EquipmentType.CRYSTAL_PANTS, EquipmentSlot.LEGS, "Crystal Pants", "Icons/Equipment/CrystalPants",
             0, 0, 10, 30, 0, 0);
         equipDict[EquipmentType.CRYSTAL_HELMET] = new BaseEquipment(
-            EquipmentType.CRYSTAL_HELMET, EquipmentSlot.HEAD, "Crystal Hat", "Icons/RoleProtection",
+            EquipmentType.CRYSTAL_HELMET, EquipmentSlot.HEAD, "Crystal Hat", "Icons/Equipment/CrystalHelm",
             0, 0, 10, 30, 0, 0);
 
         // One Handed
