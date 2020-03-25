@@ -9,6 +9,7 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
     public Image blurryBorder;
     public Image heroIcon;
     public Text levelText;
+    public Image equipmentIcon;
     public RarityBehavior rarityView;
     public Image selectionIcon;
 
@@ -28,6 +29,7 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         heroIcon.sprite = baseHero.HeroIcon;
         blurryBorder.color = ColorContainer.ColorFromFaction(baseHero.Faction);
         levelText.text = accountHero.CurrentLevel.ToString();
+        equipmentIcon.enabled = StateManager.GetCurrentState().GetEquipmentForHero(accountHero).Count > 0;
         rarityView.SetLevel(baseHero.Rarity, accountHero.AwakeningLevel, false);
         HandleSelectionIcon();
     }
