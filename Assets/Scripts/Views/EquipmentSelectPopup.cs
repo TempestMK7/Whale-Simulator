@@ -79,11 +79,11 @@ public class EquipmentSelectPopup : MonoBehaviour {
 
 public class EquipmentAdapter : RecyclerViewAdapter {
 
-    private EquipmentSelectPopup popup;
-    private GameObject listItemPrefab;
+    private readonly EquipmentSelectPopup popup;
+    private readonly GameObject listItemPrefab;
     private Guid selectedHeroGuid;
-    private EquipmentSlot selectedSlot;
-    private List<AccountEquipment> equipmentList;
+    private readonly EquipmentSlot selectedSlot;
+    private readonly List<AccountEquipment> equipmentList;
 
     public EquipmentAdapter(EquipmentSelectPopup popup, GameObject listItemPrefab, Guid selectedHeroGuid, EquipmentSlot selectedSlot) {
         this.popup = popup;
@@ -129,8 +129,25 @@ public class EquipmentAdapter : RecyclerViewAdapter {
     public void OnViewHolderClicked(int position) {
         popup.ClearCurrentSelection();
         var selection = equipmentList[position];
+        if (selection.GetBaseEquipment().Slot == EquipmentSlot.TWO_HAND) {
+            var slotList = new List<EquipmentSlot>();
+            slotList.Add(EquipmentSlot.MAIN_HAND);
+            slotList.Add(EquipmentSlot.OFF_HAND);
+            slotList.Add(EquipmentSlot.TWO_HAND);
+            var alreadyEquipped = StateManager.GetCurrentState().AccountEquipment.FindAll((AccountEquipment matchable) => {
+                return matchable.EquippedSlot != null &&
+                    selectedHeroGuid.Equals(matchable.EquippedHeroGuid) &&
+                    slotList.Contains(matchable.EquippedSlot.GetValueOrDefault());
+            });
+            foreach (AccountEquipment equipped in alreadyEquipped) {
+                equipped.EquippedHeroGuid = null;
+                equipped.EquippedSlot = null;
+            }
+            selection.EquippedSlot = EquipmentSlot.TWO_HAND;
+        } else {
+            selection.EquippedSlot = selectedSlot;
+        }
         selection.EquippedHeroGuid = selectedHeroGuid;
-        selection.EquippedSlot = selection.GetBaseEquipment().Slot == EquipmentSlot.TWO_HAND ? EquipmentSlot.TWO_HAND : selectedSlot;
         var sceneManager = UnityEngine.Object.FindObjectOfType<HeroSceneManager>();
         if (sceneManager != null) sceneManager.NotifyEquipmentSelected();
         popup.OnCancelPressed();

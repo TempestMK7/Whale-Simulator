@@ -108,46 +108,46 @@ public class BaseEquipmentContainer {
 
         // One Handed
         equipDict[EquipmentType.DAGGER] = new BaseEquipment(
-            EquipmentType.DAGGER, EquipmentSlot.ONE_HAND, "Dagger", "Icons/RoleDamage",
+            EquipmentType.DAGGER, EquipmentSlot.ONE_HAND, "Dagger", "Icons/Equipment/Dagger",
             200, 0, 0, 0, 0.2, 0);
         equipDict[EquipmentType.SWORD] = new BaseEquipment(
-            EquipmentType.SWORD, EquipmentSlot.ONE_HAND, "Sword", "Icons/RoleDamage",
+            EquipmentType.SWORD, EquipmentSlot.ONE_HAND, "Sword", "Icons/Equipment/OneHandedSword",
             400, 0, 0, 0, 0, 0);
         equipDict[EquipmentType.AXE] = new BaseEquipment(
-            EquipmentType.AXE, EquipmentSlot.ONE_HAND, "Axe", "Icons/RoleDamage",
+            EquipmentType.AXE, EquipmentSlot.ONE_HAND, "Axe", "Icons/Equipment/OneHandedAxe",
             300, 0, 0, 0, 0.1, 0);
 
         // Main Hand
         equipDict[EquipmentType.CLUB] = new BaseEquipment(
-            EquipmentType.CLUB, EquipmentSlot.MAIN_HAND, "Club", "Icons/RoleDamage",
+            EquipmentType.CLUB, EquipmentSlot.MAIN_HAND, "Club", "Icons/Equipment/OneHandedClub",
             200, 200, 0, 0, 0, 0);
         equipDict[EquipmentType.SCEPTER] = new BaseEquipment(
-            EquipmentType.SCEPTER, EquipmentSlot.MAIN_HAND, "Scepter", "Icons/RoleDamage",
+            EquipmentType.SCEPTER, EquipmentSlot.MAIN_HAND, "Scepter", "Icons/Equipment/Scepter",
             0, 400, 0, 0, 0, 0);
 
         // Off Hand
         equipDict[EquipmentType.METAL_SHIELD] = new BaseEquipment(
-            EquipmentType.METAL_SHIELD, EquipmentSlot.OFF_HAND, "Metal Shield", "Icons/RoleProtection",
+            EquipmentType.METAL_SHIELD, EquipmentSlot.OFF_HAND, "Metal Shield", "Icons/Equipment/MetalShield",
             0, 0, 300, 0, 0, 0.1);
         equipDict[EquipmentType.CRYSTAL_SHIELD] = new BaseEquipment(
-            EquipmentType.CRYSTAL_SHIELD, EquipmentSlot.OFF_HAND, "Crystal Shield", "Icons/RoleProtection",
+            EquipmentType.CRYSTAL_SHIELD, EquipmentSlot.OFF_HAND, "Crystal Shield", "Icons/Equipment/CrystalShield",
             0, 0, 0, 300, 0, 0.1);
         equipDict[EquipmentType.TOME] = new BaseEquipment(
-            EquipmentType.TOME, EquipmentSlot.OFF_HAND, "Tome", "Icons/RoleDamage",
+            EquipmentType.TOME, EquipmentSlot.OFF_HAND, "Tome", "Icons/Equipment/Tome",
             0, 200, 0, 0, 0.2, 0);
 
         // Two Handed
         equipDict[EquipmentType.GREAT_SWORD] = new BaseEquipment(
-            EquipmentType.GREAT_SWORD, EquipmentSlot.TWO_HAND, "Great Sword", "Icons/RoleDamage",
+            EquipmentType.GREAT_SWORD, EquipmentSlot.TWO_HAND, "Great Sword", "Icons/Equipment/OneHandedSword",
             800, 0, 0, 0, 0, 0);
         equipDict[EquipmentType.GREAT_AXE] = new BaseEquipment(
-            EquipmentType.GREAT_AXE, EquipmentSlot.TWO_HAND, "Great Axe", "Icons/RoleDamage",
+            EquipmentType.GREAT_AXE, EquipmentSlot.TWO_HAND, "Great Axe", "Icons/Equipment/TwoHandedAxe",
             600, 0, 0, 0, 0.2, 0);
         equipDict[EquipmentType.GREAT_CLUB] = new BaseEquipment(
-            EquipmentType.GREAT_CLUB, EquipmentSlot.TWO_HAND, "Great Club", "Icons/RoleDamage",
+            EquipmentType.GREAT_CLUB, EquipmentSlot.TWO_HAND, "Great Club", "Icons/Equipment/TwoHandedClub",
             400, 400, 0, 0, 0, 0);
         equipDict[EquipmentType.STAFF] = new BaseEquipment(
-            EquipmentType.STAFF, EquipmentSlot.TWO_HAND, "Staff", "Icons/RoleDamage",
+            EquipmentType.STAFF, EquipmentSlot.TWO_HAND, "Staff", "Icons/Equipment/Staff",
             0, 800, 0, 0, 0, 0);
     }
 
