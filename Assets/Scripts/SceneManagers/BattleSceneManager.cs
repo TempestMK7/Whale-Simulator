@@ -18,6 +18,8 @@ public class BattleSceneManager : MonoBehaviour {
 
     public GameObject statusPanel;
     public Text turnText;
+    public RecyclerView rewardRecycler;
+    public GameObject rewardPrefab;
     public UnityEngine.UI.Button skipFightButton;
     public UnityEngine.UI.Button saveReportButton;
     public UnityEngine.UI.Button continueButton;
@@ -241,6 +243,7 @@ public class BattleSceneManager : MonoBehaviour {
         statusPanel.SetActive(true);
 
         turnText.text = "Turn 1";
+        rewardRecycler.gameObject.SetActive(false);
         skipFightButton.gameObject.SetActive(true);
         saveReportButton.gameObject.SetActive(false);
         continueButton.gameObject.SetActive(false);
@@ -329,8 +332,15 @@ public class BattleSceneManager : MonoBehaviour {
 
         skipPanel.SetActive(false);
         skipFightButton.gameObject.SetActive(false);
+        rewardRecycler.gameObject.SetActive(true);
         saveReportButton.gameObject.SetActive(true);
         continueButton.gameObject.SetActive(true);
+
+        if (report.alliesWon) {
+            var rewardAdapter = new RewardAdapter(rewardPrefab, displayedReport.EarnedRewards);
+            rewardRecycler.SetAdapter(rewardAdapter);
+            rewardRecycler.NotifyDataSetChanged();
+        }
     }
 
     private bool ButtonsBlocked() {
@@ -406,5 +416,59 @@ public class BattleSelectionAdapter : RecyclerViewAdapter {
 
     public override int GetItemCount() {
         return heroList == null ? 0 : heroList.Count;
+    }
+}
+
+public class RewardAdapter : RecyclerViewAdapter {
+
+    private GameObject listItemPrefab;
+    private EarnedRewardsContainer rewards;
+
+    private List<RewardType> earnedRewards;
+    private List<AccountEquipment> earnedEquipment;
+
+    public RewardAdapter(GameObject listItemPrefab, EarnedRewardsContainer rewards) {
+        this.listItemPrefab = listItemPrefab;
+        this.rewards = rewards;
+
+        earnedRewards = new List<RewardType>();
+        if (rewards.Gold > 0) earnedRewards.Add(RewardType.GOLD);
+        if (rewards.Souls > 0) earnedRewards.Add(RewardType.SOULS);
+        if (rewards.PlayerExperience > 0) earnedRewards.Add(RewardType.PLAYER_EXPERIENCE);
+        if (rewards.Summons > 0) earnedRewards.Add(RewardType.STANDARD_SUMMON);
+
+        earnedEquipment = rewards.EarnedEquipment;
+    }
+
+    public override GameObject OnCreateViewHolder(RectTransform contentHolder) {
+        return UnityEngine.Object.Instantiate(listItemPrefab, contentHolder);
+    }
+
+    public override void OnBindViewHolder(GameObject viewHolder, int position) {
+        var rewardHolder = viewHolder.GetComponent<RewardListItem>();
+        if (position < earnedRewards.Count) {
+            var type = earnedRewards[position];
+            switch (type) {
+                case RewardType.GOLD:
+                    rewardHolder.SetReward(type, rewards.Gold);
+                    break;
+                case RewardType.SOULS:
+                    rewardHolder.SetReward(type, rewards.Souls);
+                    break;
+                case RewardType.PLAYER_EXPERIENCE:
+                    rewardHolder.SetReward(type, rewards.PlayerExperience);
+                    break;
+                case RewardType.STANDARD_SUMMON:
+                    rewardHolder.SetReward(type, rewards.Summons);
+                    break;
+            }
+        } else {
+            var equipPosition = position - earnedRewards.Count;
+            rewardHolder.SetReward(earnedEquipment[equipPosition]);
+        }
+    }
+
+    public override int GetItemCount() {
+        return earnedRewards.Count + earnedEquipment.Count;
     }
 }
