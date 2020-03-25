@@ -79,4 +79,10 @@ public class AccountState {
             equipment.LoadBaseEquipment();
         }
     }
+
+    public List<AccountEquipment> GetEquipmentForHero(AccountHero hero) {
+        return AccountEquipment.FindAll((AccountEquipment matchable) => {
+            return hero.HeroGuid.Equals(matchable.EquippedHeroGuid);
+        });
+    }
 }

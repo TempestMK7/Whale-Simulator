@@ -25,7 +25,7 @@ public class CombatHero : IComparable<CombatHero> {
     [SerializeField] public double currentEnergy;
     [SerializeField] public List<StatusContainer> currentStatus;
 
-    public CombatHero(AccountHero accountHero) {
+    public CombatHero(AccountHero accountHero, List<AccountEquipment> equipped) {
         baseHero = accountHero.GetBaseHero();
         combatHeroGuid = Guid.NewGuid();
         heroEnum = baseHero.Hero;
@@ -44,6 +44,16 @@ public class CombatHero : IComparable<CombatHero> {
         currentHealth = health;
         currentEnergy = 50.0;
         currentStatus = new List<StatusContainer>();
+
+        foreach (AccountEquipment equipment in equipped) {
+            var baseEquipment = equipment.GetBaseEquipment();
+            attack += baseEquipment.BaseAttack * equipment.Level;
+            magic += baseEquipment.BaseMagic * equipment.Level;
+            defense += baseEquipment.BaseDefense * equipment.Level;
+            reflection += baseEquipment.BaseReflection * equipment.Level;
+            critChance += baseEquipment.BaseCrit;
+            deflectionChance += baseEquipment.BaseDeflect;
+        }
     }
 
     public CombatHero(CombatHero other) {

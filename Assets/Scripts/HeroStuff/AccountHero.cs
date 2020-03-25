@@ -30,7 +30,13 @@ public class AccountHero : IComparable<AccountHero> {
     }
 
     public CombatHero GetCombatHero() {
-        return new CombatHero(this);
+        var state = StateManager.GetCurrentState();
+        return new CombatHero(this, state.GetEquipmentForHero(this));
+    }
+
+    public CombatHero GetCombatHeroWithStockEquipment() {
+        var fakeEquipment = new List<AccountEquipment>();
+        return new CombatHero(this, fakeEquipment);
     }
 
     public int CompareTo(AccountHero other) {
