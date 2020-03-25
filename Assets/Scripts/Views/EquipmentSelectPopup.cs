@@ -23,6 +23,30 @@ public class EquipmentSelectPopup : MonoBehaviour {
     public void SetHeroAndSlot(AccountHero selectedHero, EquipmentSlot selectedSlot) {
         this.selectedHero = selectedHero;
         this.selectedSlot = selectedSlot;
+
+        string title;
+        switch (selectedSlot) {
+            case EquipmentSlot.MAIN_HAND:
+                title = "Main Hand";
+                break;
+            case EquipmentSlot.OFF_HAND:
+                title = "Off Hand";
+                break;
+            case EquipmentSlot.CHEST:
+                title = "Chest";
+                break;
+            case EquipmentSlot.LEGS:
+                title = "Legs";
+                break;
+            case EquipmentSlot.HEAD:
+                title = "Head";
+                break;
+            default:
+                title = "None";
+                break;
+        }
+        equipmentLabel.text = string.Format("Equip {0}", title);
+
         adapter = new EquipmentAdapter(this, listItemPrefab, selectedHero.HeroGuid, selectedSlot);
         StartCoroutine(ExpandIntoFrame());
     }

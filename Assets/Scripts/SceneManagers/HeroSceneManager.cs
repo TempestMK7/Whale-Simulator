@@ -31,6 +31,7 @@ public class HeroSceneManager : MonoBehaviour {
     public EquipmentListItem legEquipment;
     public EquipmentListItem mainHandEquipment;
     public EquipmentListItem offHandEquipment;
+    public UnityEngine.UI.Button unequipButton;
 
     public RarityBehavior rarityView;
     public Text levelLabel;
@@ -123,7 +124,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null;
+        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<EquipmentSelectPopup>() != null;
     }
 
     public void OnBackPressed() {
@@ -201,9 +202,7 @@ public class HeroSceneManager : MonoBehaviour {
         var animator = baseHero.HeroAnimator;
         heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
 
-        var equipped = state.AccountEquipment.FindAll((AccountEquipment matchable) => {
-            return currentHero.HeroGuid.Equals(matchable.EquippedHeroGuid);
-        });
+        var equipped = state.GetEquipmentForHero(currentHero);
         headEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.HEAD; }),
             false, LaunchEquipmentPopup, (int)EquipmentSlot.HEAD);
@@ -221,6 +220,7 @@ public class HeroSceneManager : MonoBehaviour {
             equipped.Find((AccountEquipment matchable) =>
             { return matchable.EquippedSlot == EquipmentSlot.OFF_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
             false, LaunchEquipmentPopup, (int)EquipmentSlot.OFF_HAND);
+        unequipButton.gameObject.SetActive(equipped.Count > 0);
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
         levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
@@ -253,6 +253,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void LaunchEquipmentPopup(int slot) {
+        if (ButtonsBlocked()) return;
         var selectedSlot = (EquipmentSlot)slot;
         var popup = Instantiate(equipmentPopupPrefab, detailContainer.transform).GetComponent<EquipmentSelectPopup>();
         popup.SetHeroAndSlot(filteredList[currentPosition], selectedSlot);
@@ -260,6 +261,11 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void NotifyEquipmentSelected() {
         StateManager.SaveState();
+        BindDetailView();
+    }
+
+    public void UnequipHero() {
+        StateManager.UnequipHero(filteredList[currentPosition]);
         BindDetailView();
     }
 

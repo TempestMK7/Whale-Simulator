@@ -276,4 +276,13 @@ public class StateManager {
         }
         return team;
     }
+
+    public static void UnequipHero(AccountHero hero) {
+        var equipped = currentState.GetEquipmentForHero(hero);
+        foreach (AccountEquipment equipment in equipped) {
+            equipment.EquippedHeroGuid = null;
+            equipment.EquippedSlot = null;
+        }
+        SaveState();
+    }
 }
