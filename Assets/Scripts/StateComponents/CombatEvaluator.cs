@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CombatEvaluator {
 
-    public static async Task<CombatReport> GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies) {
+    public static async Task<CombatReport> GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, bool usePreferredGear = false) {
         CombatHero[] combatAllies = new CombatHero[allies.Length];
         for (int x = 0; x < combatAllies.Length; x++) {
             if (allies[x] != null) {
@@ -16,7 +16,8 @@ public class CombatEvaluator {
         CombatHero[] combatEnemies = new CombatHero[enemies.Length];
         for (int x = 0; x < combatEnemies.Length; x++) {
             if (enemies[x] != null) {
-                combatEnemies[x] = enemies[x].GetCombatHero();
+                if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(MissionContainer.GetMissionEquipmentLoadout(enemies[x]));
+                else combatEnemies[x] = enemies[x].GetCombatHero();
             }
         }
 
