@@ -80,13 +80,13 @@ public class CombatEvaluator {
     public static List<DamageInstance> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {
         var instances = new List<DamageInstance>();
         foreach (CombatHero hero in allies) {
-            if (hero != null) {
+            if (hero != null && hero.IsAlive()) {
                 instances.AddRange(AbilityContainer.EvaluatePassives(hero));
                 instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
             }
         }
         foreach (CombatHero hero in enemies) {
-            if (hero != null) {
+            if (hero != null && hero.IsAlive()) {
                 instances.AddRange(AbilityContainer.EvaluatePassives(hero));
                 instances.AddRange(StatusContainer.EvaluateStatusEndOfTurn(hero));
             }
