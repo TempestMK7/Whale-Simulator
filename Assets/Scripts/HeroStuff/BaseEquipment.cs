@@ -38,20 +38,20 @@ public enum EquipmentSlot {
 }
 
 public enum EquipmentType {
-    // Armor
-    CLOTH_CHEST = 11, CLOTH_PANTS = 12, CLOTH_HAT = 13,
-    LEATHER_CHEST = 21, LEATHER_PANTS = 22, LEATHER_HAT = 23,
-    PLATE_CHEST = 31, PLATE_PANTS = 32, PLATE_HELMET = 33,
-    CRYSTAL_CHEST = 41, CRYSTAL_PANTS = 42, CRYSTAL_HELMET = 43,
-
     // One Handed
-    DAGGER = 51, SWORD = 52, AXE = 53,
+    DAGGER = 11, SWORD = 12, AXE = 13,
     // Main Hand Only
-    CLUB = 61, SCEPTER = 62,
+    CLUB = 21, SCEPTER = 22,
     // Off Hand Only
-    METAL_SHIELD = 71, CRYSTAL_SHIELD = 72, TOME = 73,
+    METAL_SHIELD = 31, CRYSTAL_SHIELD = 32, TOME = 33,
     // Two Handed
-    GREAT_SWORD = 81, GREAT_AXE = 82, GREAT_CLUB = 83, STAFF = 84
+    GREAT_SWORD = 41, GREAT_AXE = 42, GREAT_CLUB = 43, STAFF = 44,
+
+    // Armor
+    CLOTH_CHEST = 51, CLOTH_PANTS = 52, CLOTH_HAT = 53,
+    LEATHER_CHEST = 61, LEATHER_PANTS = 62, LEATHER_HAT = 63,
+    PLATE_CHEST = 71, PLATE_PANTS = 72, PLATE_HELMET = 73,
+    CRYSTAL_CHEST = 81, CRYSTAL_PANTS = 82, CRYSTAL_HELMET = 83,
 }
 
 public class BaseEquipmentContainer {
@@ -138,7 +138,7 @@ public class BaseEquipmentContainer {
 
         // Two Handed
         equipDict[EquipmentType.GREAT_SWORD] = new BaseEquipment(
-            EquipmentType.GREAT_SWORD, EquipmentSlot.TWO_HAND, "Great Sword", "Icons/Equipment/OneHandedSword",
+            EquipmentType.GREAT_SWORD, EquipmentSlot.TWO_HAND, "Great Sword", "Icons/Equipment/TwoHandedSword",
             80, 0, 0, 0, 0, 0);
         equipDict[EquipmentType.GREAT_AXE] = new BaseEquipment(
             EquipmentType.GREAT_AXE, EquipmentSlot.TWO_HAND, "Great Axe", "Icons/Equipment/TwoHandedAxe",

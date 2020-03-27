@@ -31,10 +31,11 @@ public class AccountEquipment : IComparable<AccountEquipment> {
     }
 
     public int CompareTo(AccountEquipment other) {
-        if (EquippedHeroGuid == null && other.EquippedHeroGuid != null) return -1;
-        if (other.EquippedHeroGuid == null && EquippedHeroGuid != null) return 1;
-        var level = other.Level - Level;
-        if (level != 0) return level;
-        return EquipType.CompareTo(other.EquipType);
+        var typeComparison = EquipType.CompareTo(other.EquipType);
+        if (typeComparison != 0) return typeComparison;
+        if (other.Level != Level) return other.Level - Level;
+        if (EquippedHeroGuid == null && other.EquippedHeroGuid != null) return 1;
+        if (other.EquippedHeroGuid == null && EquippedHeroGuid != null) return -1;
+        return 0;
     }
 }

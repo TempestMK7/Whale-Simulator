@@ -48,6 +48,10 @@ public class HubSceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("HeroScene");
     }
 
+    public void OnEquipmentClicked() {
+        SceneManager.LoadSceneAsync("EquipmentScene");
+    }
+
     public void OnCheatPressed() {
         if (PopupOpened()) return;
         var cheaterPopup = Instantiate(cheaterPopupPrefab, mainCanvas.transform).GetComponent<CheaterPopupBehavior>();
