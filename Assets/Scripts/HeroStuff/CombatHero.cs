@@ -35,8 +35,8 @@ public class CombatHero : IComparable<CombatHero> {
         health = GetBigStat(baseHero.BaseHealth) * 10.0;
         attack = GetBigStat(baseHero.BaseAttack);
         magic = GetBigStat(baseHero.BaseMagic);
-        defense = GetSmallStat(baseHero.BaseDefense);
-        reflection = GetSmallStat(baseHero.BaseReflection);
+        defense = GetBigStat(baseHero.BaseDefense);
+        reflection = GetBigStat(baseHero.BaseReflection);
         speed = GetBigStat(baseHero.BaseSpeed);
         critChance = baseHero.BaseCritChance;
         deflectionChance = baseHero.BaseDeflectionChance;
@@ -119,6 +119,17 @@ public class CombatHero : IComparable<CombatHero> {
         currentStatus.Add(status);
     }
 
+    public void ClearControlEffects() {
+        var newStatus = new List<StatusContainer>();
+        foreach (StatusContainer status in currentStatus) {
+            var statusDisplay = StatusDisplayContainer.GetStatusDisplay(status.status);
+            if (!statusDisplay.ModifiesAttack) {
+                newStatus.Add(status);
+            }
+        }
+        currentStatus = newStatus;
+    }
+
     public void CountDownStatus(bool modifiesAttack) {
         var newStatus = new List<StatusContainer>();
         foreach (StatusContainer status in currentStatus) {
@@ -144,6 +155,10 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier += status.value;
             } else if (status.status == StatusEnum.ATTACK_DOWN) {
                 multiplier -= status.value;
+            } else if (status.status == StatusEnum.CHILL) {
+                multiplier -= status.value;
+            } else if (status.status == StatusEnum.ROOT) {
+                multiplier -= status.value;
             }
         }
         return multiplier * attack;
@@ -156,6 +171,18 @@ public class CombatHero : IComparable<CombatHero> {
                 multiplier += status.value;
             } else if (status.status == StatusEnum.MAGIC_DOWN) {
                 multiplier -= status.value;
+            } else if (status.status == StatusEnum.DAZE) {
+                if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                    multiplier += status.value;
+                } else {
+                    multiplier -= status.value;
+                }
+            } else if (status.status == StatusEnum.BLIND) {
+                if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                    multiplier += status.value;
+                } else {
+                    multiplier -= status.value;
+                }
             }
         }
         return multiplier * magic;

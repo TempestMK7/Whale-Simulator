@@ -70,6 +70,9 @@ public class CombatEvaluator {
             var step = AttackContainer.PerformAttack(next, attack, allyTargets, enemyTargets);
             steps.Add(step);
             
+            if (step.skippedTurn) {
+                next.ClearControlEffects();
+            }
             next.CountDownStatus(true);
             haveNotMoved.Sort();
         }

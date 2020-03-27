@@ -12,7 +12,7 @@ public class MissionContainer {
         new MissionInfo(3, 1, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN),
         new MissionInfo(4, 1, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN),
         new MissionInfo(5, 1, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING),
-        new MissionInfo(6, 1, HeroEnum.PEBBLE_ELEMENTAL, HeroEnum.PEBBLE_ELEMENTAL, HeroEnum.PEBBLE_ELEMENTAL, HeroEnum.PEBBLE_ELEMENTAL),
+        new MissionInfo(6, 1, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL),
         new MissionInfo(7, 1, HeroEnum.RAIN_MAN, HeroEnum.RAIN_MAN, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_CLOUD, HeroEnum.VAPOR_CLOUD, HeroEnum.VAPOR_CLOUD),
         new MissionInfo(8, 1, HeroEnum.BUSH_WHACKER, HeroEnum.BUSH_WHACKER, HeroEnum.BUSH_WHACKER, HeroEnum.HAPPY_FLOWER, HeroEnum.HAPPY_FLOWER, HeroEnum.HAPPY_FLOWER),
         new MissionInfo(9, 1, HeroEnum.EMBER, HeroEnum.EMBER, HeroEnum.EMBER, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN),
@@ -20,15 +20,15 @@ public class MissionContainer {
     };
 
     private static readonly MissionInfo[] chapter2 = {
-        new MissionInfo(11, 1, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE),
-        new MissionInfo(12, 1, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.BATTERY),
-        new MissionInfo(13, 1, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.BOULDER),
+        new MissionInfo(11, 1, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN),
+        new MissionInfo(12, 1, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING),
+        new MissionInfo(13, 1, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL),
         new MissionInfo(14, 1, HeroEnum.FEESH, HeroEnum.FEESH, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_CLOUD, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_CLOUD),
         new MissionInfo(15, 1, HeroEnum.BALL_OF_ROOTS, HeroEnum.BALL_OF_ROOTS, HeroEnum.BUSH_WHACKER, HeroEnum.HAPPY_FLOWER, HeroEnum.BUSH_WHACKER, HeroEnum.HAPPY_FLOWER),
         new MissionInfo(16, 1, HeroEnum.TORCH, HeroEnum.TORCH, HeroEnum.EMBER, HeroEnum.CANDLE_MAN, HeroEnum.EMBER, HeroEnum.CANDLE_MAN),
         new MissionInfo(17, 1, HeroEnum.ICICLE_FLINGER, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.SNOW_MAN, HeroEnum.ICICLE_FLINGER, HeroEnum.SNOW_MAN),
         new MissionInfo(18, 1, HeroEnum.SPARK_ELEMENTAL, HeroEnum.SPARK_ELEMENTAL, HeroEnum.BATTERY, HeroEnum.STATIC_CLING, HeroEnum.BATTERY, HeroEnum.STATIC_CLING),
-        new MissionInfo(19, 1, HeroEnum.PEBBLE_FLINGER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.PEBBLE_ELEMENTAL, HeroEnum.PEBBLE_FLINGER, HeroEnum.PEBBLE_ELEMENTAL),
+        new MissionInfo(19, 1, HeroEnum.PEBBLE_FLINGER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.DUST_ELEMENTAL, HeroEnum.PEBBLE_FLINGER, HeroEnum.DUST_ELEMENTAL),
         new MissionInfo(20, 1, HeroEnum.FEESH, HeroEnum.FEESH, HeroEnum.HAPPY_FLOWER, HeroEnum.CANDLE_MAN, HeroEnum.EMBER, HeroEnum.BUSH_WHACKER)
     };
 
@@ -41,7 +41,7 @@ public class MissionContainer {
         new MissionInfo(26, 2, HeroEnum.EMBER, HeroEnum.ICE_CUBE, HeroEnum.EMBER, HeroEnum.SNOW_MAN, HeroEnum.TORCH, HeroEnum.ICICLE_FLINGER),
         new MissionInfo(27, 2, HeroEnum.ICICLE_FLINGER, HeroEnum.ICE_CUBE, HeroEnum.BATTERY, HeroEnum.SNOW_MAN, HeroEnum.SPARK_ELEMENTAL, HeroEnum.ICICLE_FLINGER),
         new MissionInfo(28, 2, HeroEnum.SPARK_ELEMENTAL, HeroEnum.BOULDER, HeroEnum.SPARK_ELEMENTAL, HeroEnum.STATIC_CLING, HeroEnum.PEBBLE_FLINGER, HeroEnum.BATTERY),
-        new MissionInfo(29, 2, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_CLOUD, HeroEnum.PEBBLE_FLINGER, HeroEnum.PEBBLE_ELEMENTAL),
+        new MissionInfo(29, 2, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_CLOUD, HeroEnum.PEBBLE_FLINGER, HeroEnum.DUST_ELEMENTAL),
         new MissionInfo(30, 2, HeroEnum.LIGHTNING_WRAITH, HeroEnum.BALL_OF_ROOTS, HeroEnum.FEESH, HeroEnum.LIGHTNING_WRAITH, HeroEnum.ICICLE_FLINGER, HeroEnum.TORCH)
     };
 
@@ -51,7 +51,7 @@ public class MissionContainer {
         new MissionInfo(33, 2, HeroEnum.LAVA_GOLEM, HeroEnum.LAVA_GOLEM, HeroEnum.EMBER, HeroEnum.CANDLE_MAN, HeroEnum.TORCH, HeroEnum.CANDLE_MAN),
         new MissionInfo(34, 2, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.ICICLE_FLINGER, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.SNOW_MAN),
         new MissionInfo(35, 2, HeroEnum.LIGHTNING_WRAITH, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.SPARK_ELEMENTAL, HeroEnum.LIGHTNING_WRAITH, HeroEnum.STATIC_CLING),
-        new MissionInfo(36, 2, HeroEnum.LIVING_WALL, HeroEnum.LIVING_WALL, HeroEnum.BOULDER, HeroEnum.PEBBLE_ELEMENTAL, HeroEnum.PEBBLE_FLINGER, HeroEnum.BOULDER),
+        new MissionInfo(36, 2, HeroEnum.LIVING_WALL, HeroEnum.LIVING_WALL, HeroEnum.BOULDER, HeroEnum.DUST_ELEMENTAL, HeroEnum.PEBBLE_FLINGER, HeroEnum.BOULDER),
         new MissionInfo(37, 2, HeroEnum.FEESH, HeroEnum.FEESH, HeroEnum.MIST_CALLER, HeroEnum.ICICLE_FLINGER, HeroEnum.RAIN_MAN, HeroEnum.BLIZZARD_WIZZARD),
         new MissionInfo(38, 2, HeroEnum.BALL_OF_ROOTS, HeroEnum.BALL_OF_ROOTS, HeroEnum.LIVING_WALL, HeroEnum.BUSH_WHACKER, HeroEnum.DRYAD, HeroEnum.PEBBLE_FLINGER),
         new MissionInfo(39, 2, HeroEnum.TORCH, HeroEnum.LAVA_GOLEM, HeroEnum.BATTERY, HeroEnum.EMBER, HeroEnum.LIGHTNING_WRAITH, HeroEnum.TORCH),

@@ -22,7 +22,7 @@ public class CombatMath {
         } else if (hitType == HitType.DEFLECTION) {
             modifiedDefense *= 2.0;
         }
-        var mitigation = Math.Pow(0.5, modifiedDefense / 200);
+        var mitigation = Math.Pow(0.9, modifiedDefense / 100);
         var damage = attack * mitigation;
         if (hitEffectivity == HitEffectivity.EMPOWERED) {
             damage *= 1.5;
@@ -221,29 +221,14 @@ public class CombatMath {
                 switch (status.status) {
                     case StatusEnum.ICE_ARMOR:
                         if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.COLD_BLOODED) break;
-                        if (tempAttacker.HasStatus(StatusEnum.CHILL) || tempAttacker.HasStatus(StatusEnum.DOWSE)) {
-                            var frozen = new StatusContainer(StatusEnum.FREEZE, status.inflicterGuid, tempTarget.combatHeroGuid, 0, 2);
-                            if (statusingSelf) {
-                                newEnemyStatus.Add(frozen);
-                            } else {
-                                attacker.AddStatus(frozen);
-                            }
-
-                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
-                            instance.AddStatus(frozen);
-                            output.Add(instance);
-                        } else {
-                            var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, tempTarget.combatHeroGuid, 0.4, 3);
-                            if (statusingSelf) {
-                                newEnemyStatus.Add(chilled);
-                            } else {
-                                attacker.AddStatus(chilled);
-                            }
-
-                            var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
-                            instance.AddStatus(chilled);
-                            output.Add(instance);
+                        double value = 0.2;
+                        if (tempAttacker.HasStatus(StatusEnum.DOWSE)) {
+                            value *= 2;
                         }
+                        var chilled = new StatusContainer(StatusEnum.CHILL, status.inflicterGuid, tempTarget.combatHeroGuid, value, 3);
+                        var instance = new DamageInstance(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
+                        instance.AddStatus(chilled);
+                        output.Add(instance);
                         break;
                     case StatusEnum.LAVA_ARMOR:
                         if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.WATER_BODY) break;
