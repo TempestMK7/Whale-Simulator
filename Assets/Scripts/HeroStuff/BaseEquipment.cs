@@ -119,7 +119,7 @@ public class BaseEquipmentContainer {
 
         // Main Hand
         equipDict[EquipmentType.CLUB] = new BaseEquipment(
-            EquipmentType.CLUB, EquipmentSlot.MAIN_HAND, "Club", "Icons/Equipment/OneHandedClub",
+            EquipmentType.CLUB, EquipmentSlot.MAIN_HAND, "Hammer", "Icons/Equipment/OneHandedClub",
             20, 20, 0, 0, 0, 0);
         equipDict[EquipmentType.SCEPTER] = new BaseEquipment(
             EquipmentType.SCEPTER, EquipmentSlot.MAIN_HAND, "Scepter", "Icons/Equipment/Scepter",
@@ -138,13 +138,13 @@ public class BaseEquipmentContainer {
 
         // Two Handed
         equipDict[EquipmentType.GREAT_SWORD] = new BaseEquipment(
-            EquipmentType.GREAT_SWORD, EquipmentSlot.TWO_HAND, "Great Sword", "Icons/Equipment/TwoHandedSword",
+            EquipmentType.GREAT_SWORD, EquipmentSlot.TWO_HAND, "Greatsword", "Icons/Equipment/TwoHandedSword",
             80, 0, 0, 0, 0, 0);
         equipDict[EquipmentType.GREAT_AXE] = new BaseEquipment(
-            EquipmentType.GREAT_AXE, EquipmentSlot.TWO_HAND, "Great Axe", "Icons/Equipment/TwoHandedAxe",
+            EquipmentType.GREAT_AXE, EquipmentSlot.TWO_HAND, "Greataxe", "Icons/Equipment/TwoHandedAxe",
             60, 0, 0, 0, 0.2, 0);
         equipDict[EquipmentType.GREAT_CLUB] = new BaseEquipment(
-            EquipmentType.GREAT_CLUB, EquipmentSlot.TWO_HAND, "Great Club", "Icons/Equipment/TwoHandedClub",
+            EquipmentType.GREAT_CLUB, EquipmentSlot.TWO_HAND, "Greathammer", "Icons/Equipment/TwoHandedClub",
             40, 40, 0, 0, 0, 0);
         equipDict[EquipmentType.STAFF] = new BaseEquipment(
             EquipmentType.STAFF, EquipmentSlot.TWO_HAND, "Staff", "Icons/Equipment/Staff",

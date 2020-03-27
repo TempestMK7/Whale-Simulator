@@ -22,7 +22,7 @@ public class CombatMath {
         } else if (hitType == HitType.DEFLECTION) {
             modifiedDefense *= 2.0;
         }
-        var mitigation = Math.Pow(0.9, modifiedDefense / 100);
+        var mitigation = Math.Pow(0.9, modifiedDefense / 200);
         var damage = attack * mitigation;
         if (hitEffectivity == HitEffectivity.EMPOWERED) {
             damage *= 1.5;

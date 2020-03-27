@@ -10,8 +10,27 @@ public class EquipmentSceneManager : MonoBehaviour {
     public GameObject masterPanel;
     public GameObject detailPanel;
 
+    // Master panel views.
     public RecyclerView masterEquipmentRecycler;
     public GameObject masterListItemPrefab;
+
+    // Detail panel views.
+    public Text equipmentLabel;
+    public Text equipmentPositionLabel;
+    public Image equipmentOwnerIcon;
+
+    public Image equipmentDisplay;
+
+    public RarityBehavior equipmentRarityView;
+    public Text fuseButtonText;
+
+    public GameObject statPanel;
+    public Text attackLabel;
+    public Text magicLabel;
+    public Text critLabel;
+    public Text defenseLabel;
+    public Text reflectionLabel;
+    public Text deflectLabel;
 
     // Master panel things.
     private EquipmentFilter? currentFilter;
@@ -29,6 +48,8 @@ public class EquipmentSceneManager : MonoBehaviour {
         masterEquipmentRecycler.SetAdapter(masterAdapter);
         FilterList();
     }
+
+    #region Master panel methods.
 
     public void OnFilterPressed(int position) {
         var allFilters = (EquipmentFilter[])Enum.GetValues(typeof(EquipmentFilter));
@@ -97,11 +118,80 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     public void OnMasterListItemSelected(int position) {
         currentSelection = position;
+        masterPanel.SetActive(false);
+        detailPanel.SetActive(true);
+        BindDetailPanel();
     }
 
     public void OnMasterBackPressed() {
         SceneManager.LoadSceneAsync("HubScene");
     }
+
+    #endregion
+
+    #region Detail panel methods
+
+    public void BindDetailPanel() {
+        var state = StateManager.GetCurrentState();
+        var currentEquipment = filteredList[currentSelection];
+        var baseEquipment = currentEquipment.GetBaseEquipment();
+
+        equipmentLabel.text = baseEquipment.Name;
+        equipmentPositionLabel.text = string.Format("({0} of {1})", currentSelection + 1, filteredList.Count);
+        if (currentEquipment.EquippedHeroGuid == null) {
+            equipmentOwnerIcon.enabled = false;
+        } else {
+            equipmentOwnerIcon.enabled = true;
+            var equippedHero = state.AccountHeroes.Find((AccountHero hero) => {
+                return hero.HeroGuid.Equals(currentEquipment.EquippedHeroGuid);
+            });
+            if (equippedHero != null) equipmentOwnerIcon.sprite = equippedHero.GetBaseHero().HeroIcon;
+        }
+
+        equipmentDisplay.sprite = baseEquipment.Icon;
+
+        equipmentRarityView.SetLevel(0, currentEquipment.Level, true);
+        ToggleStatFusePanels(true);
+
+        attackLabel.text = string.Format("Attack: {0}", baseEquipment.BaseAttack * currentEquipment.Level);
+        magicLabel.text = string.Format("Magic: {0}", baseEquipment.BaseMagic * currentEquipment.Level);
+        critLabel.text = string.Format("Critical: {0}%", (baseEquipment.BaseCrit * 100).ToString("0"));
+        defenseLabel.text = string.Format("Defense: {0}", baseEquipment.BaseDefense * currentEquipment.Level);
+        reflectionLabel.text = string.Format("Reflection: {0}", baseEquipment.BaseReflection * currentEquipment.Level);
+        deflectLabel.text = string.Format("Deflect: {0}%", (baseEquipment.BaseDeflect * 100).ToString("0"));
+    }
+
+    private void ToggleStatFusePanels(bool statPanelOpen) {
+        statPanel.SetActive(statPanelOpen);
+        // Handle fuse panel.
+        fuseButtonText.text = statPanelOpen ? "Fuse" : "Stats";
+    }
+
+    public void OnFuseButtonPressed() {
+        bool openStatPanel = !statPanel.activeSelf;
+        ToggleStatFusePanels(openStatPanel);
+    }
+
+    public void OnDetailBackPressed() {
+        masterPanel.SetActive(true);
+        detailPanel.SetActive(false);
+    }
+
+    public void OnPreviousPressed() {
+        if (currentSelection > 0) {
+            currentSelection--;
+        }
+        BindDetailPanel();
+    }
+
+    public void OnNextPressed() {
+        if (currentSelection < filteredList.Count - 1) {
+            currentSelection++;
+        }
+        BindDetailPanel();
+    }
+
+    #endregion
 }
 
 public enum EquipmentFilter {
