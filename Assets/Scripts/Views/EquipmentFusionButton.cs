@@ -7,6 +7,7 @@ public class EquipmentFusionButton : MonoBehaviour {
 
     private const string addIcon = "Icons/add_circle";
 
+    public Text equippedText;
     public Image equipmentIcon;
     public RarityBehavior rarityView;
 
@@ -32,12 +33,14 @@ public class EquipmentFusionButton : MonoBehaviour {
 
     public void SetAccountEquipment(AccountEquipment equipment) {
         selectedEquipment = equipment;
+        equippedText.enabled = equipment.EquippedHeroGuid != null;
         equipmentIcon.sprite = equipment.GetBaseEquipment().Icon;
         equipmentIcon.color = new Color(1, 1, 1, 1);
         rarityView.SetLevel(0, equipment.Level, false);
     }
 
     public void SetEmpty() {
+        equippedText.enabled = false;
         selectedEquipment = null;
         equipmentIcon.sprite = addSprite;
         equipmentIcon.color = new Color(1, 1, 1, 1);

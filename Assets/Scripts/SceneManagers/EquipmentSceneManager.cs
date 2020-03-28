@@ -31,6 +31,7 @@ public class EquipmentSceneManager : MonoBehaviour {
     public EquipmentFusionButton bottomRightFusionButton;
     public UnityEngine.UI.Button suggestedFusionButton;
     public UnityEngine.UI.Button completeFusionButton;
+    public GameObject fusionPopupPrefab;
 
     public GameObject statPanel;
     public Text attackLabel;
@@ -247,7 +248,8 @@ public class EquipmentSceneManager : MonoBehaviour {
         var selected = caller.GetSelectedEquipment();
         if (selected != null && alreadySelected.Contains(selected)) alreadySelected.Remove(selected);
 
-        // Launch popup
+        var popup = Instantiate(fusionPopupPrefab, detailPanel.transform).GetComponent<EquipmentFusionPopup>();
+        popup.LaunchPopup(type, level, alreadySelected, caller);
     }
 
     public void OnFusionEquipmentSelected() {

@@ -633,6 +633,7 @@ MonoBehaviour:
   bottomRightFusionButton: {fileID: 982571047}
   suggestedFusionButton: {fileID: 2134715983}
   completeFusionButton: {fileID: 403725116}
+  fusionPopupPrefab: {fileID: 6543049232131136261, guid: f66efcb99a91451468c7355cff041aec, type: 3}
   statPanel: {fileID: 694727454}
   attackLabel: {fileID: 711902503}
   magicLabel: {fileID: 940280224}

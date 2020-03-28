@@ -39,13 +39,13 @@ public class FusionPopupBehavior : MonoBehaviour {
     public void OnCancelPressed() {
         summoner.SetEmpty();
         if (sceneManager != null) sceneManager.OnFusionHeroSelected();
-        StartCoroutine("ShrinkToNothing");
+        StartCoroutine(ShrinkToNothing());
     }
 
     public void OnFusionListItemPressed(AccountHero hero) {
         summoner.SetAccountHero(hero);
         if (sceneManager != null) sceneManager.OnFusionHeroSelected();
-        StartCoroutine("ShrinkToNothing");
+        StartCoroutine(ShrinkToNothing());
     }
 
     public void LaunchPopup(FactionEnum? faction, int level, HeroEnum? filteredHero, List<AccountHero> alreadySelected, FusionSelectionBehavior summoner) {
@@ -54,7 +54,7 @@ public class FusionPopupBehavior : MonoBehaviour {
         this.filteredHero = filteredHero;
         this.alreadySelected = alreadySelected;
         this.summoner = summoner;
-        StartCoroutine("ExpandIntoFrame");
+        StartCoroutine(ExpandIntoFrame());
     }
 
     IEnumerator ExpandIntoFrame() {
@@ -98,8 +98,9 @@ public class FusionPopupAdapter : RecyclerViewAdapter {
     }
 
     public override void OnBindViewHolder(GameObject viewHolder, int position) {
-        viewHolder.GetComponent<HeroListItemBehavior>().SetHero(heroes[position], position);
-        viewHolder.GetComponent<HeroListItemBehavior>().SetFusionPopup(parent);
+        var behavior = viewHolder.GetComponent<HeroListItemBehavior>();
+        behavior.SetHero(heroes[position], position);
+        behavior.SetFusionPopup(parent);
     }
     public override int GetItemCount() {
         return heroes == null ? 0 : heroes.Count;
