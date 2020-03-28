@@ -182,6 +182,36 @@ public class StateManager {
         return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
     }
 
+    public static void FuseEquipment(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment, Action<bool> handler) {
+        if (!FusionIsLegal(fusedEquipment, destroyedEquipment)) {
+            handler.Invoke(false);
+            return;
+        }
+
+        var accountEquipment = currentState.AccountEquipment;
+        fusedEquipment.Level++;
+        foreach (AccountEquipment destroyed in destroyedEquipment) {
+            accountEquipment.Remove(destroyed);
+        }
+        accountEquipment.Sort();
+        SaveState();
+        handler.Invoke(true);
+    }
+
+    public static bool FusionIsLegal(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
+        int selectedEquipment = 0;
+        foreach (AccountEquipment destroyed in destroyedEquipment) {
+            if (destroyed == fusedEquipment) return false;
+            if (destroyed == null) return false;
+            if (destroyed.GetBaseEquipment().Type == fusedEquipment.GetBaseEquipment().Type && destroyed.Level == fusedEquipment.Level) {
+                selectedEquipment++;
+            } else {
+                return false;
+            }
+        }
+        return selectedEquipment == 2;
+    }
+
     public static async Task<MissionReport> AttemptCurrentMissionWithTeam(AccountHero[] selectedTeam) {
         SetLastUsedTeam(selectedTeam);
         var missionInfo = MissionContainer.GetMission(currentState.CurrentChapter, currentState.CurrentMission);

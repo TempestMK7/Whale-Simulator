@@ -20,9 +20,17 @@ public class EquipmentSceneManager : MonoBehaviour {
     public Image equipmentOwnerIcon;
 
     public Image equipmentDisplay;
+    public FusionFanfareBehavior fusionFanfare;
 
     public RarityBehavior equipmentRarityView;
     public Text fuseButtonText;
+
+    public GameObject fusePanel;
+    public EquipmentFusionButton centerFusionButton;
+    public EquipmentFusionButton bottomLeftFusionButton;
+    public EquipmentFusionButton bottomRightFusionButton;
+    public UnityEngine.UI.Button suggestedFusionButton;
+    public UnityEngine.UI.Button completeFusionButton;
 
     public GameObject statPanel;
     public Text attackLabel;
@@ -39,6 +47,7 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     // Detail panel things.
     private int currentSelection;
+    private bool fanfarePlaying = false;
 
     public void Awake() {
         masterPanel.SetActive(true);
@@ -63,7 +72,7 @@ public class EquipmentSceneManager : MonoBehaviour {
     }
 
     private void FilterList() {
-        var unfiltered = StateManager.GetCurrentState().AccountEquipment;
+        var unfiltered = new List<AccountEquipment>(StateManager.GetCurrentState().AccountEquipment);
         if (currentFilter == null) {
             filteredList = unfiltered;
         } else {
@@ -161,23 +170,30 @@ public class EquipmentSceneManager : MonoBehaviour {
         deflectLabel.text = string.Format("Deflect: {0}%", (baseEquipment.BaseDeflect * 100).ToString("0"));
     }
 
-    private void ToggleStatFusePanels(bool statPanelOpen) {
-        statPanel.SetActive(statPanelOpen);
-        // Handle fuse panel.
-        fuseButtonText.text = statPanelOpen ? "Fuse" : "Stats";
+    private void ResetListPosition() {
+        var selected = filteredList[currentSelection];
+        FilterList();
+        currentSelection = filteredList.IndexOf(selected);
+    }
+
+    private bool ButtonsBlocked() {
+        return fanfarePlaying;
     }
 
     public void OnFuseButtonPressed() {
+        if (ButtonsBlocked()) return;
         bool openStatPanel = !statPanel.activeSelf;
         ToggleStatFusePanels(openStatPanel);
     }
 
     public void OnDetailBackPressed() {
+        if (ButtonsBlocked()) return;
         masterPanel.SetActive(true);
         detailPanel.SetActive(false);
     }
 
     public void OnPreviousPressed() {
+        if (ButtonsBlocked()) return;
         if (currentSelection > 0) {
             currentSelection--;
         }
@@ -185,10 +201,109 @@ public class EquipmentSceneManager : MonoBehaviour {
     }
 
     public void OnNextPressed() {
+        if (ButtonsBlocked()) return;
         if (currentSelection < filteredList.Count - 1) {
             currentSelection++;
         }
         BindDetailPanel();
+    }
+
+    private void ToggleStatFusePanels(bool statPanelOpen) {
+        statPanel.SetActive(statPanelOpen);
+        fusePanel.SetActive(!statPanelOpen);
+        fuseButtonText.text = statPanelOpen ? "Fuse" : "Stats";
+
+        if (!statPanelOpen) SetupFusePanel();
+    }
+
+    private void SetupFusePanel() {
+        var accountEquipment = filteredList[currentSelection];
+        var baseEquipment = accountEquipment.GetBaseEquipment();
+        if (accountEquipment.Level >= 10) {
+            ToggleStatFusePanels(true);
+            return;
+        }
+        centerFusionButton.SetAccountEquipment(accountEquipment);
+
+        bottomLeftFusionButton.SetCardRequirements(baseEquipment.Type, accountEquipment.Level);
+        bottomLeftFusionButton.SetEmpty();
+        bottomRightFusionButton.SetCardRequirements(baseEquipment.Type, accountEquipment.Level);
+        bottomRightFusionButton.SetEmpty();
+
+        HandleCompleteFusionButton();
+    }
+
+    private List<AccountEquipment> GetSelectedFusionEquipment() {
+        var selected = new List<AccountEquipment>();
+        if (bottomLeftFusionButton.GetSelectedEquipment() != null) selected.Add(bottomLeftFusionButton.GetSelectedEquipment());
+        if (bottomRightFusionButton.GetSelectedEquipment() != null) selected.Add(bottomRightFusionButton.GetSelectedEquipment());
+        return selected;
+    }
+
+    public void RequestFusionPopup(EquipmentFusionButton caller, EquipmentType type, int level) {
+        if (ButtonsBlocked()) return;
+        var alreadySelected = GetSelectedFusionEquipment();
+        alreadySelected.Add(centerFusionButton.GetSelectedEquipment());
+        var selected = caller.GetSelectedEquipment();
+        if (selected != null && alreadySelected.Contains(selected)) alreadySelected.Remove(selected);
+
+        // Launch popup
+    }
+
+    public void OnFusionEquipmentSelected() {
+        HandleCompleteFusionButton();
+    }
+
+    public void HandleCompleteFusionButton() {
+        var selected = filteredList[currentSelection];
+        var destroyedEquipment = GetSelectedFusionEquipment();
+        completeFusionButton.gameObject.SetActive(StateManager.FusionIsLegal(selected, destroyedEquipment));
+    }
+
+    public void RequestFusion() {
+        if (ButtonsBlocked()) return;
+        var selected = filteredList[currentSelection];
+        var destroyedEquipment = GetSelectedFusionEquipment();
+        if (!StateManager.FusionIsLegal(selected, destroyedEquipment)) return;
+        StateManager.FuseEquipment(selected, destroyedEquipment, OnFusionComplete);
+    }
+
+    public void OnFusionComplete(bool successful) {
+        if (!successful) return;
+        ResetListPosition();
+        BindDetailPanel();
+        StartCoroutine(PlayFanfare());
+    }
+
+    public void OnSuggestFusion() {
+        if (ButtonsBlocked()) return;
+        SetupFusePanel();
+        var alreadySelected = new List<AccountEquipment> {
+            filteredList[currentSelection]
+        };
+        SelectSameEquipment(bottomLeftFusionButton, alreadySelected);
+        SelectSameEquipment(bottomRightFusionButton, alreadySelected);
+        HandleCompleteFusionButton();
+    }
+
+    private void SelectSameEquipment(EquipmentFusionButton fusion, List<AccountEquipment> alreadySelected) {
+        var accountEquipment = filteredList[currentSelection];
+        var baseEquipment = accountEquipment.GetBaseEquipment();
+        var allEquipment = StateManager.GetCurrentState().AccountEquipment;
+        var firstSelectable = allEquipment.Find((AccountEquipment equipment) => {
+            return !alreadySelected.Contains(equipment) && equipment.Level == accountEquipment.Level && equipment.GetBaseEquipment().Type == baseEquipment.Type;
+        });
+        if (firstSelectable != null) {
+            fusion.SetAccountEquipment(firstSelectable);
+            alreadySelected.Add(firstSelectable);
+        }
+    }
+
+    private IEnumerator PlayFanfare() {
+        fanfarePlaying = true;
+        fusionFanfare.Play();
+        yield return new WaitForSeconds(2f);
+        fanfarePlaying = false;
     }
 
     #endregion

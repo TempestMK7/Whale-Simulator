@@ -383,7 +383,7 @@ public class HeroSceneManager : MonoBehaviour {
         if (!successful) return;
         ResetListPosition();
         BindDetailView();
-        StartCoroutine("PlayFanfare");
+        StartCoroutine(PlayFanfare());
     }
 
     public void OnSuggestFusion() {
@@ -442,7 +442,6 @@ public class HeroSceneManager : MonoBehaviour {
         fusionFanfare.Play();
         yield return new WaitForSeconds(2f);
         fanfarePlaying = false;
-        yield return null;
     }
 }
 

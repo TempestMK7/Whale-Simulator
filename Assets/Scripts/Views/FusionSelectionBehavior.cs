@@ -35,7 +35,7 @@ public class FusionSelectionBehavior : MonoBehaviour {
     public void SetAccountHero(AccountHero hero) {
         selectedHero = hero;
         blurryBorder.color = ColorContainer.ColorFromFaction(hero.GetBaseHero().Faction);
-        heroIcon.sprite = (hero.GetBaseHero().HeroIcon);
+        heroIcon.sprite = hero.GetBaseHero().HeroIcon;
         heroIcon.color = new Color(1, 1, 1, 1);
         rarityView.SetLevel(hero.GetBaseHero().Rarity, hero.AwakeningLevel, false);
         levelText.text = hero.CurrentLevel.ToString();
