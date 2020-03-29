@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EarthOverrideController
+  m_Controller: {fileID: 9100000, guid: a9de4c190d070634facf34f8c9a444e0, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 962163fdbcab9cc41b9e33c2cebc2b7e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ca119a257fb4fd64a816055060266bab, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 85f3517845dd73746abc92b49666e7f0, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 45f3e497a83da6146864e44c82a60ef8, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 31fb0289c8acaf245898b77613943225, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: be86088f9e8fe7b4eb6e1db8baa70f85, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 9c81148da6e29ba4c83729b59cebf104, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 74da4457f26555d46b1315a32e7bb721, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: eaeae23f803e80246ac895463747f5ed, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 22f4948dff8a58b4ba440efadcd25149, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 4366b69aeee904248b57d4dd025ab04a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 66d1ea909b568974580b9f9e65cd30ad, type: 2}

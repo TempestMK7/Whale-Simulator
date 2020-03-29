@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/InitializationScene.unity
+    guid: 0237fc23e5ed03240bb20928ccfc76d8
+  - enabled: 1
     path: Assets/Scenes/HubScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/HeroScene.unity
+    guid: 36b64ea68e6bfd941ba3579f4b0ce283
+  - enabled: 1
+    path: Assets/Scenes/EquipmentScene.unity
+    guid: 905fa46016506464485eb8009ab6299a
   - enabled: 1
     path: Assets/Scenes/SanctumScene.unity
     guid: ac3f4914bea53b744a9b3f62e987de39
@@ -17,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CampaignScene.unity
     guid: 8ba6cbc82e98cfd4abf0711a92c8c4e2
+  - enabled: 1
+    path: Assets/Scenes/BattleScene.unity
+    guid: 5cd190444463aeb4c83cac35b30b28ac
   - enabled: 1
     path: Assets/Scenes/TowerScene.unity
     guid: 9c4affba0a958704d98f407897d43e63
