@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Com.Tempest.Whale.Combat;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.ResourceContainers;
 
 public class CombatTextHolder : MonoBehaviour {
 
@@ -27,8 +30,8 @@ public class CombatTextHolder : MonoBehaviour {
             combatText.GetComponent<CombatText>().SetText(instance.healing, ColorContainer.HealthColor());
             yield return new WaitForSeconds(0.3f);
         }
-        foreach (StatusContainer status in instance.inflictedStatus) {
-            var statusDisplay = StatusDisplayContainer.GetStatusDisplay(status.status);
+        foreach (CombatStatus status in instance.inflictedStatus) {
+            var statusDisplay = StatusInfoContainer.GetStatusInfo(status.status);
             var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
             combatText.GetComponent<CombatText>().SetText(statusDisplay.StatusName, ColorContainer.ColorFromFaction(statusDisplay.AssociatedFaction));
             yield return new WaitForSeconds(0.3f);

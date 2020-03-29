@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FusionFanfareBehavior : MonoBehaviour {
@@ -19,7 +18,7 @@ public class FusionFanfareBehavior : MonoBehaviour {
     }
 
     public void Play() {
-        StartCoroutine("DoEverything");
+        StartCoroutine(DoEverything());
     }
 
     IEnumerator DoEverything() {

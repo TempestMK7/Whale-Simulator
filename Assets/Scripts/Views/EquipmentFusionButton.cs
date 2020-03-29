@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentFusionButton : MonoBehaviour {
 
@@ -33,8 +35,8 @@ public class EquipmentFusionButton : MonoBehaviour {
 
     public void SetAccountEquipment(AccountEquipment equipment) {
         selectedEquipment = equipment;
-        equippedText.enabled = equipment.EquippedHeroGuid != null;
-        equipmentIcon.sprite = equipment.GetBaseEquipment().Icon;
+        equippedText.enabled = equipment.EquippedHeroId != null;
+        equipmentIcon.sprite = Resources.Load<Sprite>(equipment.GetBaseEquipment().IconPath);
         equipmentIcon.color = new Color(1, 1, 1, 1);
         rarityView.SetLevel(0, equipment.Level, false);
     }

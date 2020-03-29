@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
 
 public class SanctumSceneManager : MonoBehaviour {
 
@@ -76,7 +77,7 @@ public class SanctumSceneManager : MonoBehaviour {
         StateManager.ClaimRewards(OnRewardsClaimed);
     }
 
-    public void OnRewardsClaimed(object sender) {
+    public void OnRewardsClaimed() {
         if (ButtonsBlocked()) return;
         infoPanel.NotifyUpdate();
     }

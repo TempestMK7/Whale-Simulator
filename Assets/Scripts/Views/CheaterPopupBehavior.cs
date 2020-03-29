@@ -17,11 +17,11 @@ public class CheaterPopupBehavior : MonoBehaviour {
     }
 
     public void LaunchPopup() {
-        StartCoroutine("ExpandIntoFrame");
+        StartCoroutine(ExpandIntoFrame());
     }
 
     public void OnDonePressed() {
-        StartCoroutine("ShrinkToNothing");
+        StartCoroutine(ShrinkToNothing());
     }
 
     IEnumerator ExpandIntoFrame() {

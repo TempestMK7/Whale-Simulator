@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Com.Tempest.Whale.ResourceContainers;
+using Com.Tempest.Whale.StateObjects;
 
 public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
 
@@ -26,7 +26,7 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         this.accountHero = accountHero;
         this.listPosition = listPosition;
         var baseHero = accountHero.GetBaseHero();
-        heroIcon.sprite = baseHero.HeroIcon;
+        heroIcon.sprite = Resources.Load<Sprite>(baseHero.HeroIconPath);
         blurryBorder.color = ColorContainer.ColorFromFaction(baseHero.Faction);
         levelText.text = accountHero.CurrentLevel.ToString();
         equipmentIcon.enabled = StateManager.GetCurrentState().GetEquipmentForHero(accountHero).Count > 0;

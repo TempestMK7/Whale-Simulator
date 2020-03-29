@@ -1,21 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.ResourceContainers;
 
 public class InitializationSceneManager : MonoBehaviour {
 
     void Start() {
         Application.targetFrameRate = 60;
+
         BaseHeroContainer.Initialize();
         BaseEquipmentContainer.Initialize();
-        FactionContainer.Initialize();
-        RoleContainer.Initialize();
         AttackInfoContainer.Initialize();
         AbilityInfoContainer.Initialize();
+
+        FactionIconContainer.Initialize();
+        RoleIconContainer.Initialize();
         AttackParticleContainer.Initialize();
-        RewardInfoContainer.Initialize();
+        RewardIconContainer.Initialize();
+
         StateManager.GetCurrentState();
         SettingsManager.GetInstance();
         SceneManager.LoadSceneAsync("HubScene");

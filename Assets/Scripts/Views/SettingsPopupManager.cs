@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,11 +17,11 @@ public class SettingsPopupManager : MonoBehaviour {
     }
 
     public void LaunchPopup() {
-        StartCoroutine("ExpandIntoFrame");
+        StartCoroutine(ExpandIntoFrame());
     }
 
     public void OnDonePressed() {
-        StartCoroutine("ShrinkToNothing");
+        StartCoroutine(ShrinkToNothing());
     }
 
     public void OnMusicChanged() {

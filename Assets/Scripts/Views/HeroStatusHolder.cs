@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.Combat;
+using Com.Tempest.Whale.ResourceContainers;
 
 public class HeroStatusHolder : MonoBehaviour {
 
@@ -25,7 +26,7 @@ public class HeroStatusHolder : MonoBehaviour {
 
     public void SetHero(CombatHero hero) {
         this.hero = hero;
-        heroIcon.sprite = hero.baseHero.HeroIcon;
+        heroIcon.sprite = Resources.Load<Sprite>(hero.baseHero.HeroIconPath);
         blurryBorder.color = ColorContainer.ColorFromFaction(hero.baseHero.Faction);
         SetBarsWithoutAnimation();
     }

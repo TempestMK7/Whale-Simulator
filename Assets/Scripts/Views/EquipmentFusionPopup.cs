@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentFusionPopup : MonoBehaviour {
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.StateObjects;
 
 public class SummonPopupBehavior : MonoBehaviour {
 
@@ -19,7 +19,7 @@ public class SummonPopupBehavior : MonoBehaviour {
 
     public void LaunchPopup(AccountHero summonedHero) {
         summonCard.SetHero(summonedHero.GetBaseHero(), particleScale);
-        StartCoroutine("ExpandIntoFrame");
+        StartCoroutine(ExpandIntoFrame());
     }
 
     public void HideRevealText() {
@@ -31,7 +31,7 @@ public class SummonPopupBehavior : MonoBehaviour {
     }
 
     public void OnDonePressed() {
-        StartCoroutine("ShrinkToNothing");
+        StartCoroutine(ShrinkToNothing());
     }
 
     IEnumerator ExpandIntoFrame() {

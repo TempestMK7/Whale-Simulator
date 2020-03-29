@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.StateObjects;
 
 public class TenSummonPopupBehavior : MonoBehaviour {
 
@@ -11,7 +12,7 @@ public class TenSummonPopupBehavior : MonoBehaviour {
     public UnityEngine.UI.Button doneButton;
     public UnityEngine.UI.Button revealButton;
 
-    [SerializeField] public SummonCardBehavior[] summonCard;
+    public SummonCardBehavior[] summonCard;
 
     private int revealCount;
 
@@ -31,7 +32,7 @@ public class TenSummonPopupBehavior : MonoBehaviour {
         for (int x = 0; x < 10; x++) {
             summonCard[x].SetHero(summonedHero[x].GetBaseHero(), particleScale);
         }
-        StartCoroutine("ExpandIntoFrame");
+        StartCoroutine(ExpandIntoFrame());
     }
 
     public void OnReveal() {
@@ -42,7 +43,7 @@ public class TenSummonPopupBehavior : MonoBehaviour {
     }
 
     public void OnRevealPressed() {
-        StartCoroutine("RevealAll");
+        StartCoroutine(RevealAll());
         revealText.enabled = false;
         revealButton.gameObject.SetActive(false);
     }
@@ -63,7 +64,7 @@ public class TenSummonPopupBehavior : MonoBehaviour {
     }
 
     public void OnDonePressed() {
-        StartCoroutine("ShrinkToNothing");
+        StartCoroutine(ShrinkToNothing());
     }
 
     IEnumerator ExpandIntoFrame() {

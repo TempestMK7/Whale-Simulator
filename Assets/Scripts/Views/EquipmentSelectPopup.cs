@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentSelectPopup : MonoBehaviour {
 
@@ -47,7 +49,7 @@ public class EquipmentSelectPopup : MonoBehaviour {
         }
         equipmentLabel.text = string.Format("Equip {0}", title);
 
-        adapter = new EquipmentAdapter(this, listItemPrefab, selectedHero.HeroGuid, selectedSlot);
+        adapter = new EquipmentAdapter(this, listItemPrefab, selectedHero.Id, selectedSlot);
         StartCoroutine(ExpandIntoFrame());
     }
 
@@ -92,10 +94,10 @@ public class EquipmentSelectPopup : MonoBehaviour {
                 break;
         }
         var selected = equipmentList.FindAll((AccountEquipment matchable) => {
-            return selectedHero.HeroGuid.Equals(matchable.EquippedHeroGuid) && matchingSlot.Contains(matchable.EquippedSlot.GetValueOrDefault());
+            return selectedHero.Id.Equals(matchable.EquippedHeroId) && matchingSlot.Contains(matchable.EquippedSlot.GetValueOrDefault());
         });
         foreach (AccountEquipment equip in selected) {
-            equip.EquippedHeroGuid = null;
+            equip.EquippedHeroId = null;
             equip.EquippedSlot = null;
         }
     }
@@ -160,18 +162,18 @@ public class EquipmentAdapter : RecyclerViewAdapter {
             slotList.Add(EquipmentSlot.TWO_HAND);
             var alreadyEquipped = StateManager.GetCurrentState().AccountEquipment.FindAll((AccountEquipment matchable) => {
                 return matchable.EquippedSlot != null &&
-                    selectedHeroGuid.Equals(matchable.EquippedHeroGuid) &&
+                    selectedHeroGuid.Equals(matchable.EquippedHeroId) &&
                     slotList.Contains(matchable.EquippedSlot.GetValueOrDefault());
             });
             foreach (AccountEquipment equipped in alreadyEquipped) {
-                equipped.EquippedHeroGuid = null;
+                equipped.EquippedHeroId = null;
                 equipped.EquippedSlot = null;
             }
             selection.EquippedSlot = EquipmentSlot.TWO_HAND;
         } else {
             selection.EquippedSlot = selectedSlot;
         }
-        selection.EquippedHeroGuid = selectedHeroGuid;
+        selection.EquippedHeroId = selectedHeroGuid;
         var sceneManager = UnityEngine.Object.FindObjectOfType<HeroSceneManager>();
         if (sceneManager != null) sceneManager.NotifyEquipmentSelected();
         popup.OnCancelPressed();

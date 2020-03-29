@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.Combat;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.ResourceContainers;
+using Com.Tempest.Whale.StateObjects;
 
 public class AnimatedHero : MonoBehaviour {
 
@@ -52,7 +56,7 @@ public class AnimatedHero : MonoBehaviour {
 
     public void SetHero(HeroEnum hero) {
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
-        animator.runtimeAnimatorController = baseHero.HeroAnimator;
+        animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.HeroAnimatorPath);
     }
 
     public void SetHero(CombatHero hero) {
@@ -60,7 +64,7 @@ public class AnimatedHero : MonoBehaviour {
         heroHandler = null;
         selectedHero = null;
         combatHero = new CombatHero(hero);
-        animator.runtimeAnimatorController = hero.baseHero.HeroAnimator;
+        animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.HeroAnimatorPath);
         if (hero.IsAlive()) {
             healthCanvas.gameObject.SetActive(true);
         } else {
@@ -105,7 +109,7 @@ public class AnimatedHero : MonoBehaviour {
 
     private IEnumerator AnimateMeleeAttack(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
         var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
-        soundEffect.clip = attackInfo.AttackSound;
+        soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         var target = placeholders[step.enemyTargets[0].combatHeroGuid];
 
@@ -139,7 +143,7 @@ public class AnimatedHero : MonoBehaviour {
         var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
 
         animator.SetTrigger("Attack");
-        soundEffect.clip = attackInfo.AttackSound;
+        soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         soundEffect.Play();
         yield return new WaitForSeconds(0.3f);

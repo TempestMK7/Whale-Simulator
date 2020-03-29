@@ -1,11 +1,14 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Com.Tempest.Whale.Combat;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.ResourceContainers;
+using Com.Tempest.Whale.StateObjects;
 
 public class BattleSceneManager : MonoBehaviour {
 
@@ -258,9 +261,9 @@ public class BattleSceneManager : MonoBehaviour {
         BindEnemyTeam(report.enemies);
         yield return new WaitForSeconds(1f);
 
-        foreach (CombatTurn turn in report.turns) {
+        foreach (CombatRound round in report.rounds) {
             if (!skipBattle) {
-                yield return StartCoroutine(PlayCombatTurn(turn));
+                yield return StartCoroutine(PlayCombatRound(round));
                 yield return new WaitForSeconds(1f);
             }
         }
@@ -298,17 +301,17 @@ public class BattleSceneManager : MonoBehaviour {
         }
     }
 
-    private System.Collections.IEnumerator PlayCombatTurn(CombatTurn turn) {
-        turnText.text = string.Format("Turn {0}", turn.turnNumber);
+    private System.Collections.IEnumerator PlayCombatRound(CombatRound round) {
+        turnText.text = string.Format("Round {0}", round.turnNumber);
 
-        BindAllyTeam(turn.allies);
-        BindEnemyTeam(turn.enemies);
+        BindAllyTeam(round.allies);
+        BindEnemyTeam(round.enemies);
 
-        foreach (CombatStep step in turn.steps) {
+        foreach (CombatStep step in round.steps) {
             if (!skipBattle) yield return StartCoroutine(PlayCombatStep(step));
         }
         
-        foreach (DamageInstance instance in turn.endOfTurn) {
+        foreach (DamageInstance instance in round.endOfTurn) {
             if (!skipBattle) {
                 placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
                 yield return new WaitForSeconds(0.3f);

@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.ResourceContainers;
+using Com.Tempest.Whale.StateObjects;
 
 public class RewardListItem : MonoBehaviour {
 
@@ -14,7 +14,7 @@ public class RewardListItem : MonoBehaviour {
         rewardCountText.enabled = true;
         rewardRarityView.gameObject.SetActive(false);
 
-        rewardIcon.sprite = RewardInfoContainer.GetIconForReward(rewardType);
+        rewardIcon.sprite = RewardIconContainer.GetIconForReward(rewardType);
         rewardCountText.text = CustomFormatter.Format(rewardCount);
     }
 
@@ -23,7 +23,7 @@ public class RewardListItem : MonoBehaviour {
         rewardCountText.enabled = false;
         rewardRarityView.gameObject.SetActive(true);
 
-        rewardIcon.sprite = equipment.GetBaseEquipment().Icon;
+        rewardIcon.sprite = Resources.Load<Sprite>(equipment.GetBaseEquipment().IconPath);
         rewardRarityView.SetLevel(0, equipment.Level, false);
     }
 }

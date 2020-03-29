@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentSceneManager : MonoBehaviour {
 
@@ -148,17 +150,17 @@ public class EquipmentSceneManager : MonoBehaviour {
 
         equipmentLabel.text = baseEquipment.Name;
         equipmentPositionLabel.text = string.Format("({0} of {1})", currentSelection + 1, filteredList.Count);
-        if (currentEquipment.EquippedHeroGuid == null) {
+        if (currentEquipment.EquippedHeroId == null) {
             equipmentOwnerIcon.enabled = false;
         } else {
             equipmentOwnerIcon.enabled = true;
             var equippedHero = state.AccountHeroes.Find((AccountHero hero) => {
-                return hero.HeroGuid.Equals(currentEquipment.EquippedHeroGuid);
+                return hero.Id.Equals(currentEquipment.EquippedHeroId);
             });
-            if (equippedHero != null) equipmentOwnerIcon.sprite = equippedHero.GetBaseHero().HeroIcon;
+            if (equippedHero != null) equipmentOwnerIcon.sprite = Resources.Load<Sprite>(equippedHero.GetBaseHero().HeroIconPath);
         }
 
-        equipmentDisplay.sprite = baseEquipment.Icon;
+        equipmentDisplay.sprite = Resources.Load<Sprite>(baseEquipment.IconPath);
 
         equipmentRarityView.SetLevel(0, currentEquipment.Level, true);
         ToggleStatFusePanels(true);

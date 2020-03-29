@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Coffee.UIExtensions;
+using Com.Tempest.Whale.GameObjects;
 
 public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
 
@@ -39,7 +39,7 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
     private void BuildFromHero() {
         if (summonedHero == null) return;
 
-        heroIcon.sprite = summonedHero.HeroIcon;
+        heroIcon.sprite = Resources.Load<Sprite>(summonedHero.HeroIconPath);
 
         int rarity = summonedHero.Rarity;
         switch (rarity) {
@@ -100,7 +100,7 @@ public class SummonCardBehavior : MonoBehaviour, IPointerClickHandler {
         summonSound.time = 0.2f;
         summonSound.Play();
         summoningParticle.Play();
-        StartCoroutine("RevealHero");
+        StartCoroutine(RevealHero());
     }
 
     public bool HasRevealed() {

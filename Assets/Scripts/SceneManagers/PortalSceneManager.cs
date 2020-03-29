@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Com.Tempest.Whale.StateObjects;
 
 public class PortalSceneManager : MonoBehaviour {
 

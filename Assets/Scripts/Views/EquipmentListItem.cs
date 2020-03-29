@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentListItem : MonoBehaviour, IPointerClickHandler {
 
@@ -31,9 +30,9 @@ public class EquipmentListItem : MonoBehaviour, IPointerClickHandler {
             equippedText.enabled = false;
         } else {
             equipmentIcon.enabled = true;
-            equipmentIcon.sprite = accountEquipment.GetBaseEquipment().Icon;
+            equipmentIcon.sprite = Resources.Load<Sprite>(accountEquipment.GetBaseEquipment().IconPath);
             rarityView.SetLevel(0, accountEquipment.Level, false);
-            equippedText.enabled = showEquippedStatus && accountEquipment.EquippedHeroGuid != null;
+            equippedText.enabled = showEquippedStatus && accountEquipment.EquippedHeroId != null;
         }
     }
 

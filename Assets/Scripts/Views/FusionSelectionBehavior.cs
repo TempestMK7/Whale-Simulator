@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.ResourceContainers;
+using Com.Tempest.Whale.StateObjects;
 
 public class FusionSelectionBehavior : MonoBehaviour {
 
@@ -35,7 +38,7 @@ public class FusionSelectionBehavior : MonoBehaviour {
     public void SetAccountHero(AccountHero hero) {
         selectedHero = hero;
         blurryBorder.color = ColorContainer.ColorFromFaction(hero.GetBaseHero().Faction);
-        heroIcon.sprite = hero.GetBaseHero().HeroIcon;
+        heroIcon.sprite = Resources.Load<Sprite>(hero.GetBaseHero().HeroIconPath);
         heroIcon.color = new Color(1, 1, 1, 1);
         rarityView.SetLevel(hero.GetBaseHero().Rarity, hero.AwakeningLevel, false);
         levelText.text = hero.CurrentLevel.ToString();
@@ -54,7 +57,7 @@ public class FusionSelectionBehavior : MonoBehaviour {
             heroIcon.color = new Color(1, 1, 1, 1);
         } else {
             var baseHero = BaseHeroContainer.GetBaseHero(requiredHero ?? HeroEnum.VAPOR_CLOUD);
-            heroIcon.sprite = baseHero.HeroIcon;
+            heroIcon.sprite = Resources.Load<Sprite>(baseHero.HeroIconPath);
             heroIcon.color = new Color(1, 1, 1, 0.5f);
         }
         rarityView.SetLevel(0, requiredLevel, false);

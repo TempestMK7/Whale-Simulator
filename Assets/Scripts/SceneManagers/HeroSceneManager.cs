@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.ResourceContainers;
+using Com.Tempest.Whale.StateObjects;
 
 public class HeroSceneManager : MonoBehaviour {
 
@@ -196,10 +199,10 @@ public class HeroSceneManager : MonoBehaviour {
 
         heroLabel.text = baseHero.HeroName;
         positionLabel.text = string.Format("({0} of {1})", currentPosition + 1, filteredList.Count);
-        factionIconLeft.sprite = FactionContainer.GetIconForFaction(baseHero.Faction);
-        roleIconRight.sprite = RoleContainer.GetIconForRole(baseHero.Role);
+        factionIconLeft.sprite = FactionIconContainer.GetIconForFaction(baseHero.Faction);
+        roleIconRight.sprite = RoleIconContainer.GetIconForRole(baseHero.Role);
 
-        var animator = baseHero.HeroAnimator;
+        var animator = Resources.Load<AnimatorOverrideController>(baseHero.HeroAnimatorPath);
         heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
 
         var equipped = state.GetEquipmentForHero(currentHero);
@@ -242,9 +245,9 @@ public class HeroSceneManager : MonoBehaviour {
         var specialAttack = AttackInfoContainer.GetAttackInfo(baseHero.SpecialAttack);
         var passiveAbility = AbilityInfoContainer.GetAbilityInfo(baseHero.PassiveAbility);
 
-        basicAttackImage.sprite = basicAttack.AttackIcon;
-        specialAttackImage.sprite = specialAttack.AttackIcon;
-        passiveImage.sprite = passiveAbility.AbilityIcon;
+        basicAttackImage.sprite = Resources.Load<Sprite>(basicAttack.AttackIconPath);
+        specialAttackImage.sprite = Resources.Load<Sprite>(specialAttack.AttackIconPath);
+        passiveImage.sprite = Resources.Load<Sprite>(passiveAbility.AbilityIconPath);
 
         rarityView.SetLevel(baseHero.Rarity, currentHero.AwakeningLevel, true);
         currentFusionRequirement = LevelContainer.GetFusionRequirementForLevel(currentHero.AwakeningLevel);

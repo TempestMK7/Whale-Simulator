@@ -27,7 +27,7 @@ public class CombatReportPopup : MonoBehaviour {
     private void ResizeReportHolder() {
         Canvas.ForceUpdateCanvases();
         int lines = reportHolder.cachedTextGenerator.lineCount;
-        reportHolder.rectTransform.sizeDelta = new Vector2(0, (lines * 15f));
+        reportHolder.rectTransform.sizeDelta = new Vector2(0, lines * 15f);
     }
 
     public void OnDonePressed() {
