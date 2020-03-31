@@ -6,8 +6,8 @@ namespace Com.Tempest.Whale.StateObjects {
 
     [Serializable]
     public class AccountState {
-
-        public Guid Id { get; set; }
+        
+        public string Id { get; set; }
         public string PlayerName { get; set; }
 
         public long LastClaimTimeStamp { get; set; }
@@ -16,8 +16,8 @@ namespace Com.Tempest.Whale.StateObjects {
         public double CurrentSouls { get; set; }
         public int CurrentLevel { get; set; }
         public double CurrentExperience { get; set; }
-        public double CurrentGems { get; set; }
-        public double CurrentSummons { get; set; }
+        public long CurrentGems { get; set; }
+        public long CurrentSummons { get; set; }
 
         public int CurrentChapter { get; set; }
         public int CurrentMission { get; set; }
@@ -34,7 +34,6 @@ namespace Com.Tempest.Whale.StateObjects {
         public Guid?[] LastRaidSelection { get; set; }
 
         public void InitializeAccount() {
-            Id = Guid.NewGuid();
             PlayerName = "Unregistered Account";
 
             LastClaimTimeStamp = EpochTime.CurrentTimeMillis();

@@ -193,7 +193,7 @@ public class HeroSceneManager : MonoBehaviour {
     public void BindDetailView() {
         var state = StateManager.GetCurrentState();
         var currentHero = filteredList[currentPosition];
-        var combatHero = currentHero.GetCombatHero();
+        var combatHero = currentHero.GetCombatHeroFromAllEquipment(state.AccountEquipment);
         var baseHero = combatHero.baseHero;
         var currentLevel = combatHero.currentLevel;
 

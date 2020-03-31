@@ -18,6 +18,11 @@ public class StateManager {
         return currentState;
     }
 
+    public static void OverrideState(AccountState newState) {
+        currentState = newState;
+        SaveState();
+    }
+
     private static void LoadCurrentState() {
         if (currentState != null) return;
 
@@ -58,10 +63,16 @@ public class StateManager {
         writer.Close();
     }
 
+    public static void SaveState(string networkState) {
+        StreamWriter writer = new StreamWriter(fileName, false);
+        writer.WriteLine(networkState);
+        writer.Close();
+    }
+
     public static void ClaimRewards(Action handler) {
         double timeElapsed = (EpochTime.CurrentTimeMillis() - currentState.LastClaimTimeStamp);
         currentState.LastClaimTimeStamp = EpochTime.CurrentTimeMillis();
-        var generation = MissionContainer.GetGenerationInfo();
+        var generation = MissionContainer.GetGenerationInfo(currentState);
 
         currentState.CurrentGold += GenerationInfo.GenerationPerMillisecond(generation.GoldPerMinute) * timeElapsed;
         currentState.CurrentSouls += GenerationInfo.GenerationPerMillisecond(generation.SoulsPerMinute) * timeElapsed;
@@ -235,7 +246,7 @@ public class StateManager {
             };
             enemyTeam[x] = accountHero;
         }
-        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam);
+        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam, currentState.AccountEquipment, currentState.AccountEquipment);
 
         // TODO: Remove these temp files when I'm done debugging.
         var fileName = "/CombatReport.txt";

@@ -5,7 +5,7 @@ using Com.Tempest.Whale.ResourceContainers;
 
 public class InitializationSceneManager : MonoBehaviour {
 
-    void Start() {
+    public void Start() {
         Application.targetFrameRate = 60;
 
         BaseHeroContainer.Initialize();
@@ -18,8 +18,13 @@ public class InitializationSceneManager : MonoBehaviour {
         AttackParticleContainer.Initialize();
         RewardIconContainer.Initialize();
 
-        StateManager.GetCurrentState();
         SettingsManager.GetInstance();
+
+        FindObjectOfType<CredentialsManager>().DownloadStateFromServer(OnStateDownloaded);
+    }
+
+    public void OnStateDownloaded() {
+        Debug.Log("This was called.");
         SceneManager.LoadSceneAsync("HubScene");
     }
 }

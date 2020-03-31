@@ -302,9 +302,8 @@ namespace Com.Tempest.Whale.GameObjects {
             return allChapters[chapter - 1][mission - 1];
         }
 
-        public static GenerationInfo GetGenerationInfo() {
-            var state = StateManager.GetCurrentState();
-            return new GenerationInfo(state.CurrentChapter);
+        public static GenerationInfo GetGenerationInfo(AccountState currentState) {
+            return new GenerationInfo(currentState.CurrentChapter);
         }
 
         public static List<AccountEquipment> GetMissionEquipmentLoadout(AccountHero hero) {

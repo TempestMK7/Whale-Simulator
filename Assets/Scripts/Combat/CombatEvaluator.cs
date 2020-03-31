@@ -8,11 +8,12 @@ namespace Com.Tempest.Whale.Combat {
 
     public class CombatEvaluator {
 
-        public static async Task<CombatReport> GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, bool usePreferredGear = false) {
+        public static async Task<CombatReport> GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, 
+            List<AccountEquipment> allyEquipment, List<AccountEquipment> enemyEquipment, bool usePreferredGear = false) {
             CombatHero[] combatAllies = new CombatHero[allies.Length];
             for (int x = 0; x < combatAllies.Length; x++) {
                 if (allies[x] != null) {
-                    combatAllies[x] = allies[x].GetCombatHero();
+                    combatAllies[x] = allies[x].GetCombatHeroFromAllEquipment(allyEquipment);
                 }
             }
 
@@ -20,7 +21,7 @@ namespace Com.Tempest.Whale.Combat {
             for (int x = 0; x < combatEnemies.Length; x++) {
                 if (enemies[x] != null) {
                     if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(MissionContainer.GetMissionEquipmentLoadout(enemies[x]));
-                    else combatEnemies[x] = enemies[x].GetCombatHero();
+                    else combatEnemies[x] = enemies[x].GetCombatHeroFromAllEquipment(enemyEquipment);
                 }
             }
 

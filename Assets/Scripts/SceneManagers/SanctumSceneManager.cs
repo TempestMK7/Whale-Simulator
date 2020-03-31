@@ -33,7 +33,7 @@ public class SanctumSceneManager : MonoBehaviour {
 
     void Update() {
         var state = StateManager.GetCurrentState();
-        var generation = MissionContainer.GetGenerationInfo();
+        var generation = MissionContainer.GetGenerationInfo(state);
         double unformattedTime = (EpochTime.CurrentTimeMillis() - state.LastClaimTimeStamp);
 
         goldRateLabel.text = string.Format("Gold: {0} / min.", generation.GoldPerMinute);
