@@ -50,6 +50,7 @@ public class CredentialsManager : MonoBehaviour {
     public void UploadStateToServer() {
         var state = StateManager.GetCurrentState();
         var stateJson = JsonConvert.SerializeObject(state);
+        stateJson = stateJson.Replace("\"", "\\\"");
         var stringifiedJson = string.Format("\"{0}\"", stateJson);
         var request = new InvokeRequest() {
             FunctionName = "UploadStateFunction",
@@ -58,7 +59,9 @@ public class CredentialsManager : MonoBehaviour {
         };
         lambdaClient.InvokeAsync(request, (result) => {
             if (result.Exception == null) {
-                Debug.Log("Request was successful.");
+                var responseReader = new StreamReader(result.Response.Payload);
+                Debug.Log(responseReader.ReadToEnd());
+                responseReader.Dispose();
             } else {
                 Debug.LogError(result.Exception);
             }

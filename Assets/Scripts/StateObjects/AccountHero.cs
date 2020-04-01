@@ -15,6 +15,10 @@ namespace Com.Tempest.Whale.StateObjects {
 
         [NonSerialized] private BaseHero baseHero;
 
+        public AccountHero() {
+
+        }
+
         public AccountHero(HeroEnum heroType) {
             Id = Guid.NewGuid();
             HeroType = heroType;

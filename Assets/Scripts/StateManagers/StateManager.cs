@@ -20,53 +20,34 @@ public class StateManager {
 
     public static void OverrideState(AccountState newState) {
         currentState = newState;
-        SaveState();
+        currentState.RetrieveDataAfterLoad();
+        Debug.Log("State was overridden with ID: " + currentState.Id);
+        SaveState(false);
     }
 
     private static void LoadCurrentState() {
         if (currentState != null) return;
-
-        if (!File.Exists(fileName)) {
-            CreateEmptyContainer();
-            return;
-        }
 
         StreamReader reader = new StreamReader(fileName);
         try {
             currentState = JsonConvert.DeserializeObject<AccountState>(reader.ReadLine());
             currentState.RetrieveDataAfterLoad();
         } catch (Exception e) {
-            UnityEngine.Debug.Log(e.Message);
+            Debug.LogError(e);
         } finally {
             reader.Close();
         }
-
-        if (currentState == null) {
-            CreateEmptyContainer();
-            currentState.RetrieveDataAfterLoad();
-        }
     }
 
-    private static void CreateEmptyContainer() {
-        AccountState container = new AccountState();
-        container.InitializeAccount();
-        currentState = container;
-        SaveState();
-    }
-
-    public static void SaveState() {
+    public static void SaveState(bool uploadToServer = true) {
         currentState.AccountHeroes.Sort();
         currentState.AccountEquipment.Sort();
 
         StreamWriter writer = new StreamWriter(fileName, false);
         writer.WriteLine(JsonConvert.SerializeObject(currentState));
         writer.Close();
-    }
 
-    public static void SaveState(string networkState) {
-        StreamWriter writer = new StreamWriter(fileName, false);
-        writer.WriteLine(networkState);
-        writer.Close();
+        if (uploadToServer) UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
     }
 
     public static void ClaimRewards(Action handler) {

@@ -20,11 +20,12 @@ public class InitializationSceneManager : MonoBehaviour {
 
         SettingsManager.GetInstance();
 
+        Debug.Log("Downloading state.");
         FindObjectOfType<CredentialsManager>().DownloadStateFromServer(OnStateDownloaded);
     }
 
     public void OnStateDownloaded() {
-        Debug.Log("This was called.");
+        Debug.Log("Releasing to hub scene.");
         SceneManager.LoadSceneAsync("HubScene");
     }
 }

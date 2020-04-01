@@ -14,6 +14,10 @@ namespace Com.Tempest.Whale.StateObjects {
 
         [NonSerialized] private BaseEquipment baseEquipment;
 
+        public AccountEquipment() {
+
+        }
+
         public AccountEquipment(EquipmentType equipType, int level) {
             Id = Guid.NewGuid();
             EquipType = equipType;
