@@ -9,6 +9,7 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 
 using Com.Tempest.Whale.StateObjects;
+using System.Threading;
 
 public class CredentialsManager : MonoBehaviour {
 
@@ -17,9 +18,10 @@ public class CredentialsManager : MonoBehaviour {
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);
-        UnityInitializer.AttachToGameObject(gameObject);
         if (credentials == null || lambdaClient == null) {
-            credentials = new CognitoAWSCredentials("us-west-2:8f446e6c-1559-49bc-be35-3f9462c5205c", RegionEndpoint.USWest2);
+            credentials = new WhaleCredentials("us-west-2:8f446e6c-1559-49bc-be35-3f9462c5205c", RegionEndpoint.USWest2);
+            credentials.GetIdentityId();
+            credentials.GetCredentials();
             lambdaClient = new AmazonLambdaClient(credentials, RegionEndpoint.USWest2);
             credentials.IdentityChangedEvent += delegate (object sender, CognitoAWSCredentials.IdentityChangedArgs args) {
                 Debug.Log("Changed credentials to: " + args.NewIdentityId);
@@ -27,27 +29,22 @@ public class CredentialsManager : MonoBehaviour {
         }
     }
 
-    public void DownloadStateFromServer(Action releaseAction) {
+    public async void DownloadStateFromServer(Action releaseAction) {
         var request = new InvokeRequest() {
             FunctionName = "DownloadStateFunction",
             Payload = "\"{\"Empty\":\"None\"}\"",
-            InvocationType = InvocationType.RequestResponse
+            InvocationType = InvocationType.RequestResponse,
         };
-        lambdaClient.InvokeAsync(request, (result) => {
-            if (result.Exception == null) {
-                var responseReader = new StreamReader(result.Response.Payload);
-                var newState = DeserializeObject<AccountState>(responseReader.ReadLine());
-                responseReader.Dispose();
-
-                StateManager.OverrideState(newState);
-                releaseAction.Invoke();
-            } else {
-                Debug.LogError(result.Exception);
-            }
-        });
+        var result = await lambdaClient.InvokeAsync(request);
+        var responseReader = new StreamReader(result.Payload);
+        var responseBody = await responseReader.ReadToEndAsync();
+        responseReader.Dispose();
+        var newState = DeserializeObject<AccountState>(responseBody);
+        StateManager.OverrideState(newState);
+        releaseAction.Invoke();
     }
 
-    public void UploadStateToServer() {
+    public async void UploadStateToServer() {
         var state = StateManager.GetCurrentState();
         var stateJson = JsonConvert.SerializeObject(state);
         // miguel bugfix
@@ -58,18 +55,14 @@ public class CredentialsManager : MonoBehaviour {
             Payload = stringifiedJson,
             InvocationType = InvocationType.RequestResponse
         };
-        lambdaClient.InvokeAsync(request, (result) => {
-            if (result.Exception == null) {
-                var responseReader = new StreamReader(result.Response.Payload);
-                Debug.Log(responseReader.ReadToEnd());
-                responseReader.Dispose();
-            } else {
-                Debug.LogError(result.Exception);
-            }
-        });
+        var result = await lambdaClient.InvokeAsync(request);
+        var responseReader = new StreamReader(result.Payload);
+        Debug.Log(responseReader.ReadToEnd());
+        responseReader.Dispose();
     }
 
     private T DeserializeObject<T>(string serverResponse) {
+        Debug.Log(serverResponse);
         var trimmedString = serverResponse.Substring(1, serverResponse.Length - 2);
         return JsonConvert.DeserializeObject<T>(Regex.Unescape(trimmedString));
     }
