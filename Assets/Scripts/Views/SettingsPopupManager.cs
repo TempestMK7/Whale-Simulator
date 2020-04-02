@@ -20,6 +20,10 @@ public class SettingsPopupManager : MonoBehaviour {
         StartCoroutine(ExpandIntoFrame());
     }
 
+    public void OnLoginPressed() {
+        Application.OpenURL("https://whale-development.auth.us-west-2.amazoncognito.com/login?client_id=599obnjm771096hof758pqfa1h&response_type=code&scope=openid+profile&redirect_uri=https://whalesim.com/game");
+    }
+
     public void OnDonePressed() {
         StartCoroutine(ShrinkToNothing());
     }

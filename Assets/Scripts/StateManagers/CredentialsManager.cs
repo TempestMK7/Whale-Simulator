@@ -50,6 +50,7 @@ public class CredentialsManager : MonoBehaviour {
     public void UploadStateToServer() {
         var state = StateManager.GetCurrentState();
         var stateJson = JsonConvert.SerializeObject(state);
+        // miguel bugfix
         stateJson = stateJson.Replace("\"", "\\\"");
         var stringifiedJson = string.Format("\"{0}\"", stateJson);
         var request = new InvokeRequest() {
