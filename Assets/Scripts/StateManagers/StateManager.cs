@@ -21,7 +21,6 @@ public class StateManager {
     public static void OverrideState(AccountState newState) {
         currentState = newState;
         currentState.RetrieveDataAfterLoad();
-        Debug.Log("State was overridden with ID: " + currentState.Id);
         SaveState(false);
     }
 

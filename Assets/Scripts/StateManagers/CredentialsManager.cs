@@ -57,12 +57,10 @@ public class CredentialsManager : MonoBehaviour {
         };
         var result = await lambdaClient.InvokeAsync(request);
         var responseReader = new StreamReader(result.Payload);
-        Debug.Log(responseReader.ReadToEnd());
         responseReader.Dispose();
     }
 
     private T DeserializeObject<T>(string serverResponse) {
-        Debug.Log(serverResponse);
         var trimmedString = serverResponse.Substring(1, serverResponse.Length - 2);
         return JsonConvert.DeserializeObject<T>(Regex.Unescape(trimmedString));
     }
