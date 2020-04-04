@@ -344,7 +344,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 81745080}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 131340136}
+        m_TargetAssemblyTypeName: LoginSceneManager, Assembly-CSharp
+        m_MethodName: OnForgotPasswordPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &81745080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,6 +394,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81745077}
   m_CullTransparentMesh: 0
+--- !u!1 &131340135
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 131340137}
+  - component: {fileID: 131340136}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &131340136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131340135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8065a1cde7afb624d8d31349e55d129e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseLoginPanel: {fileID: 1773736495}
+  baseCreatePanel: {fileID: 1224843161}
+  loginEmailField: {fileID: 1008599368}
+  loginPasswordField: {fileID: 261761251}
+  createEmailField: {fileID: 1732107763}
+  createPasswordField: {fileID: 1228741751}
+  createConfirmField: {fileID: 7299717}
+--- !u!4 &131340137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131340135}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 179.95844, y: 342.7857, z: -130.46915}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &261761249
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,7 +665,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 326102587}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 131340136}
+        m_TargetAssemblyTypeName: LoginSceneManager, Assembly-CSharp
+        m_MethodName: OnCreateAccountPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &326102587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -954,7 +1028,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 580595737}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 131340136}
+        m_TargetAssemblyTypeName: LoginSceneManager, Assembly-CSharp
+        m_MethodName: OnLoginPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &580595737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2355,7 +2441,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1362417317}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 131340136}
+        m_TargetAssemblyTypeName: LoginSceneManager, Assembly-CSharp
+        m_MethodName: OnCreateBackPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1362417317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2791,7 +2889,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1666215802}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 131340136}
+        m_TargetAssemblyTypeName: LoginSceneManager, Assembly-CSharp
+        m_MethodName: OnLoginBackPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1666215802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3322,7 +3432,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2004227681}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 131340136}
+        m_TargetAssemblyTypeName: LoginSceneManager, Assembly-CSharp
+        m_MethodName: OnLoginCreatePressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2004227681
 MonoBehaviour:
   m_ObjectHideFlags: 0
