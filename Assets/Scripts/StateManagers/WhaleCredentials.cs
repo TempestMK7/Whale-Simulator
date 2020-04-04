@@ -9,8 +9,23 @@ using UnityEngine;
 
 class WhaleCredentials : CognitoAWSCredentials {
 
-    private readonly string identityFile = Application.persistentDataPath + "/whale_identity.txt";
-    private readonly string credentialsFile = Application.persistentDataPath + "/whale_credentials.txt";
+    private static readonly string identityFile = Application.persistentDataPath + "/whale_identity.txt";
+    private static readonly string credentialsFile = Application.persistentDataPath + "/whale_credentials.txt";
+
+    public static void CacheCredentials(ImmutableCredentials credentials) {
+        StreamWriter writer = new StreamWriter(credentialsFile, false);
+        writer.WriteLine(credentials.AccessKey);
+        writer.WriteLine(credentials.SecretKey);
+        writer.WriteLine(credentials.Token);
+        writer.WriteLine(new DateTime().AddMinutes(30).Ticks);
+        writer.Close();
+    }
+
+    public static void CacheIdentity(string identityId) {
+        StreamWriter writer = new StreamWriter(identityFile, false);
+        writer.WriteLine(identityId);
+        writer.Close();
+    }
 
     public WhaleCredentials(string identityPoolId, RegionEndpoint region) : base(identityPoolId, region) {
         

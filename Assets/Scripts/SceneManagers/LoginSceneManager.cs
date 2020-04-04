@@ -9,12 +9,15 @@ public class LoginSceneManager : MonoBehaviour {
     public GameObject baseLoginPanel;
     public GameObject baseCreatePanel;
 
-    public InputField loginEmailField;
+    public InputField loginUsernameField;
     public InputField loginPasswordField;
 
+    public InputField createUsernameField;
     public InputField createEmailField;
     public InputField createPasswordField;
     public InputField createConfirmField;
+
+    public GameObject tooltipPopup;
 
     public void Awake() {
         baseLoginPanel.gameObject.SetActive(true);
@@ -25,9 +28,22 @@ public class LoginSceneManager : MonoBehaviour {
         createConfirmField.inputType = InputField.InputType.Password;
     }
 
-    public void OnLoginPressed() {
-        string email = loginEmailField.text;
+    public async void OnLoginPressed() {
+        string username = loginUsernameField.text;
         string password = loginPasswordField.text;
+        if (username.Length == 0 || password.Length == 0) return;
+
+        var credentialManager = FindObjectOfType<CredentialsManager>();
+        bool successful = await credentialManager.LoginUser(username, password);
+
+        if (successful) {
+            var tooltip = Instantiate(tooltipPopup, baseLoginPanel.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Success!", "Logged in successfully.");
+            credentialManager.DownloadStateFromServer(null);
+        } else {
+            var tooltip = Instantiate(tooltipPopup, baseLoginPanel.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Failed.", "Unable to log in.");
+        }
     }
 
     public void OnForgotPasswordPressed() {
@@ -43,15 +59,25 @@ public class LoginSceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("HubScene");
     }
 
-    public void OnCreateAccountPressed() {
+    public async void OnCreateAccountPressed() {
+        string username = createUsernameField.text;
         string email = createEmailField.text;
         string password = createPasswordField.text;
         string confirmation = createConfirmField.text;
 
-        if (email.Length == 0 || password.Length == 0) return;
+        if (username.Length == 0 || email.Length == 0 || password.Length == 0) return;
         if (!password.Equals(confirmation)) return;
 
-        FindObjectOfType<CredentialsManager>().CreateAccount(email, password);
+        var credentialManager = FindObjectOfType<CredentialsManager>();
+        bool successful = await credentialManager.CreateAccount(username, email, password);
+
+        if (successful) {
+            var tooltip = Instantiate(tooltipPopup, baseCreatePanel.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Success!", "Your account was created successfully.  Please check your email for a verification and then log in.");
+        } else {
+            var tooltip = Instantiate(tooltipPopup, baseCreatePanel.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Failed.", "We were unable to create your account.");
+        }
     }
 
     public void OnCreateBackPressed() {
