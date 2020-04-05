@@ -21,6 +21,7 @@ public class SanctumSceneManager : MonoBehaviour {
     public Text experienceUnclaimedLabel;
 
     public TooltipPopup tooltipPrefab;
+    public LoadingPopup loadingPrefab;
 
     public void Start() {
         var state = StateManager.GetCurrentState();
@@ -69,16 +70,16 @@ public class SanctumSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return FindObjectOfType<TooltipPopup>() != null;
+        return FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<LoadingPopup>() != null;
     }
 
-    public void OnClaimRewards() {
+    public async void OnClaimRewards() {
         if (ButtonsBlocked()) return;
-        StateManager.ClaimRewards(OnRewardsClaimed);
-    }
-
-    public void OnRewardsClaimed() {
-        if (ButtonsBlocked()) return;
+        var popup = Instantiate(loadingPrefab, mainCanvas.transform);
+        popup.LaunchPopup("Loading...", "Contacting server...");
+        var credentialsManager = FindObjectOfType<CredentialsManager>();
+        await credentialsManager.ClaimResources();
+        popup.DismissPopup();
         infoPanel.NotifyUpdate();
     }
 

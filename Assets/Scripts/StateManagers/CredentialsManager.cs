@@ -97,7 +97,6 @@ public class CredentialsManager : MonoBehaviour {
         var responseReader = new StreamReader(result.Payload);
         var responseBody = await responseReader.ReadToEndAsync();
         responseReader.Dispose();
-        Debug.Log("Download response state: " + responseBody);
         var newState = DeserializeObject<AccountState>(responseBody);
         cachedAccountGuid = newState.Id.ToString();
         StateManager.OverrideState(newState);
@@ -115,12 +114,31 @@ public class CredentialsManager : MonoBehaviour {
             Payload = MangleRequest(JsonConvert.SerializeObject(uploadRequest)),
             InvocationType = InvocationType.RequestResponse
         };
-        Debug.Log("Uploading State to Server.");
         var result = await lambdaClient.InvokeAsync(request);
         var responseReader = new StreamReader(result.Payload);
         var responseBody = responseReader.ReadToEnd();
         responseReader.Dispose();
         Debug.Log("Upload State Response: " + responseBody);
+    }
+
+    public async Task ClaimResources() {
+        var currentState = StateManager.GetCurrentState();
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
+        var claimResourcesRequest = new ClaimResourcesRequest() {
+            Verified = authenticatedUser,
+            AccountGuid = currentState.Id
+        };
+        var request = new InvokeRequest() {
+            FunctionName = "ClaimResourcesFunction",
+            Payload = MangleRequest(JsonConvert.SerializeObject(claimResourcesRequest)),
+            InvocationType = InvocationType.RequestResponse
+        };
+        var result = await lambdaClient.InvokeAsync(request);
+        var responseReader = new StreamReader(result.Payload);
+        var responseBody = responseReader.ReadToEnd();
+        responseReader.Dispose();
+        var claimResourcesResponse = DeserializeObject<ClaimResourcesResponse>(responseBody);
+        StateManager.HandleClaimResourcesResponse(claimResourcesResponse);
     }
 
     public async Task<bool> CreateAccount(string username, string email, string password) {

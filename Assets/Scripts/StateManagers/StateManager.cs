@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
 
 public class StateManager {
@@ -53,19 +54,13 @@ public class StateManager {
         return currentState != null || File.Exists(fileName);
     }
 
-    public static void ClaimRewards(Action handler) {
-        double timeElapsed = (EpochTime.CurrentTimeMillis() - currentState.LastClaimTimeStamp);
-        currentState.LastClaimTimeStamp = EpochTime.CurrentTimeMillis();
-        var generation = MissionContainer.GetGenerationInfo(currentState);
-
-        currentState.CurrentGold += GenerationInfo.GenerationPerMillisecond(generation.GoldPerMinute) * timeElapsed;
-        currentState.CurrentSouls += GenerationInfo.GenerationPerMillisecond(generation.SoulsPerMinute) * timeElapsed;
-        currentState.CurrentExperience += GenerationInfo.GenerationPerMillisecond(generation.ExperiencePerMinute) * timeElapsed;
-
-        currentState.FixLevelsFromExperience();
-        SaveState();
-
-        if (handler != null) handler.Invoke();
+    public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
+        currentState.LastClaimTimeStamp = response.LastClaimTimeStamp;
+        currentState.CurrentGold = response.CurrentGold;
+        currentState.CurrentSouls = response.CurrentSouls;
+        currentState.CurrentExperience = response.CurrentExperience;
+        currentState.CurrentLevel = response.CurrentLevel;
+        SaveState(false);
     }
 
     public static void NotifyHubEntered() {
@@ -243,7 +238,6 @@ public class StateManager {
 
     public static void IncrementCampaignPosition() {
         if (currentState.CurrentMission == 10) {
-            ClaimRewards(null);
             currentState.CurrentMission = 1;
             currentState.CurrentChapter++;
         } else {
