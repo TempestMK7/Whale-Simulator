@@ -37,9 +37,9 @@ public class LoginSceneManager : MonoBehaviour {
         bool successful = await credentialManager.LoginUser(username, password);
 
         if (successful) {
+            await credentialManager.DownloadState();
             var tooltip = Instantiate(tooltipPopup, baseLoginPanel.transform).GetComponent<TooltipPopup>();
             tooltip.SetTooltip("Success!", "Logged in successfully.");
-            credentialManager.DownloadStateFromServer(null);
         } else {
             var tooltip = Instantiate(tooltipPopup, baseLoginPanel.transform).GetComponent<TooltipPopup>();
             tooltip.SetTooltip("Failed.", "Unable to log in.");

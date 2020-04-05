@@ -38,7 +38,7 @@ public class StateManager {
         }
     }
 
-    public static void SaveState(bool uploadToServer = true) {
+    public static async void SaveState(bool uploadToServer = true) {
         currentState.AccountHeroes.Sort();
         currentState.AccountEquipment.Sort();
 
@@ -46,7 +46,11 @@ public class StateManager {
         writer.WriteLine(JsonConvert.SerializeObject(currentState));
         writer.Close();
 
-        if (uploadToServer) UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
+        if (uploadToServer) await UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
+    }
+
+    public static bool Initialized() {
+        return currentState != null || File.Exists(fileName);
     }
 
     public static void ClaimRewards(Action handler) {
@@ -227,21 +231,6 @@ public class StateManager {
             enemyTeam[x] = accountHero;
         }
         var combatReport = await CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam, currentState.AccountEquipment, currentState.AccountEquipment);
-
-        // TODO: Remove these temp files when I'm done debugging.
-        var fileName = "/CombatReport.txt";
-        StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        writer.WriteLine(JsonConvert.SerializeObject(combatReport));
-        writer.Close();
-
-        // TODO: Remove these temp files when I'm done debugging.
-        var readableReport = combatReport.ToHumanReadableReport();
-        fileName = "/ReadableCombatReport.txt";
-        writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        foreach (string line in readableReport) {
-            writer.WriteLine(line);
-        }
-        writer.Close();
 
         if (combatReport.alliesWon) {
             var earnedRewards = AddRewardsFromCurrentMission();

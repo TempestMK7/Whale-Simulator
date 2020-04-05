@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
+using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
 
 public class CredentialsManager : MonoBehaviour {
@@ -24,17 +25,17 @@ public class CredentialsManager : MonoBehaviour {
 
     private string refreshTokenFile;
 
+    private bool authenticatedUser = false;
     private CognitoAWSCredentials cachedCredentials;
     private AmazonCognitoIdentityProviderClient cachedProvider;
+    private string cachedAccountGuid;
 
-    public async void Awake() {
+    public void Awake() {
         DontDestroyOnLoad(gameObject);
         refreshTokenFile = Application.persistentDataPath + "/refresh_token.txt";
-        await GetCredentials();
     }
 
-    private async Task<CognitoAWSCredentials> GetCredentials() {
-        if (cachedCredentials != null) return cachedCredentials;
+    public async Task InitializeEverything() {
         if (File.Exists(refreshTokenFile)) {
             StreamReader reader = new StreamReader(refreshTokenFile);
             var username = reader.ReadLine();
@@ -46,65 +47,82 @@ public class CredentialsManager : MonoBehaviour {
             reader.Close();
 
             var provider = new AmazonCognitoIdentityProviderClient(new Amazon.Runtime.AnonymousAWSCredentials(), RegionEndpoint.USWest2);
+
             CognitoUserPool userPool = new CognitoUserPool(userPoolId, appClientId, provider);
             CognitoUser user = new CognitoUser(username, appClientId, userPool, provider);
             user.SessionTokens = new CognitoUserSession(idToken, accessToken, refreshToken, issuedTime, expirationTime);
             var request = new InitiateRefreshTokenAuthRequest() { AuthFlowType = AuthFlowType.REFRESH_TOKEN_AUTH };
-            await user.StartWithRefreshTokenAuthAsync(request).ConfigureAwait(false);
+            var authResponse = await user.StartWithRefreshTokenAuthAsync(request).ConfigureAwait(false);
             cachedCredentials = user.GetCognitoAWSCredentials(identityPoolId, RegionEndpoint.USWest2);
-            return cachedCredentials;
+
+            var getUserRequest = new GetUserRequest();
+            getUserRequest.AccessToken = authResponse.AuthenticationResult.AccessToken;
+            var getUserResponse = await provider.GetUserAsync(getUserRequest);
+            cachedAccountGuid = getUserResponse.UserAttributes.Find((AttributeType type) => { return type.Name.Equals("custom:custom:accountGuid"); }).Value;
+
+            Debug.Log("Found validated user with Identity: " + cachedCredentials.GetIdentityId());
+            authenticatedUser = true;
         } else {
             cachedCredentials = new WhaleCredentials(identityPoolId, RegionEndpoint.USWest2);
-            return cachedCredentials;
+            cachedCredentials.GetCredentials();
+            cachedCredentials.GetIdentityId();
         }
+        cachedProvider = new AmazonCognitoIdentityProviderClient(cachedCredentials, RegionEndpoint.USWest2);
     }
 
-    private async Task<AmazonCognitoIdentityProviderClient> GetProvider() {
-        if (cachedProvider != null) return cachedProvider;
-        var credentials = await GetCredentials();
-        cachedProvider = new AmazonCognitoIdentityProviderClient(credentials, RegionEndpoint.USWest2);
-        return cachedProvider;
-    }
+    public async Task DownloadState() {
+        string accountGuid = "";
+        if (authenticatedUser) accountGuid = cachedAccountGuid;
+        else if (StateManager.Initialized()) {
+            accountGuid = StateManager.GetCurrentState().Id.ToString();
+        }
 
-    public async void DownloadStateFromServer(Action releaseAction) {
-        var lambdaClient = new AmazonLambdaClient(await GetCredentials(), RegionEndpoint.USWest2);
+        var downloadRequest = new DownloadStateRequest() {
+            AccountGuid = accountGuid,
+            Verified = authenticatedUser
+        };
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
         var request = new InvokeRequest() {
             FunctionName = "DownloadStateFunction",
-            Payload = "\"{\"Empty\":\"None\"}\"",
+            Payload = MangleRequest(JsonConvert.SerializeObject(downloadRequest)),
             InvocationType = InvocationType.RequestResponse,
         };
         var result = await lambdaClient.InvokeAsync(request);
         var responseReader = new StreamReader(result.Payload);
         var responseBody = await responseReader.ReadToEndAsync();
         responseReader.Dispose();
+        Debug.Log("Download response state: " + responseBody);
         var newState = DeserializeObject<AccountState>(responseBody);
+        cachedAccountGuid = newState.Id.ToString();
         StateManager.OverrideState(newState);
-        if (releaseAction != null) releaseAction.Invoke();
     }
 
-    public async void UploadStateToServer() {
-        var lambdaClient = new AmazonLambdaClient(await GetCredentials(), RegionEndpoint.USWest2);
+    public async Task UploadStateToServer() {
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
         var state = StateManager.GetCurrentState();
-        var stateJson = JsonConvert.SerializeObject(state);
-        // miguel bugfix
-        stateJson = stateJson.Replace("\"", "\\\"");
-        var stringifiedJson = string.Format("\"{0}\"", stateJson);
+        var uploadRequest = new UploadStateRequest() {
+            Verified = authenticatedUser,
+            UploadedState = state
+        };
         var request = new InvokeRequest() {
             FunctionName = "UploadStateFunction",
-            Payload = stringifiedJson,
+            Payload = MangleRequest(JsonConvert.SerializeObject(uploadRequest)),
             InvocationType = InvocationType.RequestResponse
         };
+        Debug.Log("Uploading State to Server.");
         var result = await lambdaClient.InvokeAsync(request);
         var responseReader = new StreamReader(result.Payload);
+        var responseBody = responseReader.ReadToEnd();
         responseReader.Dispose();
+        Debug.Log("Upload State Response: " + responseBody);
     }
 
     public async Task<bool> CreateAccount(string username, string email, string password) {
-        var provider = await GetProvider();
+        var provider = cachedProvider;
 
         var attributes = new List<AttributeType>() {
             new AttributeType() { Name = "email", Value = email },
-            new AttributeType() { Name = "custom:custom:accountGuid", Value = StateManager.GetCurrentState().Id }
+            new AttributeType() { Name = "custom:custom:accountGuid", Value = StateManager.GetCurrentState().Id.ToString() }
         };
 
         var signupRequest = new SignUpRequest() {
@@ -124,7 +142,7 @@ public class CredentialsManager : MonoBehaviour {
     }
 
     public async Task<bool> LoginUser(string username, string password) {
-        var provider = await GetProvider();
+        var provider = cachedProvider;
         CognitoUserPool userPool = new CognitoUserPool(userPoolId, appClientId, provider);
         CognitoUser user = new CognitoUser(username, appClientId, userPool, provider);
         InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest() {
@@ -143,13 +161,24 @@ public class CredentialsManager : MonoBehaviour {
             writer.WriteLine(user.SessionTokens.ExpirationTime.Ticks);
             writer.Close();
 
-            provider = null;
-            await GetProvider();
+            cachedProvider = new AmazonCognitoIdentityProviderClient(cachedCredentials, RegionEndpoint.USWest2);
+
+            var getUserRequest = new GetUserRequest();
+            getUserRequest.AccessToken = authResponse.AuthenticationResult.AccessToken;
+            var getUserResponse = await provider.GetUserAsync(getUserRequest);
+            cachedAccountGuid = getUserResponse.UserAttributes.Find((AttributeType type) => { return type.Name.Equals("custom:custom:accountGuid"); }).Value;
+
+            authenticatedUser = true;
         } catch (Exception e) {
             Debug.LogError(e);
             return false;
         }
         return true;
+    }
+
+    private string MangleRequest(string request) {
+        var mangled = request.Replace("\"", "\\\"");
+        return "\"" + mangled + "\"";
     }
 
     private T DeserializeObject<T>(string serverResponse) {

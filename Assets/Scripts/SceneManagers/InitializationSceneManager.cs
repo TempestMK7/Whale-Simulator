@@ -5,7 +5,7 @@ using Com.Tempest.Whale.ResourceContainers;
 
 public class InitializationSceneManager : MonoBehaviour {
 
-    public void Start() {
+    public async void Start() {
         Application.targetFrameRate = 60;
 
         BaseHeroContainer.Initialize();
@@ -20,10 +20,12 @@ public class InitializationSceneManager : MonoBehaviour {
 
         SettingsManager.GetInstance();
 
-        FindObjectOfType<CredentialsManager>().DownloadStateFromServer(OnStateDownloaded);
-    }
-
-    public void OnStateDownloaded() {
+        var credentialsManager = FindObjectOfType<CredentialsManager>();
+        Debug.Log("Initializing Credentials.");
+        await credentialsManager.InitializeEverything();
+        Debug.Log("Downloading State.");
+        await credentialsManager.DownloadState();
+        Debug.Log("Loading Hub.");
         SceneManager.LoadSceneAsync("HubScene");
     }
 }
