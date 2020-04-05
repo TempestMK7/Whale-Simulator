@@ -376,5 +376,28 @@ namespace Com.Tempest.Whale.GameObjects {
             }
             return allHeroes[hero];
         }
+
+        public static HeroEnum ChooseRandomHero(Random rand) {
+            if (allHeroes == null || allHeroes.Count == 0) {
+                Initialize();
+            }
+            double roll = rand.NextDouble();
+            if (roll <= 0.3) {
+                return ChooseHeroFromList(rand, rarityOne);
+            } else if (roll <= 0.6) {
+                return ChooseHeroFromList(rand, rarityTwo);
+            } else if (roll <= 0.8) {
+                return ChooseHeroFromList(rand, rarityThree);
+            } else if (roll <= 0.95) {
+                return ChooseHeroFromList(rand, rarityFour);
+            } else {
+                return ChooseHeroFromList(rand, rarityFive);
+            }
+        }
+
+        private static HeroEnum ChooseHeroFromList(Random rand, List<HeroEnum> choices) {
+            int choice = rand.Next(choices.Count);
+            return choices[choice];
+        }
     }
 }

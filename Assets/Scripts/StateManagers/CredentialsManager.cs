@@ -31,6 +31,8 @@ public class CredentialsManager : MonoBehaviour {
     private AmazonCognitoIdentityProviderClient cachedProvider;
     private string cachedAccountGuid;
 
+    #region Initialization.
+
     public void Awake() {
         DontDestroyOnLoad(gameObject);
         refreshTokenFile = Application.persistentDataPath + "/refresh_token.txt";
@@ -75,6 +77,10 @@ public class CredentialsManager : MonoBehaviour {
         }
         cachedProvider = new AmazonCognitoIdentityProviderClient(cachedCredentials, RegionEndpoint.USWest2);
     }
+
+    #endregion
+
+    #region State altering requests.
 
     public async Task DownloadState() {
         string accountGuid = "";
@@ -141,6 +147,32 @@ public class CredentialsManager : MonoBehaviour {
         StateManager.HandleClaimResourcesResponse(claimResourcesResponse);
     }
 
+    public async Task<List<AccountHero>> RequestSummons(int summonCount) {
+        var currentState = StateManager.GetCurrentState();
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
+        var summonRequest = new SummonRequest() {
+            Verified = authenticatedUser,
+            AccountGuid = currentState.Id,
+            SummonCount = summonCount
+        };
+        var request = new InvokeRequest() {
+            FunctionName = "SummonHeroFunction",
+            Payload = MangleRequest(JsonConvert.SerializeObject(summonRequest)),
+            InvocationType = InvocationType.RequestResponse
+        };
+        var result = await lambdaClient.InvokeAsync(request);
+        var responseReader = new StreamReader(result.Payload);
+        var responseBody = responseReader.ReadToEnd();
+        responseReader.Dispose();
+        var summonResponse = DeserializeObject<SummonResponse>(responseBody);
+        StateManager.HandleSummonResponse(summonResponse);
+        return summonResponse.SummonedHeroes;
+    }
+
+    #endregion
+
+    #region Account altering requests.
+
     public async Task<bool> CreateAccount(string username, string email, string password) {
         var provider = cachedProvider;
 
@@ -202,6 +234,10 @@ public class CredentialsManager : MonoBehaviour {
         writer.Close();
     }
 
+    #endregion
+
+    #region Utility methods.
+
     private string MangleRequest(string request) {
         var mangled = request.Replace("\"", "\\\"");
         return "\"" + mangled + "\"";
@@ -211,4 +247,6 @@ public class CredentialsManager : MonoBehaviour {
         var trimmedString = serverResponse.Substring(1, serverResponse.Length - 2);
         return JsonConvert.DeserializeObject<T>(Regex.Unescape(trimmedString));
     }
+
+    #endregion
 }

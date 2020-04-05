@@ -16,6 +16,7 @@ public class PortalSceneManager : MonoBehaviour {
     public GameObject singleSummonPopupPrefab;
     public GameObject tenSummonPopupPrefab;
     public TooltipPopup tooltipPopupPrefab;
+    public LoadingPopup loadingPopupPrefab;
 
     public ParticleSystem portalParticle;
     public AudioSource portalOpenEffect;
@@ -47,14 +48,24 @@ public class PortalSceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("HubScene");
     }
 
-    public void OnSummon() {
+    public async void OnSummon() {
         if (PopupExists()) return;
-        StateManager.RequestSummon(1, OnSummonReceived);
+        var loadingPopup = Instantiate(loadingPopupPrefab, sceneUiCanvas.transform);
+        loadingPopup.LaunchPopup("Summoning...", "Finding heroes who are willing to join your team...", false);
+        var credentialsManager = FindObjectOfType<CredentialsManager>();
+        List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(1);
+        loadingPopup.DismissPopup(false);
+        OnSummonReceived(summonedHeroes);
     }
 
-    public void OnSummonTen() {
+    public async void OnSummonTen() {
         if (PopupExists()) return;
-        StateManager.RequestSummon(10, OnSummonReceived);
+        var loadingPopup = Instantiate(loadingPopupPrefab, sceneUiCanvas.transform);
+        loadingPopup.LaunchPopup("Summoning...", "Finding heroes who are willing to join your team...", false);
+        var credentialsManager = FindObjectOfType<CredentialsManager>();
+        List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(10);
+        loadingPopup.DismissPopup(false);
+        OnSummonReceived(summonedHeroes);
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {
@@ -73,6 +84,6 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     private bool PopupExists() {
-        return FindObjectOfType<SummonPopupBehavior>() != null || FindObjectOfType<TenSummonPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null;
+        return FindObjectOfType<SummonPopupBehavior>() != null || FindObjectOfType<TenSummonPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<LoadingPopup>() != null;
     }
 }

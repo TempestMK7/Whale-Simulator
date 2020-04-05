@@ -19,6 +19,10 @@ public class StateManager {
         return currentState;
     }
 
+    public static bool Initialized() {
+        return currentState != null || File.Exists(fileName);
+    }
+
     public static void OverrideState(AccountState newState) {
         currentState = newState;
         currentState.RetrieveDataAfterLoad();
@@ -50,16 +54,23 @@ public class StateManager {
         if (uploadToServer) await UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
     }
 
-    public static bool Initialized() {
-        return currentState != null || File.Exists(fileName);
-    }
-
     public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
         currentState.LastClaimTimeStamp = response.LastClaimTimeStamp;
         currentState.CurrentGold = response.CurrentGold;
         currentState.CurrentSouls = response.CurrentSouls;
         currentState.CurrentExperience = response.CurrentExperience;
         currentState.CurrentLevel = response.CurrentLevel;
+        SaveState(false);
+    }
+
+    public static void HandleSummonResponse(SummonResponse response) {
+        foreach (AccountHero hero in response.SummonedHeroes) {
+            hero.LoadBaseHero();
+        }
+
+        currentState.CurrentSummons = response.CurrentSummons;
+        currentState.AccountHeroes.AddRange(response.SummonedHeroes);
+        currentState.RetrieveDataAfterLoad();
         SaveState(false);
     }
 
@@ -92,41 +103,6 @@ public class StateManager {
     public static void CheatSummons(int summons) {
         GetCurrentState().CurrentSummons += summons;
         SaveState();
-    }
-
-    public static void RequestSummon(int numSummons, Action<List<AccountHero>> handler) {
-        AccountState state = GetCurrentState();
-        if (state.CurrentSummons < numSummons) return;
-        state.CurrentSummons -= numSummons;
-        System.Random rand = new System.Random((int)EpochTime.CurrentTimeMillis());
-        List<AccountHero> summonedHeroes = new List<AccountHero>();
-        for (int x = 0; x < numSummons; x++) {
-            AccountHero newHero = new AccountHero(ChooseRandomHero(rand));
-            state.AccountHeroes.Add(newHero);
-            summonedHeroes.Add(newHero);
-        }
-        SaveState();
-        handler.Invoke(summonedHeroes);
-    }
-
-    private static HeroEnum ChooseRandomHero(System.Random rand) {
-        double roll = rand.NextDouble();
-        if (roll <= 0.3) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityOne);
-        } else if (roll <= 0.6) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityTwo);
-        } else if (roll <= 0.8) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityThree);
-        } else if (roll <= 0.95) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityFour);
-        } else {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityFive);
-        }
-    }
-
-    private static HeroEnum ChooseHeroFromList(System.Random rand, List<HeroEnum> choices) {
-        int choice = rand.Next(choices.Count);
-        return choices[choice];
     }
 
     public static void LevelUpHero(AccountHero hero, Action<bool> handler) {
