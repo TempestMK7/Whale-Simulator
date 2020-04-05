@@ -5,9 +5,21 @@ using Com.Tempest.Whale.ResourceContainers;
 
 public class InitializationSceneManager : MonoBehaviour {
 
-    public async void Start() {
-        Application.targetFrameRate = 60;
+    public GameObject loadingPopupPrefab;
+    public Canvas mainCanvas;
 
+    private bool initializing = false;
+
+    public void Awake() {
+        Application.targetFrameRate = 60;
+    }
+
+    public async void StartInitializing() {
+        if (initializing) return;
+        initializing = true;
+        Debug.Log("Initializing login.");
+        var loadingPopup = Instantiate(loadingPopupPrefab, mainCanvas.transform).GetComponent<LoadingPopup>();
+        loadingPopup.LaunchPopup("Step 1 of 4.", "Loading assets...", false);
         BaseHeroContainer.Initialize();
         BaseEquipmentContainer.Initialize();
         AttackInfoContainer.Initialize();
@@ -20,12 +32,12 @@ public class InitializationSceneManager : MonoBehaviour {
 
         SettingsManager.GetInstance();
 
+        loadingPopup.SetText("Step 2 of 4.", "Contacting identity server...");
         var credentialsManager = FindObjectOfType<CredentialsManager>();
-        Debug.Log("Initializing Credentials.");
         await credentialsManager.InitializeEverything();
-        Debug.Log("Downloading State.");
+        loadingPopup.SetText("Step 3 of 4.", "Downloading account information...");
         await credentialsManager.DownloadState();
-        Debug.Log("Loading Hub.");
+        loadingPopup.SetText("Step 4 of 4.", "Launching world hub...");
         SceneManager.LoadSceneAsync("HubScene");
     }
 }

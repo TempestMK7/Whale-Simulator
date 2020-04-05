@@ -404,21 +404,21 @@ namespace Com.Tempest.Whale.GameObjects {
                     return GetStatModStatusTooltip(statusType, statusDuration, value, ally);
 
                 case StatusEnum.CHILL:
-                    return string.Format(" Chills for {0} {1} reducing speed by {2}%.  If the target is already chilled, freeze the target for 1 turn instead preventing all attacks.",
+                    return string.Format(" Chills for {0} {1} reducing attack and speed by {2}%.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.DAZE:
-                    return string.Format(" Dazes for {0} {1} reducing critical and deflection chances by {2}%.  If the target is already dazed, stun the target for 1 turn instead preventing all attacks.",
+                    return string.Format(" Dazes for {0} {1} reducing magic, crit, and deflection by {2}%.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.FREEZE:
                     return string.Format(" Freezes for {0} {1} preventing all attacks.", statusDuration, turnPlural);
                 case StatusEnum.STUN:
                     return string.Format(" Stuns for {0} {1} preventing all attacks.", statusDuration, turnPlural);
                 case StatusEnum.BLIND:
-                    return string.Format(" Stuns for {0} {1} preventing ranged attacks.", statusDuration, turnPlural);
+                    return string.Format(" Blinds for {0} {1} preventing ranged attacks.", statusDuration, turnPlural);
                 case StatusEnum.ROOT:
                     return string.Format(" Entangles for {0} {1} preventing melee attacks.", statusDuration, turnPlural);
                 case StatusEnum.DOWSE:
-                    return string.Format(" Dowses for {0} {1}.  Dowsed targets are stunned when dazed and frozen when chilled.", statusDuration, turnPlural);
+                    return string.Format(" Dowses for {0} {1}.  Dowsed targets receive double penalties from Daze and Chill.", statusDuration, turnPlural);
 
                 case StatusEnum.REGENERATION:
                     return string.Format(" Bestows Regeneration for {0} {1}, healing for {2}% of magic each turn.",
@@ -430,7 +430,7 @@ namespace Com.Tempest.Whale.GameObjects {
                     return string.Format(" Bestows Lava Armor for {0} {1}.  Whenever a hero with lava armor is attacked, the attacker is burned for 2 turns, taking {2}% of magic each turn.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.ICE_ARMOR:
-                    return string.Format(" Bestows Ice Armor for {0} {1}.  Whenever a hero with ice armor is attacked, the attacker is chilled for 2 turns, reducing speed by {2}% (or frozen if already chilled or dowsed).",
+                    return string.Format(" Bestows Ice Armor for {0} {1}.  Whenever a hero with ice armor is attacked, the attacker is chilled for 2 turns, reducing speed by {2}%.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.EARTH_ARMOR:
                     return string.Format(" Bestows Earth Armor for {0} {1}, raising defense by {2}% and reflection by {3}%.", statusDuration, turnPlural, statusValue, (value * 100 / 2).ToString("0"));
@@ -630,7 +630,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 false, true, false,
                 TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
                 1.2, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.2, 0, null, 0, 0);
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
             attackDict[AttackEnum.FORKED_LIGHTNING] = new AttackInfo(
                 AttackEnum.FORKED_LIGHTNING, "Forked Lightning", "Icons/RoleDamage", "AttackSounds/LightningBolt",
                 AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,

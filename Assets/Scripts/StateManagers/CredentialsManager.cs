@@ -40,18 +40,15 @@ public class CredentialsManager : MonoBehaviour {
             StreamReader reader = new StreamReader(refreshTokenFile);
             var username = reader.ReadLine();
             var idToken = reader.ReadLine();
-            var accessToken = reader.ReadLine();
             var refreshToken = reader.ReadLine();
-            var issuedTime = new DateTime(long.Parse(reader.ReadLine()));
-            var expirationTime = new DateTime(long.Parse(reader.ReadLine()));
             reader.Close();
 
             var provider = new AmazonCognitoIdentityProviderClient(new Amazon.Runtime.AnonymousAWSCredentials(), RegionEndpoint.USWest2);
 
             CognitoUserPool userPool = new CognitoUserPool(userPoolId, appClientId, provider);
             CognitoUser user = new CognitoUser(username, appClientId, userPool, provider);
-            user.SessionTokens = new CognitoUserSession(idToken, accessToken, refreshToken, issuedTime, expirationTime);
-            var request = new InitiateRefreshTokenAuthRequest() { AuthFlowType = AuthFlowType.REFRESH_TOKEN_AUTH };
+            user.SessionTokens = new CognitoUserSession(idToken, string.Empty, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(1));
+            var request = new InitiateRefreshTokenAuthRequest() { AuthFlowType = AuthFlowType.REFRESH_TOKEN };
             var authResponse = await user.StartWithRefreshTokenAuthAsync(request).ConfigureAwait(false);
             cachedCredentials = user.GetCognitoAWSCredentials(identityPoolId, RegionEndpoint.USWest2);
 
@@ -152,14 +149,7 @@ public class CredentialsManager : MonoBehaviour {
             var authResponse = await user.StartWithSrpAuthAsync(authRequest).ConfigureAwait(false);
             cachedCredentials = user.GetCognitoAWSCredentials(identityPoolId, RegionEndpoint.USWest2);
 
-            StreamWriter writer = new StreamWriter(refreshTokenFile);
-            writer.WriteLine(username);
-            writer.WriteLine(user.SessionTokens.IdToken);
-            writer.WriteLine(user.SessionTokens.AccessToken);
-            writer.WriteLine(user.SessionTokens.RefreshToken);
-            writer.WriteLine(user.SessionTokens.IssuedTime.Ticks);
-            writer.WriteLine(user.SessionTokens.ExpirationTime.Ticks);
-            writer.Close();
+            SaveUserSession(user);
 
             cachedProvider = new AmazonCognitoIdentityProviderClient(cachedCredentials, RegionEndpoint.USWest2);
 
@@ -174,6 +164,14 @@ public class CredentialsManager : MonoBehaviour {
             return false;
         }
         return true;
+    }
+
+    public void SaveUserSession(CognitoUser user) {
+        StreamWriter writer = new StreamWriter(refreshTokenFile);
+        writer.WriteLine(user.Username);
+        writer.WriteLine(user.SessionTokens.IdToken);
+        writer.WriteLine(user.SessionTokens.RefreshToken);
+        writer.Close();
     }
 
     private string MangleRequest(string request) {
