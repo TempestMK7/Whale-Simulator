@@ -17,7 +17,6 @@ public class InitializationSceneManager : MonoBehaviour {
     public async void StartInitializing() {
         if (initializing) return;
         initializing = true;
-        Debug.Log("Initializing login.");
         var loadingPopup = Instantiate(loadingPopupPrefab, mainCanvas.transform).GetComponent<LoadingPopup>();
         loadingPopup.LaunchPopup("Step 1 of 4.", "Loading assets...", false);
         BaseHeroContainer.Initialize();

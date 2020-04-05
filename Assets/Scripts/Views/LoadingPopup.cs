@@ -30,8 +30,12 @@ public class LoadingPopup : MonoBehaviour {
         gameObject.transform.localScale = new Vector3(1f, 1f);
     }
 
-    public void DismissPopup() {
-        StartCoroutine(ShrinkToNothing());
+    public void DismissPopup(bool animate = true) {
+        if (animate) {
+            StartCoroutine(ShrinkToNothing());
+        } else {
+            Destroy(gameObject);
+        }
     }
 
     private IEnumerator ShrinkToNothing() {

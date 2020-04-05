@@ -26,6 +26,7 @@ public class CredentialsManager : MonoBehaviour {
     private string refreshTokenFile;
 
     private bool authenticatedUser = false;
+    private string cachedUsername;
     private CognitoAWSCredentials cachedCredentials;
     private AmazonCognitoIdentityProviderClient cachedProvider;
     private string cachedAccountGuid;
@@ -35,10 +36,18 @@ public class CredentialsManager : MonoBehaviour {
         refreshTokenFile = Application.persistentDataPath + "/refresh_token.txt";
     }
 
+    public bool UserIsAuthenticated() {
+        return authenticatedUser;
+    }
+
+    public string GetUsername() {
+        return cachedUsername;
+    }
+
     public async Task InitializeEverything() {
         if (File.Exists(refreshTokenFile)) {
             StreamReader reader = new StreamReader(refreshTokenFile);
-            var username = reader.ReadLine();
+            cachedUsername = reader.ReadLine();
             var idToken = reader.ReadLine();
             var refreshToken = reader.ReadLine();
             reader.Close();
@@ -46,7 +55,7 @@ public class CredentialsManager : MonoBehaviour {
             var provider = new AmazonCognitoIdentityProviderClient(new Amazon.Runtime.AnonymousAWSCredentials(), RegionEndpoint.USWest2);
 
             CognitoUserPool userPool = new CognitoUserPool(userPoolId, appClientId, provider);
-            CognitoUser user = new CognitoUser(username, appClientId, userPool, provider);
+            CognitoUser user = new CognitoUser(cachedUsername, appClientId, userPool, provider);
             user.SessionTokens = new CognitoUserSession(idToken, string.Empty, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(1));
             var request = new InitiateRefreshTokenAuthRequest() { AuthFlowType = AuthFlowType.REFRESH_TOKEN };
             var authResponse = await user.StartWithRefreshTokenAuthAsync(request).ConfigureAwait(false);
@@ -163,6 +172,7 @@ public class CredentialsManager : MonoBehaviour {
             Debug.LogError(e);
             return false;
         }
+        cachedUsername = username;
         return true;
     }
 
