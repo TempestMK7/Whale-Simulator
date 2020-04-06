@@ -11,6 +11,9 @@ using Com.Tempest.Whale.StateObjects;
 
 public class HeroSceneManager : MonoBehaviour {
 
+    public Canvas mainCanvas;
+    public LoadingPopup loadingPrefab;
+
     public GameObject masterContainer;
     public RecyclerView heroRecycler;
 
@@ -127,7 +130,11 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<EquipmentSelectPopup>() != null;
+        return fanfarePlaying || 
+            FindObjectOfType<FusionPopupBehavior>() != null || 
+            FindObjectOfType<TooltipPopup>() != null || 
+            FindObjectOfType<EquipmentSelectPopup>() != null || 
+            FindObjectOfType<LoadingPopup>() != null;
     }
 
     public void OnBackPressed() {
@@ -185,9 +192,11 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private void ResetListPosition() {
-        var selected = filteredList[currentPosition];
+        var selectedId = filteredList[currentPosition].Id;
         filteredList = FilterList();
-        currentPosition = filteredList.IndexOf(selected);
+        currentPosition = filteredList.FindIndex((AccountHero hero) => {
+            return hero.Id.Equals(selectedId);
+        });
     }
 
     public void BindDetailView() {
@@ -366,10 +375,10 @@ public class HeroSceneManager : MonoBehaviour {
         if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
         if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
         if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
-        completeFusionButton.gameObject.SetActive(StateManager.FusionIsLegal(selected, destroyedHeroes));
+        completeFusionButton.gameObject.SetActive(LevelContainer.FusionIsLegal(selected, destroyedHeroes));
     }
 
-    public void RequestFusion() {
+    public async void RequestFusion() {
         if (ButtonsBlocked()) return;
         var selected = filteredList[currentPosition];
         var destroyedHeroes = new List<AccountHero>();
@@ -378,8 +387,14 @@ public class HeroSceneManager : MonoBehaviour {
         if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
         if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
         if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
-        if (!StateManager.FusionIsLegal(selected, destroyedHeroes)) return;
-        StateManager.FuseHero(selected, destroyedHeroes, OnFusionComplete);
+        if (!LevelContainer.FusionIsLegal(selected, destroyedHeroes)) return;
+
+        var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
+        loadingPopup.LaunchPopup("Fusing Heroes...", "Attempting to awaken your hero...", false);
+        var credentialsManager = FindObjectOfType<CredentialsManager>();
+        bool successful = await credentialsManager.RequestFusion(selected, destroyedHeroes);
+        loadingPopup.DismissPopup(false);
+        OnFusionComplete(successful);
     }
 
     public void OnFusionComplete(bool successful) {

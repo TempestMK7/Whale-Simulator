@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Amazon;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentity.Model;
@@ -10,10 +12,11 @@ using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
 using Amazon.Lambda;
 using Amazon.Lambda.Model;
+
 using Newtonsoft.Json;
 using UnityEngine;
-using System.Text.RegularExpressions;
 
+using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
 
@@ -58,7 +61,7 @@ public class CredentialsManager : MonoBehaviour {
 
             CognitoUserPool userPool = new CognitoUserPool(userPoolId, appClientId, provider);
             CognitoUser user = new CognitoUser(cachedUsername, appClientId, userPool, provider);
-            user.SessionTokens = new CognitoUserSession(idToken, string.Empty, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(1));
+            user.SessionTokens = new CognitoUserSession(idToken, string.Empty, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(365));
             var request = new InitiateRefreshTokenAuthRequest() { AuthFlowType = AuthFlowType.REFRESH_TOKEN };
             var authResponse = await user.StartWithRefreshTokenAuthAsync(request).ConfigureAwait(false);
             cachedCredentials = user.GetCognitoAWSCredentials(identityPoolId, RegionEndpoint.USWest2);
@@ -167,6 +170,40 @@ public class CredentialsManager : MonoBehaviour {
         var summonResponse = DeserializeObject<SummonResponse>(responseBody);
         StateManager.HandleSummonResponse(summonResponse);
         return summonResponse.SummonedHeroes;
+    }
+
+    public async Task<bool> RequestFusion(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+        if (!LevelContainer.FusionIsLegal(fusedHero, destroyedHeroes)) {
+            return false;
+        }
+
+        var destroyedHeroIds = new List<Guid>();
+        foreach (AccountHero hero in destroyedHeroes) {
+            destroyedHeroIds.Add(hero.Id);
+        }
+
+        var currentState = StateManager.GetCurrentState();
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
+        var fuseRequest = new FuseHeroRequest() {
+            Verified = authenticatedUser,
+            AccountGuid = currentState.Id,
+            FusedHeroId = fusedHero.Id,
+            DestroyedHeroIds = destroyedHeroIds
+        };
+        var request = new InvokeRequest() {
+            FunctionName = "FuseHeroFunction",
+            Payload = MangleRequest(JsonConvert.SerializeObject(fuseRequest)),
+            InvocationType = InvocationType.RequestResponse
+        };
+        var result = await lambdaClient.InvokeAsync(request);
+        var responseReader = new StreamReader(result.Payload);
+        var responseBody = responseReader.ReadToEnd();
+        responseReader.Dispose();
+
+        var fuseResponse = DeserializeObject<FuseHeroResponse>(responseBody);
+        if (!fuseResponse.FusionSuccessful) return false;
+        StateManager.HandleFuseResponse(fuseResponse, fusedHero, destroyedHeroes);
+        return true;
     }
 
     #endregion

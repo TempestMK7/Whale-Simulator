@@ -14,6 +14,8 @@ public class StateManager {
     private static string fileName = Application.persistentDataPath + "/WhaleState.txt";
     private static AccountState currentState;
 
+    #region Internal state handling.
+
     public static AccountState GetCurrentState() {
         LoadCurrentState();
         return currentState;
@@ -54,6 +56,10 @@ public class StateManager {
         if (uploadToServer) await UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
     }
 
+    #endregion
+
+    #region Server response handling.
+
     public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
         currentState.LastClaimTimeStamp = response.LastClaimTimeStamp;
         currentState.CurrentGold = response.CurrentGold;
@@ -67,12 +73,27 @@ public class StateManager {
         foreach (AccountHero hero in response.SummonedHeroes) {
             hero.LoadBaseHero();
         }
-
         currentState.CurrentSummons = response.CurrentSummons;
         currentState.AccountHeroes.AddRange(response.SummonedHeroes);
         currentState.RetrieveDataAfterLoad();
         SaveState(false);
     }
+
+    public static void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+        var accountHeroes = currentState.AccountHeroes;
+        accountHeroes.Remove(fusedHero);
+        foreach (AccountHero destroyed in destroyedHeroes) {
+            accountHeroes.Remove(destroyed);
+        }
+        var newFusedHero = response.FusedHero;
+        newFusedHero.LoadBaseHero();
+        accountHeroes.Add(newFusedHero);
+        SaveState(false);
+    }
+
+    #endregion
+
+    #region Direct state altering, to be removed.
 
     public static void NotifyHubEntered() {
         currentState.HasEnteredHub = true;
@@ -122,42 +143,6 @@ public class StateManager {
         hero.CurrentLevel += 1;
         SaveState();
         handler.Invoke(true);
-    }
-
-    public static void FuseHero(AccountHero fusedHero, List<AccountHero> destroyedHeroes, Action<bool> handler) {
-        if (!FusionIsLegal(fusedHero, destroyedHeroes)) {
-            handler.Invoke(false);
-            return;
-        }
-
-        var accountHeroes = GetCurrentState().AccountHeroes;
-        fusedHero.AwakeningLevel++;
-        foreach (AccountHero destroyed in destroyedHeroes) {
-            accountHeroes.Remove(destroyed);
-        }
-        accountHeroes.Sort();
-        SaveState();
-        handler.Invoke(true);
-    }
-
-    public static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
-        FusionRequirement? requirement = LevelContainer.GetFusionRequirementForLevel(fusedHero.AwakeningLevel);
-        if (requirement == null) return false;
-
-        int selectedSameHeroes = 0;
-        int selectedFactionHeroes = 0;
-        foreach (AccountHero destroyed in destroyedHeroes) {
-            if (destroyed == fusedHero) return false;
-            if (destroyed.GetBaseHero().Hero == fusedHero.GetBaseHero().Hero && destroyed.AwakeningLevel == requirement?.SameHeroLevel && selectedSameHeroes != requirement?.SameHeroRequirement) {
-                selectedSameHeroes++;
-            } else if (destroyed.AwakeningLevel == requirement?.FactionHeroLevel) {
-                if (requirement?.RequireSameFaction == false || destroyed.GetBaseHero().Faction == fusedHero.GetBaseHero().Faction) selectedFactionHeroes++;
-                else return false;
-            } else {
-                return false;
-            }
-        }
-        return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
     }
 
     public static void FuseEquipment(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment, Action<bool> handler) {
@@ -277,4 +262,6 @@ public class StateManager {
         }
         SaveState();
     }
+
+    #endregion
 }

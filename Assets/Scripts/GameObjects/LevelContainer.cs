@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Com.Tempest.Whale.StateObjects;
 
 namespace Com.Tempest.Whale.GameObjects {
 
@@ -39,6 +41,26 @@ namespace Com.Tempest.Whale.GameObjects {
         public static FusionRequirement? GetFusionRequirementForLevel(int awakeningLevel) {
             if (awakeningLevel >= 10) return null;
             return fusionRequirements[awakeningLevel - 1];
+        }
+
+        public static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+            FusionRequirement? requirement = LevelContainer.GetFusionRequirementForLevel(fusedHero.AwakeningLevel);
+            if (requirement == null) return false;
+
+            int selectedSameHeroes = 0;
+            int selectedFactionHeroes = 0;
+            foreach (AccountHero destroyed in destroyedHeroes) {
+                if (destroyed == fusedHero) return false;
+                if (destroyed.GetBaseHero().Hero == fusedHero.GetBaseHero().Hero && destroyed.AwakeningLevel == requirement?.SameHeroLevel && selectedSameHeroes != requirement?.SameHeroRequirement) {
+                    selectedSameHeroes++;
+                } else if (destroyed.AwakeningLevel == requirement?.FactionHeroLevel) {
+                    if (requirement?.RequireSameFaction == false || destroyed.GetBaseHero().Faction == fusedHero.GetBaseHero().Faction) selectedFactionHeroes++;
+                    else return false;
+                } else {
+                    return false;
+                }
+            }
+            return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
         }
     }
 

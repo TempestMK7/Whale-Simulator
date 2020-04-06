@@ -5635,6 +5635,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a29c0a633cd16c4abd56032e25827b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCanvas: {fileID: 260961423}
+  loadingPrefab: {fileID: 6457475262173700408, guid: 1222049b79fa7ce41a91e6d3dc0a10bd, type: 3}
   masterContainer: {fileID: 471750662}
   heroRecycler: {fileID: 647540093}
   detailContainer: {fileID: 166681410}
