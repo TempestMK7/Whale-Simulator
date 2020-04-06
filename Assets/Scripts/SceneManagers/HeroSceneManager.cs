@@ -73,12 +73,15 @@ public class HeroSceneManager : MonoBehaviour {
     public GameObject fusionPopupPrefab;
     public TooltipPopup tooltipPrefab;
 
+    private CredentialsManager credentialsManager;
+
     private HeroAdapter heroAdapter;
     private FactionEnum? currentFilter;
     private List<AccountHero> unfilteredList;
     private List<AccountHero> filteredList;
 
     private int currentPosition;
+    private bool loadingFromServer = false;
     private bool fanfarePlaying = false;
 
     private FusionRequirement? currentFusionRequirement;
@@ -89,6 +92,8 @@ public class HeroSceneManager : MonoBehaviour {
         masterContainer.SetActive(true);
         heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
+
+        credentialsManager = FindObjectOfType<CredentialsManager>();
         heroAdapter = new HeroAdapter(heroListItemPrefab, this);
         heroRecycler.SetAdapter(heroAdapter);
         BuildList();
@@ -130,7 +135,8 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying || 
+        return fanfarePlaying ||
+            loadingFromServer ||
             FindObjectOfType<FusionPopupBehavior>() != null || 
             FindObjectOfType<TooltipPopup>() != null || 
             FindObjectOfType<EquipmentSelectPopup>() != null || 
@@ -179,9 +185,12 @@ public class HeroSceneManager : MonoBehaviour {
         ToggleStatPanel(!statPanel.activeSelf);
     }
 
-    public void OnLevelUpPressed() {
+    public async void OnLevelUpPressed() {
         if (ButtonsBlocked()) return;
-        StateManager.LevelUpHero(filteredList[currentPosition], OnLevelUpComplete);
+        loadingFromServer = true;
+        bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
+        loadingFromServer = false;
+        OnLevelUpComplete(successful);
     }
 
     public void OnLevelUpComplete(bool successful) {
@@ -389,11 +398,9 @@ public class HeroSceneManager : MonoBehaviour {
         if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
         if (!LevelContainer.FusionIsLegal(selected, destroyedHeroes)) return;
 
-        var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
-        loadingPopup.LaunchPopup("Fusing Heroes...", "Attempting to awaken your hero...", false);
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
+        loadingFromServer = true;
         bool successful = await credentialsManager.RequestFusion(selected, destroyedHeroes);
-        loadingPopup.DismissPopup(false);
+        loadingFromServer = false;
         OnFusionComplete(successful);
     }
 

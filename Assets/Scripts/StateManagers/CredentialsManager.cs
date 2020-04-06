@@ -172,6 +172,37 @@ public class CredentialsManager : MonoBehaviour {
         return summonResponse.SummonedHeroes;
     }
 
+    public async Task<bool> RequestLevelup(AccountHero selectedHero) {
+        if (selectedHero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(selectedHero.AwakeningLevel)) {
+            return false;
+        }
+
+        long cost = LevelContainer.HeroExperienceRequirement(selectedHero.CurrentLevel);
+        var currentState = StateManager.GetCurrentState();
+        if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost) {
+            return false;
+        }
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
+        var levelupRequest = new LevelupHeroRequest() {
+            Verified = authenticatedUser,
+            AccountGuid = currentState.Id,
+            AccountHeroId = selectedHero.Id
+        };
+        var request = new InvokeRequest() {
+            FunctionName = "LevelupHeroFunction",
+            Payload = MangleRequest(JsonConvert.SerializeObject(levelupRequest)),
+            InvocationType = InvocationType.RequestResponse
+        };
+        var result = await lambdaClient.InvokeAsync(request);
+        var responseReader = new StreamReader(result.Payload);
+        var responseBody = responseReader.ReadToEnd();
+        responseReader.Dispose();
+
+        var levelupResponse = DeserializeObject<LevelupHeroResponse>(responseBody);
+        StateManager.HandleLevelupResponse(levelupResponse, selectedHero);
+        return levelupResponse.LevelupSuccessful;
+    }
+
     public async Task<bool> RequestFusion(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
         if (!LevelContainer.FusionIsLegal(fusedHero, destroyedHeroes)) {
             return false;

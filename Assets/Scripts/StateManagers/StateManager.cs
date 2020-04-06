@@ -79,6 +79,14 @@ public class StateManager {
         SaveState(false);
     }
 
+    public static void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
+        if (!response.LevelupSuccessful) return;
+        leveledHero.CurrentLevel = response.HeroLevel;
+        currentState.CurrentGold = response.CurrentGold;
+        currentState.CurrentSouls = response.CurrentSouls;
+        SaveState(false);
+    }
+
     public static void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
         var accountHeroes = currentState.AccountHeroes;
         accountHeroes.Remove(fusedHero);
@@ -124,25 +132,6 @@ public class StateManager {
     public static void CheatSummons(int summons) {
         GetCurrentState().CurrentSummons += summons;
         SaveState();
-    }
-
-    public static void LevelUpHero(AccountHero hero, Action<bool> handler) {
-        if (hero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(hero.AwakeningLevel)) {
-            handler.Invoke(false);
-            return;
-        }
-
-        long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
-        if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost || hero.CurrentLevel >= 200) {
-            handler.Invoke(false);
-            return;
-        }
-
-        currentState.CurrentGold -= cost;
-        currentState.CurrentSouls -= cost;
-        hero.CurrentLevel += 1;
-        SaveState();
-        handler.Invoke(true);
     }
 
     public static void FuseEquipment(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment, Action<bool> handler) {
