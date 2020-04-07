@@ -85,6 +85,28 @@ public class CredentialsManager : MonoBehaviour {
 
     #region State altering requests.
 
+    private async Task<T> MakeLambdaCall<T, U>(U request, string functionName) {
+        var currentState = StateManager.GetCurrentState();
+        var whaleRequest = new WhaleRequest<U>(authenticatedUser, currentState.Id, request);
+        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
+        var lambdaRequest = new InvokeRequest() {
+            FunctionName = functionName,
+            Payload = MangleRequest(JsonConvert.SerializeObject(whaleRequest)),
+            InvocationType = InvocationType.RequestResponse
+        };
+        var result = await lambdaClient.InvokeAsync(lambdaRequest);
+        var responseReader = new StreamReader(result.Payload);
+        try {
+            var whaleResponse = DeserializeObject<WhaleResponse<T>>(responseReader.ReadToEnd());
+            responseReader.Dispose();
+            if (!whaleResponse.Successful) Debug.Log("Call failed with error of: " + whaleResponse.Error);
+            return whaleResponse.Response;
+        } catch {
+            responseReader.Dispose();
+            return default;
+        }
+    }
+
     public async Task DownloadState() {
         string accountGuid = "";
         if (authenticatedUser) accountGuid = cachedAccountGuid;
@@ -112,64 +134,27 @@ public class CredentialsManager : MonoBehaviour {
     }
 
     public async Task UploadStateToServer() {
-        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
         var state = StateManager.GetCurrentState();
         var uploadRequest = new UploadStateRequest() {
-            Verified = authenticatedUser,
             UploadedState = state
         };
-        var request = new InvokeRequest() {
-            FunctionName = "UploadStateFunction",
-            Payload = MangleRequest(JsonConvert.SerializeObject(uploadRequest)),
-            InvocationType = InvocationType.RequestResponse
-        };
-        var result = await lambdaClient.InvokeAsync(request);
-        var responseReader = new StreamReader(result.Payload);
-        var responseBody = responseReader.ReadToEnd();
-        responseReader.Dispose();
-        Debug.Log("Upload State Response: " + responseBody);
+        var response = await MakeLambdaCall<UploadStateResponse, UploadStateRequest>(uploadRequest, "UploadStateFunction");
+        Debug.Log("Upload State Response: " + response.LinesAffected + " lines affected.");
     }
 
     public async Task ClaimResources() {
-        var currentState = StateManager.GetCurrentState();
-        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
-        var claimResourcesRequest = new ClaimResourcesRequest() {
-            Verified = authenticatedUser,
-            AccountGuid = currentState.Id
-        };
-        var request = new InvokeRequest() {
-            FunctionName = "ClaimResourcesFunction",
-            Payload = MangleRequest(JsonConvert.SerializeObject(claimResourcesRequest)),
-            InvocationType = InvocationType.RequestResponse
-        };
-        var result = await lambdaClient.InvokeAsync(request);
-        var responseReader = new StreamReader(result.Payload);
-        var responseBody = responseReader.ReadToEnd();
-        responseReader.Dispose();
-        var claimResourcesResponse = DeserializeObject<ClaimResourcesResponse>(responseBody);
-        StateManager.HandleClaimResourcesResponse(claimResourcesResponse);
+        var claimResourcesRequest = new ClaimResourcesRequest();
+        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse, ClaimResourcesRequest>(claimResourcesRequest, "ClaimResourcesFunction");
+        StateManager.HandleClaimResourcesResponse(response);
     }
 
     public async Task<List<AccountHero>> RequestSummons(int summonCount) {
-        var currentState = StateManager.GetCurrentState();
-        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
         var summonRequest = new SummonRequest() {
-            Verified = authenticatedUser,
-            AccountGuid = currentState.Id,
             SummonCount = summonCount
         };
-        var request = new InvokeRequest() {
-            FunctionName = "SummonHeroFunction",
-            Payload = MangleRequest(JsonConvert.SerializeObject(summonRequest)),
-            InvocationType = InvocationType.RequestResponse
-        };
-        var result = await lambdaClient.InvokeAsync(request);
-        var responseReader = new StreamReader(result.Payload);
-        var responseBody = responseReader.ReadToEnd();
-        responseReader.Dispose();
-        var summonResponse = DeserializeObject<SummonResponse>(responseBody);
-        StateManager.HandleSummonResponse(summonResponse);
-        return summonResponse.SummonedHeroes;
+        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, "SummonHeroFunction");
+        StateManager.HandleSummonResponse(response);
+        return response.SummonedHeroes;
     }
 
     public async Task<bool> RequestLevelup(AccountHero selectedHero) {
@@ -182,25 +167,13 @@ public class CredentialsManager : MonoBehaviour {
         if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost) {
             return false;
         }
-        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
-        var levelupRequest = new LevelupHeroRequest() {
-            Verified = authenticatedUser,
-            AccountGuid = currentState.Id,
+
+        var request = new LevelupHeroRequest() {
             AccountHeroId = selectedHero.Id
         };
-        var request = new InvokeRequest() {
-            FunctionName = "LevelupHeroFunction",
-            Payload = MangleRequest(JsonConvert.SerializeObject(levelupRequest)),
-            InvocationType = InvocationType.RequestResponse
-        };
-        var result = await lambdaClient.InvokeAsync(request);
-        var responseReader = new StreamReader(result.Payload);
-        var responseBody = responseReader.ReadToEnd();
-        responseReader.Dispose();
-
-        var levelupResponse = DeserializeObject<LevelupHeroResponse>(responseBody);
-        StateManager.HandleLevelupResponse(levelupResponse, selectedHero);
-        return levelupResponse.LevelupSuccessful;
+        var response = await MakeLambdaCall<LevelupHeroResponse, LevelupHeroRequest>(request, "LevelupHeroFunction");
+        StateManager.HandleLevelupResponse(response, selectedHero);
+        return response.LevelupSuccessful;
     }
 
     public async Task<bool> RequestFusion(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
@@ -213,27 +186,13 @@ public class CredentialsManager : MonoBehaviour {
             destroyedHeroIds.Add(hero.Id);
         }
 
-        var currentState = StateManager.GetCurrentState();
-        var lambdaClient = new AmazonLambdaClient(cachedCredentials, RegionEndpoint.USWest2);
-        var fuseRequest = new FuseHeroRequest() {
-            Verified = authenticatedUser,
-            AccountGuid = currentState.Id,
+        var request = new FuseHeroRequest() {
             FusedHeroId = fusedHero.Id,
             DestroyedHeroIds = destroyedHeroIds
         };
-        var request = new InvokeRequest() {
-            FunctionName = "FuseHeroFunction",
-            Payload = MangleRequest(JsonConvert.SerializeObject(fuseRequest)),
-            InvocationType = InvocationType.RequestResponse
-        };
-        var result = await lambdaClient.InvokeAsync(request);
-        var responseReader = new StreamReader(result.Payload);
-        var responseBody = responseReader.ReadToEnd();
-        responseReader.Dispose();
-
-        var fuseResponse = DeserializeObject<FuseHeroResponse>(responseBody);
-        if (!fuseResponse.FusionSuccessful) return false;
-        StateManager.HandleFuseResponse(fuseResponse, fusedHero, destroyedHeroes);
+        var response = await MakeLambdaCall<FuseHeroResponse, FuseHeroRequest>(request, "FuseHeroFunction");
+        if (!response.FusionSuccessful) return false;
+        StateManager.HandleFuseResponse(response, fusedHero, destroyedHeroes);
         return true;
     }
 

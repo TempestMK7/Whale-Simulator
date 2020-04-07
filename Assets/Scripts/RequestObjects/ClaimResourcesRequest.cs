@@ -9,8 +9,6 @@ namespace Com.Tempest.Whale.RequestObjects {
     [Serializable]
     public class ClaimResourcesRequest {
 
-        public bool Verified { get; set; }
-        public Guid AccountGuid { get; set; }
     }
 }
 

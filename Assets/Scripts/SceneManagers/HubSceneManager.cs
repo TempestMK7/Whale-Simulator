@@ -12,7 +12,6 @@ public class HubSceneManager : MonoBehaviour {
     public Canvas mainCanvas;
 
     public GameObject settingsPopupPrefab;
-    public GameObject cheaterPopupPrefab;
     public TooltipPopup tooltipPopupPrefab;
 
     public float usableWidth = 1.0f;
@@ -49,14 +48,8 @@ public class HubSceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("EquipmentScene");
     }
 
-    public void OnCheatPressed() {
-        if (PopupOpened()) return;
-        var cheaterPopup = Instantiate(cheaterPopupPrefab, mainCanvas.transform).GetComponent<CheaterPopupBehavior>();
-        cheaterPopup.LaunchPopup();
-    }
-
     private bool PopupOpened() {
-        return FindObjectOfType<SettingsPopupManager>() != null || FindObjectOfType<CheaterPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null;
+        return FindObjectOfType<SettingsPopupManager>() != null || FindObjectOfType<TooltipPopup>() != null;
     }
 
     private void HandleClickEvents() {

@@ -123,17 +123,6 @@ public class StateManager {
         SaveState();
     }
 
-    public static void CheatIdleCurrency(long millis) {
-        var state = GetCurrentState();
-        state.LastClaimTimeStamp -= millis;
-        SaveState();
-    }
-
-    public static void CheatSummons(int summons) {
-        GetCurrentState().CurrentSummons += summons;
-        SaveState();
-    }
-
     public static void FuseEquipment(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment, Action<bool> handler) {
         if (!FusionIsLegal(fusedEquipment, destroyedEquipment)) {
             handler.Invoke(false);

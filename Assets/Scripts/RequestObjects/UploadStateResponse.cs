@@ -3,8 +3,8 @@
 namespace Com.Tempest.Whale.RequestObjects {
 
     [Serializable]
-    public class SummonRequest {
+    public class UploadStateResponse {
 
-        public int SummonCount { get; set; }
+        public int LinesAffected { get; set; }
     }
 }
