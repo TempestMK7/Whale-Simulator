@@ -62,6 +62,20 @@ namespace Com.Tempest.Whale.GameObjects {
             }
             return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
         }
+
+        public static bool FusionIsLegal(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
+            int selectedEquipment = 0;
+            foreach (AccountEquipment destroyed in destroyedEquipment) {
+                if (destroyed == fusedEquipment) return false;
+                if (destroyed == null) return false;
+                if (destroyed.GetBaseEquipment().Type == fusedEquipment.GetBaseEquipment().Type && destroyed.Level == fusedEquipment.Level) {
+                    selectedEquipment++;
+                } else {
+                    return false;
+                }
+            }
+            return selectedEquipment == 2;
+        }
     }
 
     public struct FusionRequirement {

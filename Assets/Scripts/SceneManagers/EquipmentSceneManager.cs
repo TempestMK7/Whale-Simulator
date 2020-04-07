@@ -43,6 +43,9 @@ public class EquipmentSceneManager : MonoBehaviour {
     public Text reflectionLabel;
     public Text deflectLabel;
 
+    private CredentialsManager credentialsManager;
+    private bool loadingFromServer = false;
+
     // Master panel things.
     private EquipmentFilter? currentFilter;
     private List<AccountEquipment> filteredList;
@@ -53,6 +56,8 @@ public class EquipmentSceneManager : MonoBehaviour {
     private bool fanfarePlaying = false;
 
     public void Awake() {
+        credentialsManager = FindObjectOfType<CredentialsManager>();
+
         masterPanel.SetActive(true);
         detailPanel.SetActive(false);
 
@@ -174,13 +179,15 @@ public class EquipmentSceneManager : MonoBehaviour {
     }
 
     private void ResetListPosition() {
-        var selected = filteredList[currentSelection];
+        var selected = filteredList[currentSelection].Id;
         FilterList();
-        currentSelection = filteredList.IndexOf(selected);
+        currentSelection = filteredList.FindIndex((AccountEquipment equipment) => {
+            return equipment.Id.Equals(selected);
+        });
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying;
+        return fanfarePlaying || loadingFromServer;
     }
 
     public void OnFuseButtonPressed() {
@@ -261,15 +268,19 @@ public class EquipmentSceneManager : MonoBehaviour {
     public void HandleCompleteFusionButton() {
         var selected = filteredList[currentSelection];
         var destroyedEquipment = GetSelectedFusionEquipment();
-        completeFusionButton.gameObject.SetActive(StateManager.FusionIsLegal(selected, destroyedEquipment));
+        completeFusionButton.gameObject.SetActive(LevelContainer.FusionIsLegal(selected, destroyedEquipment));
     }
 
-    public void RequestFusion() {
+    public async void RequestFusion() {
         if (ButtonsBlocked()) return;
         var selected = filteredList[currentSelection];
         var destroyedEquipment = GetSelectedFusionEquipment();
-        if (!StateManager.FusionIsLegal(selected, destroyedEquipment)) return;
-        StateManager.FuseEquipment(selected, destroyedEquipment, OnFusionComplete);
+        if (!LevelContainer.FusionIsLegal(selected, destroyedEquipment)) return;
+
+        loadingFromServer = true;
+        var successful = await credentialsManager.RequestFusion(selected, destroyedEquipment);
+        loadingFromServer = false;
+        OnFusionComplete(successful);
     }
 
     public void OnFusionComplete(bool successful) {

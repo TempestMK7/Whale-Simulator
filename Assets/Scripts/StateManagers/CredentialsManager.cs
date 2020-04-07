@@ -101,7 +101,8 @@ public class CredentialsManager : MonoBehaviour {
             responseReader.Dispose();
             if (!whaleResponse.Successful) Debug.Log("Call failed with error of: " + whaleResponse.Error);
             return whaleResponse.Response;
-        } catch {
+        } catch (Exception e) {
+            Debug.LogError(e);
             responseReader.Dispose();
             return default;
         }
@@ -193,6 +194,25 @@ public class CredentialsManager : MonoBehaviour {
         var response = await MakeLambdaCall<FuseHeroResponse, FuseHeroRequest>(request, "FuseHeroFunction");
         if (!response.FusionSuccessful) return false;
         StateManager.HandleFuseResponse(response, fusedHero, destroyedHeroes);
+        return true;
+    }
+
+    public async Task<bool> RequestFusion(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
+        if (!LevelContainer.FusionIsLegal(fusedEquipment, destroyedEquipment)) {
+            return false;
+        }
+
+        var destroyedIds = new List<Guid>();
+        foreach (AccountEquipment destroyed in destroyedEquipment) {
+            destroyedIds.Add(destroyed.Id);
+        }
+        var request = new FuseEquipmentRequest() {
+            FusedEquipmentId = fusedEquipment.Id,
+            DestroyedEquipmentIds = destroyedIds
+        };
+        var response = await MakeLambdaCall<FuseEquipmentResponse, FuseEquipmentRequest>(request, "FuseEquipmentFunction");
+        if (!response.FusionSuccessful) return false;
+        StateManager.HandleFuseResponse(response, fusedEquipment, destroyedEquipment);
         return true;
     }
 

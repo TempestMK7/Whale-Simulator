@@ -99,6 +99,18 @@ public class StateManager {
         SaveState(false);
     }
 
+    public static void HandleFuseResponse(FuseEquipmentResponse response, AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
+        var accountEquipment = currentState.AccountEquipment;
+        accountEquipment.Remove(fusedEquipment);
+        foreach (AccountEquipment destroyed in destroyedEquipment) {
+            accountEquipment.Remove(destroyed);
+        }
+        var newFusedEquipment = response.FusedEquipment;
+        newFusedEquipment.LoadBaseEquipment();
+        accountEquipment.Add(newFusedEquipment);
+        SaveState(false);
+    }
+
     #endregion
 
     #region Direct state altering, to be removed.
@@ -121,36 +133,6 @@ public class StateManager {
     public static void NotifyCampaignEntered() {
         currentState.HasEnteredCampaign = true;
         SaveState();
-    }
-
-    public static void FuseEquipment(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment, Action<bool> handler) {
-        if (!FusionIsLegal(fusedEquipment, destroyedEquipment)) {
-            handler.Invoke(false);
-            return;
-        }
-
-        var accountEquipment = currentState.AccountEquipment;
-        fusedEquipment.Level++;
-        foreach (AccountEquipment destroyed in destroyedEquipment) {
-            accountEquipment.Remove(destroyed);
-        }
-        accountEquipment.Sort();
-        SaveState();
-        handler.Invoke(true);
-    }
-
-    public static bool FusionIsLegal(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
-        int selectedEquipment = 0;
-        foreach (AccountEquipment destroyed in destroyedEquipment) {
-            if (destroyed == fusedEquipment) return false;
-            if (destroyed == null) return false;
-            if (destroyed.GetBaseEquipment().Type == fusedEquipment.GetBaseEquipment().Type && destroyed.Level == fusedEquipment.Level) {
-                selectedEquipment++;
-            } else {
-                return false;
-            }
-        }
-        return selectedEquipment == 2;
     }
 
     public static async Task<MissionReport> AttemptCurrentMissionWithTeam(AccountHero[] selectedTeam) {
