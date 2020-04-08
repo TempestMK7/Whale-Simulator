@@ -229,6 +229,14 @@ public class CredentialsManager : MonoBehaviour {
         StateManager.HandleEquipResponse(response, equipment, hero, slot);
     }
 
+    public async Task UnequipHero(AccountHero hero) {
+        var request = new UnequipHeroRequest() {
+            HeroId = hero.Id
+        };
+        await MakeLambdaCall<UnequipHeroResponse, UnequipHeroRequest>(request, "UnequipHeroFunction");
+        StateManager.HandleUnequipResponse(hero);
+    }
+
     #endregion
 
     #region Account altering requests.

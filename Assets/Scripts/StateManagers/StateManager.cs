@@ -91,6 +91,7 @@ public class StateManager {
         var accountHeroes = currentState.AccountHeroes;
         accountHeroes.Remove(fusedHero);
         foreach (AccountHero destroyed in destroyedHeroes) {
+            HandleUnequipResponse(destroyed);
             accountHeroes.Remove(destroyed);
         }
         var newFusedHero = response.FusedHero;
@@ -124,6 +125,17 @@ public class StateManager {
         foreach (AccountEquipment unequipped in unequippedList) {
             unequipped.EquippedHeroId = null;
             unequipped.EquippedSlot = null;
+        }
+        SaveState(false);
+    }
+
+    public static void HandleUnequipResponse(AccountHero hero) {
+        var equipped = currentState.AccountEquipment.FindAll((AccountEquipment e) => {
+            return hero.Id.Equals(e.EquippedHeroId);
+        });
+        foreach (AccountEquipment e in equipped) {
+            e.EquippedHeroId = null;
+            e.EquippedSlot = null;
         }
         SaveState(false);
     }
@@ -229,15 +241,6 @@ public class StateManager {
             team[x] = matchingHero;
         }
         return team;
-    }
-
-    public static void UnequipHero(AccountHero hero) {
-        var equipped = currentState.GetEquipmentForHero(hero);
-        foreach (AccountEquipment equipment in equipped) {
-            equipment.EquippedHeroId = null;
-            equipment.EquippedSlot = null;
-        }
-        SaveState();
     }
 
     #endregion

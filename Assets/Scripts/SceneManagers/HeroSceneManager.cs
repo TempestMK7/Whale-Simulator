@@ -287,8 +287,10 @@ public class HeroSceneManager : MonoBehaviour {
         BindDetailView();
     }
 
-    public void UnequipHero() {
-        StateManager.UnequipHero(filteredList[currentPosition]);
+    public async void UnequipHero() {
+        loadingFromServer = true;
+        await credentialsManager.UnequipHero(filteredList[currentPosition]);
+        loadingFromServer = false;
         BindDetailView();
     }
 
