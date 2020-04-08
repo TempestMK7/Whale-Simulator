@@ -280,8 +280,10 @@ public class HeroSceneManager : MonoBehaviour {
         popup.SetHeroAndSlot(filteredList[currentPosition], selectedSlot);
     }
 
-    public void NotifyEquipmentSelected() {
-        StateManager.SaveState();
+    public async void NotifyEquipmentSelected(AccountEquipment selected, AccountHero equippedHero, EquipmentSlot? slot) {
+        loadingFromServer = true;
+        await credentialsManager.EquipToHero(selected, equippedHero, slot);
+        loadingFromServer = false;
         BindDetailView();
     }
 

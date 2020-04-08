@@ -216,6 +216,19 @@ public class CredentialsManager : MonoBehaviour {
         return true;
     }
 
+    public async Task EquipToHero(AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
+        Guid? heroId = null;
+        if (hero != null) heroId = hero.Id;
+
+        var request = new EquipRequest() {
+            EquipmentId = equipment.Id,
+            HeroId = heroId,
+            Slot = slot
+        };
+        var response = await MakeLambdaCall<EquipResponse, EquipRequest>(request, "EquipHeroFunction");
+        StateManager.HandleEquipResponse(response, equipment, hero, slot);
+    }
+
     #endregion
 
     #region Account altering requests.

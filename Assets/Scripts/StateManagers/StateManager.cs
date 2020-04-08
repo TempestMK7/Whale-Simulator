@@ -111,6 +111,23 @@ public class StateManager {
         SaveState(false);
     }
 
+    public static void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
+        Guid? heroId = null;
+        if (hero != null) heroId = hero.Id;
+        equipment.EquippedHeroId = heroId;
+        equipment.EquippedSlot = slot;
+
+        if (response.UnequippedIds.Count == 0) return;
+        var unequippedList = currentState.AccountEquipment.FindAll((AccountEquipment e) => {
+            return response.UnequippedIds.Contains(e.Id);
+        });
+        foreach (AccountEquipment unequipped in unequippedList) {
+            unequipped.EquippedHeroId = null;
+            unequipped.EquippedSlot = null;
+        }
+        SaveState(false);
+    }
+
     #endregion
 
     #region Direct state altering, to be removed.

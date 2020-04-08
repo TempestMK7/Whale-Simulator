@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Com.Tempest.Whale.GameObjects {
 
     public enum EquipmentSlot {
+        NONE = 0,
         CHEST = 1, LEGS = 2, HEAD = 3,
         MAIN_HAND = 11, ONE_HAND = 12, OFF_HAND = 13, TWO_HAND = 14
     }
