@@ -7,4 +7,8 @@ public class EpochTime {
         long currentTime = (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
         return currentTime;
     }
+
+    public static string GetCurrentDate() {
+        return new DateTime().ToString("yyyy-MM-dd");
+    }
 }

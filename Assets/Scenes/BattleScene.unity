@@ -2005,7 +2005,11 @@ MonoBehaviour:
   heroAnimationLayer:
     serializedVersion: 2
     m_Bits: 1048576
+  forestBackground: {fileID: 21300000, guid: d27e23b54cb369e419081284c5773daa, type: 3}
+  caveBackground: {fileID: 21300000, guid: 5c20651ae18142e4cb4c9db909def65c, type: 3}
+  loadingPrefab: {fileID: 6457475262173700408, guid: 1222049b79fa7ce41a91e6d3dc0a10bd, type: 3}
   mainCanvas: {fileID: 827498436}
+  backgroundRenderer: {fileID: 1022861922}
   selectionPanel: {fileID: 195587606}
   selectionRecyclerView: {fileID: 5272195590379231819}
   selectionPrefab: {fileID: 3704714214907441649, guid: d0f5e57624b45a84184b17651e7db052, type: 3}

@@ -96,13 +96,14 @@ public class CredentialsManager : MonoBehaviour {
         };
         var result = await lambdaClient.InvokeAsync(lambdaRequest);
         var responseReader = new StreamReader(result.Payload);
+        var responseBody = responseReader.ReadToEnd();
         try {
-            var whaleResponse = DeserializeObject<WhaleResponse<T>>(responseReader.ReadToEnd());
+            var whaleResponse = DeserializeObject<WhaleResponse<T>>(responseBody);
             responseReader.Dispose();
             if (!whaleResponse.Successful) Debug.Log("Call failed with error of: " + whaleResponse.Error);
             return whaleResponse.Response;
         } catch (Exception e) {
-            Debug.LogError(e);
+            Debug.Log("Failed response body: " + responseBody);
             responseReader.Dispose();
             return default;
         }
@@ -235,6 +236,13 @@ public class CredentialsManager : MonoBehaviour {
         };
         await MakeLambdaCall<UnequipHeroResponse, UnequipHeroRequest>(request, "UnequipHeroFunction");
         StateManager.HandleUnequipResponse(hero);
+    }
+
+    public async Task<LootCaveEncounter> RequestCaveEncounter() {
+        var request = new LootCaveEncounterRequest();
+        var response = await MakeLambdaCall<LootCaveEncounterResponse, LootCaveEncounterRequest>(request, "LootCaveEncounterFunction");
+        StateManager.HandleCaveEncounterResponse(response);
+        return response.Encounter;
     }
 
     #endregion

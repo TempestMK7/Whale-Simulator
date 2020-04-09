@@ -19,8 +19,15 @@ namespace Com.Tempest.Whale.StateObjects {
         public long CurrentGems { get; set; }
         public long CurrentSummons { get; set; }
 
+        public long CurrentBronzeSummons { get; set; }
+        public long CurrentSilverSummons { get; set; }
+        public long CurrentGoldSummons { get; set; }
+
         public int CurrentChapter { get; set; }
         public int CurrentMission { get; set; }
+
+        public string LastCaveEntryDate { get; set; }
+        public int CurrentCaveFloor { get; set; }
 
         public bool HasEnteredHub { get; set; }
         public bool HasEnteredSanctum { get; set; }
@@ -46,8 +53,15 @@ namespace Com.Tempest.Whale.StateObjects {
             CurrentGems = 0;
             CurrentSummons = 10;
 
+            CurrentBronzeSummons = 0;
+            CurrentSilverSummons = 0;
+            CurrentGoldSummons = 0;
+
             CurrentChapter = 1;
             CurrentMission = 1;
+
+            LastCaveEntryDate = null;
+            CurrentCaveFloor = 1;
 
             AccountHeroes = new List<AccountHero>();
             AccountEquipment = new List<AccountEquipment>();

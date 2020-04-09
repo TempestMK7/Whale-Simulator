@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TowerScene.unity
     guid: 9c4affba0a958704d98f407897d43e63
+  - enabled: 1
+    path: Assets/Scenes/LootCaveScene.unity
+    guid: fe74c0dd42c6bdf41b80356813001e0c
   m_configObjects: {}

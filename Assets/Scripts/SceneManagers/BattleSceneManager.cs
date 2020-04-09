@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -13,8 +14,12 @@ using Com.Tempest.Whale.StateObjects;
 public class BattleSceneManager : MonoBehaviour {
 
     public LayerMask heroAnimationLayer;
+    public Sprite forestBackground;
+    public Sprite caveBackground;
+    public LoadingPopup loadingPrefab;
 
     public Canvas mainCanvas;
+    public SpriteRenderer backgroundRenderer;
     public GameObject selectionPanel;
     public RecyclerView selectionRecyclerView;
     public GameObject selectionPrefab;
@@ -36,6 +41,8 @@ public class BattleSceneManager : MonoBehaviour {
     public UnityEngine.UI.Button fightButton;
 
     private BattleEnum battleType;
+    private CredentialsManager credentialsManager;
+    private bool loadingFromServer = false;
 
     // These are used in selection mode.
     private BattleSelectionAdapter selectionAdapter;
@@ -53,18 +60,22 @@ public class BattleSceneManager : MonoBehaviour {
     private MissionReport displayedReport;
 
     public void Awake() {
+        credentialsManager = FindObjectOfType<CredentialsManager>();
         battleType = BattleManager.GetBattleType();
         switch (battleType) {
-            case BattleEnum.TOWER:
+            case BattleEnum.LOOT_CAVE:
+                backgroundRenderer.sprite = forestBackground;
+                break;
             case BattleEnum.CAMPAIGN:
-            default:
-                SetSelectionMode();
+                backgroundRenderer.sprite = caveBackground;
                 break;
         }
         skipPanel.SetActive(false);
+        SetSelectionMode();
     }
 
     public void Update() {
+        if (loadingFromServer) return;
         if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
@@ -76,7 +87,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     #region Selection.
 
-    private void SetSelectionMode() {
+    private async void SetSelectionMode() {
         selectionPanel.SetActive(true);
         statusPanel.SetActive(false);
 
@@ -91,7 +102,7 @@ public class BattleSceneManager : MonoBehaviour {
 
         battleType = BattleManager.GetBattleType();
         switch (battleType) {
-            case BattleEnum.TOWER:
+            case BattleEnum.LOOT_CAVE:
             case BattleEnum.CAMPAIGN:
             default:
                 selectedAllies = StateManager.GetLastUsedTeam();
@@ -99,14 +110,33 @@ public class BattleSceneManager : MonoBehaviour {
                 selectionRecyclerView.NotifyDataSetChanged();
                 break;
         }
-        SelectEnemiesFromBattleType();
+        await SelectEnemiesFromBattleType();
         FillInSelectedAlliesFromState();
         HandleFightButton();
     }
 
-    private void SelectEnemiesFromBattleType() {
+    private async Task SelectEnemiesFromBattleType() {
         var state = StateManager.GetCurrentState();
         switch (battleType) {
+            case BattleEnum.LOOT_CAVE:
+                loadingFromServer = true;
+                var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
+                loadingPopup.LaunchPopup("Loading encounter...", "Finding your latest encounter...");
+                var encounter = await credentialsManager.RequestCaveEncounter();
+                selectedEnemies = new AccountHero[] {
+                    new AccountHero(encounter.Position1Hero),
+                    new AccountHero(encounter.Position2Hero),
+                    new AccountHero(encounter.Position3Hero),
+                    new AccountHero(encounter.Position4Hero),
+                    new AccountHero(encounter.Position5Hero)
+                };
+                foreach (AccountHero hero in selectedEnemies) {
+                    hero.AwakeningLevel = (encounter.Floor / 4) + 1;
+                    hero.CurrentLevel = encounter.Floor * 5;
+                }
+                loadingPopup.DismissPopup();
+                loadingFromServer = false;
+                break;
             case BattleEnum.CAMPAIGN:
                 var mission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
                 selectedEnemies = new AccountHero[mission.MissionHeroes.Length];
@@ -174,6 +204,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public void OnFilterPressed(int filterPosition) {
+        if (ButtonsBlocked()) return;
         FactionEnum faction = (FactionEnum)Enum.GetValues(typeof(FactionEnum)).GetValue(filterPosition);
         if (currentFilter == faction) {
             currentFilter = null;
@@ -184,7 +215,11 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public void OnBackPressed() {
+        if (ButtonsBlocked()) return;
         switch (battleType) {
+            case BattleEnum.LOOT_CAVE:
+                SceneManager.LoadSceneAsync("LootCaveScene");
+                break;
             case BattleEnum.CAMPAIGN:
                 SceneManager.LoadSceneAsync("CampaignScene");
                 break;
@@ -347,7 +382,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return FindObjectOfType<CombatReportPopup>() != null;
+        return loadingFromServer || FindObjectOfType<CombatReportPopup>() != null;
     }
 
     public void OnContinuePressed() {

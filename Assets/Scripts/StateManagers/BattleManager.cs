@@ -19,5 +19,5 @@ public class BattleManager {
 }
 
 public enum BattleEnum {
-    NONE, CAMPAIGN, TOWER
+    NONE, CAMPAIGN, LOOT_CAVE
 }

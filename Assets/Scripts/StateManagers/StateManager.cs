@@ -140,6 +140,26 @@ public class StateManager {
         SaveState(false);
     }
 
+    public static void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
+        var encounter = response.Encounter;
+        currentState.LastCaveEntryDate = encounter.Date;
+        currentState.CurrentCaveFloor = encounter.Floor;
+        SaveState(false);
+    }
+
+    #endregion
+
+    #region Allowable state altering, mostly for displaying info to user.
+
+    public static int GetLootCavePosition() {
+        var currentDate = EpochTime.GetCurrentDate();
+        if (!currentDate.Equals(currentState.LastCaveEntryDate)) {
+            currentState.LastCaveEntryDate = EpochTime.GetCurrentDate();
+            currentState.CurrentCaveFloor = 1;
+        }
+        return currentState.CurrentCaveFloor;
+    }
+
     #endregion
 
     #region Direct state altering, to be removed.

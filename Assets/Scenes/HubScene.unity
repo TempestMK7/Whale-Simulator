@@ -1144,7 +1144,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1173181358}
   - component: {fileID: 1173181357}
-  - component: {fileID: 1173181359}
   m_Layer: 0
   m_Name: OrcTower
   m_TagString: Untagged
@@ -1217,19 +1216,6 @@ Transform:
   m_Father: {fileID: 1811205747}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1173181359
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173181356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetScene: 
 --- !u!1 &1259774197
 GameObject:
   m_ObjectHideFlags: 0
@@ -1604,7 +1590,6 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   mainCanvas: {fileID: 1033936355}
   settingsPopupPrefab: {fileID: 3820770273559876441, guid: a53ca0e9f00b0824780b3d5d7e0f87f0, type: 3}
-  cheaterPopupPrefab: {fileID: 3649151247333751910, guid: d3b7fdd67bb449241a317a4b789a452d, type: 3}
   tooltipPopupPrefab: {fileID: 3895851472678222692, guid: 559c1197b1f7499489c3c486b1f239dd, type: 3}
   usableWidth: 0.3
   usableHeight: 1
@@ -1726,7 +1711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d430005316f1014199bb19ef34886cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetScene: 
+  targetScene: LootCaveScene
 --- !u!1 &1906220891
 GameObject:
   m_ObjectHideFlags: 0

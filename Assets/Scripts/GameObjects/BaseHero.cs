@@ -339,6 +339,10 @@ namespace Com.Tempest.Whale.GameObjects {
         public static List<HeroEnum> rarityFour;
         public static List<HeroEnum> rarityFive;
 
+        public static List<HeroEnum> allTanks;
+        public static List<HeroEnum> allDamage;
+        public static List<HeroEnum> allSupports;
+
         public static void Initialize() {
             allHeroes = new Dictionary<HeroEnum, BaseHero>();
             rarityOne = new List<HeroEnum>();
@@ -346,6 +350,9 @@ namespace Com.Tempest.Whale.GameObjects {
             rarityThree = new List<HeroEnum>();
             rarityFour = new List<HeroEnum>();
             rarityFive = new List<HeroEnum>();
+            allTanks = new List<HeroEnum>();
+            allDamage = new List<HeroEnum>();
+            allSupports = new List<HeroEnum>();
 
             foreach (HeroEnum hero in Enum.GetValues(typeof(HeroEnum))) {
                 var b = BaseHero.GetHero(hero);
@@ -365,6 +372,18 @@ namespace Com.Tempest.Whale.GameObjects {
                         break;
                     case 5:
                         rarityFive.Add(hero);
+                        break;
+                }
+
+                switch (b.Role) {
+                    case RoleEnum.PROTECTION:
+                        allTanks.Add(hero);
+                        break;
+                    case RoleEnum.DAMAGE:
+                        allDamage.Add(hero);
+                        break;
+                    case RoleEnum.SUPPORT:
+                        allSupports.Add(hero);
                         break;
                 }
             }
@@ -398,6 +417,22 @@ namespace Com.Tempest.Whale.GameObjects {
         private static HeroEnum ChooseHeroFromList(Random rand, List<HeroEnum> choices) {
             int choice = rand.Next(choices.Count);
             return choices[choice];
+        }
+
+        public static HeroEnum ChooseRandomHero(RoleEnum role, Random rand) {
+            if (allHeroes == null || allHeroes.Count == 0) {
+                Initialize();
+            }
+            switch (role) {
+                case RoleEnum.PROTECTION:
+                    return ChooseHeroFromList(rand, allTanks);
+                case RoleEnum.DAMAGE:
+                    return ChooseHeroFromList(rand, allDamage);
+                case RoleEnum.SUPPORT:
+                    return ChooseHeroFromList(rand, allSupports);
+                default:
+                    return ChooseHeroFromList(rand, allDamage);
+            }
         }
     }
 }
