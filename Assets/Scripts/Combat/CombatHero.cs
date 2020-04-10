@@ -28,6 +28,10 @@ namespace Com.Tempest.Whale.Combat {
         public double currentEnergy;
         public List<CombatStatus> currentStatus;
 
+        public CombatHero() {
+            // Empty constructor required by NewtonSoft.
+        }
+
         public CombatHero(AccountHero accountHero, List<AccountEquipment> equipped) {
             baseHero = accountHero.GetBaseHero();
             combatHeroGuid = Guid.NewGuid();
@@ -83,12 +87,12 @@ namespace Com.Tempest.Whale.Combat {
             }
         }
 
-        private double GetBigStat(double baseStat) {
-            return (baseStat + (BaseHero.GetBigStatGain(baseStat) * currentLevel)) * Math.Pow(1.1, awakeningLevel - 1);
+        public void RestoreUnserializedData() {
+            baseHero = BaseHeroContainer.GetBaseHero(heroEnum);
         }
 
-        private double GetSmallStat(double baseStat) {
-            return baseStat + (BaseHero.GetSmallStatGain(baseStat) * currentLevel) * Math.Pow(1.1, awakeningLevel - 1);
+        private double GetBigStat(double baseStat) {
+            return (baseStat + (BaseHero.GetBigStatGain(baseStat) * currentLevel)) * Math.Pow(1.1, awakeningLevel - 1);
         }
 
         public int CompareTo(CombatHero other) {

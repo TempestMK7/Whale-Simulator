@@ -103,6 +103,7 @@ public class CredentialsManager : MonoBehaviour {
             if (!whaleResponse.Successful) Debug.Log("Call failed with error of: " + whaleResponse.Error);
             return whaleResponse.Response;
         } catch (Exception e) {
+            Debug.LogError(e);
             Debug.Log("Failed response body: " + responseBody);
             responseReader.Dispose();
             return default;
@@ -239,15 +240,19 @@ public class CredentialsManager : MonoBehaviour {
     }
 
     public async Task<CombatResponse> PerformEpicBattle(BattleEnum battleType, AccountHero[] selectedHeroes) {
-        var selectedGuids = new Guid[selectedHeroes.Length];
+        var selectedGuids = new Guid?[selectedHeroes.Length];
         for (int x = 0; x < selectedHeroes.Length; x++) {
-            selectedGuids[x] = selectedHeroes[x].Id;
+            if (selectedHeroes[x] != null) selectedGuids[x] = selectedHeroes[x].Id;
         }
         var request = new CombatRequest() {
             EncounterType = battleType,
             SelectedHeroes = selectedGuids
         };
         var response = await MakeLambdaCall<CombatResponse, CombatRequest>(request, "CombatFunction");
+        if (response != null && response.Report != null) {
+            response.Report.RestoreUnserializedData();
+            if (response.Rewards != null) response.Rewards.RestoreUnserializedData();
+        }
         StateManager.HandleCombatResponse(battleType, response);
         return response;
     }

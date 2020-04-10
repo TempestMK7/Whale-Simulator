@@ -64,10 +64,10 @@ public class BattleSceneManager : MonoBehaviour {
         credentialsManager = FindObjectOfType<CredentialsManager>();
         battleType = BattleManager.GetBattleType();
         switch (battleType) {
-            case BattleEnum.LOOT_CAVE:
+            case BattleEnum.CAMPAIGN:
                 backgroundRenderer.sprite = forestBackground;
                 break;
-            case BattleEnum.CAMPAIGN:
+            case BattleEnum.LOOT_CAVE:
                 backgroundRenderer.sprite = caveBackground;
                 break;
         }
@@ -396,8 +396,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public void OnContinuePressed() {
-        if (ButtonsBlocked()) return;
-        SceneManager.LoadSceneAsync("CampaignScene");
+        OnBackPressed();
     }
 
     public void OnReportPressed() {

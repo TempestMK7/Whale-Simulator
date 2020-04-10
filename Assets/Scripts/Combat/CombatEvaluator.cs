@@ -172,10 +172,32 @@ namespace Com.Tempest.Whale.Combat {
         public CombatHero[] alliesEnd;
         public CombatHero[] enemiesEnd;
 
+        public CombatReport() {
+            // Empty constructor required by NewtonSoft.
+        }
+
         public CombatReport(CombatHero[] allies, CombatHero[] enemies) {
             this.allies = CombatEvaluator.SnapShotTeam(allies);
             this.enemies = CombatEvaluator.SnapShotTeam(enemies);
             rounds = new List<CombatRound>();
+        }
+
+        public void RestoreUnserializedData() {
+            foreach (CombatHero hero in allies) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatHero hero in enemies) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatHero hero in alliesEnd) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatHero hero in enemiesEnd) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatRound round in rounds) {
+                round.RestoreUnserializedData();
+            }
         }
 
         public List<string> ToHumanReadableReport() {
@@ -203,12 +225,28 @@ namespace Com.Tempest.Whale.Combat {
         public List<CombatTurn> turns;
         public List<CombatStep> endOfTurn;
 
+        public CombatRound() {
+            // Empty constructor required by NewtonSoft.
+        }
+
         public CombatRound(int turnNumber, CombatHero[] allies, CombatHero[] enemies) {
             this.turnNumber = turnNumber;
             this.allies = CombatEvaluator.SnapShotTeam(allies);
             this.enemies = CombatEvaluator.SnapShotTeam(enemies);
             turns = new List<CombatTurn>();
             endOfTurn = new List<CombatStep>();
+        }
+
+        public void RestoreUnserializedData() {
+            foreach (CombatHero hero in allies) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatHero hero in enemies) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatTurn turn in turns) {
+                turn.RestoreUnserializedData();
+            }
         }
 
         public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
@@ -238,6 +276,10 @@ namespace Com.Tempest.Whale.Combat {
         public double energyGained;
         public List<CombatStep> steps;
 
+        public CombatTurn() {
+            // Empty constructor required by NewtonSoft.
+        }
+
         public CombatTurn(CombatHero attacker, List<CombatHero> allyTargets, List<CombatHero> enemyTargets, AttackEnum attackUsed) {
             this.attacker = new CombatHero(attacker);
             this.allyTargets = new List<CombatHero>();
@@ -250,6 +292,16 @@ namespace Com.Tempest.Whale.Combat {
             }
             this.attackUsed = attackUsed;
             steps = new List<CombatStep>();
+        }
+
+        public void RestoreUnserializedData() {
+            if (attacker != null) attacker.RestoreUnserializedData();
+            foreach (CombatHero hero in allyTargets) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
+            foreach (CombatHero hero in enemyTargets) {
+                if (hero != null) hero.RestoreUnserializedData();
+            }
         }
 
         public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
@@ -300,6 +352,10 @@ namespace Com.Tempest.Whale.Combat {
         public double targetEnergy = 0;
         public HitType hitType = HitType.NORMAL;
         public bool wasFatal = false;
+
+        public CombatStep() {
+            // Empty constructor required by NewtonSoft.
+        }
 
         public CombatStep(AttackEnum? attackUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
             this.attackUsed = attackUsed;
@@ -360,6 +416,10 @@ namespace Com.Tempest.Whale.Combat {
         public Guid targetGuid;
         public double value;
         public int turnsRemaining;
+
+        public CombatStatus() {
+            // Empty constructor required by NewtonSoft.
+        }
 
         public CombatStatus(StatusEnum status, Guid inflicterGuid, Guid targetGuid, double value, int turnsRemaining) {
             this.status = status;

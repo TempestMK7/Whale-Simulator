@@ -336,7 +336,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
         public PotentialRewardsContainer RewardsForMission() {
             var heroRequirement = LevelContainer.HeroExperienceRequirement(HeroLevel);
-            return new PotentialRewardsContainer(1, heroRequirement * 3, heroRequirement * 2, 200 * HeroAwakening, HeroAwakening, HeroAwakening / 2);
+            return new PotentialRewardsContainer(1, heroRequirement * 3, heroRequirement * 2, 200 * HeroAwakening, HeroAwakening, (HeroAwakening / 2) + 1);
         }
     }
 

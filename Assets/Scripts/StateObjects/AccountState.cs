@@ -100,6 +100,7 @@ namespace Com.Tempest.Whale.StateObjects {
             CurrentGoldSummons += rewards.GoldSummons;
             AccountEquipment.AddRange(rewards.EarnedEquipment);
 
+            RetrieveDataAfterLoad();
             FixLevelsFromExperience();
             AccountEquipment.Sort();
         }
