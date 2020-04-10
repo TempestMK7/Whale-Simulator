@@ -88,5 +88,20 @@ namespace Com.Tempest.Whale.StateObjects {
                 return hero.Id.Equals(matchable.EquippedHeroId);
             });
         }
+
+        public void ReceiveRewards(EarnedRewardsContainer rewards) {
+            CurrentGold += rewards.Gold;
+            CurrentSouls += rewards.Souls;
+            CurrentExperience += rewards.PlayerExperience;
+            CurrentGems += rewards.Gems;
+            CurrentSummons += rewards.Summons;
+            CurrentBronzeSummons += rewards.BronzeSummons;
+            CurrentSilverSummons += rewards.SilverSummons;
+            CurrentGoldSummons += rewards.GoldSummons;
+            AccountEquipment.AddRange(rewards.EarnedEquipment);
+
+            FixLevelsFromExperience();
+            AccountEquipment.Sort();
+        }
     }
 }

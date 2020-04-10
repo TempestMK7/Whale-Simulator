@@ -8,7 +8,7 @@ namespace Com.Tempest.Whale.Combat {
 
     public class CombatEvaluator {
 
-        public static async Task<CombatReport> GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, 
+        public static CombatReport GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, 
             List<AccountEquipment> allyEquipment, List<AccountEquipment> enemyEquipment, bool usePreferredGear = false) {
             CombatHero[] combatAllies = new CombatHero[allies.Length];
             for (int x = 0; x < combatAllies.Length; x++) {
@@ -26,26 +26,24 @@ namespace Com.Tempest.Whale.Combat {
             }
 
             var report = new CombatReport(combatAllies, combatEnemies);
-            await Task.Run(() => {
-                int turnNumber = 0;
-                while (TeamAlive(combatAllies) && TeamAlive(combatEnemies) && turnNumber < 20) {
-                    turnNumber++;
-                    var round = new CombatRound(turnNumber, combatAllies, combatEnemies);
-                    round.steps = PerformTurn(combatAllies, combatEnemies);
-                    round.endOfTurn = EndOfTurn(combatAllies, combatEnemies);
-                    // This ability is so well designed that it deserves its own evaluation step.
-                    EvaluateFeedTheInferno(round);
-                    report.rounds.Add(round);
-                }
-                report.alliesWon = TeamAlive(combatAllies) && !TeamAlive(combatEnemies);
-                report.alliesEnd = SnapShotTeam(combatAllies);
-                report.enemiesEnd = SnapShotTeam(combatEnemies);
-            });
+            int turnNumber = 0;
+            while (TeamAlive(combatAllies) && TeamAlive(combatEnemies) && turnNumber < 20) {
+                turnNumber++;
+                var round = new CombatRound(turnNumber, combatAllies, combatEnemies);
+                round.turns = PerformRound(combatAllies, combatEnemies);
+                round.endOfTurn = EndOfTurn(combatAllies, combatEnemies);
+                // This ability is so well designed that it deserves its own evaluation step.
+                EvaluateFeedTheInferno(round);
+                report.rounds.Add(round);
+            }
+            report.alliesWon = TeamAlive(combatAllies) && !TeamAlive(combatEnemies);
+            report.alliesEnd = SnapShotTeam(combatAllies);
+            report.enemiesEnd = SnapShotTeam(combatEnemies);
             return report;
         }
 
-        public static List<CombatStep> PerformTurn(CombatHero[] allies, CombatHero[] enemies) {
-            var steps = new List<CombatStep>();
+        public static List<CombatTurn> PerformRound(CombatHero[] allies, CombatHero[] enemies) {
+            var steps = new List<CombatTurn>();
 
             var haveNotMoved = new List<CombatHero>();
             haveNotMoved.AddRange(allies);
@@ -84,21 +82,21 @@ namespace Com.Tempest.Whale.Combat {
             return steps;
         }
 
-        public static List<DamageInstance> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {
-            var instances = new List<DamageInstance>();
+        public static List<CombatStep> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {
+            var steps = new List<CombatStep>();
             foreach (CombatHero hero in allies) {
                 if (hero != null && hero.IsAlive()) {
-                    instances.AddRange(CombatMath.EvaluatePassives(hero));
-                    instances.AddRange(CombatStatus.EvaluateStatusEndOfTurn(hero));
+                    steps.AddRange(CombatMath.EvaluatePassives(hero));
+                    steps.AddRange(CombatStatus.EvaluateStatusEndOfTurn(hero));
                 }
             }
             foreach (CombatHero hero in enemies) {
                 if (hero != null && hero.IsAlive()) {
-                    instances.AddRange(CombatMath.EvaluatePassives(hero));
-                    instances.AddRange(CombatStatus.EvaluateStatusEndOfTurn(hero));
+                    steps.AddRange(CombatMath.EvaluatePassives(hero));
+                    steps.AddRange(CombatStatus.EvaluateStatusEndOfTurn(hero));
                 }
             }
-            return instances;
+            return steps;
         }
 
         public static void EvaluateFeedTheInferno(CombatRound round) {
@@ -116,25 +114,25 @@ namespace Com.Tempest.Whale.Combat {
             if (allInferno.Count == 0) return;
 
             int burnCount = 0;
-            foreach (CombatStep step in round.steps) {
-                foreach (DamageInstance stepInstance in step.damageInstances) {
+            foreach (CombatTurn turn in round.turns) {
+                foreach (CombatStep stepInstance in turn.steps) {
                     foreach (CombatStatus status in stepInstance.inflictedStatus) {
                         if (status.status == StatusEnum.BURN) burnCount++;
                     }
                 }
             }
-            foreach (DamageInstance endOfTurnInstance in round.endOfTurn) {
-                foreach (CombatStatus status in endOfTurnInstance.inflictedStatus) {
+            foreach (CombatStep endOfTurnStep in round.endOfTurn) {
+                foreach (CombatStatus status in endOfTurnStep.inflictedStatus) {
                     if (status.status == StatusEnum.BURN) burnCount++;
                 }
             }
 
-            List<DamageInstance> infernoEndOfTurn = new List<DamageInstance>();
+            List<CombatStep> infernoEndOfTurn = new List<CombatStep>();
             foreach (CombatHero inferno in allInferno) {
                 var magicUp = new CombatStatus(StatusEnum.MAGIC_UP, inferno.combatHeroGuid, inferno.combatHeroGuid, 0.05 * burnCount, CombatStatus.INDEFINITE);
                 inferno.AddStatus(magicUp);
 
-                var infernoInstance = new DamageInstance(null, null, inferno.combatHeroGuid, inferno.combatHeroGuid);
+                var infernoInstance = new CombatStep(null, null, inferno.combatHeroGuid, inferno.combatHeroGuid);
                 infernoInstance.AddStatus(magicUp);
                 infernoEndOfTurn.Add(infernoInstance);
             }
@@ -202,32 +200,32 @@ namespace Com.Tempest.Whale.Combat {
         public int turnNumber;
         public CombatHero[] allies;
         public CombatHero[] enemies;
-        public List<CombatStep> steps;
-        public List<DamageInstance> endOfTurn;
+        public List<CombatTurn> turns;
+        public List<CombatStep> endOfTurn;
 
         public CombatRound(int turnNumber, CombatHero[] allies, CombatHero[] enemies) {
             this.turnNumber = turnNumber;
             this.allies = CombatEvaluator.SnapShotTeam(allies);
             this.enemies = CombatEvaluator.SnapShotTeam(enemies);
-            steps = new List<CombatStep>();
-            endOfTurn = new List<DamageInstance>();
+            turns = new List<CombatTurn>();
+            endOfTurn = new List<CombatStep>();
         }
 
         public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
             var output = new List<string>();
             output.Add(string.Format("Turn {0}", turnNumber));
-            foreach (CombatStep step in steps) {
-                output.AddRange(step.ToHumanReadableString(heroDict));
+            foreach (CombatTurn turn in turns) {
+                output.AddRange(turn.ToHumanReadableString(heroDict));
             }
-            foreach (DamageInstance damageInstance in endOfTurn) {
-                output.AddRange(damageInstance.ToHumanReadableString(heroDict));
+            foreach (CombatStep step in endOfTurn) {
+                output.AddRange(step.ToHumanReadableString(heroDict));
             }
             return output;
         }
     }
 
     [Serializable]
-    public class CombatStep {
+    public class CombatTurn {
 
         public CombatHero attacker;
         public List<CombatHero> allyTargets;
@@ -238,9 +236,9 @@ namespace Com.Tempest.Whale.Combat {
         public double totalDamage;
         public double totalHealing;
         public double energyGained;
-        public List<DamageInstance> damageInstances;
+        public List<CombatStep> steps;
 
-        public CombatStep(CombatHero attacker, List<CombatHero> allyTargets, List<CombatHero> enemyTargets, AttackEnum attackUsed) {
+        public CombatTurn(CombatHero attacker, List<CombatHero> allyTargets, List<CombatHero> enemyTargets, AttackEnum attackUsed) {
             this.attacker = new CombatHero(attacker);
             this.allyTargets = new List<CombatHero>();
             foreach (CombatHero target in allyTargets) {
@@ -251,7 +249,7 @@ namespace Com.Tempest.Whale.Combat {
                 this.enemyTargets.Add(new CombatHero(target));
             }
             this.attackUsed = attackUsed;
-            damageInstances = new List<DamageInstance>();
+            steps = new List<CombatStep>();
         }
 
         public List<string> ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {
@@ -282,15 +280,15 @@ namespace Com.Tempest.Whale.Combat {
             if (formatted.Length >= 0) formatted = " on " + formatted;
             output.Add(string.Format("{0} used {1}{2}.", attacker.baseHero.HeroName, attack, formatted));
 
-            foreach (DamageInstance damageInstance in damageInstances) {
-                output.AddRange(damageInstance.ToHumanReadableString(heroDict));
+            foreach (CombatStep step in steps) {
+                output.AddRange(step.ToHumanReadableString(heroDict));
             }
             return output;
         }
     }
 
     [Serializable]
-    public class DamageInstance {
+    public class CombatStep {
 
         public AttackEnum? attackUsed;
         public StatusEnum? triggeringStatus;
@@ -303,7 +301,7 @@ namespace Com.Tempest.Whale.Combat {
         public HitType hitType = HitType.NORMAL;
         public bool wasFatal = false;
 
-        public DamageInstance(AttackEnum? attackUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
+        public CombatStep(AttackEnum? attackUsed, StatusEnum? triggeringStatus, Guid attackerGuid, Guid targetGuid) {
             this.attackUsed = attackUsed;
             this.triggeringStatus = triggeringStatus;
             this.attackerGuid = attackerGuid;
@@ -410,8 +408,8 @@ namespace Com.Tempest.Whale.Combat {
             return string.Format("{0}{1}{2}.", statusPrefix, turnSuffix, valueSuffix);
         }
 
-        public static List<DamageInstance> EvaluateStatusEndOfTurn(CombatHero hero) {
-            List<DamageInstance> instances = new List<DamageInstance>();
+        public static List<CombatStep> EvaluateStatusEndOfTurn(CombatHero hero) {
+            List<CombatStep> steps = new List<CombatStep>();
             foreach (CombatStatus status in hero.currentStatus) {
                 switch (status.status) {
                     case StatusEnum.BURN:
@@ -419,33 +417,33 @@ namespace Com.Tempest.Whale.Combat {
                     case StatusEnum.POISON:
                         var damage = status.value;
                         hero.currentHealth -= damage;
-                        var damageInstance = new DamageInstance(null, status.status, status.inflicterGuid, hero.combatHeroGuid);
-                        damageInstance.damage = damage;
+                        var step = new CombatStep(null, status.status, status.inflicterGuid, hero.combatHeroGuid);
+                        step.damage = damage;
 
                         // We bail immediately if a status kills a hero to prevent future stati from bringing them back somehow.
                         if (!hero.IsAlive()) {
                             hero.currentHealth = 0;
                             hero.currentEnergy = 0;
-                            damageInstance.wasFatal = true;
-                            instances.Add(damageInstance);
+                            step.wasFatal = true;
+                            steps.Add(step);
                             hero.currentStatus.Clear();
-                            return instances;
+                            return steps;
                         }
 
-                        instances.Add(damageInstance);
+                        steps.Add(step);
                         break;
                     case StatusEnum.REGENERATION:
                         var healing = status.value;
                         healing = hero.ReceiveHealing(healing);
 
-                        damageInstance = new DamageInstance(null, status.status, status.inflicterGuid, hero.combatHeroGuid);
-                        damageInstance.healing = healing;
-                        instances.Add(damageInstance);
+                        step = new CombatStep(null, status.status, status.inflicterGuid, hero.combatHeroGuid);
+                        step.healing = healing;
+                        steps.Add(step);
                         break;
                 }
             }
             hero.CountDownStatus(false);
-            return instances;
+            return steps;
         }
     }
 }

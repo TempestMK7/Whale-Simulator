@@ -161,7 +161,7 @@ namespace Com.Tempest.Whale.GameObjects {
             AllyStatusDuration = allyStatusDuration;
         }
 
-        public List<DamageInstance> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
+        public List<CombatStep> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
             var hitType = CombatMath.RollHitType(attacker, target);
             var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
             var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
@@ -170,12 +170,12 @@ namespace Com.Tempest.Whale.GameObjects {
             target.currentHealth -= damage;
             target.currentEnergy += TargetEnergyGained;
 
-            var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
-            damageInstance.damage = damage;
-            damageInstance.targetEnergy = TargetEnergyGained;
-            damageInstance.hitType = hitType;
-            var allInstances = new List<DamageInstance>();
-            allInstances.Add(damageInstance);
+            var step = new CombatStep(Attack, null, attacker.combatHeroGuid, target.combatHeroGuid);
+            step.damage = damage;
+            step.targetEnergy = TargetEnergyGained;
+            step.hitType = hitType;
+            var allInstances = new List<CombatStep>();
+            allInstances.Add(step);
 
             // If the target died from this attack, bail before applying status.
             if (!target.IsAlive()) {
@@ -183,7 +183,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 target.currentEnergy = 0;
                 target.currentStatus.Clear();
 
-                damageInstance.wasFatal = true;
+                step.wasFatal = true;
                 return allInstances;
             }
 
@@ -243,28 +243,28 @@ namespace Com.Tempest.Whale.GameObjects {
                 if (target.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE && !IsPhysical) {
                     var statusContainer = new CombatStatus(inflictedStatus, target.combatHeroGuid, attacker.combatHeroGuid, statusValue, statusDuration);
                     attacker.AddStatus(statusContainer);
-                    var mirrorInstance = new DamageInstance(null, null, target.combatHeroGuid, attacker.combatHeroGuid);
+                    var mirrorInstance = new CombatStep(null, null, target.combatHeroGuid, attacker.combatHeroGuid);
                     mirrorInstance.AddStatus(statusContainer);
                     allInstances.Add(mirrorInstance);
                 } else {
                     var statusContainer = new CombatStatus(inflictedStatus, attacker.combatHeroGuid, target.combatHeroGuid, statusValue, statusDuration);
                     target.AddStatus(statusContainer);
-                    damageInstance.AddStatus(statusContainer);
+                    step.AddStatus(statusContainer);
                 }
             }
 
             return allInstances;
         }
 
-        public DamageInstance ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
+        public CombatStep ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
             var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
             var healing = attackValue * HealingMultiplier;
             healing = ally.ReceiveHealing(healing);
             ally.currentEnergy += AllyEnergyGained;
 
-            var damageInstance = new DamageInstance(Attack, null, attacker.combatHeroGuid, ally.combatHeroGuid);
-            damageInstance.healing = healing;
-            damageInstance.targetEnergy = AllyEnergyGained;
+            var step = new CombatStep(Attack, null, attacker.combatHeroGuid, ally.combatHeroGuid);
+            step.healing = healing;
+            step.targetEnergy = AllyEnergyGained;
 
             // If the ally died from this attack somehow, bail before applying status.
             if (!ally.IsAlive()) {
@@ -272,8 +272,8 @@ namespace Com.Tempest.Whale.GameObjects {
                 ally.currentEnergy = 0;
                 ally.currentStatus.Clear();
 
-                damageInstance.wasFatal = true;
-                return damageInstance;
+                step.wasFatal = true;
+                return step;
             }
 
             if (AllyStatus != null) {
@@ -295,7 +295,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 }
                 var statusContainer = new CombatStatus(bestowedStatus, attacker.combatHeroGuid, ally.combatHeroGuid, statusValue, statusDuration);
                 ally.AddStatus(statusContainer);
-                damageInstance.AddStatus(statusContainer);
+                step.AddStatus(statusContainer);
             }
 
             if (attacker.baseHero.PassiveAbility == AbilityEnum.CLEANSING_RAIN) {
@@ -316,7 +316,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 ally.currentStatus = newStatus;
             }
 
-            return damageInstance;
+            return step;
         }
 
         public string GetTooltip() {

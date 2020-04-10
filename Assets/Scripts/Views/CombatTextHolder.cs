@@ -10,8 +10,8 @@ public class CombatTextHolder : MonoBehaviour {
     public Canvas container;
     public GameObject combatTextPrefab;
 
-    public void AnimateDamageInstance(DamageInstance instance) {
-        StartCoroutine(AnimateAllComponents(instance));
+    public void AnimateCombatStep(CombatStep step) {
+        StartCoroutine(AnimateAllComponents(step));
     }
 
     public void AnimateSkippedTurn() {
@@ -19,18 +19,18 @@ public class CombatTextHolder : MonoBehaviour {
         skipText.GetComponent<CombatText>().SetText("Skipped.", ColorContainer.LightTextColor());
     }
 
-    private IEnumerator AnimateAllComponents(DamageInstance instance) {
-        if (instance.damage > 0) {
+    private IEnumerator AnimateAllComponents(CombatStep step) {
+        if (step.damage > 0) {
             var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
-            combatText.GetComponent<CombatText>().SetText(instance.damage, ColorContainer.EnergyColor());
+            combatText.GetComponent<CombatText>().SetText(step.damage, ColorContainer.EnergyColor());
             yield return new WaitForSeconds(0.3f);
         }
-        if (instance.healing > 0) {
+        if (step.healing > 0) {
             var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
-            combatText.GetComponent<CombatText>().SetText(instance.healing, ColorContainer.HealthColor());
+            combatText.GetComponent<CombatText>().SetText(step.healing, ColorContainer.HealthColor());
             yield return new WaitForSeconds(0.3f);
         }
-        foreach (CombatStatus status in instance.inflictedStatus) {
+        foreach (CombatStatus status in step.inflictedStatus) {
             var statusDisplay = StatusInfoContainer.GetStatusInfo(status.status);
             var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
             combatText.GetComponent<CombatText>().SetText(statusDisplay.StatusName, ColorContainer.ColorFromFaction(statusDisplay.AssociatedFaction));

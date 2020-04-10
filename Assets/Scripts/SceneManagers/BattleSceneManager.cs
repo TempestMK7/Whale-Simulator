@@ -57,7 +57,8 @@ public class BattleSceneManager : MonoBehaviour {
     // These are used in combat mode.
     private Dictionary<Guid, AnimatedHero> placeHolders;
     private bool skipBattle = false;
-    private MissionReport displayedReport;
+    private CombatReport combatReport;
+    private EarnedRewardsContainer combatRewards;
 
     public void Awake() {
         credentialsManager = FindObjectOfType<CredentialsManager>();
@@ -266,10 +267,19 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public async void OnFight() {
-        var missionReport = await StateManager.AttemptCurrentMissionWithTeam(selectedAllies);
+        loadingFromServer = true;
+        var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
+        loadingPopup.LaunchPopup("Preparing...", "Writing ballads of your inevitable victory...");
 
-        displayedReport = missionReport;
-        SetCombatMode(missionReport.Combat);
+        StateManager.SetLastUsedTeam(selectedAllies);
+        var response = await credentialsManager.PerformEpicBattle(battleType, selectedAllies);
+        combatReport = response.Report;
+        combatRewards = response.Rewards;
+
+        loadingPopup.DismissPopup();
+        loadingFromServer = false;
+
+        SetCombatMode(combatReport);
     }
 
     #endregion
@@ -342,20 +352,20 @@ public class BattleSceneManager : MonoBehaviour {
         BindAllyTeam(round.allies);
         BindEnemyTeam(round.enemies);
 
-        foreach (CombatStep step in round.steps) {
-            if (!skipBattle) yield return StartCoroutine(PlayCombatStep(step));
+        foreach (CombatTurn turn in round.turns) {
+            if (!skipBattle) yield return StartCoroutine(PlayCombatTurn(turn));
         }
         
-        foreach (DamageInstance instance in round.endOfTurn) {
+        foreach (CombatStep step in round.endOfTurn) {
             if (!skipBattle) {
-                placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
+                placeHolders[step.targetGuid].AnimateCombatStep(step);
                 yield return new WaitForSeconds(0.3f);
             }
         }
     }
 
-    private System.Collections.IEnumerator PlayCombatStep(CombatStep step) {
-        yield return placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step, placeHolders);
+    private System.Collections.IEnumerator PlayCombatTurn(CombatTurn turn) {
+        yield return placeHolders[turn.attacker.combatHeroGuid].AnimateCombatTurn(turn, placeHolders);
     }
 
     private void OnEndOfCombat(CombatReport report) {
@@ -375,7 +385,7 @@ public class BattleSceneManager : MonoBehaviour {
         continueButton.gameObject.SetActive(true);
 
         if (report.alliesWon) {
-            var rewardAdapter = new RewardAdapter(rewardPrefab, displayedReport.EarnedRewards);
+            var rewardAdapter = new RewardAdapter(rewardPrefab, combatRewards);
             rewardRecycler.SetAdapter(rewardAdapter);
             rewardRecycler.NotifyDataSetChanged();
         }
@@ -392,9 +402,9 @@ public class BattleSceneManager : MonoBehaviour {
 
     public void OnReportPressed() {
         if (ButtonsBlocked()) return;
-        if (displayedReport != null) {
+        if (combatReport != null) {
             var reportPopup = Instantiate(reportPopupPrefab, mainCanvas.transform);
-            reportPopup.SetReport(displayedReport.Combat.ToHumanReadableReport());
+            reportPopup.SetReport(combatReport.ToHumanReadableReport());
         }
     }
 

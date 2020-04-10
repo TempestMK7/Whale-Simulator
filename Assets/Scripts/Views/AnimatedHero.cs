@@ -95,23 +95,23 @@ public class AnimatedHero : MonoBehaviour {
         }
     }
 
-    public IEnumerator AnimateCombatStep(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
-        if (step.skippedTurn) {
+    public IEnumerator AnimateCombatTurn(CombatTurn turn, Dictionary<Guid, AnimatedHero> placeholders) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
+        if (turn.skippedTurn) {
             combatTextHolder.AnimateSkippedTurn();
             yield return new WaitForSeconds(0.3f);
-        } else if (attackInfo.IsMelee && step.enemyTargets.Count == 1) {
-            yield return StartCoroutine(AnimateMeleeAttack(step, placeholders));
+        } else if (attackInfo.IsMelee && turn.enemyTargets.Count == 1) {
+            yield return StartCoroutine(AnimateMeleeAttack(turn, placeholders));
         } else {
-            yield return StartCoroutine(AnimateOtherAttacks(step, placeholders));
+            yield return StartCoroutine(AnimateOtherAttacks(turn, placeholders));
         }
     }
 
-    private IEnumerator AnimateMeleeAttack(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
+    private IEnumerator AnimateMeleeAttack(CombatTurn turn, Dictionary<Guid, AnimatedHero> placeholders) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
-        var target = placeholders[step.enemyTargets[0].combatHeroGuid];
+        var target = placeholders[turn.enemyTargets[0].combatHeroGuid];
 
         // All of this moves us to the target's position for the attack animation.
         var destination = new Vector3(target.transform.position.x, target.transform.position.y);
@@ -127,8 +127,8 @@ public class AnimatedHero : MonoBehaviour {
         animator.SetTrigger("Attack");
         transform.position = destination;
         soundEffect.Play();
-        combatHero.currentEnergy += step.energyGained;
-        SendDamageInstances(step.damageInstances, placeholders);
+        combatHero.currentEnergy += turn.energyGained;
+        SendDamageInstances(turn.steps, placeholders);
         yield return new WaitForSeconds(attackDurationSeconds);
 
         for (float x = 1; x <= slideDurationFrames; x++) {
@@ -139,8 +139,8 @@ public class AnimatedHero : MonoBehaviour {
         transform.position = startingPosition;
     }
 
-    private IEnumerator AnimateOtherAttacks(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
+    private IEnumerator AnimateOtherAttacks(CombatTurn turn, Dictionary<Guid, AnimatedHero> placeholders) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
 
         animator.SetTrigger("Attack");
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
@@ -149,22 +149,22 @@ public class AnimatedHero : MonoBehaviour {
         yield return new WaitForSeconds(0.3f);
 
         if (attackInfo.EnemyParticle != null) {
-            foreach (CombatHero enemy in step.enemyTargets) {
+            foreach (CombatHero enemy in turn.enemyTargets) {
                 var destination = placeholders[enemy.combatHeroGuid].transform.position;
                 destination.y += 0.5f;
                 FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
             }
         }
         if (attackInfo.AllyParticle != null) {
-            foreach (CombatHero ally in step.allyTargets) {
+            foreach (CombatHero ally in turn.allyTargets) {
                 var destination = placeholders[ally.combatHeroGuid].transform.position;
                 destination.y += 0.5f;
                 FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
             }
         }
 
-        combatHero.currentEnergy += step.energyGained;
-        SendDamageInstances(step.damageInstances, placeholders);
+        combatHero.currentEnergy += turn.energyGained;
+        SendDamageInstances(turn.steps, placeholders);
         yield return new WaitForSeconds(attackDurationSeconds);
     }
 
@@ -187,30 +187,30 @@ public class AnimatedHero : MonoBehaviour {
         animatedParticle.FlyToTarget(target);
     }
 
-    private void SendDamageInstances(List<DamageInstance> instances, Dictionary<Guid, AnimatedHero> placeholders) {
+    private void SendDamageInstances(List<CombatStep> steps, Dictionary<Guid, AnimatedHero> placeholders) {
         bool anyCriticals = false;
-        foreach (DamageInstance damageInstance in instances) {
-            placeholders[damageInstance.targetGuid].AnimateDamageInstance(damageInstance);
-            if (damageInstance.hitType == HitType.CRITICAL) anyCriticals = true;
+        foreach (CombatStep step in steps) {
+            placeholders[step.targetGuid].AnimateCombatStep(step);
+            if (step.hitType == HitType.CRITICAL) anyCriticals = true;
         }
         if (anyCriticals) {
             // Screen shake.
         }
     }
 
-    public void AnimateDamageInstance(DamageInstance damageInstance) {
-        combatHero.currentHealth -= damageInstance.damage;
-        combatHero.currentHealth += damageInstance.healing;
-        combatHero.currentEnergy += damageInstance.targetEnergy;
-        combatTextHolder.AnimateDamageInstance(damageInstance);
+    public void AnimateCombatStep(CombatStep step) {
+        combatHero.currentHealth -= step.damage;
+        combatHero.currentHealth += step.healing;
+        combatHero.currentEnergy += step.targetEnergy;
+        combatTextHolder.AnimateCombatStep(step);
 
         // Play particles associated with attack type.
 
-        if (damageInstance.damage > 0) {
+        if (step.damage > 0) {
             animator.SetTrigger("TakeDamage");
         }
 
-        if (damageInstance.wasFatal) {
+        if (step.wasFatal) {
             animator.SetTrigger("Die");
             StartCoroutine(FadeOutHealthCanvas());
         }

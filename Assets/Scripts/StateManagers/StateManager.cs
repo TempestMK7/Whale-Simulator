@@ -140,6 +140,25 @@ public class StateManager {
         SaveState(false);
     }
 
+    public static void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
+        if (!response.Report.alliesWon) return;
+        switch (battleType) {
+            case BattleEnum.CAMPAIGN:
+                if (currentState.CurrentMission == 10) {
+                    currentState.CurrentMission = 1;
+                    currentState.CurrentChapter++;
+                } else {
+                    currentState.CurrentMission++;
+                }
+                break;
+            case BattleEnum.LOOT_CAVE:
+                currentState.CurrentCaveFloor += 1;
+                break;
+        }
+        currentState.ReceiveRewards(response.Rewards);
+        SaveState(false);
+    }
+
     public static void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
         var encounter = response.Encounter;
         currentState.LastCaveEntryDate = encounter.Date;
@@ -158,6 +177,29 @@ public class StateManager {
             currentState.CurrentCaveFloor = 1;
         }
         return currentState.CurrentCaveFloor;
+    }
+
+    public static void SetLastUsedTeam(AccountHero[] team) {
+        var state = GetCurrentState();
+        state.LastTeamSelection = new Guid?[team.Length];
+        for (int x = 0; x < team.Length; x++) {
+            if (team[x] == null) state.LastTeamSelection[x] = null;
+            else state.LastTeamSelection[x] = team[x].Id;
+        }
+    }
+
+    public static AccountHero[] GetLastUsedTeam() {
+        var state = GetCurrentState();
+        var team = new AccountHero[5];
+        if (state.LastTeamSelection == null) return team;
+        for (int x = 0; x < state.LastTeamSelection.Length; x++) {
+            var guid = state.LastTeamSelection[x];
+            var matchingHero = state.AccountHeroes.Find((AccountHero hero) => {
+                return hero.Id.Equals(state.LastTeamSelection[x]);
+            });
+            team[x] = matchingHero;
+        }
+        return team;
     }
 
     #endregion
@@ -184,7 +226,7 @@ public class StateManager {
         SaveState();
     }
 
-    public static async Task<MissionReport> AttemptCurrentMissionWithTeam(AccountHero[] selectedTeam) {
+    public static MissionReport AttemptCurrentMissionWithTeam(AccountHero[] selectedTeam) {
         SetLastUsedTeam(selectedTeam);
         var missionInfo = MissionContainer.GetMission(currentState.CurrentChapter, currentState.CurrentMission);
         var enemyTeam = new AccountHero[missionInfo.MissionHeroes.Length];
@@ -195,7 +237,7 @@ public class StateManager {
             };
             enemyTeam[x] = accountHero;
         }
-        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam, currentState.AccountEquipment, currentState.AccountEquipment);
+        var combatReport = CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam, currentState.AccountEquipment, currentState.AccountEquipment);
 
         if (combatReport.alliesWon) {
             var earnedRewards = AddRewardsFromCurrentMission();
@@ -204,16 +246,6 @@ public class StateManager {
         }
 
         return new MissionReport(combatReport, null);
-    }
-
-    public static void IncrementCampaignPosition() {
-        if (currentState.CurrentMission == 10) {
-            currentState.CurrentMission = 1;
-            currentState.CurrentChapter++;
-        } else {
-            currentState.CurrentMission++;
-        }
-        SaveState();
     }
 
     public static EarnedRewardsContainer AddRewardsFromCurrentMission() {
@@ -240,27 +272,14 @@ public class StateManager {
         return new EarnedRewardsContainer(rewards.Summons, rewards.Gold, rewards.Souls, rewards.PlayerExperience, equipmentRewards);
     }
 
-    public static void SetLastUsedTeam(AccountHero[] team) {
-        var state = GetCurrentState();
-        state.LastTeamSelection = new Guid?[team.Length];
-        for (int x = 0; x < team.Length; x++) {
-            if (team[x] == null) state.LastTeamSelection[x] = null;
-            else state.LastTeamSelection[x] = team[x].Id;
+    public static void IncrementCampaignPosition() {
+        if (currentState.CurrentMission == 10) {
+            currentState.CurrentMission = 1;
+            currentState.CurrentChapter++;
+        } else {
+            currentState.CurrentMission++;
         }
-    }
-
-    public static AccountHero[] GetLastUsedTeam() {
-        var state = GetCurrentState();
-        var team = new AccountHero[5];
-        if (state.LastTeamSelection == null) return team;
-        for (int x = 0; x < state.LastTeamSelection.Length; x++) {
-            var guid = state.LastTeamSelection[x];
-            var matchingHero = state.AccountHeroes.Find((AccountHero hero) => {
-                return hero.Id.Equals(state.LastTeamSelection[x]);
-            });
-            team[x] = matchingHero;
-        }
-        return team;
+        SaveState();
     }
 
     #endregion

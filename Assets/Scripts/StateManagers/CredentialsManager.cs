@@ -238,6 +238,20 @@ public class CredentialsManager : MonoBehaviour {
         StateManager.HandleUnequipResponse(hero);
     }
 
+    public async Task<CombatResponse> PerformEpicBattle(BattleEnum battleType, AccountHero[] selectedHeroes) {
+        var selectedGuids = new Guid[selectedHeroes.Length];
+        for (int x = 0; x < selectedHeroes.Length; x++) {
+            selectedGuids[x] = selectedHeroes[x].Id;
+        }
+        var request = new CombatRequest() {
+            EncounterType = battleType,
+            SelectedHeroes = selectedGuids
+        };
+        var response = await MakeLambdaCall<CombatResponse, CombatRequest>(request, "CombatFunction");
+        StateManager.HandleCombatResponse(battleType, response);
+        return response;
+    }
+
     public async Task<LootCaveEncounter> RequestCaveEncounter() {
         var request = new LootCaveEncounterRequest();
         var response = await MakeLambdaCall<LootCaveEncounterResponse, LootCaveEncounterRequest>(request, "LootCaveEncounterFunction");

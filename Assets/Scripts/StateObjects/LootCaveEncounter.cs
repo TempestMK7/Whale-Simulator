@@ -32,5 +32,13 @@ namespace Com.Tempest.Whale.StateObjects {
             Position4Hero = BaseHeroContainer.ChooseRandomHero(RoleEnum.DAMAGE, rand);
             Position5Hero = BaseHeroContainer.ChooseRandomHero(RoleEnum.SUPPORT, rand);
         }
+
+        public int GetCurrentLevel() {
+            return Floor * 5;
+        }
+
+        public int GetAwakeningLevel() {
+            return (Floor / 4) + 1;
+        }
     }
 }

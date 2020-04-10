@@ -25,11 +25,19 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public class EarnedRewardsContainer {
 
-        public int Summons { get; }
-        public int Gold { get; }
-        public int Souls { get; }
-        public int PlayerExperience { get; }
-        public List<AccountEquipment> EarnedEquipment { get; }
+        public int Gold { get; set; }
+        public int Souls { get; set; }
+        public int PlayerExperience { get; set; }
+        public int Gems { get; set; }
+        public int Summons { get; set; }
+        public int BronzeSummons { get; set; }
+        public int SilverSummons { get; set; }
+        public int GoldSummons { get; set; }
+        public List<AccountEquipment> EarnedEquipment { get; set; }
+
+        public EarnedRewardsContainer() {
+            EarnedEquipment = new List<AccountEquipment>();
+        }
 
         public EarnedRewardsContainer(int summons, int gold, int souls, int playerExperience, List<AccountEquipment> earnedEquipment) {
             Summons = summons;
