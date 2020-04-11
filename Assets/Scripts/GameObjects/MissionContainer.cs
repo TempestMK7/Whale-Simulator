@@ -292,10 +292,49 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(220, 10, HeroEnum.REFLECTOR, HeroEnum.ANGERY_TREANT, HeroEnum.NEUROMANCER, HeroEnum.REFLECTOR, HeroEnum.EARTHZERKER, HeroEnum.INFERNOMANCER)
     };
 
+        private static readonly MissionInfo[] chapter23 = {
+        new MissionInfo(231, 10, HeroEnum.ORACLE, HeroEnum.FEESH, HeroEnum.ORACLE, HeroEnum.DRYAD, HeroEnum.MIST_CALLER, HeroEnum.BUSH_WHACKER),
+        new MissionInfo(232, 10, HeroEnum.ANGERY_TREANT, HeroEnum.ANGERY_TREANT, HeroEnum.EMBER, HeroEnum.DRYAD, HeroEnum.TORCH, HeroEnum.DRYAD),
+        new MissionInfo(233, 10, HeroEnum.INFERNOMANCER, HeroEnum.LAVA_GOLEM, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.INFERNOMANCER, HeroEnum.ICICLE_FLINGER, HeroEnum.TORCH),
+        new MissionInfo(234, 10, HeroEnum.REFLECTOR, HeroEnum.REFLECTOR, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.PEBBLE_FLINGER, HeroEnum.ICICLE_FLINGER, HeroEnum.PEBBLE_FLINGER),
+        new MissionInfo(235, 10, HeroEnum.EARTHZERKER, HeroEnum.LIVING_WALL, HeroEnum.LIVING_WALL, HeroEnum.LIGHTNING_WRAITH, HeroEnum.EARTHZERKER, HeroEnum.BATTERY),
+        new MissionInfo(236, 10, HeroEnum.NEUROMANCER, HeroEnum.FEESH, HeroEnum.NEUROMANCER, HeroEnum.LIGHTNING_WRAITH, HeroEnum.MIST_CALLER, HeroEnum.SPARK_ELEMENTAL),
+        new MissionInfo(237, 10, HeroEnum.REFLECTOR, HeroEnum.REFLECTOR, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.ICICLE_FLINGER, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.ICICLE_FLINGER),
+        new MissionInfo(238, 10, HeroEnum.EARTHZERKER, HeroEnum.LIVING_WALL, HeroEnum.BOULDER, HeroEnum.PEBBLE_FLINGER, HeroEnum.EARTHZERKER, HeroEnum.PEBBLE_FLINGER),
+        new MissionInfo(239, 10, HeroEnum.NEUROMANCER, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.LIGHTNING_WRAITH, HeroEnum.NEUROMANCER, HeroEnum.SPARK_ELEMENTAL),
+        new MissionInfo(240, 10, HeroEnum.ORACLE, HeroEnum.ANGERY_TREANT, HeroEnum.LAVA_GOLEM, HeroEnum.ORACLE, HeroEnum.INFERNOMANCER, HeroEnum.DRYAD)
+    };
+
+        private static readonly MissionInfo[] chapter24 = {
+        new MissionInfo(241, 10, HeroEnum.ORACLE, HeroEnum.FEESH, HeroEnum.ORACLE, HeroEnum.SPARK_ELEMENTAL, HeroEnum.MIST_CALLER, HeroEnum.LIGHTNING_WRAITH),
+        new MissionInfo(242, 10, HeroEnum.ANGERY_TREANT, HeroEnum.ANGERY_TREANT, HeroEnum.MIST_CALLER, HeroEnum.DRYAD, HeroEnum.MIST_CALLER, HeroEnum.DRYAD),
+        new MissionInfo(243, 10, HeroEnum.INFERNOMANCER, HeroEnum.LAVA_GOLEM, HeroEnum.BALL_OF_ROOTS, HeroEnum.INFERNOMANCER, HeroEnum.DRYAD, HeroEnum.TORCH),
+        new MissionInfo(244, 10, HeroEnum.REFLECTOR, HeroEnum.REFLECTOR, HeroEnum.EMBER, HeroEnum.ICICLE_FLINGER, HeroEnum.TORCH, HeroEnum.BLIZZARD_WIZZARD),
+        new MissionInfo(245, 10, HeroEnum.EARTHZERKER, HeroEnum.LIVING_WALL, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.EARTHZERKER, HeroEnum.ICICLE_FLINGER, HeroEnum.PEBBLE_FLINGER),
+        new MissionInfo(246, 10, HeroEnum.NEUROMANCER, HeroEnum.LIVING_WALL, HeroEnum.NEUROMANCER, HeroEnum.LIGHTNING_WRAITH, HeroEnum.PEBBLE_FLINGER, HeroEnum.SPARK_ELEMENTAL),
+        new MissionInfo(247, 10, HeroEnum.FEESH, HeroEnum.FEESH, HeroEnum.ORACLE, HeroEnum.MIST_CALLER, HeroEnum.MIST_CALLER, HeroEnum.MIST_CALLER),
+        new MissionInfo(248, 10, HeroEnum.LAVA_GOLEM, HeroEnum.LAVA_GOLEM, HeroEnum.EMBER, HeroEnum.TORCH, HeroEnum.INFERNOMANCER, HeroEnum.TORCH),
+        new MissionInfo(249, 10, HeroEnum.DRYAD, HeroEnum.ANGERY_TREANT, HeroEnum.HAPPY_FLOWER, HeroEnum.DRYAD, HeroEnum.DRYAD, HeroEnum.DRYAD),
+        new MissionInfo(250, 10, HeroEnum.REFLECTOR, HeroEnum.REFLECTOR, HeroEnum.NEUROMANCER, HeroEnum.PEBBLE_FLINGER, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.LIGHTNING_WRAITH)
+    };
+
+        private static readonly MissionInfo[] chapter25 = {
+        new MissionInfo(251, 10, HeroEnum.ORACLE, HeroEnum.LAVA_GOLEM, HeroEnum.ORACLE, HeroEnum.DRYAD, HeroEnum.MIST_CALLER, HeroEnum.TORCH),
+        new MissionInfo(252, 10, HeroEnum.ANGERY_TREANT, HeroEnum.ANGERY_TREANT, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.MIST_CALLER, HeroEnum.DRYAD, HeroEnum.ICICLE_FLINGER),
+        new MissionInfo(253, 10, HeroEnum.INFERNOMANCER, HeroEnum.LIVING_WALL, HeroEnum.EMBER, HeroEnum.PEBBLE_FLINGER, HeroEnum.INFERNOMANCER, HeroEnum.BLIZZARD_WIZZARD),
+        new MissionInfo(254, 10, HeroEnum.REFLECTOR, HeroEnum.REFLECTOR, HeroEnum.LIVING_WALL, HeroEnum.LIGHTNING_WRAITH, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.SPARK_ELEMENTAL),
+        new MissionInfo(255, 10, HeroEnum.EARTHZERKER, HeroEnum.LIVING_WALL, HeroEnum.MIST_CALLER, HeroEnum.EARTHZERKER, HeroEnum.LIGHTNING_WRAITH, HeroEnum.SPARK_ELEMENTAL),
+        new MissionInfo(256, 10, HeroEnum.NEUROMANCER, HeroEnum.BALL_OF_ROOTS, HeroEnum.NEUROMANCER, HeroEnum.MIST_CALLER, HeroEnum.SPARK_ELEMENTAL, HeroEnum.DRYAD),
+        new MissionInfo(257, 10, HeroEnum.ORACLE, HeroEnum.REFLECTOR, HeroEnum.ORACLE, HeroEnum.BLIZZARD_WIZZARD, HeroEnum.MIST_CALLER, HeroEnum.RAIN_MAN),
+        new MissionInfo(258, 10, HeroEnum.ANGERY_TREANT, HeroEnum.ANGERY_TREANT, HeroEnum.BOULDER, HeroEnum.DRYAD, HeroEnum.EARTHZERKER, HeroEnum.PEBBLE_FLINGER),
+        new MissionInfo(259, 10, HeroEnum.INFERNOMANCER, HeroEnum.LAVA_GOLEM, HeroEnum.NEUROMANCER, HeroEnum.INFERNOMANCER, HeroEnum.SPARK_ELEMENTAL, HeroEnum.EMBER),
+        new MissionInfo(260, 10, HeroEnum.REFLECTOR, HeroEnum.ANGERY_TREANT, HeroEnum.NEUROMANCER, HeroEnum.REFLECTOR, HeroEnum.EARTHZERKER, HeroEnum.INFERNOMANCER)
+    };
+
         private static readonly MissionInfo[][] allChapters = {
         chapter1, chapter2, chapter3, chapter4, chapter5, chapter6, chapter7, chapter8, chapter9, chapter10,
         chapter11, chapter12, chapter13, chapter14, chapter15, chapter16, chapter17, chapter18, chapter19, chapter20,
-        chapter21, chapter22 };
+        chapter21, chapter22, chapter23, chapter24, chapter25 };
 
         public static MissionInfo GetMission(int chapter, int mission) {
             if (chapter > allChapters.Length) return null;
