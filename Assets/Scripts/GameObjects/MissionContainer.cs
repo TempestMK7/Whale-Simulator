@@ -345,15 +345,17 @@ namespace Com.Tempest.Whale.GameObjects {
             return new GenerationInfo(currentState.CurrentChapter);
         }
 
-        public static List<AccountEquipment> GetMissionEquipmentLoadout(AccountHero hero) {
+        public static List<AccountEquipment> GetStockEquipmentLoadout(AccountHero hero, bool nerfGear) {
             var equipped = new List<AccountEquipment>();
             var baseHero = hero.GetBaseHero();
-            if (baseHero.PreferredMainHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredMainHand.GetValueOrDefault(), hero.AwakeningLevel));
-            if (baseHero.PreferredOffHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredOffHand.GetValueOrDefault(), hero.AwakeningLevel));
-            if (baseHero.PreferredTwoHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredTwoHand.GetValueOrDefault(), hero.AwakeningLevel));
-            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredChest, hero.AwakeningLevel));
-            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredLegs, hero.AwakeningLevel));
-            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredHead, hero.AwakeningLevel));
+            var awakeningLevel = nerfGear ? hero.AwakeningLevel - 2 : hero.AwakeningLevel;
+            if (awakeningLevel < 1) return equipped;
+            if (baseHero.PreferredMainHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredMainHand.GetValueOrDefault(), awakeningLevel));
+            if (baseHero.PreferredOffHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredOffHand.GetValueOrDefault(), awakeningLevel));
+            if (baseHero.PreferredTwoHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredTwoHand.GetValueOrDefault(), awakeningLevel));
+            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredChest, awakeningLevel));
+            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredLegs, awakeningLevel));
+            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredHead, awakeningLevel));
             return equipped;
         }
     }

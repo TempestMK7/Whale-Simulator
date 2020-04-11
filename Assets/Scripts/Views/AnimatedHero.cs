@@ -7,10 +7,13 @@ using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.ResourceContainers;
 using Com.Tempest.Whale.StateObjects;
+using Spine;
+using Spine.Unity;
 
 public class AnimatedHero : MonoBehaviour {
 
     public Animator animator;
+    public SpriteRenderer spriteRenderer;
     public AudioSource soundEffect;
     public Canvas healthCanvas;
     public Image healthBar;
@@ -27,6 +30,7 @@ public class AnimatedHero : MonoBehaviour {
 
     private AccountHero selectedHero;
     private CombatHero combatHero;
+    private SkeletonAnimation spineAnimation;
 
     private Vector3 startingPosition;
 
@@ -55,22 +59,52 @@ public class AnimatedHero : MonoBehaviour {
     }
 
     public void SetHero(HeroEnum hero) {
+        if (spineAnimation != null) {
+            Destroy(spineAnimation.gameObject);
+            spineAnimation = null;
+        }
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
-        animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.HeroAnimatorPath);
+        if (baseHero.SpinePath != null) {
+            spriteRenderer.enabled = false;
+            spineAnimation = Instantiate(Resources.Load<GameObject>(baseHero.SpinePath), gameObject.transform).GetComponent<SkeletonAnimation>();
+        } else {
+            spriteRenderer.enabled = true;
+            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.SpritePath);
+        }
+
+        SetAnimation("idle", true);
     }
 
     public void SetHero(CombatHero hero) {
+        if (spineAnimation != null) {
+            Destroy(spineAnimation.gameObject);
+            spineAnimation = null;
+        }
+
         handler = null;
         heroHandler = null;
         selectedHero = null;
         combatHero = new CombatHero(hero);
-        animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.HeroAnimatorPath);
+
+        if (hero.baseHero.SpinePath != null) {
+            spriteRenderer.enabled = false;
+            spineAnimation = Instantiate(Resources.Load<GameObject>(hero.baseHero.SpinePath), gameObject.transform).GetComponent<SkeletonAnimation>();
+        } else {
+            spriteRenderer.enabled = true;
+            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.SpritePath);
+        }
+
         if (hero.IsAlive()) {
             healthCanvas.gameObject.SetActive(true);
         } else {
             healthCanvas.gameObject.SetActive(false);
             animator.SetTrigger("Die");
+            SetAnimation("crouch", false);
         }
+    }
+
+    public void SetAnimation(string state, bool loop) {
+        if (spineAnimation != null && spineAnimation.state != null) spineAnimation.state.SetAnimation(0, state, loop);
     }
 
     public bool ContainsHero(CombatHero hero) {
@@ -125,11 +159,13 @@ public class AnimatedHero : MonoBehaviour {
         }
 
         animator.SetTrigger("Attack");
+        SetAnimation("attack", false);
         transform.position = destination;
         soundEffect.Play();
         combatHero.currentEnergy += turn.energyGained;
         SendDamageInstances(turn.steps, placeholders);
         yield return new WaitForSeconds(attackDurationSeconds);
+        SetAnimation("idle", true);
 
         for (float x = 1; x <= slideDurationFrames; x++) {
             float percentage = x / slideDurationFrames;
@@ -143,10 +179,12 @@ public class AnimatedHero : MonoBehaviour {
         var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
 
         animator.SetTrigger("Attack");
+        SetAnimation("attack", false);
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         soundEffect.Play();
         yield return new WaitForSeconds(0.3f);
+        SetAnimation("idle", true);
 
         if (attackInfo.EnemyParticle != null) {
             foreach (CombatHero enemy in turn.enemyTargets) {
@@ -206,14 +244,21 @@ public class AnimatedHero : MonoBehaviour {
 
         // Play particles associated with attack type.
 
-        if (step.damage > 0) {
-            animator.SetTrigger("TakeDamage");
+        if (step.damage > 0 && !step.wasFatal) {
+            StartCoroutine(TakeDamage());
         }
 
         if (step.wasFatal) {
-            animator.SetTrigger("Die");
+            PlayDead();
             StartCoroutine(FadeOutHealthCanvas());
         }
+    }
+
+    private IEnumerator TakeDamage() {
+        animator.SetTrigger("TakeDamage");
+        SetAnimation("crouch", false);
+        yield return new WaitForSeconds(0.3f);
+        SetAnimation("idle", true);
     }
 
     private IEnumerator FadeOutHealthCanvas() {
@@ -223,5 +268,6 @@ public class AnimatedHero : MonoBehaviour {
 
     public void PlayDead() {
         animator.SetTrigger("Die");
+        SetAnimation("crouch", true);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Spine;
+using Spine.Unity;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -105,7 +107,16 @@ public class HeroSceneManager : MonoBehaviour {
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
                 var animator = hit.transform.gameObject.GetComponent<Animator>();
                 if (animator != null) animator.SetTrigger("Attack");
+                StartCoroutine(PerformAttackAnimation());
             }
+        }
+    }
+
+    private IEnumerator PerformAttackAnimation() {
+        var spineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
+        if (spineAnimation != null) {
+            yield return new WaitForSpineAnimation(spineAnimation.state.SetAnimation(0, "attack", false), WaitForSpineAnimation.AnimationEventTypes.Complete);
+            spineAnimation.state.SetAnimation(0, "idle", true);
         }
     }
 
@@ -220,8 +231,19 @@ public class HeroSceneManager : MonoBehaviour {
         factionIconLeft.sprite = FactionIconContainer.GetIconForFaction(baseHero.Faction);
         roleIconRight.sprite = RoleIconContainer.GetIconForRole(baseHero.Role);
 
-        var animator = Resources.Load<AnimatorOverrideController>(baseHero.HeroAnimatorPath);
-        heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
+        var existingSpineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
+        if (existingSpineAnimation != null) {
+            Destroy(existingSpineAnimation.gameObject);
+        }
+
+        if (baseHero.SpinePath != null) {
+            heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
+            var spineAnimation = Instantiate(Resources.Load<SkeletonAnimation>(baseHero.SpinePath), heroAnimation.transform);
+        } else {
+            heroAnimation.GetComponent<SpriteRenderer>().enabled = true;
+            var animator = Resources.Load<AnimatorOverrideController>(baseHero.SpritePath);
+            heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
+        }
 
         var equipped = state.GetEquipmentForHero(currentHero);
         headEquipment.SetEquipment(

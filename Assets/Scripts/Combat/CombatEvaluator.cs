@@ -9,7 +9,7 @@ namespace Com.Tempest.Whale.Combat {
     public class CombatEvaluator {
 
         public static CombatReport GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, 
-            List<AccountEquipment> allyEquipment, List<AccountEquipment> enemyEquipment, bool usePreferredGear = false) {
+            List<AccountEquipment> allyEquipment, List<AccountEquipment> enemyEquipment, bool usePreferredGear = false, bool nerfPreferredGear = false) {
             CombatHero[] combatAllies = new CombatHero[allies.Length];
             for (int x = 0; x < combatAllies.Length; x++) {
                 if (allies[x] != null) {
@@ -20,7 +20,7 @@ namespace Com.Tempest.Whale.Combat {
             CombatHero[] combatEnemies = new CombatHero[enemies.Length];
             for (int x = 0; x < combatEnemies.Length; x++) {
                 if (enemies[x] != null) {
-                    if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(MissionContainer.GetMissionEquipmentLoadout(enemies[x]));
+                    if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(MissionContainer.GetStockEquipmentLoadout(enemies[x], nerfPreferredGear));
                     else combatEnemies[x] = enemies[x].GetCombatHeroFromAllEquipment(enemyEquipment);
                 }
             }

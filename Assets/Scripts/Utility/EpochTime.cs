@@ -9,6 +9,6 @@ public class EpochTime {
     }
 
     public static string GetCurrentDate() {
-        return new DateTime().ToString("yyyy-MM-dd");
+        return DateTime.UtcNow.ToString("yyyy-MM-dd");
     }
 }

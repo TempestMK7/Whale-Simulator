@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 4195754226397252337}
   - component: {fileID: 5555443797076150868}
   m_Layer: 20
-  m_Name: HeroPlaceholder
+  m_Name: AnimatedHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -510,6 +510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4871754574086914967}
+  spriteRenderer: {fileID: 3892426357749537444}
   soundEffect: {fileID: 8912400163779790743}
   healthCanvas: {fileID: 8019568786287725730}
   healthBar: {fileID: 2793611557472197501}
