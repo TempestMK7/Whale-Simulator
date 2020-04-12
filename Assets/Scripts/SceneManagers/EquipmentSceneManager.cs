@@ -90,7 +90,6 @@ public class EquipmentSceneManager : MonoBehaviour {
                     allowedTypes.Add(EquipmentType.DAGGER);
                     allowedTypes.Add(EquipmentType.SWORD);
                     allowedTypes.Add(EquipmentType.AXE);
-                    allowedTypes.Add(EquipmentType.CLUB);
                     allowedTypes.Add(EquipmentType.SCEPTER);
                     allowedTypes.Add(EquipmentType.TOME);
                     allowedTypes.Add(EquipmentType.METAL_SHIELD);
@@ -99,7 +98,6 @@ public class EquipmentSceneManager : MonoBehaviour {
                 case EquipmentFilter.TWO_HAND:
                     allowedTypes.Add(EquipmentType.GREAT_SWORD);
                     allowedTypes.Add(EquipmentType.GREAT_AXE);
-                    allowedTypes.Add(EquipmentType.GREAT_CLUB);
                     allowedTypes.Add(EquipmentType.STAFF);
                     break;
                 case EquipmentFilter.CLOTH:

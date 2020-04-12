@@ -153,7 +153,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         RoleEnum.DAMAGE, FactionEnum.GRASS, 4,
                         65, 75, 85, 55, 60, 80, 0.2, 0,
                         AttackEnum.SPEAR_THROW, AttackEnum.RITUAL_OF_VENOM, AbilityEnum.NONE,
-                        null, null, EquipmentType.GREAT_CLUB,
+                        null, null, EquipmentType.STAFF,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
                 case HeroEnum.ANGERY_TREANT:
                     return new BaseHero(hero, "Angery Treant", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
@@ -315,20 +315,15 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Unknown", "Icons/icon_gem", "Characters/FacelessOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.WATER, 1,
                         50, 50, 50,
-                        30, 30, 50, 0.10, 0,
+                        50, 50, 50, 0, 0,
                         AttackEnum.BASIC_PHYSICAL, AttackEnum.SPECIAL_PHYSICAL, AbilityEnum.NONE,
                         null, null, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
             }
         }
 
-        public static int GetBigStatGain(double baseStat) {
-            int stat = (int)baseStat;
-            return (stat - 40) / 10;
-        }
-
-        public static double GetSmallStatGain(double baseStat) {
-            return (baseStat - 30.0) / 20.0;
+        public static double GetBigStatGain(double baseStat) {
+            return ((baseStat - 50.0) / 20.0) + 2.0;
         }
     }
 

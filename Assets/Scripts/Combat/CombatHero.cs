@@ -39,7 +39,7 @@ namespace Com.Tempest.Whale.Combat {
             awakeningLevel = accountHero.AwakeningLevel;
             currentLevel = accountHero.CurrentLevel;
 
-            health = GetBigStat(baseHero.BaseHealth) * 10.0;
+            health = GetBigStat(baseHero.BaseHealth) * 30.0;
             attack = GetBigStat(baseHero.BaseAttack);
             magic = GetBigStat(baseHero.BaseMagic);
             defense = GetBigStat(baseHero.BaseDefense);
@@ -171,6 +171,22 @@ namespace Com.Tempest.Whale.Combat {
             return multiplier * attack;
         }
 
+        public double GetAttackModifier() {
+            var multiplier = 1.0;
+            foreach (CombatStatus status in currentStatus) {
+                if (status.status == StatusEnum.ATTACK_UP) {
+                    multiplier += status.value;
+                } else if (status.status == StatusEnum.ATTACK_DOWN) {
+                    multiplier -= status.value;
+                } else if (status.status == StatusEnum.CHILL) {
+                    multiplier -= status.value;
+                } else if (status.status == StatusEnum.ROOT) {
+                    multiplier -= status.value;
+                }
+            }
+            return multiplier;
+        }
+
         public double GetModifiedMagic() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
@@ -193,6 +209,30 @@ namespace Com.Tempest.Whale.Combat {
                 }
             }
             return multiplier * magic;
+        }
+
+        public double GetMagicModifier() {
+            var multiplier = 1.0;
+            foreach (CombatStatus status in currentStatus) {
+                if (status.status == StatusEnum.MAGIC_UP) {
+                    multiplier += status.value;
+                } else if (status.status == StatusEnum.MAGIC_DOWN) {
+                    multiplier -= status.value;
+                } else if (status.status == StatusEnum.DAZE) {
+                    if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                        multiplier += status.value;
+                    } else {
+                        multiplier -= status.value;
+                    }
+                } else if (status.status == StatusEnum.BLIND) {
+                    if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                        multiplier += status.value;
+                    } else {
+                        multiplier -= status.value;
+                    }
+                }
+            }
+            return multiplier;
         }
 
         public double GetModifiedDefense() {

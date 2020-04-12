@@ -20,20 +20,21 @@ namespace Com.Tempest.Whale.Combat {
 
         #region Hit calculation and modifiers.
 
-        public static double Damage(double attack, double defense, HitType hitType, HitEffectivity hitEffectivity) {
-            var modifiedDefense = defense;
+        public static double Damage(double baseAttack, double attackModifier, double modifiedDefense, HitType hitType, HitEffectivity hitEffectivity) {
+            var damage = Math.Pow(baseAttack, 2.0) / modifiedDefense;
             if (hitType == HitType.CRITICAL) {
-                modifiedDefense = 0.0;
+                damage *= 1.5;
             } else if (hitType == HitType.DEFLECTION) {
-                modifiedDefense *= 2.0;
+                damage *= 0.67;
             }
-            var mitigation = Math.Pow(0.9, modifiedDefense / 200);
-            var damage = attack * mitigation;
+
             if (hitEffectivity == HitEffectivity.EMPOWERED) {
                 damage *= 1.2;
             } else if (hitEffectivity == HitEffectivity.RESISTED) {
                 damage *= 0.8;
             }
+
+            damage *= attackModifier;
             return damage;
         }
 

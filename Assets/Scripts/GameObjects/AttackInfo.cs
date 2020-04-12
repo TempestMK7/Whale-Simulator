@@ -164,9 +164,11 @@ namespace Com.Tempest.Whale.GameObjects {
         public List<CombatStep> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
             var hitType = CombatMath.RollHitType(attacker, target);
             var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
-            var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
+            var attackValue = IsPhysical ? attacker.attack : attacker.magic;
+            var attackModifier = IsPhysical ? attacker.GetAttackModifier() : attacker.GetMagicModifier();
             var defenseValue = IsPhysical ? attacker.GetModifiedDefense() : attacker.GetModifiedReflection();
-            var damage = CombatMath.Damage(attackValue * DamageMultiplier, defenseValue, hitType, hitEffectivity);
+            var damage = CombatMath.Damage(attackValue, attackModifier, defenseValue, hitType, hitEffectivity);
+            damage *= DamageMultiplier;
             target.currentHealth -= damage;
             target.currentEnergy += TargetEnergyGained;
 
