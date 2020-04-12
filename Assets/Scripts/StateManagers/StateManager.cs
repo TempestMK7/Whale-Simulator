@@ -79,6 +79,18 @@ public class StateManager {
         SaveState(false);
     }
 
+    public static void HandleSummonResponse(FactionSummonResponse response) {
+        foreach (AccountHero hero in response.SummonedHeroes) {
+            hero.LoadBaseHero();
+        }
+        currentState.CurrentBronzeSummons = response.CurrentBronzeSummons;
+        currentState.CurrentSilverSummons = response.CurrentSilverSummons;
+        currentState.CurrentGoldSummons = response.CurrentGoldSummons;
+        currentState.AccountHeroes.AddRange(response.SummonedHeroes);
+        currentState.RetrieveDataAfterLoad();
+        SaveState(false);
+    }
+
     public static void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
         if (!response.LevelupSuccessful) return;
         leveledHero.CurrentLevel = response.HeroLevel;

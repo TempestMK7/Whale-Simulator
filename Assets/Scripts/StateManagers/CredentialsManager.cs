@@ -160,6 +160,17 @@ public class CredentialsManager : MonoBehaviour {
         return response.SummonedHeroes;
     }
 
+    public async Task<List<AccountHero>> RequestSummons(FactionEnum faction, int rarity, int summonCount) {
+        var summonRequest = new FactionSummonRequest() {
+            ChosenFaction = faction,
+            SummonCount = summonCount,
+            SummonRarity = rarity
+        };
+        var response = await MakeLambdaCall<FactionSummonResponse, FactionSummonRequest>(summonRequest, "SummonFactionHeroFunction");
+        StateManager.HandleSummonResponse(response);
+        return response.SummonedHeroes;
+    }
+
     public async Task<bool> RequestLevelup(AccountHero selectedHero) {
         if (selectedHero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(selectedHero.AwakeningLevel)) {
             return false;

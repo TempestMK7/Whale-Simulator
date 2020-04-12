@@ -30,9 +30,9 @@ namespace Com.Tempest.Whale.Combat {
             var mitigation = Math.Pow(0.9, modifiedDefense / 200);
             var damage = attack * mitigation;
             if (hitEffectivity == HitEffectivity.EMPOWERED) {
-                damage *= 1.5;
+                damage *= 1.2;
             } else if (hitEffectivity == HitEffectivity.RESISTED) {
-                damage *= 2.0 / 3.0;
+                damage *= 0.8;
             }
             return damage;
         }

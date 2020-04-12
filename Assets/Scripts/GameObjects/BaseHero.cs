@@ -416,7 +416,7 @@ namespace Com.Tempest.Whale.GameObjects {
             }
         }
 
-        private static HeroEnum ChooseHeroFromList(Random rand, List<HeroEnum> choices) {
+        public static HeroEnum ChooseHeroFromList(Random rand, List<HeroEnum> choices) {
             int choice = rand.Next(choices.Count);
             return choices[choice];
         }
