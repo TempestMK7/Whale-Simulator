@@ -150,8 +150,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.DRYAD:
                     return new BaseHero(hero, "Dryad", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
-                        RoleEnum.DAMAGE, FactionEnum.GRASS, 4,
-                        65, 75, 85, 55, 60, 80, 0.2, 0,
+                        RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
+                        75, 60, 95, 70, 70, 70, 0, 0,
                         AttackEnum.MOONLIGHT, AttackEnum.RITUAL_OF_THE_SUN, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);

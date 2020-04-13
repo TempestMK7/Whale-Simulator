@@ -486,7 +486,11 @@ public class RewardAdapter : RecyclerViewAdapter {
         if (rewards.Gold > 0) earnedRewards.Add(RewardType.GOLD);
         if (rewards.Souls > 0) earnedRewards.Add(RewardType.SOULS);
         if (rewards.PlayerExperience > 0) earnedRewards.Add(RewardType.PLAYER_EXPERIENCE);
+        if (rewards.Gems > 0) earnedRewards.Add(RewardType.GEMS);
         if (rewards.Summons > 0) earnedRewards.Add(RewardType.STANDARD_SUMMON);
+        if (rewards.BronzeSummons > 0) earnedRewards.Add(RewardType.BRONZE_SUMMON);
+        if (rewards.SilverSummons > 0) earnedRewards.Add(RewardType.SILVER_SUMMON);
+        if (rewards.GoldSummons > 0) earnedRewards.Add(RewardType.GOLD_SUMMON);
 
         earnedEquipment = rewards.EarnedEquipment;
     }
@@ -509,8 +513,20 @@ public class RewardAdapter : RecyclerViewAdapter {
                 case RewardType.PLAYER_EXPERIENCE:
                     rewardHolder.SetReward(type, rewards.PlayerExperience);
                     break;
+                case RewardType.GEMS:
+                    rewardHolder.SetReward(type, rewards.Gems);
+                    break;
                 case RewardType.STANDARD_SUMMON:
                     rewardHolder.SetReward(type, rewards.Summons);
+                    break;
+                case RewardType.BRONZE_SUMMON:
+                    rewardHolder.SetReward(type, rewards.BronzeSummons);
+                    break;
+                case RewardType.SILVER_SUMMON:
+                    rewardHolder.SetReward(type, rewards.SilverSummons);
+                    break;
+                case RewardType.GOLD_SUMMON:
+                    rewardHolder.SetReward(type, rewards.GoldSummons);
                     break;
             }
         } else {

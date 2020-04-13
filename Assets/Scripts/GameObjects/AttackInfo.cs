@@ -168,7 +168,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
             var attackValue = IsPhysical ? attacker.attack : attacker.magic;
             var attackModifier = IsPhysical ? attacker.GetAttackModifier() : attacker.GetMagicModifier();
-            var defenseValue = IsPhysical ? attacker.GetModifiedDefense() : attacker.GetModifiedReflection();
+            var defenseValue = IsPhysical ? target.GetModifiedDefense() : target.GetModifiedReflection();
             var damage = CombatMath.Damage(attackValue, attackModifier, defenseValue, hitType, hitEffectivity);
             damage *= DamageMultiplier;
             target.currentHealth -= damage;

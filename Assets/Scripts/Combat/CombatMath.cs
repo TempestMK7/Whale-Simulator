@@ -109,8 +109,9 @@ namespace Com.Tempest.Whale.Combat {
                 double highestHealth = 0;
                 CombatHero selection = null;
                 foreach (CombatHero hero in allLiving) {
-                    if (hero.currentHealth > highestHealth) {
-                        highestHealth = hero.currentHealth / hero.health;
+                    var healthPercent = hero.currentHealth / hero.health;
+                    if (healthPercent > highestHealth) {
+                        highestHealth = healthPercent;
                         selection = hero;
                     }
                 }
