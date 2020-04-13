@@ -96,6 +96,7 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         public int CompareTo(CombatHero other) {
+            if (other == null) return -1;
             int currentSpeedComp = other.GetModifiedSpeed().CompareTo(GetModifiedSpeed());
             if (currentSpeedComp != 0) return currentSpeedComp;
             int energyComp = other.currentEnergy.CompareTo(currentEnergy);

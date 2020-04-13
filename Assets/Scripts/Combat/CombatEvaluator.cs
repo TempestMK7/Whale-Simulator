@@ -48,6 +48,9 @@ namespace Com.Tempest.Whale.Combat {
             var haveNotMoved = new List<CombatHero>();
             haveNotMoved.AddRange(allies);
             haveNotMoved.AddRange(enemies);
+            haveNotMoved.RemoveAll((CombatHero hero) => {
+                return hero == null;
+            });
             haveNotMoved.Sort();
 
             while (haveNotMoved.Count > 0 && TeamAlive(allies) && TeamAlive(enemies)) {
