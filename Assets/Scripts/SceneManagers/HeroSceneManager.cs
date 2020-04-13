@@ -115,8 +115,8 @@ public class HeroSceneManager : MonoBehaviour {
     private IEnumerator PerformAttackAnimation() {
         var spineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
         if (spineAnimation != null) {
-            yield return new WaitForSpineAnimation(spineAnimation.state.SetAnimation(0, "attack", false), WaitForSpineAnimation.AnimationEventTypes.Complete);
-            spineAnimation.state.SetAnimation(0, "idle", true);
+            yield return new WaitForSpineAnimation(spineAnimation.state.SetAnimation(0, "Attack", false), WaitForSpineAnimation.AnimationEventTypes.Complete);
+            spineAnimation.state.SetAnimation(0, "Idle", true);
         }
     }
 

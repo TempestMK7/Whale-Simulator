@@ -55,6 +55,7 @@ public class BattleSceneManager : MonoBehaviour {
     private AccountHero[] selectedEnemies;
 
     // These are used in combat mode.
+    private bool combatStarted = false;
     private Dictionary<Guid, AnimatedHero> placeHolders;
     private bool skipBattle = false;
     private CombatReport combatReport;
@@ -76,7 +77,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public void Update() {
-        if (loadingFromServer) return;
+        if (loadingFromServer || combatStarted) return;
         if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
@@ -231,6 +232,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public bool OnHeroSelected(AccountHero hero, bool isSelected) {
+        if (ButtonsBlocked()) return false;
         if (isSelected) {
             for (int x = 0; x < selectedAllies.Length; x++) {
                 if (selectedAllies[x] == null) {
@@ -267,6 +269,8 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public async void OnFight() {
+        if (ButtonsBlocked()) return;
+        combatStarted = true;
         loadingFromServer = true;
         var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
         loadingPopup.LaunchPopup("Preparing...", "Writing ballads of your inevitable victory...");

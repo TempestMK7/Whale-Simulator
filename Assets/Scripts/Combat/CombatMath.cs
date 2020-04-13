@@ -106,11 +106,11 @@ namespace Com.Tempest.Whale.Combat {
         public static List<CombatHero> LowestHealth(CombatHero[] heroes, int targetCount) {
             var allLiving = AllLiving(heroes);
             while (allLiving.Count > targetCount) {
-                double highestHealth = double.MinValue;
+                double highestHealth = 0;
                 CombatHero selection = null;
                 foreach (CombatHero hero in allLiving) {
                     if (hero.currentHealth > highestHealth) {
-                        highestHealth = hero.currentHealth;
+                        highestHealth = hero.currentHealth / hero.health;
                         selection = hero;
                     }
                 }

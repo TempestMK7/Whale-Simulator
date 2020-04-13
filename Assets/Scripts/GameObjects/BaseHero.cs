@@ -152,7 +152,7 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Dryad", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.GRASS, 4,
                         65, 75, 85, 55, 60, 80, 0.2, 0,
-                        AttackEnum.SPEAR_THROW, AttackEnum.RITUAL_OF_VENOM, AbilityEnum.NONE,
+                        AttackEnum.MOONLIGHT, AttackEnum.RITUAL_OF_THE_SUN, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
                 case HeroEnum.ANGERY_TREANT:
@@ -165,7 +165,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
                 // Fire heroes.
                 case HeroEnum.CANDLE_MAN:
-                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
+                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Spine/CandleMan",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
                         60, 55, 90, 60, 70, 85, 0.2, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.TWIN_FLAME, AbilityEnum.KINDLING,
@@ -267,7 +267,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.EARTHZERKER:
-                    return new BaseHero(hero, "Earthzerker", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Spine/SpineHero",
+                    return new BaseHero(hero, "Earthzerker", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 5,
                         60, 100, 50, 60, 50, 80, 0.4, -0.2,
                         AttackEnum.AXE_SLASH, AttackEnum.SPLIT_SKULL, AbilityEnum.MOUNTING_RAGE,
