@@ -199,9 +199,15 @@ public class HeroSceneManager : MonoBehaviour {
     public async void OnLevelUpPressed() {
         if (ButtonsBlocked()) return;
         loadingFromServer = true;
-        bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
-        loadingFromServer = false;
-        OnLevelUpComplete(successful);
+        try {
+            bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
+            loadingFromServer = false;
+            OnLevelUpComplete(successful);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
+        }
     }
 
     public void OnLevelUpComplete(bool successful) {
@@ -304,16 +310,28 @@ public class HeroSceneManager : MonoBehaviour {
 
     public async void NotifyEquipmentSelected(AccountEquipment selected, AccountHero equippedHero, EquipmentSlot? slot) {
         loadingFromServer = true;
-        await credentialsManager.EquipToHero(selected, equippedHero, slot);
-        loadingFromServer = false;
-        BindDetailView();
+        try {
+            await credentialsManager.EquipToHero(selected, equippedHero, slot);
+            loadingFromServer = false;
+            BindDetailView();
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
+        }
     }
 
     public async void UnequipHero() {
         loadingFromServer = true;
-        await credentialsManager.UnequipHero(filteredList[currentPosition]);
-        loadingFromServer = false;
-        BindDetailView();
+        try {
+            await credentialsManager.UnequipHero(filteredList[currentPosition]);
+            loadingFromServer = false;
+            BindDetailView();
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
+        }
     }
 
     public void LaunchAttackTooltip() {

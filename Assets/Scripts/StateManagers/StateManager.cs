@@ -11,7 +11,7 @@ using Com.Tempest.Whale.StateObjects;
 
 public class StateManager {
 
-    private static string fileName = Application.persistentDataPath + "/WhaleState.txt";
+    public static string fileName = Application.persistentDataPath + "/WhaleState.txt";
     private static AccountState currentState;
 
     #region Internal state handling.

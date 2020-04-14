@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.ResourceContainers;
@@ -6,6 +7,9 @@ using Com.Tempest.Whale.ResourceContainers;
 public class InitializationSceneManager : MonoBehaviour {
 
     public GameObject loadingPopupPrefab;
+    public GameObject tooltipPopupPrefab;
+    public ClearDataPopup clearDataPrefab;
+
     public Canvas mainCanvas;
 
     private bool initializing = false;
@@ -19,24 +23,36 @@ public class InitializationSceneManager : MonoBehaviour {
         initializing = true;
         var loadingPopup = Instantiate(loadingPopupPrefab, mainCanvas.transform).GetComponent<LoadingPopup>();
         loadingPopup.LaunchPopup("Step 1 of 4.", "Loading assets...", false);
-        BaseHeroContainer.Initialize();
-        BaseEquipmentContainer.Initialize();
-        AttackInfoContainer.Initialize();
-        AbilityInfoContainer.Initialize();
 
-        FactionIconContainer.Initialize();
-        RoleIconContainer.Initialize();
-        AttackParticleContainer.Initialize();
-        RewardIconContainer.Initialize();
+        try {
+            BaseHeroContainer.Initialize();
+            BaseEquipmentContainer.Initialize();
+            AttackInfoContainer.Initialize();
+            AbilityInfoContainer.Initialize();
 
-        SettingsManager.GetInstance();
+            FactionIconContainer.Initialize();
+            RoleIconContainer.Initialize();
+            AttackParticleContainer.Initialize();
+            RewardIconContainer.Initialize();
 
-        loadingPopup.SetText("Step 2 of 4.", "Contacting identity server...");
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
-        await credentialsManager.InitializeEverything();
-        loadingPopup.SetText("Step 3 of 4.", "Downloading account information...");
-        await credentialsManager.DownloadState();
-        loadingPopup.SetText("Step 4 of 4.", "Launching world hub...");
-        SceneManager.LoadSceneAsync("HubScene");
+            SettingsManager.GetInstance();
+
+            loadingPopup.SetText("Step 2 of 4.", "Contacting identity server...");
+            var credentialsManager = FindObjectOfType<CredentialsManager>();
+            await credentialsManager.InitializeEverything();
+            loadingPopup.SetText("Step 3 of 4.", "Downloading account information...");
+            await credentialsManager.DownloadState();
+            loadingPopup.SetText("Step 4 of 4.", "Launching world hub...");
+            SceneManager.LoadSceneAsync("HubScene");
+        } catch (Exception e) {
+            initializing = false;
+            Debug.LogError(e);
+            CredentialsManager.DisplayNetworkError(mainCanvas, "Unable to load your account.");
+        }
+    }
+
+    public void LaunchClearDataPopup() {
+        var popup = Instantiate(clearDataPrefab, mainCanvas.transform);
+        popup.LaunchPopup();
     }
 }

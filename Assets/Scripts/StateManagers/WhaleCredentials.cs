@@ -9,8 +9,8 @@ using UnityEngine;
 
 class WhaleCredentials : CognitoAWSCredentials {
 
-    private static readonly string identityFile = Application.persistentDataPath + "/whale_identity.txt";
-    private static readonly string credentialsFile = Application.persistentDataPath + "/whale_credentials.txt";
+    public static readonly string identityFile = Application.persistentDataPath + "/whale_identity.txt";
+    public static readonly string credentialsFile = Application.persistentDataPath + "/whale_credentials.txt";
 
     public static void CacheCredentials(ImmutableCredentials credentials) {
         StreamWriter writer = new StreamWriter(credentialsFile, false);

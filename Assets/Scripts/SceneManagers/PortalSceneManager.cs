@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -47,24 +48,19 @@ public class PortalSceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("HubScene");
     }
 
-    public async void OnSummon() {
+    public async void OnSummon(int count) {
         if (PopupExists()) return;
         var loadingPopup = Instantiate(loadingPopupPrefab, sceneUiCanvas.transform);
         loadingPopup.LaunchPopup("Summoning...", "Finding heroes who are willing to join your team...", false);
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
-        List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(1);
-        loadingPopup.DismissPopup(false);
-        OnSummonReceived(summonedHeroes);
-    }
-
-    public async void OnSummonTen() {
-        if (PopupExists()) return;
-        var loadingPopup = Instantiate(loadingPopupPrefab, sceneUiCanvas.transform);
-        loadingPopup.LaunchPopup("Summoning...", "Finding heroes who are willing to join your team...", false);
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
-        List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(10);
-        loadingPopup.DismissPopup(false);
-        OnSummonReceived(summonedHeroes);
+        try {
+            var credentialsManager = FindObjectOfType<CredentialsManager>();
+            List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(count);
+            loadingPopup.DismissPopup(false);
+            OnSummonReceived(summonedHeroes);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            CredentialsManager.DisplayNetworkError(sceneUiCanvas, "There was an error summoning your heroes.");
+        }
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {

@@ -9,6 +9,8 @@ using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentSceneManager : MonoBehaviour {
 
+    public Canvas mainCanvas;
+
     public GameObject masterPanel;
     public GameObject detailPanel;
 
@@ -276,9 +278,15 @@ public class EquipmentSceneManager : MonoBehaviour {
         if (!LevelContainer.FusionIsLegal(selected, destroyedEquipment)) return;
 
         loadingFromServer = true;
-        var successful = await credentialsManager.RequestFusion(selected, destroyedEquipment);
-        loadingFromServer = false;
-        OnFusionComplete(successful);
+        try {
+            var successful = await credentialsManager.RequestFusion(selected, destroyedEquipment);
+            loadingFromServer = false;
+            OnFusionComplete(successful);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error with the equipment fusion.");
+        }
     }
 
     public void OnFusionComplete(bool successful) {

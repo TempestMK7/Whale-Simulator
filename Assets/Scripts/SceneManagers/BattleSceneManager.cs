@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -270,20 +270,25 @@ public class BattleSceneManager : MonoBehaviour {
 
     public async void OnFight() {
         if (ButtonsBlocked()) return;
-        combatStarted = true;
         loadingFromServer = true;
         var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
         loadingPopup.LaunchPopup("Preparing...", "Writing ballads of your inevitable victory...");
-
         StateManager.SetLastUsedTeam(selectedAllies);
-        var response = await credentialsManager.PerformEpicBattle(battleType, selectedAllies);
-        combatReport = response.Report;
-        combatRewards = response.Rewards;
 
-        loadingPopup.DismissPopup();
-        loadingFromServer = false;
+        try {
+            var response = await credentialsManager.PerformEpicBattle(battleType, selectedAllies);
+            combatReport = response.Report;
+            combatRewards = response.Rewards;
 
-        SetCombatMode(combatReport);
+            loadingPopup.DismissPopup();
+            loadingFromServer = false;
+
+            SetCombatMode(combatReport);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error loading the battle.");
+        }
     }
 
     #endregion
@@ -293,6 +298,7 @@ public class BattleSceneManager : MonoBehaviour {
     private void SetCombatMode(CombatReport report) {
         selectionPanel.SetActive(false);
         statusPanel.SetActive(true);
+        combatStarted = true;
 
         turnText.text = "Turn 1";
         rewardRecycler.gameObject.SetActive(false);
@@ -350,7 +356,7 @@ public class BattleSceneManager : MonoBehaviour {
         }
     }
 
-    private System.Collections.IEnumerator PlayCombatRound(CombatRound round) {
+    private IEnumerator PlayCombatRound(CombatRound round) {
         turnText.text = string.Format("Round {0}", round.turnNumber);
 
         BindAllyTeam(round.allies);
@@ -368,7 +374,7 @@ public class BattleSceneManager : MonoBehaviour {
         }
     }
 
-    private System.Collections.IEnumerator PlayCombatTurn(CombatTurn turn) {
+    private IEnumerator PlayCombatTurn(CombatTurn turn) {
         yield return placeHolders[turn.attacker.combatHeroGuid].AnimateCombatTurn(turn, placeHolders);
     }
 

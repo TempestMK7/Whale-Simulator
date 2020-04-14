@@ -106,12 +106,17 @@ class FactionPortalSceneManager : MonoBehaviour {
         var loadingPopup = Instantiate(loadingPopupPrefab, mainCanvas.transform);
         loadingPopup.LaunchPopup("Summoning...", "Finding heroes who are willing to join your team...", false);
 
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
-        List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(factionSelection, rarity, count);
+        try {
+            var credentialsManager = FindObjectOfType<CredentialsManager>();
+            List<AccountHero> summonedHeroes = await credentialsManager.RequestSummons(factionSelection, rarity, count);
 
-        loadingPopup.DismissPopup(false);
-        ResetTextValues();
-        OnSummonReceived(summonedHeroes);
+            loadingPopup.DismissPopup(false);
+            ResetTextValues();
+            OnSummonReceived(summonedHeroes);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error summoning your heroes.");
+        }
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {

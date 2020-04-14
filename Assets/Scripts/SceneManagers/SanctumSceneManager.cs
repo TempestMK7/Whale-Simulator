@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -77,10 +76,15 @@ public class SanctumSceneManager : MonoBehaviour {
         if (ButtonsBlocked()) return;
         var popup = Instantiate(loadingPrefab, mainCanvas.transform);
         popup.LaunchPopup("Loading...", "Contacting server...");
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
-        await credentialsManager.ClaimResources();
-        popup.DismissPopup();
-        infoPanel.NotifyUpdate();
+        try {
+            var credentialsManager = FindObjectOfType<CredentialsManager>();
+            await credentialsManager.ClaimResources();
+            popup.DismissPopup();
+            infoPanel.NotifyUpdate();
+        } catch (Exception e) {
+            Debug.LogError(e);
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error claiming your resources.");
+        }
     }
 
     public void OnBackPressed() {

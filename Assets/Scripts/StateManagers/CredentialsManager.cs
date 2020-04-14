@@ -344,6 +344,12 @@ public class CredentialsManager : MonoBehaviour {
 
     #region Utility methods.
 
+    public void DeleteRefreshToken() {
+        if (File.Exists(refreshTokenFile)) {
+            File.Delete(refreshTokenFile);
+        }
+    }
+
     private string MangleRequest(string request) {
         var mangled = request.Replace("\"", "\\\"");
         return "\"" + mangled + "\"";
@@ -352,6 +358,13 @@ public class CredentialsManager : MonoBehaviour {
     private T DeserializeObject<T>(string serverResponse) {
         var trimmedString = serverResponse.Substring(1, serverResponse.Length - 2);
         return JsonConvert.DeserializeObject<T>(Regex.Unescape(trimmedString));
+    }
+
+    public static void DisplayNetworkError(Canvas sceneCanvas, string errorMessage) {
+        var loadingPopup = FindObjectOfType<LoadingPopup>();
+        if (loadingPopup != null) loadingPopup.DismissPopup();
+        var tooltipPopup = Instantiate(Resources.Load<GameObject>("TooltipPopup"), sceneCanvas.transform).GetComponent<TooltipPopup>();
+        tooltipPopup.SetTooltip("Error", errorMessage);
     }
 
     #endregion

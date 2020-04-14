@@ -616,6 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e9d9f190c7f01e4db02b41b20016ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCanvas: {fileID: 1050033051}
   masterPanel: {fileID: 30137736}
   detailPanel: {fileID: 903880409}
   masterEquipmentRecycler: {fileID: 1332826512}
