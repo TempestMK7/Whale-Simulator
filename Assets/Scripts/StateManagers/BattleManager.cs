@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Com.Tempest.Whale.GameObjects;
 
 public class BattleManager {
 
@@ -16,8 +17,4 @@ public class BattleManager {
     public static void ClearBattleType() {
         currentBattleType = BattleEnum.NONE;
     }
-}
-
-public enum BattleEnum {
-    NONE, CAMPAIGN, TOWER
 }

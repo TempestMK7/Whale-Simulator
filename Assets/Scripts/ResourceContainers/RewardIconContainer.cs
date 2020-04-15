@@ -17,6 +17,9 @@ namespace Com.Tempest.Whale.ResourceContainers {
             iconDict[RewardType.PLAYER_EXPERIENCE] = Resources.Load<Sprite>("Icons/icon_gift");
             iconDict[RewardType.GEMS] = Resources.Load<Sprite>("Icons/icon_gem");
             iconDict[RewardType.STANDARD_SUMMON] = Resources.Load<Sprite>("Icons/icon_summon");
+            iconDict[RewardType.BRONZE_SUMMON] = Resources.Load<Sprite>("Icons/icon_bronze_summon");
+            iconDict[RewardType.SILVER_SUMMON] = Resources.Load<Sprite>("Icons/icon_silver_summon");
+            iconDict[RewardType.GOLD_SUMMON] = Resources.Load<Sprite>("Icons/icon_gold_summon");
         }
 
         public static Sprite GetIconForReward(RewardType reward) {
@@ -29,6 +32,6 @@ namespace Com.Tempest.Whale.ResourceContainers {
     }
 
     public enum RewardType {
-        NONE, GOLD, SOULS, PLAYER_EXPERIENCE, GEMS, STANDARD_SUMMON, EQUIPMENT
+        NONE, GOLD, SOULS, PLAYER_EXPERIENCE, GEMS, STANDARD_SUMMON, BRONZE_SUMMON, SILVER_SUMMON, GOLD_SUMMON, EQUIPMENT
     }
 }

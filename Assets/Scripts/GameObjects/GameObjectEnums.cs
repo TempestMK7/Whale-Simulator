@@ -2,6 +2,10 @@
 
 namespace Com.Tempest.Whale.GameObjects {
 
+    public enum BattleEnum {
+        NONE, CAMPAIGN, LOOT_CAVE
+    }
+
     public enum RoleEnum {
         PROTECTION = 1, DAMAGE = 2, SUPPORT = 3
     }

@@ -1066,6 +1066,7 @@ MonoBehaviour:
   experienceRateLabel: {fileID: 177712425}
   experienceUnclaimedLabel: {fileID: 1223176117}
   tooltipPrefab: {fileID: 3895851472678222692, guid: 559c1197b1f7499489c3c486b1f239dd, type: 3}
+  loadingPrefab: {fileID: 6457475262173700408, guid: 1222049b79fa7ce41a91e6d3dc0a10bd, type: 3}
 --- !u!4 &846104987
 Transform:
   m_ObjectHideFlags: 0

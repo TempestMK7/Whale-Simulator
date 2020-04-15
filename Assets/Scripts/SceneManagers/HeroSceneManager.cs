@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Spine;
+using Spine.Unity;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -10,6 +12,9 @@ using Com.Tempest.Whale.ResourceContainers;
 using Com.Tempest.Whale.StateObjects;
 
 public class HeroSceneManager : MonoBehaviour {
+
+    public Canvas mainCanvas;
+    public LoadingPopup loadingPrefab;
 
     public GameObject masterContainer;
     public RecyclerView heroRecycler;
@@ -70,12 +75,15 @@ public class HeroSceneManager : MonoBehaviour {
     public GameObject fusionPopupPrefab;
     public TooltipPopup tooltipPrefab;
 
+    private CredentialsManager credentialsManager;
+
     private HeroAdapter heroAdapter;
     private FactionEnum? currentFilter;
     private List<AccountHero> unfilteredList;
     private List<AccountHero> filteredList;
 
     private int currentPosition;
+    private bool loadingFromServer = false;
     private bool fanfarePlaying = false;
 
     private FusionRequirement? currentFusionRequirement;
@@ -86,6 +94,8 @@ public class HeroSceneManager : MonoBehaviour {
         masterContainer.SetActive(true);
         heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
+
+        credentialsManager = FindObjectOfType<CredentialsManager>();
         heroAdapter = new HeroAdapter(heroListItemPrefab, this);
         heroRecycler.SetAdapter(heroAdapter);
         BuildList();
@@ -97,7 +107,16 @@ public class HeroSceneManager : MonoBehaviour {
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
                 var animator = hit.transform.gameObject.GetComponent<Animator>();
                 if (animator != null) animator.SetTrigger("Attack");
+                StartCoroutine(PerformAttackAnimation());
             }
+        }
+    }
+
+    private IEnumerator PerformAttackAnimation() {
+        var spineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
+        if (spineAnimation != null) {
+            yield return new WaitForSpineAnimation(spineAnimation.state.SetAnimation(0, "Attack", false), WaitForSpineAnimation.AnimationEventTypes.Complete);
+            spineAnimation.state.SetAnimation(0, "Idle", true);
         }
     }
 
@@ -127,7 +146,12 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying || FindObjectOfType<FusionPopupBehavior>() != null || FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<EquipmentSelectPopup>() != null;
+        return fanfarePlaying ||
+            loadingFromServer ||
+            FindObjectOfType<FusionPopupBehavior>() != null || 
+            FindObjectOfType<TooltipPopup>() != null || 
+            FindObjectOfType<EquipmentSelectPopup>() != null || 
+            FindObjectOfType<LoadingPopup>() != null;
     }
 
     public void OnBackPressed() {
@@ -172,9 +196,18 @@ public class HeroSceneManager : MonoBehaviour {
         ToggleStatPanel(!statPanel.activeSelf);
     }
 
-    public void OnLevelUpPressed() {
+    public async void OnLevelUpPressed() {
         if (ButtonsBlocked()) return;
-        StateManager.LevelUpHero(filteredList[currentPosition], OnLevelUpComplete);
+        loadingFromServer = true;
+        try {
+            bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
+            loadingFromServer = false;
+            OnLevelUpComplete(successful);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
+        }
     }
 
     public void OnLevelUpComplete(bool successful) {
@@ -185,15 +218,17 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     private void ResetListPosition() {
-        var selected = filteredList[currentPosition];
+        var selectedId = filteredList[currentPosition].Id;
         filteredList = FilterList();
-        currentPosition = filteredList.IndexOf(selected);
+        currentPosition = filteredList.FindIndex((AccountHero hero) => {
+            return hero.Id.Equals(selectedId);
+        });
     }
 
     public void BindDetailView() {
         var state = StateManager.GetCurrentState();
         var currentHero = filteredList[currentPosition];
-        var combatHero = currentHero.GetCombatHero();
+        var combatHero = currentHero.GetCombatHeroFromAllEquipment(state.AccountEquipment);
         var baseHero = combatHero.baseHero;
         var currentLevel = combatHero.currentLevel;
 
@@ -202,8 +237,19 @@ public class HeroSceneManager : MonoBehaviour {
         factionIconLeft.sprite = FactionIconContainer.GetIconForFaction(baseHero.Faction);
         roleIconRight.sprite = RoleIconContainer.GetIconForRole(baseHero.Role);
 
-        var animator = Resources.Load<AnimatorOverrideController>(baseHero.HeroAnimatorPath);
-        heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
+        var existingSpineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
+        if (existingSpineAnimation != null) {
+            Destroy(existingSpineAnimation.gameObject);
+        }
+
+        if (baseHero.SpinePath != null) {
+            heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
+            var spineAnimation = Instantiate(Resources.Load<SkeletonAnimation>(baseHero.SpinePath), heroAnimation.transform);
+        } else {
+            heroAnimation.GetComponent<SpriteRenderer>().enabled = true;
+            var animator = Resources.Load<AnimatorOverrideController>(baseHero.SpritePath);
+            heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
+        }
 
         var equipped = state.GetEquipmentForHero(currentHero);
         headEquipment.SetEquipment(
@@ -262,14 +308,30 @@ public class HeroSceneManager : MonoBehaviour {
         popup.SetHeroAndSlot(filteredList[currentPosition], selectedSlot);
     }
 
-    public void NotifyEquipmentSelected() {
-        StateManager.SaveState();
-        BindDetailView();
+    public async void NotifyEquipmentSelected(AccountEquipment selected, AccountHero equippedHero, EquipmentSlot? slot) {
+        loadingFromServer = true;
+        try {
+            await credentialsManager.EquipToHero(selected, equippedHero, slot);
+            loadingFromServer = false;
+            BindDetailView();
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
+        }
     }
 
-    public void UnequipHero() {
-        StateManager.UnequipHero(filteredList[currentPosition]);
-        BindDetailView();
+    public async void UnequipHero() {
+        loadingFromServer = true;
+        try {
+            await credentialsManager.UnequipHero(filteredList[currentPosition]);
+            loadingFromServer = false;
+            BindDetailView();
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
+        }
     }
 
     public void LaunchAttackTooltip() {
@@ -366,10 +428,10 @@ public class HeroSceneManager : MonoBehaviour {
         if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
         if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
         if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
-        completeFusionButton.gameObject.SetActive(StateManager.FusionIsLegal(selected, destroyedHeroes));
+        completeFusionButton.gameObject.SetActive(LevelContainer.FusionIsLegal(selected, destroyedHeroes));
     }
 
-    public void RequestFusion() {
+    public async void RequestFusion() {
         if (ButtonsBlocked()) return;
         var selected = filteredList[currentPosition];
         var destroyedHeroes = new List<AccountHero>();
@@ -378,8 +440,12 @@ public class HeroSceneManager : MonoBehaviour {
         if (bottomLeftFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomLeftFusion.GetSelectedHero());
         if (bottomMiddleFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomMiddleFusion.GetSelectedHero());
         if (bottomRightFusion.GetSelectedHero() != null) destroyedHeroes.Add(bottomRightFusion.GetSelectedHero());
-        if (!StateManager.FusionIsLegal(selected, destroyedHeroes)) return;
-        StateManager.FuseHero(selected, destroyedHeroes, OnFusionComplete);
+        if (!LevelContainer.FusionIsLegal(selected, destroyedHeroes)) return;
+
+        loadingFromServer = true;
+        bool successful = await credentialsManager.RequestFusion(selected, destroyedHeroes);
+        loadingFromServer = false;
+        OnFusionComplete(successful);
     }
 
     public void OnFusionComplete(bool successful) {

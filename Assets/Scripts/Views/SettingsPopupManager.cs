@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsPopupManager : MonoBehaviour {
@@ -18,6 +19,10 @@ public class SettingsPopupManager : MonoBehaviour {
 
     public void LaunchPopup() {
         StartCoroutine(ExpandIntoFrame());
+    }
+
+    public void OnLoginPressed() {
+        SceneManager.LoadSceneAsync("LoginScene");
     }
 
     public void OnDonePressed() {

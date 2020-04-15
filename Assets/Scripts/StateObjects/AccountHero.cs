@@ -15,6 +15,10 @@ namespace Com.Tempest.Whale.StateObjects {
 
         [NonSerialized] private BaseHero baseHero;
 
+        public AccountHero() {
+
+        }
+
         public AccountHero(HeroEnum heroType) {
             Id = Guid.NewGuid();
             HeroType = heroType;
@@ -31,9 +35,11 @@ namespace Com.Tempest.Whale.StateObjects {
             return baseHero;
         }
 
-        public CombatHero GetCombatHero() {
-            var state = StateManager.GetCurrentState();
-            return new CombatHero(this, state.GetEquipmentForHero(this));
+        public CombatHero GetCombatHeroFromAllEquipment(List<AccountEquipment> accountEquipment) {
+            var equipped = accountEquipment.FindAll((AccountEquipment equipment) => {
+                return Id.Equals(equipment.EquippedHeroId);
+            });
+            return new CombatHero(this, equipped);
         }
 
         public CombatHero GetCombatHero(List<AccountEquipment> fakeEquipment) {

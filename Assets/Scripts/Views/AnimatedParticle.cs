@@ -21,8 +21,9 @@ public class AnimatedParticle : MonoBehaviour {
     }
 
     private IEnumerator AnimateFlight(Vector3 target) {
+        var origin = transform.position;
         for (float x = 1; x <= flightFrames; x++) {
-            transform.position = Vector3.Lerp(transform.position, target, x / flightFrames);
+            transform.position = Vector3.Lerp(origin, target, x / flightFrames);
             yield return null;
         }
         for (float x = 1; x <= lingerFrames; x++) {

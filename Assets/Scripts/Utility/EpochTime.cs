@@ -1,12 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
 public class EpochTime {
 
     public static long CurrentTimeMillis() {
-        System.DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
-        long currentTime = (long)(System.DateTime.UtcNow - epochStart).TotalMilliseconds;
+        DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        long currentTime = (long)(DateTime.UtcNow - epochStart).TotalMilliseconds;
         return currentTime;
+    }
+
+    public static string GetCurrentDate() {
+        return DateTime.UtcNow.ToString("yyyy-MM-dd");
     }
 }

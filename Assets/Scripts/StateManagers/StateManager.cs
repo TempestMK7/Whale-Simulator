@@ -6,294 +6,189 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
 
 public class StateManager {
 
-    private static string fileName = Application.persistentDataPath + "/WhaleState.txt";
+    public static string fileName = Application.persistentDataPath + "/WhaleState.txt";
     private static AccountState currentState;
+
+    #region Internal state handling.
 
     public static AccountState GetCurrentState() {
         LoadCurrentState();
         return currentState;
     }
 
+    public static bool Initialized() {
+        return currentState != null || File.Exists(fileName);
+    }
+
+    public static void OverrideState(AccountState newState) {
+        currentState = newState;
+        currentState.RetrieveDataAfterLoad();
+        SaveState(false);
+    }
+
     private static void LoadCurrentState() {
         if (currentState != null) return;
-
-        if (!File.Exists(fileName)) {
-            CreateEmptyContainer();
-            return;
-        }
 
         StreamReader reader = new StreamReader(fileName);
         try {
             currentState = JsonConvert.DeserializeObject<AccountState>(reader.ReadLine());
             currentState.RetrieveDataAfterLoad();
         } catch (Exception e) {
-            UnityEngine.Debug.Log(e.Message);
+            Debug.LogError(e);
         } finally {
             reader.Close();
         }
-
-        if (currentState == null) {
-            CreateEmptyContainer();
-            currentState.RetrieveDataAfterLoad();
-        }
     }
 
-    private static void CreateEmptyContainer() {
-        AccountState container = new AccountState();
-        container.InitializeAccount();
-        currentState = container;
-        SaveState();
-    }
-
-    public static void SaveState() {
+    public static async void SaveState(bool uploadToServer = true) {
         currentState.AccountHeroes.Sort();
         currentState.AccountEquipment.Sort();
 
         StreamWriter writer = new StreamWriter(fileName, false);
         writer.WriteLine(JsonConvert.SerializeObject(currentState));
         writer.Close();
+
+        if (uploadToServer) await UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
     }
 
-    public static void ClaimRewards(Action handler) {
-        double timeElapsed = (EpochTime.CurrentTimeMillis() - currentState.LastClaimTimeStamp);
-        currentState.LastClaimTimeStamp = EpochTime.CurrentTimeMillis();
-        var generation = MissionContainer.GetGenerationInfo();
+    #endregion
 
-        currentState.CurrentGold += GenerationInfo.GenerationPerMillisecond(generation.GoldPerMinute) * timeElapsed;
-        currentState.CurrentSouls += GenerationInfo.GenerationPerMillisecond(generation.SoulsPerMinute) * timeElapsed;
-        currentState.CurrentExperience += GenerationInfo.GenerationPerMillisecond(generation.ExperiencePerMinute) * timeElapsed;
+    #region Server response handling.
 
-        currentState.FixLevelsFromExperience();
-        SaveState();
-
-        if (handler != null) handler.Invoke();
+    public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
+        currentState.LastClaimTimeStamp = response.LastClaimTimeStamp;
+        currentState.CurrentGold = response.CurrentGold;
+        currentState.CurrentSouls = response.CurrentSouls;
+        currentState.CurrentExperience = response.CurrentExperience;
+        currentState.CurrentLevel = response.CurrentLevel;
+        SaveState(false);
     }
 
-    public static void NotifyHubEntered() {
-        currentState.HasEnteredHub = true;
-        SaveState();
-    }
-
-    public static void NotifyPortalEntered() {
-        currentState.HasEnteredPortal = true;
-        SaveState();
-    }
-
-    public static void NotifySanctumEntered() {
-        currentState.HasEnteredSanctum = true;
-        SaveState();
-    }
-
-    public static void NotifyCampaignEntered() {
-        currentState.HasEnteredCampaign = true;
-        SaveState();
-    }
-
-    public static void CheatIdleCurrency(long millis) {
-        var state = GetCurrentState();
-        state.LastClaimTimeStamp -= millis;
-        SaveState();
-    }
-
-    public static void CheatSummons(int summons) {
-        GetCurrentState().CurrentSummons += summons;
-        SaveState();
-    }
-
-    public static void RequestSummon(int numSummons, Action<List<AccountHero>> handler) {
-        AccountState state = GetCurrentState();
-        if (state.CurrentSummons < numSummons) return;
-        state.CurrentSummons -= numSummons;
-        System.Random rand = new System.Random((int)EpochTime.CurrentTimeMillis());
-        List<AccountHero> summonedHeroes = new List<AccountHero>();
-        for (int x = 0; x < numSummons; x++) {
-            AccountHero newHero = new AccountHero(ChooseRandomHero(rand));
-            state.AccountHeroes.Add(newHero);
-            summonedHeroes.Add(newHero);
+    public static void HandleSummonResponse(SummonResponse response) {
+        foreach (AccountHero hero in response.SummonedHeroes) {
+            hero.LoadBaseHero();
         }
-        SaveState();
-        handler.Invoke(summonedHeroes);
+        currentState.CurrentSummons = response.CurrentSummons;
+        currentState.AccountHeroes.AddRange(response.SummonedHeroes);
+        currentState.RetrieveDataAfterLoad();
+        SaveState(false);
     }
 
-    private static HeroEnum ChooseRandomHero(System.Random rand) {
-        double roll = rand.NextDouble();
-        if (roll <= 0.3) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityOne);
-        } else if (roll <= 0.6) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityTwo);
-        } else if (roll <= 0.8) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityThree);
-        } else if (roll <= 0.95) {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityFour);
-        } else {
-            return ChooseHeroFromList(rand, BaseHeroContainer.rarityFive);
+    public static void HandleSummonResponse(FactionSummonResponse response) {
+        foreach (AccountHero hero in response.SummonedHeroes) {
+            hero.LoadBaseHero();
         }
+        currentState.CurrentBronzeSummons = response.CurrentBronzeSummons;
+        currentState.CurrentSilverSummons = response.CurrentSilverSummons;
+        currentState.CurrentGoldSummons = response.CurrentGoldSummons;
+        currentState.AccountHeroes.AddRange(response.SummonedHeroes);
+        currentState.RetrieveDataAfterLoad();
+        SaveState(false);
     }
 
-    private static HeroEnum ChooseHeroFromList(System.Random rand, List<HeroEnum> choices) {
-        int choice = rand.Next(choices.Count);
-        return choices[choice];
+    public static void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
+        if (!response.LevelupSuccessful) return;
+        leveledHero.CurrentLevel = response.HeroLevel;
+        currentState.CurrentGold = response.CurrentGold;
+        currentState.CurrentSouls = response.CurrentSouls;
+        SaveState(false);
     }
 
-    public static void LevelUpHero(AccountHero hero, Action<bool> handler) {
-        if (hero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(hero.AwakeningLevel)) {
-            handler.Invoke(false);
-            return;
-        }
-
-        long cost = LevelContainer.HeroExperienceRequirement(hero.CurrentLevel);
-        if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost || hero.CurrentLevel >= 200) {
-            handler.Invoke(false);
-            return;
-        }
-
-        currentState.CurrentGold -= cost;
-        currentState.CurrentSouls -= cost;
-        hero.CurrentLevel += 1;
-        SaveState();
-        handler.Invoke(true);
-    }
-
-    public static void FuseHero(AccountHero fusedHero, List<AccountHero> destroyedHeroes, Action<bool> handler) {
-        if (!FusionIsLegal(fusedHero, destroyedHeroes)) {
-            handler.Invoke(false);
-            return;
-        }
-
-        var accountHeroes = GetCurrentState().AccountHeroes;
-        fusedHero.AwakeningLevel++;
+    public static void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+        var accountHeroes = currentState.AccountHeroes;
+        accountHeroes.Remove(fusedHero);
         foreach (AccountHero destroyed in destroyedHeroes) {
+            HandleUnequipResponse(destroyed);
             accountHeroes.Remove(destroyed);
         }
-        accountHeroes.Sort();
-        SaveState();
-        handler.Invoke(true);
+        var newFusedHero = response.FusedHero;
+        newFusedHero.LoadBaseHero();
+        accountHeroes.Add(newFusedHero);
+        SaveState(false);
     }
 
-    public static bool FusionIsLegal(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
-        FusionRequirement? requirement = LevelContainer.GetFusionRequirementForLevel(fusedHero.AwakeningLevel);
-        if (requirement == null) return false;
-
-        int selectedSameHeroes = 0;
-        int selectedFactionHeroes = 0;
-        foreach (AccountHero destroyed in destroyedHeroes) {
-            if (destroyed == fusedHero) return false;
-            if (destroyed.GetBaseHero().Hero == fusedHero.GetBaseHero().Hero && destroyed.AwakeningLevel == requirement?.SameHeroLevel && selectedSameHeroes != requirement?.SameHeroRequirement) {
-                selectedSameHeroes++;
-            } else if (destroyed.AwakeningLevel == requirement?.FactionHeroLevel) {
-                if (requirement?.RequireSameFaction == false || destroyed.GetBaseHero().Faction == fusedHero.GetBaseHero().Faction) selectedFactionHeroes++;
-                else return false;
-            } else {
-                return false;
-            }
-        }
-        return selectedSameHeroes == requirement?.SameHeroRequirement && selectedFactionHeroes == requirement?.FactionHeroRequirement;
-    }
-
-    public static void FuseEquipment(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment, Action<bool> handler) {
-        if (!FusionIsLegal(fusedEquipment, destroyedEquipment)) {
-            handler.Invoke(false);
-            return;
-        }
-
+    public static void HandleFuseResponse(FuseEquipmentResponse response, AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
         var accountEquipment = currentState.AccountEquipment;
-        fusedEquipment.Level++;
+        accountEquipment.Remove(fusedEquipment);
         foreach (AccountEquipment destroyed in destroyedEquipment) {
             accountEquipment.Remove(destroyed);
         }
-        accountEquipment.Sort();
-        SaveState();
-        handler.Invoke(true);
+        var newFusedEquipment = response.FusedEquipment;
+        newFusedEquipment.LoadBaseEquipment();
+        accountEquipment.Add(newFusedEquipment);
+        SaveState(false);
     }
 
-    public static bool FusionIsLegal(AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
-        int selectedEquipment = 0;
-        foreach (AccountEquipment destroyed in destroyedEquipment) {
-            if (destroyed == fusedEquipment) return false;
-            if (destroyed == null) return false;
-            if (destroyed.GetBaseEquipment().Type == fusedEquipment.GetBaseEquipment().Type && destroyed.Level == fusedEquipment.Level) {
-                selectedEquipment++;
-            } else {
-                return false;
-            }
+    public static void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
+        Guid? heroId = null;
+        if (hero != null) heroId = hero.Id;
+        equipment.EquippedHeroId = heroId;
+        equipment.EquippedSlot = slot;
+
+        if (response.UnequippedIds.Count == 0) return;
+        var unequippedList = currentState.AccountEquipment.FindAll((AccountEquipment e) => {
+            return response.UnequippedIds.Contains(e.Id);
+        });
+        foreach (AccountEquipment unequipped in unequippedList) {
+            unequipped.EquippedHeroId = null;
+            unequipped.EquippedSlot = null;
         }
-        return selectedEquipment == 2;
+        SaveState(false);
     }
 
-    public static async Task<MissionReport> AttemptCurrentMissionWithTeam(AccountHero[] selectedTeam) {
-        SetLastUsedTeam(selectedTeam);
-        var missionInfo = MissionContainer.GetMission(currentState.CurrentChapter, currentState.CurrentMission);
-        var enemyTeam = new AccountHero[missionInfo.MissionHeroes.Length];
-        for (int x = 0; x < enemyTeam.Length; x++) {
-            var accountHero = new AccountHero(missionInfo.MissionHeroes[x]) {
-                AwakeningLevel = missionInfo.HeroAwakening,
-                CurrentLevel = missionInfo.HeroLevel
-            };
-            enemyTeam[x] = accountHero;
+    public static void HandleUnequipResponse(AccountHero hero) {
+        var equipped = currentState.AccountEquipment.FindAll((AccountEquipment e) => {
+            return hero.Id.Equals(e.EquippedHeroId);
+        });
+        foreach (AccountEquipment e in equipped) {
+            e.EquippedHeroId = null;
+            e.EquippedSlot = null;
         }
-        var combatReport = await CombatEvaluator.GenerateCombatReport(selectedTeam, enemyTeam);
-
-        // TODO: Remove these temp files when I'm done debugging.
-        var fileName = "/CombatReport.txt";
-        StreamWriter writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        writer.WriteLine(JsonConvert.SerializeObject(combatReport));
-        writer.Close();
-
-        // TODO: Remove these temp files when I'm done debugging.
-        var readableReport = combatReport.ToHumanReadableReport();
-        fileName = "/ReadableCombatReport.txt";
-        writer = new StreamWriter(Application.persistentDataPath + fileName, false);
-        foreach (string line in readableReport) {
-            writer.WriteLine(line);
-        }
-        writer.Close();
-
-        if (combatReport.alliesWon) {
-            var earnedRewards = AddRewardsFromCurrentMission();
-            IncrementCampaignPosition();
-            return new MissionReport(combatReport, earnedRewards);
-        }
-
-        return new MissionReport(combatReport, null);
+        SaveState(false);
     }
 
-    public static void IncrementCampaignPosition() {
-        if (currentState.CurrentMission == 10) {
-            ClaimRewards(null);
-            currentState.CurrentMission = 1;
-            currentState.CurrentChapter++;
-        } else {
-            currentState.CurrentMission++;
+    public static void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
+        if (!response.Report.alliesWon) return;
+        switch (battleType) {
+            case BattleEnum.CAMPAIGN:
+                if (currentState.CurrentMission == 10) {
+                    currentState.CurrentMission = 1;
+                    currentState.CurrentChapter++;
+                } else {
+                    currentState.CurrentMission++;
+                }
+                break;
+            case BattleEnum.LOOT_CAVE:
+                currentState.CurrentCaveFloor += 1;
+                break;
         }
-        SaveState();
+        currentState.ReceiveRewards(response.Rewards);
+        SaveState(false);
     }
 
-    public static EarnedRewardsContainer AddRewardsFromCurrentMission() {
-        var mission = MissionContainer.GetMission(currentState.CurrentChapter, currentState.CurrentMission);
-        var rewards = mission.RewardsForMission();
-        currentState.CurrentGold += rewards.Gold;
-        currentState.CurrentSouls += rewards.Souls;
-        currentState.CurrentExperience += rewards.PlayerExperience;
-        currentState.CurrentSummons += rewards.Summons;
-        if (currentState.CurrentMission == 10) {
-            currentState.CurrentSummons += 10;
+    public static void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
+        var encounter = response.Encounter;
+        currentState.LastCaveEntryDate = encounter.Date;
+        currentState.CurrentCaveFloor = encounter.Floor;
+        SaveState(false);
+    }
+
+    #endregion
+
+    #region Allowable state altering, mostly for displaying info to user.
+
+    public static int GetLootCavePosition() {
+        var currentDate = EpochTime.GetCurrentDate();
+        if (!currentDate.Equals(currentState.LastCaveEntryDate)) {
+            currentState.LastCaveEntryDate = EpochTime.GetCurrentDate();
+            currentState.CurrentCaveFloor = 1;
         }
-        currentState.FixLevelsFromExperience();
-        var equipmentRewards = new List<AccountEquipment>();
-        var allEquipment = (EquipmentType[])Enum.GetValues(typeof(EquipmentType));
-        for (int x = 0; x < rewards.NumberEquipment; x++) {
-            var randomIndex = CombatMath.RandomInt(0, allEquipment.Length);
-            var randomLevel = CombatMath.RandomInt(1, rewards.MaxEquipmentLevel + 1);
-            var newEquipment = new AccountEquipment(allEquipment[randomIndex], randomLevel);
-            currentState.AccountEquipment.Add(newEquipment);
-            equipmentRewards.Add(newEquipment);
-        }
-        SaveState();
-        return new EarnedRewardsContainer(rewards.Summons, rewards.Gold, rewards.Souls, rewards.PlayerExperience, equipmentRewards);
+        return currentState.CurrentCaveFloor;
     }
 
     public static void SetLastUsedTeam(AccountHero[] team) {
@@ -319,12 +214,29 @@ public class StateManager {
         return team;
     }
 
-    public static void UnequipHero(AccountHero hero) {
-        var equipped = currentState.GetEquipmentForHero(hero);
-        foreach (AccountEquipment equipment in equipped) {
-            equipment.EquippedHeroId = null;
-            equipment.EquippedSlot = null;
-        }
+    #endregion
+
+    #region Direct state altering, to be removed.
+
+    public static void NotifyHubEntered() {
+        currentState.HasEnteredHub = true;
         SaveState();
     }
+
+    public static void NotifyPortalEntered() {
+        currentState.HasEnteredPortal = true;
+        SaveState();
+    }
+
+    public static void NotifySanctumEntered() {
+        currentState.HasEnteredSanctum = true;
+        SaveState();
+    }
+
+    public static void NotifyCampaignEntered() {
+        currentState.HasEnteredCampaign = true;
+        SaveState();
+    }
+
+    #endregion
 }

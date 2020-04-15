@@ -1252,12 +1252,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1927905321}
         m_TargetAssemblyTypeName: PortalSceneManager, Assembly-CSharp
-        m_MethodName: OnSummonTen
-        m_Mode: 1
+        m_MethodName: OnSummon
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1540,11 +1540,11 @@ MonoBehaviour:
       - m_Target: {fileID: 1927905321}
         m_TargetAssemblyTypeName: PortalSceneManager, Assembly-CSharp
         m_MethodName: OnSummon
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2036,6 +2036,7 @@ MonoBehaviour:
   singleSummonPopupPrefab: {fileID: 2663148002146384733, guid: 27629a1c596b28e428a60c4cb2684fa6, type: 3}
   tenSummonPopupPrefab: {fileID: 342555091305093877, guid: 9996fe9df86c14a4cac2dcd5a142d219, type: 3}
   tooltipPopupPrefab: {fileID: 3895851472678222692, guid: 559c1197b1f7499489c3c486b1f239dd, type: 3}
+  loadingPopupPrefab: {fileID: 6457475262173700408, guid: 1222049b79fa7ce41a91e6d3dc0a10bd, type: 3}
   portalParticle: {fileID: 648296942}
   portalOpenEffect: {fileID: 1117358705}
   portalLoopEffect: {fileID: 715145316}

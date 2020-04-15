@@ -7,10 +7,13 @@ using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.ResourceContainers;
 using Com.Tempest.Whale.StateObjects;
+using Spine;
+using Spine.Unity;
 
 public class AnimatedHero : MonoBehaviour {
 
     public Animator animator;
+    public SpriteRenderer spriteRenderer;
     public AudioSource soundEffect;
     public Canvas healthCanvas;
     public Image healthBar;
@@ -27,6 +30,7 @@ public class AnimatedHero : MonoBehaviour {
 
     private AccountHero selectedHero;
     private CombatHero combatHero;
+    private SkeletonAnimation spineAnimation;
 
     private Vector3 startingPosition;
 
@@ -55,22 +59,59 @@ public class AnimatedHero : MonoBehaviour {
     }
 
     public void SetHero(HeroEnum hero) {
+        if (spineAnimation != null) {
+            Destroy(spineAnimation.gameObject);
+            spineAnimation = null;
+        }
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
-        animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.HeroAnimatorPath);
+        if (baseHero.SpinePath != null) {
+            spriteRenderer.enabled = false;
+            spineAnimation = Instantiate(Resources.Load<GameObject>(baseHero.SpinePath), gameObject.transform).GetComponent<SkeletonAnimation>();
+        } else {
+            spriteRenderer.enabled = true;
+            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.SpritePath);
+        }
+
+        SetAnimation("Idle", true);
     }
 
     public void SetHero(CombatHero hero) {
+        if (hero.baseHero.SpinePath != null) {
+            if (combatHero == null || combatHero.baseHero.Hero != hero.baseHero.Hero) {
+                if (spineAnimation != null) {
+                    Destroy(spineAnimation.gameObject);
+                    spineAnimation = null;
+                }
+                spriteRenderer.enabled = false;
+                spineAnimation = Instantiate(Resources.Load<GameObject>(hero.baseHero.SpinePath), gameObject.transform).GetComponent<SkeletonAnimation>();
+            }
+        } else {
+            if (spineAnimation != null) {
+                Destroy(spineAnimation.gameObject);
+                spineAnimation = null;
+            }
+            spriteRenderer.enabled = true;
+            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.SpritePath);
+        }
+
         handler = null;
         heroHandler = null;
         selectedHero = null;
         combatHero = new CombatHero(hero);
-        animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.HeroAnimatorPath);
+
         if (hero.IsAlive()) {
             healthCanvas.gameObject.SetActive(true);
         } else {
             healthCanvas.gameObject.SetActive(false);
             animator.SetTrigger("Die");
+            SetAnimation("Death", false);
         }
+    }
+
+    public void SetAnimation(string state, bool loop) {
+        if (spineAnimation == null || spineAnimation.state == null) return;
+        if (state.Equals("Death") && spineAnimation.state.GetCurrent(0).Animation.Name.Equals("Death")) return;
+        spineAnimation.state.SetAnimation(0, state, loop);
     }
 
     public bool ContainsHero(CombatHero hero) {
@@ -95,23 +136,23 @@ public class AnimatedHero : MonoBehaviour {
         }
     }
 
-    public IEnumerator AnimateCombatStep(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
-        if (step.skippedTurn) {
+    public IEnumerator AnimateCombatTurn(CombatTurn turn, Dictionary<Guid, AnimatedHero> placeholders) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
+        if (turn.skippedTurn) {
             combatTextHolder.AnimateSkippedTurn();
             yield return new WaitForSeconds(0.3f);
-        } else if (attackInfo.IsMelee && step.enemyTargets.Count == 1) {
-            yield return StartCoroutine(AnimateMeleeAttack(step, placeholders));
+        } else if (attackInfo.IsMelee && turn.enemyTargets.Count == 1) {
+            yield return StartCoroutine(AnimateMeleeAttack(turn, placeholders));
         } else {
-            yield return StartCoroutine(AnimateOtherAttacks(step, placeholders));
+            yield return StartCoroutine(AnimateOtherAttacks(turn, placeholders));
         }
     }
 
-    private IEnumerator AnimateMeleeAttack(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
+    private IEnumerator AnimateMeleeAttack(CombatTurn turn, Dictionary<Guid, AnimatedHero> placeholders) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
-        var target = placeholders[step.enemyTargets[0].combatHeroGuid];
+        var target = placeholders[turn.enemyTargets[0].combatHeroGuid];
 
         // All of this moves us to the target's position for the attack animation.
         var destination = new Vector3(target.transform.position.x, target.transform.position.y);
@@ -123,13 +164,21 @@ public class AnimatedHero : MonoBehaviour {
             transform.position = Vector3.Lerp(transform.position, destination, percentage);
             yield return null;
         }
-
-        animator.SetTrigger("Attack");
         transform.position = destination;
-        soundEffect.Play();
-        combatHero.currentEnergy += step.energyGained;
-        SendDamageInstances(step.damageInstances, placeholders);
-        yield return new WaitForSeconds(attackDurationSeconds);
+        combatHero.currentEnergy += turn.energyGained;
+        SendDamageInstances(turn.steps, placeholders);
+
+        if (spineAnimation != null) {
+            soundEffect.Play();
+            var animationName = attackInfo.IsSpecial ? "UltimateAttack" : "Attack";
+            var trackEntry = spineAnimation.state.SetAnimation(0, animationName, false);
+            trackEntry.TimeScale = 2;
+            yield return new WaitForSpineAnimationComplete(trackEntry, true);
+            spineAnimation.state.SetAnimation(0, "Idle", true);
+        } else {
+            animator.SetTrigger("Attack");
+            yield return new WaitForSeconds(attackDurationSeconds);
+        }
 
         for (float x = 1; x <= slideDurationFrames; x++) {
             float percentage = x / slideDurationFrames;
@@ -139,33 +188,63 @@ public class AnimatedHero : MonoBehaviour {
         transform.position = startingPosition;
     }
 
-    private IEnumerator AnimateOtherAttacks(CombatStep step, Dictionary<Guid, AnimatedHero> placeholders) {
-        var attackInfo = AttackInfoContainer.GetAttackInfo(step.attackUsed);
-
-        animator.SetTrigger("Attack");
+    private IEnumerator AnimateOtherAttacks(CombatTurn turn, Dictionary<Guid, AnimatedHero> placeholders) {
+        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
-        soundEffect.Play();
-        yield return new WaitForSeconds(0.3f);
+        combatHero.currentEnergy += turn.energyGained;
 
-        if (attackInfo.EnemyParticle != null) {
-            foreach (CombatHero enemy in step.enemyTargets) {
-                var destination = placeholders[enemy.combatHeroGuid].transform.position;
-                destination.y += 0.5f;
-                FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
-            }
-        }
-        if (attackInfo.AllyParticle != null) {
-            foreach (CombatHero ally in step.allyTargets) {
-                var destination = placeholders[ally.combatHeroGuid].transform.position;
-                destination.y += 0.5f;
-                FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
-            }
-        }
+        if (spineAnimation != null) {
+            soundEffect.Play();
+            var animationName = attackInfo.IsSpecial ? "UltimateAttack" : "Attack";
+            var trackEntry = spineAnimation.state.SetAnimation(0, animationName, false);
+            trackEntry.TimeScale = 2;
 
-        combatHero.currentEnergy += step.energyGained;
-        SendDamageInstances(step.damageInstances, placeholders);
-        yield return new WaitForSeconds(attackDurationSeconds);
+            yield return new WaitForSeconds(0.4f);
+            if (attackInfo.EnemyParticle != null) {
+                foreach (CombatHero enemy in turn.enemyTargets) {
+                    var destination = placeholders[enemy.combatHeroGuid].transform.position;
+                    destination.y += 0.5f;
+                    FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
+                }
+            }
+            if (attackInfo.AllyParticle != null) {
+                foreach (CombatHero ally in turn.allyTargets) {
+                    var destination = placeholders[ally.combatHeroGuid].transform.position;
+                    destination.y += 0.5f;
+                    FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
+                }
+            }
+
+            yield return new WaitForSeconds(0.2f);
+            SendDamageInstances(turn.steps, placeholders);
+
+            var remainingTime = trackEntry.AnimationEnd - trackEntry.AnimationTime;
+            if (remainingTime > 0) yield return new WaitForSeconds(remainingTime);
+            spineAnimation.state.SetAnimation(0, "Idle", true);
+        } else {
+            if (attackInfo.EnemyParticle != null) {
+                foreach (CombatHero enemy in turn.enemyTargets) {
+                    var destination = placeholders[enemy.combatHeroGuid].transform.position;
+                    destination.y += 0.5f;
+                    FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
+                }
+            }
+            if (attackInfo.AllyParticle != null) {
+                foreach (CombatHero ally in turn.allyTargets) {
+                    var destination = placeholders[ally.combatHeroGuid].transform.position;
+                    destination.y += 0.5f;
+                    FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
+                }
+            }
+
+            soundEffect.Play();
+            animator.SetTrigger("Attack");
+            yield return new WaitForSeconds(0.2f);
+            SendDamageInstances(turn.steps, placeholders);
+            yield return new WaitForSeconds(attackDurationSeconds - 0.2f);
+            yield return new WaitForSeconds(slideDurationFrames * 2f / 60f);
+        }
     }
 
     private void FireParticle(AttackParticleEnum particle, ParticleOriginEnum origin, Vector3 target) {
@@ -187,32 +266,42 @@ public class AnimatedHero : MonoBehaviour {
         animatedParticle.FlyToTarget(target);
     }
 
-    private void SendDamageInstances(List<DamageInstance> instances, Dictionary<Guid, AnimatedHero> placeholders) {
+    private void SendDamageInstances(List<CombatStep> steps, Dictionary<Guid, AnimatedHero> placeholders) {
         bool anyCriticals = false;
-        foreach (DamageInstance damageInstance in instances) {
-            placeholders[damageInstance.targetGuid].AnimateDamageInstance(damageInstance);
-            if (damageInstance.hitType == HitType.CRITICAL) anyCriticals = true;
+        foreach (CombatStep step in steps) {
+            placeholders[step.targetGuid].AnimateCombatStep(step);
+            if (step.hitType == HitType.CRITICAL) anyCriticals = true;
         }
         if (anyCriticals) {
             // Screen shake.
         }
     }
 
-    public void AnimateDamageInstance(DamageInstance damageInstance) {
-        combatHero.currentHealth -= damageInstance.damage;
-        combatHero.currentHealth += damageInstance.healing;
-        combatHero.currentEnergy += damageInstance.targetEnergy;
-        combatTextHolder.AnimateDamageInstance(damageInstance);
+    public void AnimateCombatStep(CombatStep step) {
+        combatHero.currentHealth -= step.damage;
+        combatHero.currentHealth += step.healing;
+        combatHero.currentEnergy += step.targetEnergy;
+        combatTextHolder.AnimateCombatStep(step);
 
         // Play particles associated with attack type.
 
-        if (damageInstance.damage > 0) {
-            animator.SetTrigger("TakeDamage");
+        if (step.damage > 0 && !step.wasFatal) {
+            StartCoroutine(TakeDamage());
         }
 
-        if (damageInstance.wasFatal) {
-            animator.SetTrigger("Die");
+        if (step.wasFatal) {
+            PlayDead();
             StartCoroutine(FadeOutHealthCanvas());
+        }
+    }
+
+    private IEnumerator TakeDamage() {
+        if (spineAnimation != null) {
+            yield return new WaitForSpineAnimationComplete(spineAnimation.state.SetAnimation(0, "Hurt", false));
+            spineAnimation.state.SetAnimation(0, "Idle", true);
+        } else {
+            animator.SetTrigger("TakeDamage");
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -223,5 +312,6 @@ public class AnimatedHero : MonoBehaviour {
 
     public void PlayDead() {
         animator.SetTrigger("Die");
+        SetAnimation("Death", false);
     }
 }

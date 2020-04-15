@@ -116,5 +116,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particleAnimator: {fileID: 8843620934930411358}
-  flightFrames: 60
+  flightFrames: 12
   lingerFrames: 15

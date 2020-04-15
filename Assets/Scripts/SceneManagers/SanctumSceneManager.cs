@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,6 +20,7 @@ public class SanctumSceneManager : MonoBehaviour {
     public Text experienceUnclaimedLabel;
 
     public TooltipPopup tooltipPrefab;
+    public LoadingPopup loadingPrefab;
 
     public void Start() {
         var state = StateManager.GetCurrentState();
@@ -33,7 +33,7 @@ public class SanctumSceneManager : MonoBehaviour {
 
     void Update() {
         var state = StateManager.GetCurrentState();
-        var generation = MissionContainer.GetGenerationInfo();
+        var generation = MissionContainer.GetGenerationInfo(state);
         double unformattedTime = (EpochTime.CurrentTimeMillis() - state.LastClaimTimeStamp);
 
         goldRateLabel.text = string.Format("Gold: {0} / min.", generation.GoldPerMinute);
@@ -69,17 +69,22 @@ public class SanctumSceneManager : MonoBehaviour {
     }
 
     private bool ButtonsBlocked() {
-        return FindObjectOfType<TooltipPopup>() != null;
+        return FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<LoadingPopup>() != null;
     }
 
-    public void OnClaimRewards() {
+    public async void OnClaimRewards() {
         if (ButtonsBlocked()) return;
-        StateManager.ClaimRewards(OnRewardsClaimed);
-    }
-
-    public void OnRewardsClaimed() {
-        if (ButtonsBlocked()) return;
-        infoPanel.NotifyUpdate();
+        var popup = Instantiate(loadingPrefab, mainCanvas.transform);
+        popup.LaunchPopup("Loading...", "Contacting server...");
+        try {
+            var credentialsManager = FindObjectOfType<CredentialsManager>();
+            await credentialsManager.ClaimResources();
+            popup.DismissPopup();
+            infoPanel.NotifyUpdate();
+        } catch (Exception e) {
+            Debug.LogError(e);
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error claiming your resources.");
+        }
     }
 
     public void OnBackPressed() {

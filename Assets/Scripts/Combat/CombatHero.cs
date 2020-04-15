@@ -28,6 +28,10 @@ namespace Com.Tempest.Whale.Combat {
         public double currentEnergy;
         public List<CombatStatus> currentStatus;
 
+        public CombatHero() {
+            // Empty constructor required by NewtonSoft.
+        }
+
         public CombatHero(AccountHero accountHero, List<AccountEquipment> equipped) {
             baseHero = accountHero.GetBaseHero();
             combatHeroGuid = Guid.NewGuid();
@@ -35,7 +39,7 @@ namespace Com.Tempest.Whale.Combat {
             awakeningLevel = accountHero.AwakeningLevel;
             currentLevel = accountHero.CurrentLevel;
 
-            health = GetBigStat(baseHero.BaseHealth) * 10.0;
+            health = GetBigStat(baseHero.BaseHealth) * 30.0;
             attack = GetBigStat(baseHero.BaseAttack);
             magic = GetBigStat(baseHero.BaseMagic);
             defense = GetBigStat(baseHero.BaseDefense);
@@ -83,15 +87,16 @@ namespace Com.Tempest.Whale.Combat {
             }
         }
 
+        public void RestoreUnserializedData() {
+            baseHero = BaseHeroContainer.GetBaseHero(heroEnum);
+        }
+
         private double GetBigStat(double baseStat) {
             return (baseStat + (BaseHero.GetBigStatGain(baseStat) * currentLevel)) * Math.Pow(1.1, awakeningLevel - 1);
         }
 
-        private double GetSmallStat(double baseStat) {
-            return baseStat + (BaseHero.GetSmallStatGain(baseStat) * currentLevel) * Math.Pow(1.1, awakeningLevel - 1);
-        }
-
         public int CompareTo(CombatHero other) {
+            if (other == null) return -1;
             int currentSpeedComp = other.GetModifiedSpeed().CompareTo(GetModifiedSpeed());
             if (currentSpeedComp != 0) return currentSpeedComp;
             int energyComp = other.currentEnergy.CompareTo(currentEnergy);
@@ -167,6 +172,22 @@ namespace Com.Tempest.Whale.Combat {
             return multiplier * attack;
         }
 
+        public double GetAttackModifier() {
+            var multiplier = 1.0;
+            foreach (CombatStatus status in currentStatus) {
+                if (status.status == StatusEnum.ATTACK_UP) {
+                    multiplier += status.value;
+                } else if (status.status == StatusEnum.ATTACK_DOWN) {
+                    multiplier -= status.value;
+                } else if (status.status == StatusEnum.CHILL) {
+                    multiplier -= status.value;
+                } else if (status.status == StatusEnum.ROOT) {
+                    multiplier -= status.value;
+                }
+            }
+            return multiplier;
+        }
+
         public double GetModifiedMagic() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
@@ -189,6 +210,30 @@ namespace Com.Tempest.Whale.Combat {
                 }
             }
             return multiplier * magic;
+        }
+
+        public double GetMagicModifier() {
+            var multiplier = 1.0;
+            foreach (CombatStatus status in currentStatus) {
+                if (status.status == StatusEnum.MAGIC_UP) {
+                    multiplier += status.value;
+                } else if (status.status == StatusEnum.MAGIC_DOWN) {
+                    multiplier -= status.value;
+                } else if (status.status == StatusEnum.DAZE) {
+                    if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                        multiplier += status.value;
+                    } else {
+                        multiplier -= status.value;
+                    }
+                } else if (status.status == StatusEnum.BLIND) {
+                    if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                        multiplier += status.value;
+                    } else {
+                        multiplier -= status.value;
+                    }
+                }
+            }
+            return multiplier;
         }
 
         public double GetModifiedDefense() {

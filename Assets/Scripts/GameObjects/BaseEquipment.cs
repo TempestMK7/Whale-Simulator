@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Com.Tempest.Whale.GameObjects {
 
     public enum EquipmentSlot {
+        NONE = 0,
         CHEST = 1, LEGS = 2, HEAD = 3,
         MAIN_HAND = 11, ONE_HAND = 12, OFF_HAND = 13, TWO_HAND = 14
     }
@@ -12,11 +13,11 @@ namespace Com.Tempest.Whale.GameObjects {
         // One Handed
         DAGGER = 11, SWORD = 12, AXE = 13,
         // Main Hand Only
-        CLUB = 21, SCEPTER = 22,
+        SCEPTER = 21,
         // Off Hand Only
         METAL_SHIELD = 31, CRYSTAL_SHIELD = 32, TOME = 33,
         // Two Handed
-        GREAT_SWORD = 41, GREAT_AXE = 42, GREAT_CLUB = 43, STAFF = 44,
+        GREAT_SWORD = 41, GREAT_AXE = 42, STAFF = 43,
 
         // Armor
         CLOTH_CHEST = 51, CLOTH_PANTS = 52, CLOTH_HAT = 53,
@@ -119,9 +120,6 @@ namespace Com.Tempest.Whale.GameObjects {
                 30, 0, 0, 0, 0.1, 0);
 
             // Main Hand
-            equipDict[EquipmentType.CLUB] = new BaseEquipment(
-                EquipmentType.CLUB, EquipmentSlot.MAIN_HAND, "Hammer", "Icons/Equipment/OneHandedClub",
-                20, 20, 0, 0, 0, 0);
             equipDict[EquipmentType.SCEPTER] = new BaseEquipment(
                 EquipmentType.SCEPTER, EquipmentSlot.MAIN_HAND, "Scepter", "Icons/Equipment/Scepter",
                 0, 40, 0, 0, 0, 0);
@@ -129,10 +127,10 @@ namespace Com.Tempest.Whale.GameObjects {
             // Off Hand
             equipDict[EquipmentType.METAL_SHIELD] = new BaseEquipment(
                 EquipmentType.METAL_SHIELD, EquipmentSlot.OFF_HAND, "Metal Shield", "Icons/Equipment/MetalShield",
-                0, 0, 30, 0, 0, 0.1);
+                0, 0, 40, 0, 0, 0.1);
             equipDict[EquipmentType.CRYSTAL_SHIELD] = new BaseEquipment(
                 EquipmentType.CRYSTAL_SHIELD, EquipmentSlot.OFF_HAND, "Crystal Shield", "Icons/Equipment/CrystalShield",
-                0, 0, 0, 30, 0, 0.1);
+                0, 0, 0, 40, 0, 0.1);
             equipDict[EquipmentType.TOME] = new BaseEquipment(
                 EquipmentType.TOME, EquipmentSlot.OFF_HAND, "Tome", "Icons/Equipment/Tome",
                 0, 20, 0, 0, 0.2, 0);
@@ -144,9 +142,6 @@ namespace Com.Tempest.Whale.GameObjects {
             equipDict[EquipmentType.GREAT_AXE] = new BaseEquipment(
                 EquipmentType.GREAT_AXE, EquipmentSlot.TWO_HAND, "Greataxe", "Icons/Equipment/TwoHandedAxe",
                 60, 0, 0, 0, 0.2, 0);
-            equipDict[EquipmentType.GREAT_CLUB] = new BaseEquipment(
-                EquipmentType.GREAT_CLUB, EquipmentSlot.TWO_HAND, "Greathammer", "Icons/Equipment/TwoHandedClub",
-                40, 40, 0, 0, 0, 0);
             equipDict[EquipmentType.STAFF] = new BaseEquipment(
                 EquipmentType.STAFF, EquipmentSlot.TWO_HAND, "Staff", "Icons/Equipment/Staff",
                 0, 80, 0, 0, 0, 0);

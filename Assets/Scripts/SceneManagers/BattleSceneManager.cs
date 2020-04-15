@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -13,8 +14,12 @@ using Com.Tempest.Whale.StateObjects;
 public class BattleSceneManager : MonoBehaviour {
 
     public LayerMask heroAnimationLayer;
+    public Sprite forestBackground;
+    public Sprite caveBackground;
+    public LoadingPopup loadingPrefab;
 
     public Canvas mainCanvas;
+    public SpriteRenderer backgroundRenderer;
     public GameObject selectionPanel;
     public RecyclerView selectionRecyclerView;
     public GameObject selectionPrefab;
@@ -36,6 +41,8 @@ public class BattleSceneManager : MonoBehaviour {
     public UnityEngine.UI.Button fightButton;
 
     private BattleEnum battleType;
+    private CredentialsManager credentialsManager;
+    private bool loadingFromServer = false;
 
     // These are used in selection mode.
     private BattleSelectionAdapter selectionAdapter;
@@ -48,23 +55,29 @@ public class BattleSceneManager : MonoBehaviour {
     private AccountHero[] selectedEnemies;
 
     // These are used in combat mode.
+    private bool combatStarted = false;
     private Dictionary<Guid, AnimatedHero> placeHolders;
     private bool skipBattle = false;
-    private MissionReport displayedReport;
+    private CombatReport combatReport;
+    private EarnedRewardsContainer combatRewards;
 
     public void Awake() {
+        credentialsManager = FindObjectOfType<CredentialsManager>();
         battleType = BattleManager.GetBattleType();
         switch (battleType) {
-            case BattleEnum.TOWER:
             case BattleEnum.CAMPAIGN:
-            default:
-                SetSelectionMode();
+                backgroundRenderer.sprite = forestBackground;
+                break;
+            case BattleEnum.LOOT_CAVE:
+                backgroundRenderer.sprite = caveBackground;
                 break;
         }
         skipPanel.SetActive(false);
+        SetSelectionMode();
     }
 
     public void Update() {
+        if (loadingFromServer || combatStarted) return;
         if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
@@ -76,7 +89,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     #region Selection.
 
-    private void SetSelectionMode() {
+    private async void SetSelectionMode() {
         selectionPanel.SetActive(true);
         statusPanel.SetActive(false);
 
@@ -91,7 +104,7 @@ public class BattleSceneManager : MonoBehaviour {
 
         battleType = BattleManager.GetBattleType();
         switch (battleType) {
-            case BattleEnum.TOWER:
+            case BattleEnum.LOOT_CAVE:
             case BattleEnum.CAMPAIGN:
             default:
                 selectedAllies = StateManager.GetLastUsedTeam();
@@ -99,14 +112,33 @@ public class BattleSceneManager : MonoBehaviour {
                 selectionRecyclerView.NotifyDataSetChanged();
                 break;
         }
-        SelectEnemiesFromBattleType();
+        await SelectEnemiesFromBattleType();
         FillInSelectedAlliesFromState();
         HandleFightButton();
     }
 
-    private void SelectEnemiesFromBattleType() {
+    private async Task SelectEnemiesFromBattleType() {
         var state = StateManager.GetCurrentState();
         switch (battleType) {
+            case BattleEnum.LOOT_CAVE:
+                loadingFromServer = true;
+                var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
+                loadingPopup.LaunchPopup("Loading encounter...", "Finding your latest encounter...");
+                var encounter = await credentialsManager.RequestCaveEncounter();
+                selectedEnemies = new AccountHero[] {
+                    new AccountHero(encounter.Position1Hero),
+                    new AccountHero(encounter.Position2Hero),
+                    new AccountHero(encounter.Position3Hero),
+                    new AccountHero(encounter.Position4Hero),
+                    new AccountHero(encounter.Position5Hero)
+                };
+                foreach (AccountHero hero in selectedEnemies) {
+                    hero.AwakeningLevel = (encounter.Floor / 4) + 1;
+                    hero.CurrentLevel = encounter.Floor * 5;
+                }
+                loadingPopup.DismissPopup();
+                loadingFromServer = false;
+                break;
             case BattleEnum.CAMPAIGN:
                 var mission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
                 selectedEnemies = new AccountHero[mission.MissionHeroes.Length];
@@ -174,6 +206,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public void OnFilterPressed(int filterPosition) {
+        if (ButtonsBlocked()) return;
         FactionEnum faction = (FactionEnum)Enum.GetValues(typeof(FactionEnum)).GetValue(filterPosition);
         if (currentFilter == faction) {
             currentFilter = null;
@@ -184,7 +217,11 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public void OnBackPressed() {
+        if (ButtonsBlocked()) return;
         switch (battleType) {
+            case BattleEnum.LOOT_CAVE:
+                SceneManager.LoadSceneAsync("LootCaveScene");
+                break;
             case BattleEnum.CAMPAIGN:
                 SceneManager.LoadSceneAsync("CampaignScene");
                 break;
@@ -195,6 +232,7 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public bool OnHeroSelected(AccountHero hero, bool isSelected) {
+        if (ButtonsBlocked()) return false;
         if (isSelected) {
             for (int x = 0; x < selectedAllies.Length; x++) {
                 if (selectedAllies[x] == null) {
@@ -231,10 +269,26 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     public async void OnFight() {
-        var missionReport = await StateManager.AttemptCurrentMissionWithTeam(selectedAllies);
+        if (ButtonsBlocked()) return;
+        loadingFromServer = true;
+        var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
+        loadingPopup.LaunchPopup("Preparing...", "Writing ballads of your inevitable victory...");
+        StateManager.SetLastUsedTeam(selectedAllies);
 
-        displayedReport = missionReport;
-        SetCombatMode(missionReport.Combat);
+        try {
+            var response = await credentialsManager.PerformEpicBattle(battleType, selectedAllies);
+            combatReport = response.Report;
+            combatRewards = response.Rewards;
+
+            loadingPopup.DismissPopup();
+            loadingFromServer = false;
+
+            SetCombatMode(combatReport);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error loading the battle.");
+        }
     }
 
     #endregion
@@ -244,6 +298,7 @@ public class BattleSceneManager : MonoBehaviour {
     private void SetCombatMode(CombatReport report) {
         selectionPanel.SetActive(false);
         statusPanel.SetActive(true);
+        combatStarted = true;
 
         turnText.text = "Turn 1";
         rewardRecycler.gameObject.SetActive(false);
@@ -301,26 +356,26 @@ public class BattleSceneManager : MonoBehaviour {
         }
     }
 
-    private System.Collections.IEnumerator PlayCombatRound(CombatRound round) {
+    private IEnumerator PlayCombatRound(CombatRound round) {
         turnText.text = string.Format("Round {0}", round.turnNumber);
 
         BindAllyTeam(round.allies);
         BindEnemyTeam(round.enemies);
 
-        foreach (CombatStep step in round.steps) {
-            if (!skipBattle) yield return StartCoroutine(PlayCombatStep(step));
+        foreach (CombatTurn turn in round.turns) {
+            if (!skipBattle) yield return StartCoroutine(PlayCombatTurn(turn));
         }
         
-        foreach (DamageInstance instance in round.endOfTurn) {
+        foreach (CombatStep step in round.endOfTurn) {
             if (!skipBattle) {
-                placeHolders[instance.targetGuid].AnimateDamageInstance(instance);
+                placeHolders[step.targetGuid].AnimateCombatStep(step);
                 yield return new WaitForSeconds(0.3f);
             }
         }
     }
 
-    private System.Collections.IEnumerator PlayCombatStep(CombatStep step) {
-        yield return placeHolders[step.attacker.combatHeroGuid].AnimateCombatStep(step, placeHolders);
+    private IEnumerator PlayCombatTurn(CombatTurn turn) {
+        yield return placeHolders[turn.attacker.combatHeroGuid].AnimateCombatTurn(turn, placeHolders);
     }
 
     private void OnEndOfCombat(CombatReport report) {
@@ -340,26 +395,25 @@ public class BattleSceneManager : MonoBehaviour {
         continueButton.gameObject.SetActive(true);
 
         if (report.alliesWon) {
-            var rewardAdapter = new RewardAdapter(rewardPrefab, displayedReport.EarnedRewards);
+            var rewardAdapter = new RewardAdapter(rewardPrefab, combatRewards);
             rewardRecycler.SetAdapter(rewardAdapter);
             rewardRecycler.NotifyDataSetChanged();
         }
     }
 
     private bool ButtonsBlocked() {
-        return FindObjectOfType<CombatReportPopup>() != null;
+        return loadingFromServer || FindObjectOfType<CombatReportPopup>() != null;
     }
 
     public void OnContinuePressed() {
-        if (ButtonsBlocked()) return;
-        SceneManager.LoadSceneAsync("CampaignScene");
+        OnBackPressed();
     }
 
     public void OnReportPressed() {
         if (ButtonsBlocked()) return;
-        if (displayedReport != null) {
+        if (combatReport != null) {
             var reportPopup = Instantiate(reportPopupPrefab, mainCanvas.transform);
-            reportPopup.SetReport(displayedReport.Combat.ToHumanReadableReport());
+            reportPopup.SetReport(combatReport.ToHumanReadableReport());
         }
     }
 
@@ -438,7 +492,11 @@ public class RewardAdapter : RecyclerViewAdapter {
         if (rewards.Gold > 0) earnedRewards.Add(RewardType.GOLD);
         if (rewards.Souls > 0) earnedRewards.Add(RewardType.SOULS);
         if (rewards.PlayerExperience > 0) earnedRewards.Add(RewardType.PLAYER_EXPERIENCE);
+        if (rewards.Gems > 0) earnedRewards.Add(RewardType.GEMS);
         if (rewards.Summons > 0) earnedRewards.Add(RewardType.STANDARD_SUMMON);
+        if (rewards.BronzeSummons > 0) earnedRewards.Add(RewardType.BRONZE_SUMMON);
+        if (rewards.SilverSummons > 0) earnedRewards.Add(RewardType.SILVER_SUMMON);
+        if (rewards.GoldSummons > 0) earnedRewards.Add(RewardType.GOLD_SUMMON);
 
         earnedEquipment = rewards.EarnedEquipment;
     }
@@ -461,8 +519,20 @@ public class RewardAdapter : RecyclerViewAdapter {
                 case RewardType.PLAYER_EXPERIENCE:
                     rewardHolder.SetReward(type, rewards.PlayerExperience);
                     break;
+                case RewardType.GEMS:
+                    rewardHolder.SetReward(type, rewards.Gems);
+                    break;
                 case RewardType.STANDARD_SUMMON:
                     rewardHolder.SetReward(type, rewards.Summons);
+                    break;
+                case RewardType.BRONZE_SUMMON:
+                    rewardHolder.SetReward(type, rewards.BronzeSummons);
+                    break;
+                case RewardType.SILVER_SUMMON:
+                    rewardHolder.SetReward(type, rewards.SilverSummons);
+                    break;
+                case RewardType.GOLD_SUMMON:
+                    rewardHolder.SetReward(type, rewards.GoldSummons);
                     break;
             }
         } else {

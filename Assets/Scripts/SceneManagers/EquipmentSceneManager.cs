@@ -9,6 +9,8 @@ using Com.Tempest.Whale.StateObjects;
 
 public class EquipmentSceneManager : MonoBehaviour {
 
+    public Canvas mainCanvas;
+
     public GameObject masterPanel;
     public GameObject detailPanel;
 
@@ -43,6 +45,9 @@ public class EquipmentSceneManager : MonoBehaviour {
     public Text reflectionLabel;
     public Text deflectLabel;
 
+    private CredentialsManager credentialsManager;
+    private bool loadingFromServer = false;
+
     // Master panel things.
     private EquipmentFilter? currentFilter;
     private List<AccountEquipment> filteredList;
@@ -53,6 +58,8 @@ public class EquipmentSceneManager : MonoBehaviour {
     private bool fanfarePlaying = false;
 
     public void Awake() {
+        credentialsManager = FindObjectOfType<CredentialsManager>();
+
         masterPanel.SetActive(true);
         detailPanel.SetActive(false);
 
@@ -85,7 +92,6 @@ public class EquipmentSceneManager : MonoBehaviour {
                     allowedTypes.Add(EquipmentType.DAGGER);
                     allowedTypes.Add(EquipmentType.SWORD);
                     allowedTypes.Add(EquipmentType.AXE);
-                    allowedTypes.Add(EquipmentType.CLUB);
                     allowedTypes.Add(EquipmentType.SCEPTER);
                     allowedTypes.Add(EquipmentType.TOME);
                     allowedTypes.Add(EquipmentType.METAL_SHIELD);
@@ -94,7 +100,6 @@ public class EquipmentSceneManager : MonoBehaviour {
                 case EquipmentFilter.TWO_HAND:
                     allowedTypes.Add(EquipmentType.GREAT_SWORD);
                     allowedTypes.Add(EquipmentType.GREAT_AXE);
-                    allowedTypes.Add(EquipmentType.GREAT_CLUB);
                     allowedTypes.Add(EquipmentType.STAFF);
                     break;
                 case EquipmentFilter.CLOTH:
@@ -174,13 +179,15 @@ public class EquipmentSceneManager : MonoBehaviour {
     }
 
     private void ResetListPosition() {
-        var selected = filteredList[currentSelection];
+        var selected = filteredList[currentSelection].Id;
         FilterList();
-        currentSelection = filteredList.IndexOf(selected);
+        currentSelection = filteredList.FindIndex((AccountEquipment equipment) => {
+            return equipment.Id.Equals(selected);
+        });
     }
 
     private bool ButtonsBlocked() {
-        return fanfarePlaying;
+        return fanfarePlaying || loadingFromServer;
     }
 
     public void OnFuseButtonPressed() {
@@ -261,15 +268,25 @@ public class EquipmentSceneManager : MonoBehaviour {
     public void HandleCompleteFusionButton() {
         var selected = filteredList[currentSelection];
         var destroyedEquipment = GetSelectedFusionEquipment();
-        completeFusionButton.gameObject.SetActive(StateManager.FusionIsLegal(selected, destroyedEquipment));
+        completeFusionButton.gameObject.SetActive(LevelContainer.FusionIsLegal(selected, destroyedEquipment));
     }
 
-    public void RequestFusion() {
+    public async void RequestFusion() {
         if (ButtonsBlocked()) return;
         var selected = filteredList[currentSelection];
         var destroyedEquipment = GetSelectedFusionEquipment();
-        if (!StateManager.FusionIsLegal(selected, destroyedEquipment)) return;
-        StateManager.FuseEquipment(selected, destroyedEquipment, OnFusionComplete);
+        if (!LevelContainer.FusionIsLegal(selected, destroyedEquipment)) return;
+
+        loadingFromServer = true;
+        try {
+            var successful = await credentialsManager.RequestFusion(selected, destroyedEquipment);
+            loadingFromServer = false;
+            OnFusionComplete(successful);
+        } catch (Exception e) {
+            Debug.LogError(e);
+            loadingFromServer = false;
+            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error with the equipment fusion.");
+        }
     }
 
     public void OnFusionComplete(bool successful) {
