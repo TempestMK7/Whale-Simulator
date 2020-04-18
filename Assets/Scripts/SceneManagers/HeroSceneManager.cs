@@ -107,7 +107,7 @@ public class HeroSceneManager : MonoBehaviour {
                 if (animator != null) animator.SetTrigger("Attack");
                 var childAnimators = hit.transform.gameObject.GetComponentsInChildren<HarshByteAnimation>();
                 foreach (HarshByteAnimation child in childAnimators) {
-                    child.SetTrigger("Attack");
+                    child.Attack();
                 }
             }
         }

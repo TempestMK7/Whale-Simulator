@@ -66,7 +66,7 @@ public class CampaignSceneManager : MonoBehaviour {
                 heroPlaceholders[x].SetHero(mission.FaceOfMission);
 
                 if (state.CurrentMission > x + 1) {
-                    heroPlaceholders[x].PlayDead();
+                    heroPlaceholders[x].Death();
                 }
 
                 if (x == state.CurrentMission - 1) {

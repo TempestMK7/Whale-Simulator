@@ -65,12 +65,11 @@ public class AnimatedHero : MonoBehaviour {
         if (baseHero.HarshPath != null) {
             spriteRenderer.enabled = false;
             harshByteAnimation = Instantiate(Resources.Load<HarshByteAnimation>(baseHero.HarshPath), gameObject.transform);
+            harshByteAnimation.OnCreate(gameObject.transform.localScale);
         } else {
             spriteRenderer.enabled = true;
             animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.AnimatorPath);
         }
-
-        SetAnimation("Idle", true);
     }
 
     public void SetHero(CombatHero hero) {
@@ -83,6 +82,7 @@ public class AnimatedHero : MonoBehaviour {
             if (hero.baseHero.HarshPath != null) {
                 spriteRenderer.enabled = false;
                 harshByteAnimation = Instantiate(Resources.Load<HarshByteAnimation>(hero.baseHero.HarshPath), gameObject.transform);
+                harshByteAnimation.OnCreate(gameObject.transform.localScale);
             } else {
                 spriteRenderer.enabled = true;
                 animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.AnimatorPath);
@@ -98,15 +98,40 @@ public class AnimatedHero : MonoBehaviour {
             healthCanvas.gameObject.SetActive(true);
         } else {
             healthCanvas.gameObject.SetActive(false);
-            SetAnimation("Death", false);
+            animator.SetTrigger("Death");
+            
         }
     }
 
-    public void SetAnimation(string state, bool loop) {
+    public void Attack() {
         if (harshByteAnimation != null) {
-            harshByteAnimation.heroAnimator.SetTrigger(state);
+            harshByteAnimation.Attack();
         } else {
-            animator.SetTrigger(state);
+            animator.SetTrigger("Attack");
+        }
+    }
+
+    public void Special() {
+        if (harshByteAnimation != null) {
+            harshByteAnimation.Special();
+        } else {
+            animator.SetTrigger("Special");
+        }
+    }
+
+    public void Hurt() {
+        if (harshByteAnimation != null) {
+            harshByteAnimation.Hurt();
+        } else {
+            animator.SetTrigger("Hurt");
+        }
+    }
+
+    public void Death() {
+        if (harshByteAnimation != null) {
+            harshByteAnimation.Death();
+        } else {
+            animator.SetTrigger("Death");
         }
     }
 
@@ -164,13 +189,9 @@ public class AnimatedHero : MonoBehaviour {
         combatHero.currentEnergy += turn.energyGained;
         SendDamageInstances(turn.steps, placeholders);
 
-        if (harshByteAnimation != null) {
-            harshByteAnimation.heroAnimator.SetTrigger("Attack");
-            yield return new WaitForSeconds(attackDurationSeconds);
-        } else {
-            animator.SetTrigger("Attack");
-            yield return new WaitForSeconds(attackDurationSeconds);
-        }
+        Attack();
+        yield return new WaitForSeconds(attackDurationSeconds);
+        soundEffect.Play();
 
         for (float x = 1; x <= slideDurationFrames; x++) {
             float percentage = x / slideDurationFrames;
@@ -186,6 +207,14 @@ public class AnimatedHero : MonoBehaviour {
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         combatHero.currentEnergy += turn.energyGained;
 
+        if (attackInfo.IsSpecial) {
+            Special();
+        } else {
+            Attack();
+        }
+        yield return new WaitForSeconds(0.5f);
+
+        soundEffect.Play();
         if (attackInfo.EnemyParticle != null) {
             foreach (CombatHero enemy in turn.enemyTargets) {
                 var destination = placeholders[enemy.combatHeroGuid].transform.position;
@@ -200,19 +229,10 @@ public class AnimatedHero : MonoBehaviour {
                 FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
             }
         }
-
-        soundEffect.Play();
-        var triggerName = attackInfo.IsSpecial ? "Special" : "Attack";
-        if (harshByteAnimation != null) {
-            harshByteAnimation.heroAnimator.SetTrigger(triggerName);
-        } else {
-            animator.SetTrigger(triggerName);
-        }
         yield return new WaitForSeconds(0.2f);
         SendDamageInstances(turn.steps, placeholders);
-        yield return new WaitForSeconds(attackDurationSeconds - 0.2f);
-        yield return new WaitForSeconds(slideDurationFrames * 2f / 60f);
-        
+
+        yield return new WaitForSeconds(0.3f);
     }
 
     private void FireParticle(AttackParticleEnum particle, ParticleOriginEnum origin, Vector3 target) {
@@ -254,15 +274,11 @@ public class AnimatedHero : MonoBehaviour {
         // Play particles associated with attack type.
 
         if (step.damage > 0 && !step.wasFatal) {
-            if (harshByteAnimation != null) {
-                harshByteAnimation.heroAnimator.SetTrigger("Hurt");
-            } else {
-                animator.SetTrigger("Hurt");
-            }
+            Hurt();
         }
 
         if (step.wasFatal) {
-            PlayDead();
+            Death();
             StartCoroutine(FadeOutHealthCanvas());
         }
     }
@@ -270,13 +286,5 @@ public class AnimatedHero : MonoBehaviour {
     private IEnumerator FadeOutHealthCanvas() {
         yield return new WaitForSeconds(1f);
         healthCanvas.gameObject.SetActive(false);
-    }
-
-    public void PlayDead() {
-        if (harshByteAnimation != null) {
-            harshByteAnimation.heroAnimator.SetTrigger("Death");
-        } else {
-            animator.SetTrigger("Death");
-        }
     }
 }

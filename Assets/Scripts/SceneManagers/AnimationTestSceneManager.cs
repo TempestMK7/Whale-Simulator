@@ -4,34 +4,37 @@ using UnityEngine;
 
 public class AnimationTestSceneManager : MonoBehaviour {
 
-    private List<Animator> discoveredAnimators;
+    private List<HarshByteAnimation> discoveredAnimators;
 
     public void Awake() {
-        var animators = FindObjectsOfType<Animator>();
-        discoveredAnimators = new List<Animator>(animators);
+        var animators = FindObjectsOfType<HarshByteAnimation>();
+        discoveredAnimators = new List<HarshByteAnimation>(animators);
+        foreach (HarshByteAnimation animator in discoveredAnimators) {
+            animator.OnCreate(new Vector3(3f, 3f));
+        }
     }
 
     public void OnAttack() {
-        foreach (Animator animator in discoveredAnimators) {
-            animator.SetTrigger("Attack");
+        foreach (HarshByteAnimation animator in discoveredAnimators) {
+            animator.Attack();
         }
     }
 
     public void OnSpecial() {
-        foreach (Animator animator in discoveredAnimators) {
-            animator.SetTrigger("Special");
+        foreach (HarshByteAnimation animator in discoveredAnimators) {
+            animator.Special();
         }
     }
 
     public void OnHurt() {
-        foreach (Animator animator in discoveredAnimators) {
-            animator.SetTrigger("Hurt");
+        foreach (HarshByteAnimation animator in discoveredAnimators) {
+            animator.Hurt();
         }
     }
 
     public void OnDeath() {
-        foreach (Animator animator in discoveredAnimators) {
-            animator.SetTrigger("Death");
+        foreach (HarshByteAnimation animator in discoveredAnimators) {
+            animator.Death();
         }
     }
 }
