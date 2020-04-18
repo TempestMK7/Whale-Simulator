@@ -5,10 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
-using Com.Tempest.Whale.ResourceContainers;
 using Com.Tempest.Whale.StateObjects;
-using Spine;
-using Spine.Unity;
 
 public class AnimatedHero : MonoBehaviour {
 
@@ -30,7 +27,7 @@ public class AnimatedHero : MonoBehaviour {
 
     private AccountHero selectedHero;
     private CombatHero combatHero;
-    private SkeletonAnimation spineAnimation;
+    private HarshByteAnimation harshByteAnimation;
 
     private Vector3 startingPosition;
 
@@ -59,39 +56,37 @@ public class AnimatedHero : MonoBehaviour {
     }
 
     public void SetHero(HeroEnum hero) {
-        if (spineAnimation != null) {
-            Destroy(spineAnimation.gameObject);
-            spineAnimation = null;
+        if (harshByteAnimation != null) {
+            Destroy(harshByteAnimation.gameObject);
+            harshByteAnimation = null;
         }
+
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
-        if (baseHero.SpinePath != null) {
+        if (baseHero.HarshPath != null) {
             spriteRenderer.enabled = false;
-            spineAnimation = Instantiate(Resources.Load<GameObject>(baseHero.SpinePath), gameObject.transform).GetComponent<SkeletonAnimation>();
+            harshByteAnimation = Instantiate(Resources.Load<HarshByteAnimation>(baseHero.HarshPath), gameObject.transform);
         } else {
             spriteRenderer.enabled = true;
-            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.SpritePath);
+            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(baseHero.AnimatorPath);
         }
 
         SetAnimation("Idle", true);
     }
 
     public void SetHero(CombatHero hero) {
-        if (hero.baseHero.SpinePath != null) {
-            if (combatHero == null || combatHero.baseHero.Hero != hero.baseHero.Hero) {
-                if (spineAnimation != null) {
-                    Destroy(spineAnimation.gameObject);
-                    spineAnimation = null;
-                }
+        if (combatHero == null || combatHero.baseHero.Hero != hero.baseHero.Hero) {
+            if (harshByteAnimation != null) {
+                Destroy(harshByteAnimation.gameObject);
+                harshByteAnimation = null;
+            }
+
+            if (hero.baseHero.HarshPath != null) {
                 spriteRenderer.enabled = false;
-                spineAnimation = Instantiate(Resources.Load<GameObject>(hero.baseHero.SpinePath), gameObject.transform).GetComponent<SkeletonAnimation>();
+                harshByteAnimation = Instantiate(Resources.Load<HarshByteAnimation>(hero.baseHero.HarshPath), gameObject.transform);
+            } else {
+                spriteRenderer.enabled = true;
+                animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.AnimatorPath);
             }
-        } else {
-            if (spineAnimation != null) {
-                Destroy(spineAnimation.gameObject);
-                spineAnimation = null;
-            }
-            spriteRenderer.enabled = true;
-            animator.runtimeAnimatorController = Resources.Load<AnimatorOverrideController>(hero.baseHero.SpritePath);
         }
 
         handler = null;
@@ -103,15 +98,16 @@ public class AnimatedHero : MonoBehaviour {
             healthCanvas.gameObject.SetActive(true);
         } else {
             healthCanvas.gameObject.SetActive(false);
-            animator.SetTrigger("Die");
             SetAnimation("Death", false);
         }
     }
 
     public void SetAnimation(string state, bool loop) {
-        if (spineAnimation == null || spineAnimation.state == null) return;
-        if (state.Equals("Death") && spineAnimation.state.GetCurrent(0).Animation.Name.Equals("Death")) return;
-        spineAnimation.state.SetAnimation(0, state, loop);
+        if (harshByteAnimation != null) {
+            harshByteAnimation.heroAnimator.SetTrigger(state);
+        } else {
+            animator.SetTrigger(state);
+        }
     }
 
     public bool ContainsHero(CombatHero hero) {
@@ -168,13 +164,9 @@ public class AnimatedHero : MonoBehaviour {
         combatHero.currentEnergy += turn.energyGained;
         SendDamageInstances(turn.steps, placeholders);
 
-        if (spineAnimation != null) {
-            soundEffect.Play();
-            var animationName = attackInfo.IsSpecial ? "UltimateAttack" : "Attack";
-            var trackEntry = spineAnimation.state.SetAnimation(0, animationName, false);
-            trackEntry.TimeScale = 2;
-            yield return new WaitForSpineAnimationComplete(trackEntry, true);
-            spineAnimation.state.SetAnimation(0, "Idle", true);
+        if (harshByteAnimation != null) {
+            harshByteAnimation.heroAnimator.SetTrigger("Attack");
+            yield return new WaitForSeconds(attackDurationSeconds);
         } else {
             animator.SetTrigger("Attack");
             yield return new WaitForSeconds(attackDurationSeconds);
@@ -194,57 +186,33 @@ public class AnimatedHero : MonoBehaviour {
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         combatHero.currentEnergy += turn.energyGained;
 
-        if (spineAnimation != null) {
-            soundEffect.Play();
-            var animationName = attackInfo.IsSpecial ? "UltimateAttack" : "Attack";
-            var trackEntry = spineAnimation.state.SetAnimation(0, animationName, false);
-            trackEntry.TimeScale = 2;
-
-            yield return new WaitForSeconds(0.4f);
-            if (attackInfo.EnemyParticle != null) {
-                foreach (CombatHero enemy in turn.enemyTargets) {
-                    var destination = placeholders[enemy.combatHeroGuid].transform.position;
-                    destination.y += 0.5f;
-                    FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
-                }
+        if (attackInfo.EnemyParticle != null) {
+            foreach (CombatHero enemy in turn.enemyTargets) {
+                var destination = placeholders[enemy.combatHeroGuid].transform.position;
+                destination.y += 0.5f;
+                FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
             }
-            if (attackInfo.AllyParticle != null) {
-                foreach (CombatHero ally in turn.allyTargets) {
-                    var destination = placeholders[ally.combatHeroGuid].transform.position;
-                    destination.y += 0.5f;
-                    FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
-                }
-            }
-
-            yield return new WaitForSeconds(0.2f);
-            SendDamageInstances(turn.steps, placeholders);
-
-            var remainingTime = trackEntry.AnimationEnd - trackEntry.AnimationTime;
-            if (remainingTime > 0) yield return new WaitForSeconds(remainingTime);
-            spineAnimation.state.SetAnimation(0, "Idle", true);
-        } else {
-            if (attackInfo.EnemyParticle != null) {
-                foreach (CombatHero enemy in turn.enemyTargets) {
-                    var destination = placeholders[enemy.combatHeroGuid].transform.position;
-                    destination.y += 0.5f;
-                    FireParticle(attackInfo.EnemyParticle.GetValueOrDefault(), attackInfo.EnemyParticleOrigin.GetValueOrDefault(), destination);
-                }
-            }
-            if (attackInfo.AllyParticle != null) {
-                foreach (CombatHero ally in turn.allyTargets) {
-                    var destination = placeholders[ally.combatHeroGuid].transform.position;
-                    destination.y += 0.5f;
-                    FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
-                }
-            }
-
-            soundEffect.Play();
-            animator.SetTrigger("Attack");
-            yield return new WaitForSeconds(0.2f);
-            SendDamageInstances(turn.steps, placeholders);
-            yield return new WaitForSeconds(attackDurationSeconds - 0.2f);
-            yield return new WaitForSeconds(slideDurationFrames * 2f / 60f);
         }
+        if (attackInfo.AllyParticle != null) {
+            foreach (CombatHero ally in turn.allyTargets) {
+                var destination = placeholders[ally.combatHeroGuid].transform.position;
+                destination.y += 0.5f;
+                FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
+            }
+        }
+
+        soundEffect.Play();
+        var triggerName = attackInfo.IsSpecial ? "Special" : "Attack";
+        if (harshByteAnimation != null) {
+            harshByteAnimation.heroAnimator.SetTrigger(triggerName);
+        } else {
+            animator.SetTrigger(triggerName);
+        }
+        yield return new WaitForSeconds(0.2f);
+        SendDamageInstances(turn.steps, placeholders);
+        yield return new WaitForSeconds(attackDurationSeconds - 0.2f);
+        yield return new WaitForSeconds(slideDurationFrames * 2f / 60f);
+        
     }
 
     private void FireParticle(AttackParticleEnum particle, ParticleOriginEnum origin, Vector3 target) {
@@ -286,22 +254,16 @@ public class AnimatedHero : MonoBehaviour {
         // Play particles associated with attack type.
 
         if (step.damage > 0 && !step.wasFatal) {
-            StartCoroutine(TakeDamage());
+            if (harshByteAnimation != null) {
+                harshByteAnimation.heroAnimator.SetTrigger("Hurt");
+            } else {
+                animator.SetTrigger("Hurt");
+            }
         }
 
         if (step.wasFatal) {
             PlayDead();
             StartCoroutine(FadeOutHealthCanvas());
-        }
-    }
-
-    private IEnumerator TakeDamage() {
-        if (spineAnimation != null) {
-            yield return new WaitForSpineAnimationComplete(spineAnimation.state.SetAnimation(0, "Hurt", false));
-            spineAnimation.state.SetAnimation(0, "Idle", true);
-        } else {
-            animator.SetTrigger("TakeDamage");
-            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -311,7 +273,10 @@ public class AnimatedHero : MonoBehaviour {
     }
 
     public void PlayDead() {
-        animator.SetTrigger("Die");
-        SetAnimation("Death", false);
+        if (harshByteAnimation != null) {
+            harshByteAnimation.heroAnimator.SetTrigger("Death");
+        } else {
+            animator.SetTrigger("Death");
+        }
     }
 }

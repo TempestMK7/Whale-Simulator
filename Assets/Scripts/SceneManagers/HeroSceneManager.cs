@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Spine;
-using Spine.Unity;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -107,16 +105,11 @@ public class HeroSceneManager : MonoBehaviour {
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
                 var animator = hit.transform.gameObject.GetComponent<Animator>();
                 if (animator != null) animator.SetTrigger("Attack");
-                StartCoroutine(PerformAttackAnimation());
+                var childAnimators = hit.transform.gameObject.GetComponentsInChildren<HarshByteAnimation>();
+                foreach (HarshByteAnimation child in childAnimators) {
+                    child.SetTrigger("Attack");
+                }
             }
-        }
-    }
-
-    private IEnumerator PerformAttackAnimation() {
-        var spineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
-        if (spineAnimation != null) {
-            yield return new WaitForSpineAnimation(spineAnimation.state.SetAnimation(0, "Attack", false), WaitForSpineAnimation.AnimationEventTypes.Complete);
-            spineAnimation.state.SetAnimation(0, "Idle", true);
         }
     }
 
@@ -237,17 +230,17 @@ public class HeroSceneManager : MonoBehaviour {
         factionIconLeft.sprite = FactionIconContainer.GetIconForFaction(baseHero.Faction);
         roleIconRight.sprite = RoleIconContainer.GetIconForRole(baseHero.Role);
 
-        var existingSpineAnimation = heroAnimation.GetComponentInChildren<SkeletonAnimation>();
-        if (existingSpineAnimation != null) {
-            Destroy(existingSpineAnimation.gameObject);
+        var existingHarshAnimation = heroAnimation.GetComponentInChildren<HarshByteAnimation>();
+        if (existingHarshAnimation != null) {
+            Destroy(existingHarshAnimation.gameObject);
         }
 
-        if (baseHero.SpinePath != null) {
+        if (baseHero.HarshPath != null) {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
-            var spineAnimation = Instantiate(Resources.Load<SkeletonAnimation>(baseHero.SpinePath), heroAnimation.transform);
+            var harshAnimation = Instantiate(Resources.Load<HarshByteAnimation>(baseHero.HarshPath), heroAnimation.transform);
         } else {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = true;
-            var animator = Resources.Load<AnimatorOverrideController>(baseHero.SpritePath);
+            var animator = Resources.Load<AnimatorOverrideController>(baseHero.AnimatorPath);
             heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
         }
 

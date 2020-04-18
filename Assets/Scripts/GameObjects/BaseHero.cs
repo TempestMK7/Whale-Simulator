@@ -23,8 +23,8 @@ namespace Com.Tempest.Whale.GameObjects {
         public HeroEnum Hero { get; }
         public string HeroName { get; }
         public string HeroIconPath { get; }
-        public string SpritePath { get; }
-        public string SpinePath { get; }
+        public string AnimatorPath { get; }
+        public string HarshPath { get; }
 
         public RoleEnum Role { get; }
         public FactionEnum Faction { get; }
@@ -50,7 +50,8 @@ namespace Com.Tempest.Whale.GameObjects {
         public EquipmentType PreferredLegs { get; }
         public EquipmentType PreferredHead { get; }
 
-        public BaseHero(HeroEnum hero, string heroName, string heroIconPath, string spritePath, string spinePath, RoleEnum role, FactionEnum faction, int rarity,
+        public BaseHero(HeroEnum hero, string heroName, string heroIconPath, string animatorPath, string harshPath,
+            RoleEnum role, FactionEnum faction, int rarity,
             double baseHealth, double baseAttack, double baseMagic,
             double baseDefense, double baseReflection, double baseSpeed, double baseCritChance, double baseDeflectionChance,
             AttackEnum basicAttack, AttackEnum specialAttack, AbilityEnum passiveAbility,
@@ -60,8 +61,9 @@ namespace Com.Tempest.Whale.GameObjects {
             Hero = hero;
             HeroName = heroName;
             HeroIconPath = heroIconPath;
-            SpritePath = spritePath;
-            SpinePath = spinePath;
+            AnimatorPath = animatorPath;
+            HarshPath = harshPath;
+
             Role = role;
             Faction = faction;
             Rarity = rarity;
@@ -119,7 +121,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.ORACLE:
-                    return new BaseHero(hero, "Oracle", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
+                    return new BaseHero(hero, "Oracle", "Icons/Element02_256_04", "Characters/Oracle/OracleController", "Characters/Oracle/OraclePrefab", 
                         RoleEnum.SUPPORT, FactionEnum.WATER, 5,
                         80, 55, 95, 60, 70, 60, 0, 0,
                         AttackEnum.WATER_RENEW, AttackEnum.HEALING_WAVE, AbilityEnum.CLEANSING_RAIN,
@@ -165,7 +167,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
                 // Fire heroes.
                 case HeroEnum.CANDLE_MAN:
-                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Spine/CandleMan",
+                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
                         60, 55, 90, 60, 70, 85, 0.2, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.TWIN_FLAME, AbilityEnum.KINDLING,
