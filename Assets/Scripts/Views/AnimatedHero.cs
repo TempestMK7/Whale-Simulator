@@ -9,6 +9,11 @@ using Com.Tempest.Whale.StateObjects;
 
 public class AnimatedHero : MonoBehaviour {
 
+    private const int MELEE_SLIDE_FRAMES = 12;
+    private const float ATTACK_WINDUP_SECONDS = 0.5f;
+    private const float ATTACK_SWING_SECONDS = 0.5f;
+    private const float PARTICLE_TRAVEL_TIME_SECONDS = 0.2f;
+
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public AudioSource soundEffect;
@@ -18,9 +23,6 @@ public class AnimatedHero : MonoBehaviour {
     public CombatTextHolder combatTextHolder;
 
     public GameObject particlePrefab;
-
-    public int slideDurationFrames = 20;
-    public float attackDurationSeconds = 0.5f;
 
     private Action handler;
     private Action<AccountHero> heroHandler;
@@ -175,26 +177,42 @@ public class AnimatedHero : MonoBehaviour {
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         var target = placeholders[turn.enemyTargets[0].combatHeroGuid];
 
+        // Each swing has a half second windup, so start the swing before we begin moving.
+        if (attackInfo.IsSpecial) {
+            Special();
+        } else {
+            Attack();
+        }
+        var swingStart = Time.time;
+
         // All of this moves us to the target's position for the attack animation.
         var destination = new Vector3(target.transform.position.x, target.transform.position.y);
         var destinationOnRight = target.transform.localScale.x < 0;
         if (destinationOnRight) destination.x -= 2;
         else destination.x += 2;
-        for (float x = 1; x <= slideDurationFrames; x++) {
-            float percentage = x / slideDurationFrames;
+        for (float x = 1; x <= MELEE_SLIDE_FRAMES; x++) {
+            float percentage = x / MELEE_SLIDE_FRAMES;
             transform.position = Vector3.Lerp(transform.position, destination, percentage);
             yield return null;
         }
         transform.position = destination;
+
+        // Wait for the rest of the windup time to elapse.
+        var slideTime = Time.time - swingStart;
+        var windupTimeRemaining = ATTACK_WINDUP_SECONDS - slideTime;
+        if (windupTimeRemaining > 0) {
+            yield return new WaitForSeconds(windupTimeRemaining);
+        }
+
+        // Play attack effects now the the actual swing has started.
+        soundEffect.Play();
         combatHero.currentEnergy += turn.energyGained;
         SendDamageInstances(turn.steps, placeholders);
+        yield return new WaitForSeconds(ATTACK_SWING_SECONDS);
 
-        Attack();
-        yield return new WaitForSeconds(attackDurationSeconds);
-        soundEffect.Play();
-
-        for (float x = 1; x <= slideDurationFrames; x++) {
-            float percentage = x / slideDurationFrames;
+        // Return to starting position.
+        for (float x = 1; x <= MELEE_SLIDE_FRAMES; x++) {
+            float percentage = x / MELEE_SLIDE_FRAMES;
             transform.position = Vector3.Lerp(transform.position, startingPosition, percentage);
             yield return null;
         }
@@ -205,15 +223,15 @@ public class AnimatedHero : MonoBehaviour {
         var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
-        combatHero.currentEnergy += turn.energyGained;
 
         if (attackInfo.IsSpecial) {
             Special();
         } else {
             Attack();
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(ATTACK_WINDUP_SECONDS);
 
+        combatHero.currentEnergy += turn.energyGained;
         soundEffect.Play();
         if (attackInfo.EnemyParticle != null) {
             foreach (CombatHero enemy in turn.enemyTargets) {
@@ -229,10 +247,10 @@ public class AnimatedHero : MonoBehaviour {
                 FireParticle(attackInfo.AllyParticle.GetValueOrDefault(), attackInfo.AllyParticleOrigin.GetValueOrDefault(), destination);
             }
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(PARTICLE_TRAVEL_TIME_SECONDS);
         SendDamageInstances(turn.steps, placeholders);
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(ATTACK_SWING_SECONDS - PARTICLE_TRAVEL_TIME_SECONDS);
     }
 
     private void FireParticle(AttackParticleEnum particle, ParticleOriginEnum origin, Vector3 target) {

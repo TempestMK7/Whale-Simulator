@@ -10,7 +10,7 @@ public class AnimationTestSceneManager : MonoBehaviour {
         var animators = FindObjectsOfType<HarshByteAnimation>();
         discoveredAnimators = new List<HarshByteAnimation>(animators);
         foreach (HarshByteAnimation animator in discoveredAnimators) {
-            animator.OnCreate(new Vector3(3f, 3f));
+            animator.OnCreate(new Vector3(4f, 4f));
         }
     }
 
