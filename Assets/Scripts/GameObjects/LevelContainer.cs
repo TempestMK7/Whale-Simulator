@@ -17,7 +17,7 @@ namespace Com.Tempest.Whale.GameObjects {
         new FusionRequirement(2, 1, 2, 2, 2, true),
         new FusionRequirement(3, 1, 3, 2, 3, true),
         new FusionRequirement(4, 1, 4, 2, 4, true),
-        new FusionRequirement(5, 2, 5, 2, 5, true),
+        new FusionRequirement(5, 1, 5, 3, 5, true),
         new FusionRequirement(6, 0, 5, 1, 6, true),
         new FusionRequirement(7, 0, 5, 2, 6, true),
         new FusionRequirement(8, 0, 5, 3, 6, true),

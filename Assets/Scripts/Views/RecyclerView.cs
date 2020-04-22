@@ -94,9 +94,14 @@ public class RecyclerView: MonoBehaviour {
                 adapter.OnBindViewHolder(current, x);
 
                 var transform = current.transform as RectTransform;
-                float rowPosition = x % numItemsPerRow;
-                transform.anchorMin = new Vector2((rowPosition + 1) * anchorMultiple, 1f);
-                transform.anchorMax = transform.anchorMin;
+                if (numItemsPerRow == 1) {
+                    transform.anchorMin = new Vector2(0, 1);
+                    transform.anchorMax = new Vector2(1, 1);
+                } else {
+                    float rowPosition = x % numItemsPerRow;
+                    transform.anchorMin = new Vector2((rowPosition + 1) * anchorMultiple, 1f);
+                    transform.anchorMax = transform.anchorMin;
+                }
                 transform.anchoredPosition = new Vector2(0f, verticalPosition);
             } else {
                 var current = currentViewHolders[x];

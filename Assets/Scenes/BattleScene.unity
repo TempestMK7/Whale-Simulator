@@ -2034,6 +2034,7 @@ MonoBehaviour:
   continueButton: {fileID: 1468686470}
   skipPanel: {fileID: 118293012}
   reportPopupPrefab: {fileID: 1879707540273628847, guid: f2561d9533d818f4eb475448c6fe9a75, type: 3}
+  graphPopupPrefab: {fileID: 2976053666614248920, guid: 46bff8dcd0556534f95b6e398e0988bb, type: 3}
   allyHolders:
   - {fileID: 1216738825}
   - {fileID: 661384885}

@@ -34,6 +34,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     public GameObject skipPanel;
     public CombatReportPopup reportPopupPrefab;
+    public CombatGraphPopup graphPopupPrefab;
 
     public AnimatedHero[] allyHolders;
     public AnimatedHero[] enemyHolders;
@@ -412,8 +413,8 @@ public class BattleSceneManager : MonoBehaviour {
     public void OnReportPressed() {
         if (ButtonsBlocked()) return;
         if (combatReport != null) {
-            var reportPopup = Instantiate(reportPopupPrefab, mainCanvas.transform);
-            reportPopup.SetReport(combatReport.ToHumanReadableReport());
+            var reportPopup = Instantiate(graphPopupPrefab, mainCanvas.transform);
+            reportPopup.LaunchPopup(combatReport);
         }
     }
 

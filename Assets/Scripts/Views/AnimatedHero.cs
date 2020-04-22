@@ -100,8 +100,7 @@ public class AnimatedHero : MonoBehaviour {
             healthCanvas.gameObject.SetActive(true);
         } else {
             healthCanvas.gameObject.SetActive(false);
-            animator.SetTrigger("Death");
-            
+            Death();
         }
     }
 
