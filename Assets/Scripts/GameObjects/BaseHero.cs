@@ -124,7 +124,7 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Oracle", "Icons/Element02_256_04", "Characters/Oracle/OracleController", "Characters/Oracle/OraclePrefab", 
                         RoleEnum.SUPPORT, FactionEnum.WATER, 5,
                         80, 55, 95, 60, 70, 60, 0, 0,
-                        AttackEnum.WATER_RENEW, AttackEnum.HEALING_WAVE, AbilityEnum.CLEANSING_RAIN,
+                        AttackEnum.HEALING_MIST, AttackEnum.HEALING_WAVE, AbilityEnum.CLEANSING_RAIN,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
 

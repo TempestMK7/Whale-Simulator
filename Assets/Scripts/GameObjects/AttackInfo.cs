@@ -11,7 +11,7 @@ namespace Com.Tempest.Whale.GameObjects {
         // Water
         VAPOR_CLOUD = 101,
         FISH_SLAP = 102,
-        WATER_RENEW = 103,
+        HEALING_MIST = 103,
 
         // Grass
         PETAL_SLAP = 201,
@@ -488,7 +488,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
                 false, true, false, false,
-                TargetType.RANDOM, 2, TargetType.NONE, 0,
+                TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
                 0.6, 0, 25, 10, 0,
                 StatusEnum.DOWSE, 0, 2, null, 0, 0);
             attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
@@ -498,12 +498,12 @@ namespace Com.Tempest.Whale.GameObjects {
                 TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 1.2, 0, 25, 10, 0,
                 StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
-            attackDict[AttackEnum.WATER_RENEW] = new AttackInfo(
-                AttackEnum.WATER_RENEW, "Water Renew", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
+            attackDict[AttackEnum.HEALING_MIST] = new AttackInfo(
+                AttackEnum.HEALING_MIST, "Healing Mist", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER,
                 false, true, false, false,
-                TargetType.RANDOM, 1, TargetType.LOWEST_HEALTH, 1,
-                0.6, 0.4, 25, 10, 0,
+                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
+                0, 1, 25, 0, 0,
                 null, 0, 0, StatusEnum.REGENERATION, 0.2, 2);
 
             // Grass
@@ -520,13 +520,13 @@ namespace Com.Tempest.Whale.GameObjects {
                 true, false, true, false,
                 TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
                 1, 0, 25, 10, 0,
-                StatusEnum.POISON, 0.2, 2, null, 0, 0);
+                StatusEnum.POISON, 0.4, 2, null, 0, 0);
             attackDict[AttackEnum.MOONLIGHT] = new AttackInfo(
                 AttackEnum.MOONLIGHT, "Moonlight", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
                 AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
                 false, true, false, false,
-                TargetType.RANDOM, 1, TargetType.LOWEST_HEALTH, 1,
-                0.4, 1, 25, 10, 0,
+                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 3,
+                0, 1, 25, 10, 0,
                 null, 0, 0, null, 0, 0);
             attackDict[AttackEnum.BRANCH_SLAM] = new AttackInfo(
                 AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
@@ -543,14 +543,14 @@ namespace Com.Tempest.Whale.GameObjects {
                 true, false, false, false,
                 TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 1.2, 0, 25, 10, 0,
-                StatusEnum.BURN, 0.2, 1, null, 0, 0);
+                StatusEnum.BURN, 0.2, 2, null, 0, 0);
             attackDict[AttackEnum.SCORCH] = new AttackInfo(
                 AttackEnum.SCORCH, "Scorch", "Icons/RoleDamage", "AttackSounds/Scorch",
                 AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
                 false, true, false, false,
-                TargetType.RANDOM, 2, TargetType.NONE, 0,
+                TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
                 0.5, 0, 25, 10, 0,
-                StatusEnum.BURN, 0.2, 1, null, 0, 0);
+                StatusEnum.BURN, 0.2, 2, null, 0, 0);
             attackDict[AttackEnum.FIRE_PUNCH] = new AttackInfo(
                 AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
                 null, null, null, null,
@@ -617,14 +617,14 @@ namespace Com.Tempest.Whale.GameObjects {
                 AttackEnum.SPARK, "Spark", "Icons/RoleDamage", "AttackSounds/Spark",
                 null, null, null, null,
                 true, false, false, false,
-                TargetType.RANDOM, 2, TargetType.NONE, 0,
+                TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
                 0.5, 0, 25, 10, 0,
                 StatusEnum.DAZE, 0.2, 1, null, 0, 0);
             attackDict[AttackEnum.ENERGY_DRAIN] = new AttackInfo(
                 AttackEnum.ENERGY_DRAIN, "Energy Drain", "Icons/RoleDamage", "AttackSounds/EnergyDrain",
                 AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER,
                 false, true, false, false,
-                TargetType.RANDOM, 1, TargetType.RANDOM, 1,
+                TargetType.FIRST_ALIVE, 1, TargetType.RANDOM, 1,
                 1, 0, 25, -25, 25,
                 null, 0, 0, null, 0, 0);
             attackDict[AttackEnum.LIGHTNING_BOLT] = new AttackInfo(
@@ -691,9 +691,9 @@ namespace Com.Tempest.Whale.GameObjects {
                 AttackEnum.HEALING_WAVE, "Healing Wave", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD,
                 false, false, false, true,
-                TargetType.NONE, 0, TargetType.RANDOM, 5,
-                0, 0.4, -100, 0, 0,
-                null, 0, 0, StatusEnum.REGENERATION, 0.2, 3);
+                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 1, -100, 0, 0,
+                null, 0, 0, StatusEnum.REGENERATION, 0.5, 2);
 
             // Grass
             attackDict[AttackEnum.HEALING_SUN] = new AttackInfo(
@@ -701,15 +701,15 @@ namespace Com.Tempest.Whale.GameObjects {
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD,
                 false, false, false, true,
                 TargetType.NONE, 0, TargetType.RANDOM, 5,
-                0, 0.4, -100, 0, 0,
-                null, 0, 0, StatusEnum.REGENERATION, 0.2, 3);
+                0, 1, -100, 0, 0,
+                null, 0, 0, StatusEnum.REGENERATION, 0.2, 5);
             attackDict[AttackEnum.WEED_WHACKER] = new AttackInfo(
                  AttackEnum.WEED_WHACKER, "Weed Whacker", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
                  null, null, null, null,
                  true, false, true, true,
                  TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
                  1.5, 0, -100, 10, 0,
-                 StatusEnum.POISON, 0.5, 2, null, 0, 0);
+                 StatusEnum.POISON, 1, 2, null, 0, 0);
             attackDict[AttackEnum.ENTANGLING_ROOTS] = new AttackInfo(
                  AttackEnum.ENTANGLING_ROOTS, "Entangling Roots", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
                  null, null, null, null,
@@ -721,9 +721,9 @@ namespace Com.Tempest.Whale.GameObjects {
                  AttackEnum.RITUAL_OF_THE_SUN, "Ritual of the Sun", "Icons/RoleSupport", "AttackSounds/BasicMagic",
                  null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
                  false, false, false, true,
-                 TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
+                 TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 3,
                  0, 2, -100, 0, 0,
-                 null, 0, 0, StatusEnum.REGENERATION, 0.25, 2);
+                 null, 0, 0, StatusEnum.REGENERATION, 0.5, 3);
             attackDict[AttackEnum.GIFT_OF_THORNS] = new AttackInfo(
                 AttackEnum.GIFT_OF_THORNS, "Gift of Thorns", "Icons/RoleDamage", "AttackSounds/BasicMagic",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
@@ -739,7 +739,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 false, true, false, true,
                 TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
                 2, 0, -100, 10, 0,
-                StatusEnum.BURN, 0.25, 2, null, 0, 0);
+                StatusEnum.BURN, 0.5, 2, null, 0, 0);
             attackDict[AttackEnum.TURN_UP_THE_HEAT] = new AttackInfo(
                 AttackEnum.TURN_UP_THE_HEAT, "Turn Up The Heat", "Icons/RoleSupport", "AttackSounds/BasicMagic",
                 AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD,
@@ -753,7 +753,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 false, true, false, true,
                 TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 2, 0, -100, 10, 0,
-                StatusEnum.BURN, 1, 3, null, 0, 0);
+                StatusEnum.BURN, 2, 3, null, 0, 0);
             attackDict[AttackEnum.GIFT_OF_LAVA] = new AttackInfo(
                 AttackEnum.GIFT_OF_LAVA, "Gift of Lava", "Icons/RoleDamage", "AttackSounds/BasicMagic",
                 null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD,
@@ -766,7 +766,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, null, null,
                 false, true, false, true,
                 TargetType.RANDOM, 10, TargetType.NONE, 0,
-                0.2, 0, -100, 10, 0,
+                0.6, 0, -100, 10, 0,
                 StatusEnum.BURN, 0.4, 2, null, 0, 0);
 
             // Ice
