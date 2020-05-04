@@ -195,7 +195,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.SCEPTER, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.INFERNOMANCER:
-                    return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
+                    return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Infernomancer/InfernomancerPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
                         55, 50, 100, 55, 60, 90, 0.1, 0,
                         AttackEnum.SCORCH, AttackEnum.FIRE_STORM, AbilityEnum.FEED_THE_INFERNO,
