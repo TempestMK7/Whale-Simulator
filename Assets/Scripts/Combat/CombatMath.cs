@@ -258,7 +258,7 @@ namespace Com.Tempest.Whale.Combat {
             attacker.currentEnergy += attackInfo.AttackerEnergyGained;
             turn.energyGained = attackInfo.AttackerEnergyGained;
 
-            turn.steps.AddRange(CombatMath.EvaluateNegativeSideEffects(attacker, enemies, turn));
+            turn.steps.AddRange(EvaluateNegativeSideEffects(attacker, enemies, turn));
 
             foreach (CombatStep step in turn.steps) {
                 turn.totalDamage += step.damage;
