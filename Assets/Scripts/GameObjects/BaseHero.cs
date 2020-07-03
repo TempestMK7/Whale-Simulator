@@ -95,35 +95,35 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.VAPOR_CLOUD:
                     return new BaseHero(hero, "Vapor Cloud", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.WATER, 1,
-                        70, 60, 85, 60, 75, 70, 0.2, 0,
+                        70, 60, 85, 0.1, 0.25, 70, 0.2, 0,
                         AttackEnum.VAPOR_CLOUD, AttackEnum.WATER_SHOT, AbilityEnum.WATER_BODY,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.RAIN_MAN:
                     return new BaseHero(hero, "Rain Man", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.WATER, 2,
-                        80, 60, 80, 60, 75, 75, 0, 0.1,
+                        80, 60, 80, 0.1, 0.25, 75, 0, 0.1,
                         AttackEnum.VAPOR_CLOUD, AttackEnum.DRENCHING_WAVE, AbilityEnum.VAPORIZE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.FEESH:
                     return new BaseHero(hero, "Feesh", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.WATER, 3,
-                        85, 70, 60, 85, 70, 50, 0, 0.2,
+                        85, 70, 60, 0.35, 0.2, 50, 0, 0.2,
                         AttackEnum.FISH_SLAP, AttackEnum.ENSCALE_TEAM, AbilityEnum.NONE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.MIST_CALLER:
                     return new BaseHero(hero, "Mist Caller", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.WATER, 4,
-                        55, 55, 90, 60, 65, 80, 0.15, 0,
+                        55, 55, 90, 0.1, 0.15, 80, 0.15, 0,
                         AttackEnum.VAPOR_CLOUD, AttackEnum.TSUNAMI, AbilityEnum.VAPORIZE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.ORACLE:
                     return new BaseHero(hero, "Oracle", "Icons/Element02_256_04", "Characters/Oracle/OracleController", "Characters/Oracle/OraclePrefab", 
                         RoleEnum.SUPPORT, FactionEnum.WATER, 5,
-                        80, 55, 95, 60, 70, 60, 0, 0,
+                        80, 55, 95, 0.1, 0.2, 60, 0, 0,
                         AttackEnum.HEALING_MIST, AttackEnum.HEALING_WAVE, AbilityEnum.CLEANSING_RAIN,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
@@ -132,35 +132,35 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.HAPPY_FLOWER:
                     return new BaseHero(hero, "Happy Flower", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 1,
-                        80, 70, 80, 70, 70, 60, 0, 0.1,
+                        80, 70, 80, 0.2, 0.2, 60, 0, 0.1,
                         AttackEnum.PETAL_SLAP, AttackEnum.HEALING_SUN, AbilityEnum.ABSORB_RAIN,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.BUSH_WHACKER:
                     return new BaseHero(hero, "Bush Whacker", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.GRASS, 2,
-                        60, 90, 70, 60, 50, 90, 0.3, -0.1,
+                        60, 90, 70, 0.1, 0, 90, 0.3, -0.1,
                         AttackEnum.NEEDLE_STAB, AttackEnum.WEED_WHACKER, AbilityEnum.NONE,
                         EquipmentType.DAGGER, EquipmentType.DAGGER, null,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
                 case HeroEnum.BALL_OF_ROOTS:
                     return new BaseHero(hero, "Ball Of Roots", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.GRASS, 3,
-                        80, 70, 60, 80, 70, 55, 0, 0.25,
+                        80, 70, 60, 0.3, 0.2, 55, 0, 0.25,
                         AttackEnum.PETAL_SLAP, AttackEnum.ENTANGLING_ROOTS, AbilityEnum.BARK_SKIN,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.DRYAD:
                     return new BaseHero(hero, "Dryad", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
-                        75, 60, 95, 70, 70, 70, 0, 0,
+                        75, 60, 95, 0.2, 0.2, 70, 0, 0,
                         AttackEnum.MOONLIGHT, AttackEnum.RITUAL_OF_THE_SUN, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
                 case HeroEnum.ANGERY_TREANT:
                     return new BaseHero(hero, "Angery Treant", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.GRASS, 5,
-                        100, 60, 50, 80, 70, 50, 0, 0.1,
+                        100, 60, 50, 0.3, 0.2, 50, 0, 0.1,
                         AttackEnum.BRANCH_SLAM, AttackEnum.GIFT_OF_THORNS, AbilityEnum.DEEP_ROOTS,
                         EquipmentType.SWORD, EquipmentType.CRYSTAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
@@ -169,35 +169,35 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.CANDLE_MAN:
                     return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
-                        60, 55, 90, 60, 70, 85, 0.2, 0,
+                        60, 55, 90, 0.1, 0.2, 85, 0.2, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.TWIN_FLAME, AbilityEnum.KINDLING,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.EMBER:
                     return new BaseHero(hero, "Ember", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.FIRE, 2,
-                        75, 60, 80, 70, 75, 60, 0.1, 0.1,
+                        75, 60, 80, 0.2, 0.25, 60, 0.1, 0.1,
                         AttackEnum.SCORCH, AttackEnum.TURN_UP_THE_HEAT, AbilityEnum.HOT_BLOODED,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.TORCH:
                     return new BaseHero(hero, "Torch", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 3,
-                        65, 55, 95, 55, 60, 80, 0.3, 0,
+                        65, 55, 95, 0.05, 0.1, 80, 0.3, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.IMMOLATE, AbilityEnum.KINDLING,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.LAVA_GOLEM:
                     return new BaseHero(hero, "Lava Golem", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.FIRE, 4,
-                        65, 50, 70, 80, 75, 50, 0, 0.3,
+                        65, 50, 70, 0.3, 0.25, 50, 0, 0.3,
                         AttackEnum.FIRE_PUNCH, AttackEnum.GIFT_OF_LAVA, AbilityEnum.HOT_BLOODED,
                         EquipmentType.SCEPTER, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.INFERNOMANCER:
                     return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Infernomancer/InfernomancerPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
-                        55, 50, 100, 55, 60, 90, 0.1, 0,
+                        55, 50, 100, 0.05, 0.1, 90, 0.1, 0,
                         AttackEnum.SCORCH, AttackEnum.FIRE_STORM, AbilityEnum.FEED_THE_INFERNO,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
@@ -206,35 +206,35 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.SNOW_MAN:
                     return new BaseHero(hero, "Snow Man", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.ICE, 1,
-                        80, 80, 60, 70, 80, 60, 0, 0.1,
+                        80, 80, 60, 0.2, 0.3, 60, 0, 0.1,
                         AttackEnum.ICE_PUNCH, AttackEnum.CHILLY_WIND, AbilityEnum.COLD_BLOODED,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.ICE_CUBE:
                     return new BaseHero(hero, "Ice Cube", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.ICE, 2,
-                        70, 80, 60, 70, 90, 50, 0, 0.3,
+                        70, 80, 60, 0.2, 0.4, 50, 0, 0.3,
                         AttackEnum.ICE_PUNCH, AttackEnum.ENCASE_IN_ICE, AbilityEnum.COLD_BLOODED,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.ICICLE_FLINGER:
                     return new BaseHero(hero, "Icicle Flinger", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.ICE, 3,
-                        60, 95, 55, 60, 70, 80, 0.2, 0,
+                        60, 95, 55, 0.1, 0.2, 80, 0.2, 0,
                         AttackEnum.ICICLE_THROW, AttackEnum.FLINGING_SPREE, AbilityEnum.COLD_BLOODED,
                         null, null, EquipmentType.GREAT_AXE,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
                 case HeroEnum.BLIZZARD_WIZZARD:
                     return new BaseHero(hero, "Blizzard Wizard", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.ICE, 4,
-                        65, 60, 75, 55, 65, 70, 0.1, 0,
+                        65, 60, 75, 0.05, 0.15, 70, 0.1, 0,
                         AttackEnum.SNOWY_WIND, AttackEnum.BLIZZARD, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.REFLECTOR:
                     return new BaseHero(hero, "Reflector", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.ICE, 5,
-                        70, 70, 50, 70, 100, 50, 0, 0.15,
+                        70, 70, 50, 0.2, 0.5, 50, 0, 0.15,
                         AttackEnum.ICE_PUNCH, AttackEnum.GIFT_OF_ICE, AbilityEnum.MIRROR_ICE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.CRYSTAL_CHEST, EquipmentType.CRYSTAL_PANTS, EquipmentType.CRYSTAL_HELMET);
@@ -243,35 +243,35 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.DUST_ELEMENTAL:
                     return new BaseHero(hero, "Dust Elemental", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 1,
-                        70, 80, 60, 70, 60, 80, 0.2, 0,
+                        70, 80, 60, 0.2, 0.1, 80, 0.2, 0,
                         AttackEnum.TWISTER, AttackEnum.DUST_STORM, AbilityEnum.JAGGED_SURFACE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.BOULDER:
                     return new BaseHero(hero, "Boulder", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.EARTH, 2,
-                        80, 80, 50, 80, 60, 60, 0, 0.3,
+                        80, 80, 50, 0.3, 0.1, 60, 0, 0.3,
                         AttackEnum.ROCK_SLAM, AttackEnum.ENCASE_IN_ROCK, AbilityEnum.JAGGED_SURFACE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.PEBBLE_FLINGER:
                     return new BaseHero(hero, "Pebble Flinger", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 3,
-                        60, 90, 60, 70, 60, 80, 0.2, 0,
+                        60, 90, 60, 0.2, 0.1, 80, 0.2, 0,
                         AttackEnum.GRAVEL_SHOT, AttackEnum.PEBBLE_SHOWER, AbilityEnum.NONE,
                         null, null, EquipmentType.GREAT_SWORD,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
                 case HeroEnum.LIVING_WALL:
                     return new BaseHero(hero, "Living Wall", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
                         RoleEnum.PROTECTION, FactionEnum.EARTH, 4,
-                        70, 70, 50, 90, 70, 50, 0, 0.2,
+                        70, 70, 50, 0.4, 0.2, 50, 0, 0.2,
                         AttackEnum.ROCK_SLAM, AttackEnum.GIFT_OF_EARTH, AbilityEnum.JAGGED_SURFACE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.EARTHZERKER:
                     return new BaseHero(hero, "Earthzerker", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 5,
-                        60, 100, 50, 60, 50, 80, 0.4, -0.2,
+                        60, 100, 50, 0.1, 0, 80, 0.4, -0.2,
                         AttackEnum.AXE_SLASH, AttackEnum.SPLIT_SKULL, AbilityEnum.MOUNTING_RAGE,
                         null, null, EquipmentType.GREAT_AXE,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
@@ -280,35 +280,35 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.STATIC_CLING:
                     return new BaseHero(hero, "Static Cling", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 1,
-                        70, 60, 80, 60, 60, 90, 0.2, 0,
+                        70, 60, 80, 0.1, 0.1, 90, 0.2, 0,
                         AttackEnum.SPARK, AttackEnum.FLASH_OF_LIGHT, AbilityEnum.CONDUCTIVITY,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.BATTERY:
                     return new BaseHero(hero, "Battery", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 2,
-                        70, 50, 80, 70, 80, 90, 0, 0,
+                        70, 50, 80, 0.2, 0.3, 90, 0, 0,
                         AttackEnum.ENERGY_DRAIN, AttackEnum.CHARGE_TEAM, AbilityEnum.CONDUCTIVITY,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.SPARK_ELEMENTAL:
                     return new BaseHero(hero, "Spark Elemental", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 3,
-                        60, 50, 90, 60, 60, 90, 0.3, 0,
+                        60, 50, 90, 0.1, 0.1, 90, 0.3, 0,
                         AttackEnum.LIGHTNING_BOLT, AttackEnum.OVERCHARGED_BOLT, AbilityEnum.CONDUCTIVITY,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.LIGHTNING_WRAITH:
                     return new BaseHero(hero, "Lightning Wraith", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 4,
-                        60, 50, 80, 60, 60, 90, 0.2, 0,
+                        60, 50, 80, 0.1, 0.1, 90, 0.2, 0,
                         AttackEnum.LIGHTNING_BOLT, AttackEnum.LIGHTNING_FLASH, AbilityEnum.CONDUCTIVITY,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.NEUROMANCER:
                     return new BaseHero(hero, "Neuromancer", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 5,
-                        70, 50, 80, 55, 65, 90, 0.1, 0,
+                        70, 50, 80, 0.05, 0.15, 90, 0.1, 0,
                         AttackEnum.FORKED_LIGHTNING, AttackEnum.BRAIN_STORM, AbilityEnum.MENTAL_GYMNASTICS,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
@@ -317,7 +317,7 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Unknown", "Icons/icon_gem", "Characters/FacelessOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.WATER, 1,
                         50, 50, 50,
-                        50, 50, 50, 0, 0,
+                        0, 0, 50, 0, 0,
                         AttackEnum.BASIC_PHYSICAL, AttackEnum.SPECIAL_PHYSICAL, AbilityEnum.NONE,
                         null, null, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);

@@ -274,8 +274,10 @@ public class HeroSceneManager : MonoBehaviour {
         healthLabel.text = string.Format("Health: {0}", combatHero.health.ToString("0"));
         attackLabel.text = string.Format("Attack: {0}", combatHero.attack.ToString("0"));
         magicLabel.text = string.Format("Magic: {0}", combatHero.magic.ToString("0"));
-        defenseLabel.text = string.Format("Defense: {0}", combatHero.defense.ToString("0.0"));
-        reflectionLabel.text = string.Format("Reflection: {0}", combatHero.reflection.ToString("0.0"));
+        var defense = combatHero.defense * 100.0;
+        defenseLabel.text = string.Format("Defense: {0}%", defense.ToString("0"));
+        var reflection = combatHero.reflection * 100.0;
+        reflectionLabel.text = string.Format("Reflection: {0}%", reflection.ToString("0"));
         speedLabel.text = string.Format("Speed: {0}", combatHero.speed.ToString("0"));
         deflectionLabel.text = string.Format("Deflection: {0}%", (combatHero.deflectionChance * 100).ToString("0"));
         critLabel.text = string.Format("Critical: {0}%", (combatHero.critChance* 100).ToString("0"));

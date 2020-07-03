@@ -21,7 +21,7 @@ namespace Com.Tempest.Whale.Combat {
         #region Hit calculation and modifiers.
 
         public static double Damage(double modifiedAttack, double modifiedDefense, HitType hitType, HitEffectivity hitEffectivity) {
-            var damage = AdjustRatio(modifiedAttack, modifiedDefense) * modifiedAttack;
+            var damage = modifiedAttack * (1.0 - modifiedDefense);
             if (hitType == HitType.CRITICAL) {
                 damage *= 1.5;
             } else if (hitType == HitType.DEFLECTION) {
@@ -34,26 +34,6 @@ namespace Com.Tempest.Whale.Combat {
                 damage *= 0.8;
             }
             return damage;
-        }
-
-        private static double AdjustRatio(double attack, double defense) {
-            double squashedRatio = SquashRatio(attack, defense);
-            return Math.Pow(2.0, (squashedRatio * 4.0) - 2.0);
-        }
-
-        private static double SquashRatio(double attack, double defense) {
-            double ratio = DamageRatio(attack, defense);
-            double constant = ratio * -1.0;
-            double denom = 1.0 + Math.Pow(Math.E, constant);
-            return 1.0 / denom;
-        }
-
-        private static double DamageRatio(double attack, double defense) {
-            if (attack >= defense) {
-                return (attack / defense) - 1.0;
-            } else {
-                return ((defense / attack) - 1.0) * -1.0;
-            }
         }
 
         public static HitType RollHitType(CombatHero attacker, CombatHero defender) {

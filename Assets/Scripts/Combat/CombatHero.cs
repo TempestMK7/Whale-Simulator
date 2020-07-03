@@ -39,11 +39,11 @@ namespace Com.Tempest.Whale.Combat {
             awakeningLevel = accountHero.AwakeningLevel;
             currentLevel = accountHero.CurrentLevel;
 
-            health = GetBigStat(baseHero.BaseHealth) * 30.0;
+            health = GetBigStat(baseHero.BaseHealth) * 10.0;
             attack = GetBigStat(baseHero.BaseAttack);
             magic = GetBigStat(baseHero.BaseMagic);
-            defense = GetBigStat(baseHero.BaseDefense);
-            reflection = GetBigStat(baseHero.BaseReflection);
+            defense = baseHero.BaseDefense;
+            reflection = baseHero.BaseReflection;
             speed = GetBigStat(baseHero.BaseSpeed);
             critChance = baseHero.BaseCritChance;
             deflectionChance = baseHero.BaseDeflectionChance;
@@ -56,8 +56,8 @@ namespace Com.Tempest.Whale.Combat {
                 var baseEquipment = equipment.GetBaseEquipment();
                 attack += baseEquipment.BaseAttack * equipment.Level;
                 magic += baseEquipment.BaseMagic * equipment.Level;
-                defense += baseEquipment.BaseDefense * equipment.Level;
-                reflection += baseEquipment.BaseReflection * equipment.Level;
+                defense += equipment.GetDefense();
+                reflection += equipment.GetReflection();
                 critChance += baseEquipment.BaseCrit;
                 deflectionChance += baseEquipment.BaseDeflect;
             }
@@ -237,45 +237,43 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         public double GetModifiedDefense() {
-            var multiplier = 1.0;
-            var flatAmount = 0.0;
+            var modifier = 0.0;
             foreach (CombatStatus status in currentStatus) {
                 if (status.status == StatusEnum.DEFENSE_UP) {
-                    multiplier += status.value;
+                    modifier += status.value;
                 } else if (status.status == StatusEnum.DEFENSE_DOWN) {
-                    multiplier -= status.value;
+                    modifier -= status.value;
                 } else if (status.status == StatusEnum.ICE_ARMOR) {
-                    multiplier += status.value / 2.0;
+                    modifier += 0.1;
                 } else if (status.status == StatusEnum.LAVA_ARMOR) {
-                    flatAmount += status.value;
+                    modifier += 0.2;
                 } else if (status.status == StatusEnum.THORN_ARMOR) {
-                    flatAmount += status.value;
+                    modifier += 0.2;
                 } else if (status.status == StatusEnum.EARTH_ARMOR) {
-                    multiplier += status.value;
+                    modifier += 0.3;
                 }
             }
-            return (defense * multiplier) + flatAmount;
+            return defense + modifier;
         }
 
         public double GetModifiedReflection() {
-            var multiplier = 1.0;
-            var flatAmount = 0.0;
+            var modifier = 0.0;
             foreach (CombatStatus status in currentStatus) {
                 if (status.status == StatusEnum.REFLECTION_UP) {
-                    multiplier += status.value;
+                    modifier += status.value;
                 } else if (status.status == StatusEnum.REFLECTION_DOWN) {
-                    multiplier -= status.value;
+                    modifier -= status.value;
                 } else if (status.status == StatusEnum.ICE_ARMOR) {
-                    multiplier += status.value;
+                    modifier += 0.3;
                 } else if (status.status == StatusEnum.LAVA_ARMOR) {
-                    flatAmount += status.value;
+                    modifier += 0.2;
                 } else if (status.status == StatusEnum.THORN_ARMOR) {
-                    flatAmount += status.value / 2.0;
+                    modifier += 0.2;
                 } else if (status.status == StatusEnum.EARTH_ARMOR) {
-                    multiplier += status.value / 2.0;
+                    modifier += 0.1;
                 }
             }
-            return (reflection * multiplier) + flatAmount;
+            return reflection + modifier;
         }
 
         public double GetModifiedSpeed() {
