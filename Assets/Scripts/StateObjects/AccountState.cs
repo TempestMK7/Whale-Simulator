@@ -75,6 +75,8 @@ namespace Com.Tempest.Whale.StateObjects {
         }
 
         public void RetrieveDataAfterLoad() {
+            if (AccountHeroes == null) AccountHeroes = new List<AccountHero>();
+            if (AccountEquipment == null) AccountEquipment = new List<AccountEquipment>();
             foreach (AccountHero hero in AccountHeroes) {
                 hero.LoadBaseHero();
             }

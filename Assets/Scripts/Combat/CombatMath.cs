@@ -21,7 +21,9 @@ namespace Com.Tempest.Whale.Combat {
         #region Hit calculation and modifiers.
 
         public static double Damage(double modifiedAttack, double modifiedDefense, HitType hitType, HitEffectivity hitEffectivity) {
-            var damage = modifiedAttack * (1.0 - modifiedDefense);
+            var usableDefense = modifiedDefense;
+            if (usableDefense > 0.9) usableDefense = 0.9;
+            var damage = modifiedAttack * (1.0 - usableDefense);
             if (hitType == HitType.CRITICAL) {
                 damage *= 1.5;
             } else if (hitType == HitType.DEFLECTION) {
