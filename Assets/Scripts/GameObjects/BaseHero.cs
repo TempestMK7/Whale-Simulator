@@ -137,7 +137,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.BUSH_WHACKER:
-                    return new BaseHero(hero, "Bush Whacker", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
+                    return new BaseHero(hero, "Needler", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Needler/NeedlerPrefab",
                         RoleEnum.DAMAGE, FactionEnum.GRASS, 2,
                         60, 90, 70, 0.1, 0, 90, 0.3, -0.1,
                         AttackEnum.NEEDLE_STAB, AttackEnum.WEED_WHACKER, AbilityEnum.NONE,
@@ -181,7 +181,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.TORCH:
-                    return new BaseHero(hero, "Torch", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
+                    return new BaseHero(hero, "Torch", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Torch/TorchPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 3,
                         65, 55, 95, 0.05, 0.1, 80, 0.3, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.IMMOLATE, AbilityEnum.KINDLING,
@@ -195,7 +195,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.SCEPTER, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
                 case HeroEnum.INFERNOMANCER:
-                    return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Infernomancer/InfernomancerPrefab",
+                    return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
                         55, 50, 100, 0.05, 0.1, 90, 0.1, 0,
                         AttackEnum.SCORCH, AttackEnum.FIRE_STORM, AbilityEnum.FEED_THE_INFERNO,
