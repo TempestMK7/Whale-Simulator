@@ -167,7 +167,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
                 // Fire heroes.
                 case HeroEnum.CANDLE_MAN:
-                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
+                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Candle/CandlePrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
                         60, 55, 90, 0.1, 0.2, 85, 0.2, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.TWIN_FLAME, AbilityEnum.KINDLING,
