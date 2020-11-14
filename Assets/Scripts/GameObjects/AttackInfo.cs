@@ -12,6 +12,7 @@ namespace Com.Tempest.Whale.GameObjects {
         VAPOR_CLOUD = 101,
         FISH_SLAP = 102,
         HEALING_MIST = 103,
+        CRYSTAL_SMASH = 104,
 
         // Grass
         PETAL_SLAP = 201,
@@ -505,6 +506,13 @@ namespace Com.Tempest.Whale.GameObjects {
                 TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
                 0, 1, 25, 0, 0,
                 null, 0, 0, StatusEnum.REGENERATION, 0.2, 2);
+            attackDict[AttackEnum.CRYSTAL_SMASH] = new AttackInfo(
+                AttackEnum.CRYSTAL_SMASH, "Crystal Smash", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                null, null, null, null,
+                true, true, false, false,
+                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                1.2, 0, 25, 10, 0,
+                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
 
             // Grass
             attackDict[AttackEnum.PETAL_SLAP] = new AttackInfo(
