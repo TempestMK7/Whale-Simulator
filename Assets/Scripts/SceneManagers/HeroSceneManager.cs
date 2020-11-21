@@ -238,6 +238,7 @@ public class HeroSceneManager : MonoBehaviour {
         if (baseHero.HarshPath != null) {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
             var harshAnimation = Instantiate(Resources.Load<HarshByteAnimation>(baseHero.HarshPath), heroAnimation.transform);
+            harshAnimation.OnCreate(heroAnimation.transform.localScale);
         } else {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = true;
             var animator = Resources.Load<AnimatorOverrideController>(baseHero.AnimatorPath);

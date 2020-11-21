@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class AnimationTestSceneManager : MonoBehaviour {
 
+    public GameObject prefabHolder;
+
     private List<HarshByteAnimation> discoveredAnimators;
 
     public void Awake() {
-        var animators = FindObjectsOfType<HarshByteAnimation>();
-        discoveredAnimators = new List<HarshByteAnimation>(animators);
-        foreach (HarshByteAnimation animator in discoveredAnimators) {
-            animator.OnCreate(new Vector3(4f, 4f));
+        var harshAnimations = FindObjectsOfType<HarshByteAnimation>();
+        discoveredAnimators = new List<HarshByteAnimation>(harshAnimations);
+        foreach (HarshByteAnimation animation in discoveredAnimators) {
+            animation.OnCreate(prefabHolder.transform.localScale);
         }
     }
 

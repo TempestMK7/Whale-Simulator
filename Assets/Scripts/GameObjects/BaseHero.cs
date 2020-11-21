@@ -174,7 +174,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.EMBER:
-                    return new BaseHero(hero, "Ember", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
+                    return new BaseHero(hero, "Ember", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Lantern/LanternPrefab",
                         RoleEnum.SUPPORT, FactionEnum.FIRE, 2,
                         75, 60, 80, 0.2, 0.25, 60, 0.1, 0.1,
                         AttackEnum.SCORCH, AttackEnum.TURN_UP_THE_HEAT, AbilityEnum.HOT_BLOODED,
