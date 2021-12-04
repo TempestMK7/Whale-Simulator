@@ -5,7 +5,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public enum HeroEnum {
         // Water
-        VAPOR_MAGE = 1, RAIN_MAN = 2, FEESH = 3, MIST_CALLER = 4, ORACLE = 5,
+        VAPOR_MAGE = 1, RAIN_DANCER = 2, FEESH = 3, MIST_CALLER = 4, ORACLE = 5,
         // Grass
         HAPPY_FLOWER = 6, BUSH_WHACKER = 7, BALL_OF_ROOTS = 8, DRYAD = 9, ANGERY_TREANT = 10,
         // Fire
@@ -99,8 +99,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.CRYSTAL_SMASH, AttackEnum.WATER_SHOT, AbilityEnum.WATER_BODY,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.RAIN_MAN:
-                    return new BaseHero(hero, "Rain Man", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
+                case HeroEnum.RAIN_DANCER:
+                    return new BaseHero(hero, "Rain Dancer", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
                         RoleEnum.SUPPORT, FactionEnum.WATER, 2,
                         80, 60, 80, 0.1, 0.25, 75, 0, 0.1,
                         AttackEnum.VAPOR_CLOUD, AttackEnum.DRENCHING_WAVE, AbilityEnum.VAPORIZE,
