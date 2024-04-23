@@ -47,7 +47,7 @@ public class InitializationSceneManager : MonoBehaviour {
         } catch (Exception e) {
             initializing = false;
             Debug.LogError(e);
-            CredentialsManager.DisplayNetworkError(mainCanvas, "Unable to load your account.");
+            CredentialsManager.DisplayNetworkError(mainCanvas, e.Message);
         }
     }
 
