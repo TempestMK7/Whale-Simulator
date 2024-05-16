@@ -16106,7 +16106,7 @@ GameObject:
   - component: {fileID: 7222329014237656140}
   - component: {fileID: 3031941409526081622}
   m_Layer: 20
-  m_Name: Rezakaht3Prefab
+  m_Name: MainPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class VaporMageAnimation : HarshByteAnimation {
+class VaporMageAnimation : BaseWhaleAnimation {
 
     public ParticleSystem specialParticle;
 

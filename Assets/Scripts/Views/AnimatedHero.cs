@@ -29,7 +29,7 @@ public class AnimatedHero : MonoBehaviour {
 
     private AccountHero selectedHero;
     private CombatHero combatHero;
-    private HarshByteAnimation harshByteAnimation;
+    private BaseWhaleAnimation harshByteAnimation;
 
     private Vector3 startingPosition;
 
@@ -66,7 +66,7 @@ public class AnimatedHero : MonoBehaviour {
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
         if (baseHero.HarshPath != null) {
             spriteRenderer.enabled = false;
-            harshByteAnimation = Instantiate(Resources.Load<HarshByteAnimation>(baseHero.HarshPath), gameObject.transform);
+            harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.HarshPath), gameObject.transform);
             harshByteAnimation.OnCreate(gameObject.transform.localScale);
         } else {
             spriteRenderer.enabled = true;
@@ -83,7 +83,7 @@ public class AnimatedHero : MonoBehaviour {
 
             if (hero.baseHero.HarshPath != null) {
                 spriteRenderer.enabled = false;
-                harshByteAnimation = Instantiate(Resources.Load<HarshByteAnimation>(hero.baseHero.HarshPath), gameObject.transform);
+                harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(hero.baseHero.HarshPath), gameObject.transform);
                 harshByteAnimation.OnCreate(gameObject.transform.localScale);
             } else {
                 spriteRenderer.enabled = true;

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class HarshByteAnimation : MonoBehaviour {
+public class BaseWhaleAnimation : MonoBehaviour {
 
     public Animator heroAnimator;
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Rezakaht3Animation : HarshByteAnimation {
+public class HydrokahtLargeAnimation : BaseWhaleAnimation {
 
     public Transform spriteTransform;
     public ParticleSystem deathParticle;
@@ -21,7 +21,7 @@ public class Rezakaht3Animation : HarshByteAnimation {
 
     private System.Collections.IEnumerator PlayDeathAnimation() {
         deathParticle.Play();
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.15f);
         spriteTransform.localScale = new Vector3(0f, 0f, 0f);
     }
 }

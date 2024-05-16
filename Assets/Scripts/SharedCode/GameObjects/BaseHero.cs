@@ -5,7 +5,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public enum HeroEnum {
         // Water
-        VAPOR_MAGE = 1, RAIN_MAN = 2, FEESH = 3, MIST_CALLER = 4, ORACLE = 5,
+        VAPOR_MAGE = 1, RAIN_MAN = 2, FEESH = 3, MIST_CALLER = 4, HYDROKAHT = 5,
         // Grass
         HAPPY_FLOWER = 6, BUSH_WHACKER = 7, BALL_OF_ROOTS = 8, DRYAD = 9, ANGERY_TREANT = 10,
         // Fire
@@ -120,8 +120,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.VAPOR_CLOUD, AttackEnum.TSUNAMI, AbilityEnum.VAPORIZE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.ORACLE:
-                    return new BaseHero(hero, "Oracle", "Icons/Element02_256_04", "Characters/Oracle/OracleController", "Characters/Oracle/OraclePrefab", 
+                case HeroEnum.HYDROKAHT:
+                    return new BaseHero(hero, "Hydrokaht", "Icons/Element02_256_04", "Characters/Oracle/OracleController", "Characters/Hydrokaht/Large/MainPrefab", 
                         RoleEnum.SUPPORT, FactionEnum.WATER, 5,
                         80, 55, 95, 0.1, 0.2, 60, 0, 0,
                         AttackEnum.HEALING_MIST, AttackEnum.HEALING_WAVE, AbilityEnum.CLEANSING_RAIN,
@@ -306,7 +306,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
                 case HeroEnum.REZAKAHT:
-                    return new BaseHero(hero, "Rezakaht", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Rezakaht3/Rezakaht3Prefab",
+                    return new BaseHero(hero, "Zephykaht", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Zephykaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 5,
                         70, 50, 80, 0.05, 0.15, 90, 0.1, 0,
                         AttackEnum.FORKED_LIGHTNING, AttackEnum.BRAIN_STORM, AbilityEnum.MENTAL_GYMNASTICS,

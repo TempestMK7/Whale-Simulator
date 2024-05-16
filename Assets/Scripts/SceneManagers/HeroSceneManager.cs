@@ -105,8 +105,8 @@ public class HeroSceneManager : MonoBehaviour {
             if (Physics.Raycast(ray, out RaycastHit hit, heroAnimationLayer)) {
                 var animator = hit.transform.gameObject.GetComponent<Animator>();
                 if (animator != null) animator.SetTrigger("Attack");
-                var childAnimators = hit.transform.gameObject.GetComponentsInChildren<HarshByteAnimation>();
-                foreach (HarshByteAnimation child in childAnimators) {
+                var childAnimators = hit.transform.gameObject.GetComponentsInChildren<BaseWhaleAnimation>();
+                foreach (BaseWhaleAnimation child in childAnimators) {
                     child.Attack();
                 }
             }
@@ -230,14 +230,14 @@ public class HeroSceneManager : MonoBehaviour {
         factionIconLeft.sprite = FactionIconContainer.GetIconForFaction(baseHero.Faction);
         roleIconRight.sprite = RoleIconContainer.GetIconForRole(baseHero.Role);
 
-        var existingHarshAnimation = heroAnimation.GetComponentInChildren<HarshByteAnimation>();
+        var existingHarshAnimation = heroAnimation.GetComponentInChildren<BaseWhaleAnimation>();
         if (existingHarshAnimation != null) {
             Destroy(existingHarshAnimation.gameObject);
         }
 
         if (baseHero.HarshPath != null) {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
-            var harshAnimation = Instantiate(Resources.Load<HarshByteAnimation>(baseHero.HarshPath), heroAnimation.transform);
+            var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.HarshPath), heroAnimation.transform);
             harshAnimation.OnCreate(heroAnimation.transform.localScale);
         } else {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = true;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OracleAnimation : HarshByteAnimation {
+public class OracleAnimation : BaseWhaleAnimation {
 
     public ParticleSystem specialParticle;
 
