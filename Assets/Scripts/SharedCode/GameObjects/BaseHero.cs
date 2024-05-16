@@ -15,7 +15,7 @@ namespace Com.Tempest.Whale.GameObjects {
         // Earth
         DUST_ELEMENTAL = 21, BOULDER = 22, PEBBLE_FLINGER = 23, LIVING_WALL = 24, EARTHZERKER = 25,
         // Electric
-        STATIC_CLING = 26, BATTERY = 27, SPARK_ELEMENTAL = 28, LIGHTNING_WRAITH = 29, NEUROMANCER = 30
+        STATIC_CLING = 26, BATTERY = 27, SPARK_ELEMENTAL = 28, LIGHTNING_WRAITH = 29, REZAKAHT = 30
     }
 
     public class BaseHero {
@@ -305,9 +305,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.LIGHTNING_BOLT, AttackEnum.LIGHTNING_FLASH, AbilityEnum.CONDUCTIVITY,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.NEUROMANCER:
-                    return new BaseHero(hero, "Neuromancer", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
-                        RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 5,
+                case HeroEnum.REZAKAHT:
+                    return new BaseHero(hero, "Rezakaht", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Rezakaht3/Rezakaht3Prefab",
+                        RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 5,
                         70, 50, 80, 0.05, 0.15, 90, 0.1, 0,
                         AttackEnum.FORKED_LIGHTNING, AttackEnum.BRAIN_STORM, AbilityEnum.MENTAL_GYMNASTICS,
                         null, null, EquipmentType.STAFF,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Com.Tempest.Whale.GameObjects;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ public class AnimationTestSceneManager : MonoBehaviour {
     private List<HarshByteAnimation> discoveredAnimators;
 
     public void Awake() {
+        var harshAnimation = Instantiate(Resources.Load<HarshByteAnimation>(BaseHero.GetHero(HeroEnum.REZAKAHT).HarshPath), prefabHolder.transform);
+        harshAnimation.OnCreate(prefabHolder.transform.localScale);
+
         var harshAnimations = FindObjectsOfType<HarshByteAnimation>();
         discoveredAnimators = new List<HarshByteAnimation>(harshAnimations);
         foreach (HarshByteAnimation animation in discoveredAnimators) {
