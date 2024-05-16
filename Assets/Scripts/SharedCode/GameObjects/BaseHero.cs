@@ -7,11 +7,11 @@ namespace Com.Tempest.Whale.GameObjects {
         // Water
         VAPOR_MAGE = 1, RAIN_MAN = 2, FEESH = 3, MIST_CALLER = 4, HYDROKAHT = 5,
         // Grass
-        HAPPY_FLOWER = 6, BUSH_WHACKER = 7, BALL_OF_ROOTS = 8, DRYAD = 9, ANGERY_TREANT = 10,
+        HAPPY_FLOWER = 6, BUSH_WHACKER = 7, BALL_OF_ROOTS = 8, DRYAD = 9, BOTANIKAHT = 10,
         // Fire
-        CANDLE_MAN = 11, EMBER = 12, TORCH = 13, LAVA_GOLEM = 14, INFERNOMANCER = 15,
+        CANDLE_MAN = 11, EMBER = 12, TORCH = 13, LAVA_GOLEM = 14, INFERNIKAHT = 15,
         // Ice
-        SNOW_MAN = 16, ICE_CUBE = 17, ICICLE_FLINGER = 18, BLIZZARD_WIZZARD = 19, REFLECTOR = 20,
+        SNOW_MAN = 16, ICE_CUBE = 17, ICICLE_FLINGER = 18, BLIZZARD_WIZZARD = 19, CRYOKAHT = 20,
         // Earth
         DUST_ELEMENTAL = 21, BOULDER = 22, PEBBLE_FLINGER = 23, LIVING_WALL = 24, EARTHZERKER = 25,
         // Electric
@@ -157,8 +157,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.MOONLIGHT, AttackEnum.RITUAL_OF_THE_SUN, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
-                case HeroEnum.ANGERY_TREANT:
-                    return new BaseHero(hero, "Angery Treant", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
+                case HeroEnum.BOTANIKAHT:
+                    return new BaseHero(hero, "Botanikaht", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Botanikaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.GRASS, 5,
                         100, 60, 50, 0.3, 0.2, 50, 0, 0.1,
                         AttackEnum.BRANCH_SLAM, AttackEnum.GIFT_OF_THORNS, AbilityEnum.DEEP_ROOTS,
@@ -194,8 +194,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.FIRE_PUNCH, AttackEnum.GIFT_OF_LAVA, AbilityEnum.HOT_BLOODED,
                         EquipmentType.SCEPTER, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
-                case HeroEnum.INFERNOMANCER:
-                    return new BaseHero(hero, "Infernomancer", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
+                case HeroEnum.INFERNIKAHT:
+                    return new BaseHero(hero, "Infernikaht", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Infernikaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
                         55, 50, 100, 0.05, 0.1, 90, 0.1, 0,
                         AttackEnum.SCORCH, AttackEnum.FIRE_STORM, AbilityEnum.FEED_THE_INFERNO,
@@ -231,8 +231,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.SNOWY_WIND, AttackEnum.BLIZZARD, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.REFLECTOR:
-                    return new BaseHero(hero, "Reflector", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
+                case HeroEnum.CRYOKAHT:
+                    return new BaseHero(hero, "Cryokaht", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Cryokaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ICE, 5,
                         70, 70, 50, 0.2, 0.5, 50, 0, 0.15,
                         AttackEnum.ICE_PUNCH, AttackEnum.GIFT_OF_ICE, AbilityEnum.MIRROR_ICE,
