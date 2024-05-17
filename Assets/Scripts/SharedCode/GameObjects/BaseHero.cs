@@ -13,7 +13,7 @@ namespace Com.Tempest.Whale.GameObjects {
         // Ice
         SNOW_MAN = 16, ICE_CUBE = 17, ICICLE_FLINGER = 18, BLIZZARD_WIZZARD = 19, CRYOKAHT = 20,
         // Earth
-        DUST_ELEMENTAL = 21, BOULDER = 22, PEBBLE_FLINGER = 23, LIVING_WALL = 24, EARTHZERKER = 25,
+        DUST_ELEMENTAL = 21, BOULDER = 22, PEBBLE_FLINGER = 23, LIVING_WALL = 24, TERRIKAHT = 25,
         // Electric
         STATIC_CLING = 26, BATTERY = 27, SPARK_ELEMENTAL = 28, LIGHTNING_WRAITH = 29, REZAKAHT = 30
     }
@@ -268,8 +268,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.ROCK_SLAM, AttackEnum.GIFT_OF_EARTH, AbilityEnum.JAGGED_SURFACE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
-                case HeroEnum.EARTHZERKER:
-                    return new BaseHero(hero, "Earthzerker", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
+                case HeroEnum.TERRIKAHT:
+                    return new BaseHero(hero, "Terrikaht", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Terrikaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 5,
                         60, 100, 50, 0.1, 0, 80, 0.4, -0.2,
                         AttackEnum.AXE_SLASH, AttackEnum.SPLIT_SKULL, AbilityEnum.MOUNTING_RAGE,
