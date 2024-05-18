@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class CandleAnimation : HarshByteAnimation {
+class CandleAnimation : BaseWhaleAnimation {
 
     public ParticleSystem specialParticle;
 

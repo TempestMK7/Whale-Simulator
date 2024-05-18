@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LanternAnimation : HarshByteAnimation {
+public class LanternAnimation : BaseWhaleAnimation {
 
     public ParticleSystem specialParticle;
 

@@ -1,41 +1,46 @@
-﻿using System;
+﻿using Com.Tempest.Whale.GameObjects;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimationTestSceneManager : MonoBehaviour {
 
     public GameObject prefabHolder;
+    public HeroEnum selectedHero;
 
-    private List<HarshByteAnimation> discoveredAnimators;
+    private List<BaseWhaleAnimation> discoveredAnimators;
 
     public void Awake() {
-        var harshAnimations = FindObjectsOfType<HarshByteAnimation>();
-        discoveredAnimators = new List<HarshByteAnimation>(harshAnimations);
-        foreach (HarshByteAnimation animation in discoveredAnimators) {
+        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(selectedHero).HarshPath), prefabHolder.transform);
+        harshAnimation.OnCreate(prefabHolder.transform.localScale);
+
+        var harshAnimations = FindObjectsOfType<BaseWhaleAnimation>();
+        discoveredAnimators = new List<BaseWhaleAnimation>(harshAnimations);
+        foreach (BaseWhaleAnimation animation in discoveredAnimators) {
             animation.OnCreate(prefabHolder.transform.localScale);
         }
     }
 
     public void OnAttack() {
-        foreach (HarshByteAnimation animator in discoveredAnimators) {
+        foreach (BaseWhaleAnimation animator in discoveredAnimators) {
             animator.Attack();
         }
     }
 
     public void OnSpecial() {
-        foreach (HarshByteAnimation animator in discoveredAnimators) {
+        foreach (BaseWhaleAnimation animator in discoveredAnimators) {
             animator.Special();
         }
     }
 
     public void OnHurt() {
-        foreach (HarshByteAnimation animator in discoveredAnimators) {
+        foreach (BaseWhaleAnimation animator in discoveredAnimators) {
             animator.Hurt();
         }
     }
 
     public void OnDeath() {
-        foreach (HarshByteAnimation animator in discoveredAnimators) {
+        foreach (BaseWhaleAnimation animator in discoveredAnimators) {
             animator.Death();
         }
     }
