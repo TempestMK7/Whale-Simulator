@@ -6,11 +6,12 @@ using UnityEngine;
 public class AnimationTestSceneManager : MonoBehaviour {
 
     public GameObject prefabHolder;
+    public HeroEnum selectedHero;
 
     private List<BaseWhaleAnimation> discoveredAnimators;
 
     public void Awake() {
-        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(HeroEnum.PULVERIZER).HarshPath), prefabHolder.transform);
+        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(selectedHero).HarshPath), prefabHolder.transform);
         harshAnimation.OnCreate(prefabHolder.transform.localScale);
 
         var harshAnimations = FindObjectsOfType<BaseWhaleAnimation>();
