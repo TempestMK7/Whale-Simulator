@@ -11,11 +11,11 @@ namespace Com.Tempest.Whale.GameObjects {
         // Fire
         LEPYRA = 11, ARBURN = 12, SCOROVULP = 13, SPIRIGNITE = 14, INFERNIKAHT = 15,
         // Ice
-        SNOW_MAN = 16, ICE_CUBE = 17, GLACITAUR = 18, FREEZER = 19, CRYOKAHT = 20,
+        SNOW_MAN = 16, ICECAP = 17, GLACITAUR = 18, FREEZER = 19, CRYOKAHT = 20,
         // Earth
-        DUST_ELEMENTAL = 21, BOULDER = 22, ROCKOTAUR = 23, PULVERIZER = 24, TERRIKAHT = 25,
+        DUST_ELEMENTAL = 21, MUDCAP = 22, ROCKOTAUR = 23, PULVERIZER = 24, TERRIKAHT = 25,
         // Electric
-        STATIC_CLING = 26, BATTERY = 27, ZAPATAUR = 28, GENERATOR = 29, ZEPHYKAHT = 30
+        STATIC_CLING = 26, BOLTCAP = 27, ZAPATAUR = 28, GENERATOR = 29, ZEPHYKAHT = 30
     }
 
     public class BaseHero {
@@ -210,9 +210,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.ICE_PUNCH, AttackEnum.CHILLY_WIND, AbilityEnum.COLD_BLOODED,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
-                case HeroEnum.ICE_CUBE:
-                    return new BaseHero(hero, "Ice Cube", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
-                        RoleEnum.PROTECTION, FactionEnum.ICE, 2,
+                case HeroEnum.ICECAP:
+                    return new BaseHero(hero, "Icecap", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Icecap/Large/MainPrefab",
+                        RoleEnum.SUPPORT, FactionEnum.ICE, 2,
                         70, 80, 60, 0.2, 0.4, 50, 0, 0.3,
                         AttackEnum.ICE_PUNCH, AttackEnum.ENCASE_IN_ICE, AbilityEnum.COLD_BLOODED,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
@@ -247,9 +247,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.TWISTER, AttackEnum.DUST_STORM, AbilityEnum.JAGGED_SURFACE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
-                case HeroEnum.BOULDER:
-                    return new BaseHero(hero, "Boulder", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
-                        RoleEnum.PROTECTION, FactionEnum.EARTH, 2,
+                case HeroEnum.MUDCAP:
+                    return new BaseHero(hero, "Mudcap", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Mudcap/Large/MainPrefab",
+                        RoleEnum.SUPPORT, FactionEnum.EARTH, 2,
                         80, 80, 50, 0.3, 0.1, 60, 0, 0.3,
                         AttackEnum.ROCK_SLAM, AttackEnum.ENCASE_IN_ROCK, AbilityEnum.JAGGED_SURFACE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
@@ -284,8 +284,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.SPARK, AttackEnum.FLASH_OF_LIGHT, AbilityEnum.CONDUCTIVITY,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.BATTERY:
-                    return new BaseHero(hero, "Battery", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
+                case HeroEnum.BOLTCAP:
+                    return new BaseHero(hero, "Boltcap", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Boltcap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 2,
                         70, 50, 80, 0.2, 0.3, 90, 0, 0,
                         AttackEnum.ENERGY_DRAIN, AttackEnum.CHARGE_TEAM, AbilityEnum.CONDUCTIVITY,
