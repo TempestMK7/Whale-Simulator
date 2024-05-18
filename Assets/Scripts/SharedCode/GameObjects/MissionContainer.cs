@@ -10,9 +10,9 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(1, 1, HeroEnum.LEPAQUA, HeroEnum.LEPAQUA, HeroEnum.LEPAQUA, HeroEnum.LEPAQUA),
         new MissionInfo(2, 1, HeroEnum.LEPHYTA, HeroEnum.LEPHYTA, HeroEnum.LEPHYTA, HeroEnum.LEPHYTA),
         new MissionInfo(3, 1, HeroEnum.LEPYRA, HeroEnum.LEPYRA, HeroEnum.LEPYRA, HeroEnum.LEPYRA),
-        new MissionInfo(4, 1, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN),
-        new MissionInfo(5, 1, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING),
-        new MissionInfo(6, 1, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL),
+        new MissionInfo(4, 1, HeroEnum.ARCTIBOAR, HeroEnum.ARCTIBOAR, HeroEnum.ARCTIBOAR, HeroEnum.ARCTIBOAR),
+        new MissionInfo(5, 1, HeroEnum.ELECTIBOAR, HeroEnum.ELECTIBOAR, HeroEnum.ELECTIBOAR, HeroEnum.ELECTIBOAR),
+        new MissionInfo(6, 1, HeroEnum.SEISMIBOAR, HeroEnum.SEISMIBOAR, HeroEnum.SEISMIBOAR, HeroEnum.SEISMIBOAR),
         new MissionInfo(7, 1, HeroEnum.ARDOWSE, HeroEnum.ARDOWSE, HeroEnum.ARDOWSE, HeroEnum.LEPAQUA, HeroEnum.LEPAQUA, HeroEnum.LEPAQUA),
         new MissionInfo(8, 1, HeroEnum.ARBERRY, HeroEnum.ARBERRY, HeroEnum.ARBERRY, HeroEnum.LEPHYTA, HeroEnum.LEPHYTA, HeroEnum.LEPHYTA),
         new MissionInfo(9, 1, HeroEnum.ARBURN, HeroEnum.ARBURN, HeroEnum.ARBURN, HeroEnum.LEPYRA, HeroEnum.LEPYRA, HeroEnum.LEPYRA),
@@ -20,28 +20,28 @@ namespace Com.Tempest.Whale.GameObjects {
     };
 
         private static readonly MissionInfo[] chapter2 = {
-        new MissionInfo(11, 1, HeroEnum.ICECAP, HeroEnum.ICECAP, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN),
-        new MissionInfo(12, 1, HeroEnum.BOLTCAP, HeroEnum.BOLTCAP, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING),
-        new MissionInfo(13, 1, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL),
+        new MissionInfo(11, 1, HeroEnum.ICECAP, HeroEnum.ICECAP, HeroEnum.ARCTIBOAR, HeroEnum.ARCTIBOAR, HeroEnum.ARCTIBOAR, HeroEnum.ARCTIBOAR),
+        new MissionInfo(12, 1, HeroEnum.BOLTCAP, HeroEnum.BOLTCAP, HeroEnum.ELECTIBOAR, HeroEnum.ELECTIBOAR, HeroEnum.ELECTIBOAR, HeroEnum.ELECTIBOAR),
+        new MissionInfo(13, 1, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.SEISMIBOAR, HeroEnum.SEISMIBOAR, HeroEnum.SEISMIBOAR),
         new MissionInfo(14, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.ARDOWSE, HeroEnum.LEPAQUA, HeroEnum.ARDOWSE, HeroEnum.LEPAQUA),
         new MissionInfo(15, 1, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.ARBERRY, HeroEnum.LEPHYTA, HeroEnum.ARBERRY, HeroEnum.LEPHYTA),
         new MissionInfo(16, 1, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.ARBURN, HeroEnum.LEPYRA, HeroEnum.ARBURN, HeroEnum.LEPYRA),
-        new MissionInfo(17, 1, HeroEnum.GLACITAUR, HeroEnum.ICECAP, HeroEnum.ICECAP, HeroEnum.SNOW_MAN, HeroEnum.GLACITAUR, HeroEnum.SNOW_MAN),
-        new MissionInfo(18, 1, HeroEnum.ZAPATAUR, HeroEnum.ZAPATAUR, HeroEnum.BOLTCAP, HeroEnum.STATIC_CLING, HeroEnum.BOLTCAP, HeroEnum.STATIC_CLING),
-        new MissionInfo(19, 1, HeroEnum.ROCKOTAUR, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.DUST_ELEMENTAL, HeroEnum.ROCKOTAUR, HeroEnum.DUST_ELEMENTAL),
+        new MissionInfo(17, 1, HeroEnum.GLACITAUR, HeroEnum.ICECAP, HeroEnum.ICECAP, HeroEnum.ARCTIBOAR, HeroEnum.GLACITAUR, HeroEnum.ARCTIBOAR),
+        new MissionInfo(18, 1, HeroEnum.ZAPATAUR, HeroEnum.ZAPATAUR, HeroEnum.BOLTCAP, HeroEnum.ELECTIBOAR, HeroEnum.BOLTCAP, HeroEnum.ELECTIBOAR),
+        new MissionInfo(19, 1, HeroEnum.ROCKOTAUR, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.SEISMIBOAR, HeroEnum.ROCKOTAUR, HeroEnum.SEISMIBOAR),
         new MissionInfo(20, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.LEPHYTA, HeroEnum.LEPYRA, HeroEnum.ARBURN, HeroEnum.ARBERRY)
     };
 
         private static readonly MissionInfo[] chapter3 = {
-        new MissionInfo(21, 2, HeroEnum.ARDOWSE, HeroEnum.ICECAP, HeroEnum.SNOW_MAN, HeroEnum.LEPAQUA, HeroEnum.GLACITAUR, HeroEnum.ARDOWSE),
+        new MissionInfo(21, 2, HeroEnum.ARDOWSE, HeroEnum.ICECAP, HeroEnum.ARCTIBOAR, HeroEnum.LEPAQUA, HeroEnum.GLACITAUR, HeroEnum.ARDOWSE),
         new MissionInfo(22, 2, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.MUDCAP, HeroEnum.LEPHYTA, HeroEnum.ROCKOTAUR, HeroEnum.ARBERRY),
-        new MissionInfo(23, 2, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.ARBURN, HeroEnum.BOLTCAP, HeroEnum.ZAPATAUR, HeroEnum.STATIC_CLING),
+        new MissionInfo(23, 2, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.ARBURN, HeroEnum.BOLTCAP, HeroEnum.ZAPATAUR, HeroEnum.ELECTIBOAR),
         new MissionInfo(24, 2, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.LEPHYTA, HeroEnum.LEPAQUA, HeroEnum.ARDOWSE, HeroEnum.ARBERRY),
         new MissionInfo(25, 2, HeroEnum.ARBERRY, HeroEnum.FLORAVULP, HeroEnum.ARBURN, HeroEnum.LEPHYTA, HeroEnum.ARBERRY, HeroEnum.SCOROVULP),
-        new MissionInfo(26, 2, HeroEnum.ARBURN, HeroEnum.ICECAP, HeroEnum.ARBURN, HeroEnum.SNOW_MAN, HeroEnum.SCOROVULP, HeroEnum.GLACITAUR),
-        new MissionInfo(27, 2, HeroEnum.GLACITAUR, HeroEnum.ICECAP, HeroEnum.BOLTCAP, HeroEnum.SNOW_MAN, HeroEnum.ZAPATAUR, HeroEnum.GLACITAUR),
-        new MissionInfo(28, 2, HeroEnum.ZAPATAUR, HeroEnum.MUDCAP, HeroEnum.ZAPATAUR, HeroEnum.STATIC_CLING, HeroEnum.ROCKOTAUR, HeroEnum.BOLTCAP),
-        new MissionInfo(29, 2, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.ARDOWSE, HeroEnum.LEPAQUA, HeroEnum.ROCKOTAUR, HeroEnum.DUST_ELEMENTAL),
+        new MissionInfo(26, 2, HeroEnum.ARBURN, HeroEnum.ICECAP, HeroEnum.ARBURN, HeroEnum.ARCTIBOAR, HeroEnum.SCOROVULP, HeroEnum.GLACITAUR),
+        new MissionInfo(27, 2, HeroEnum.GLACITAUR, HeroEnum.ICECAP, HeroEnum.BOLTCAP, HeroEnum.ARCTIBOAR, HeroEnum.ZAPATAUR, HeroEnum.GLACITAUR),
+        new MissionInfo(28, 2, HeroEnum.ZAPATAUR, HeroEnum.MUDCAP, HeroEnum.ZAPATAUR, HeroEnum.ELECTIBOAR, HeroEnum.ROCKOTAUR, HeroEnum.BOLTCAP),
+        new MissionInfo(29, 2, HeroEnum.MUDCAP, HeroEnum.MUDCAP, HeroEnum.ARDOWSE, HeroEnum.LEPAQUA, HeroEnum.ROCKOTAUR, HeroEnum.SEISMIBOAR),
         new MissionInfo(30, 2, HeroEnum.GENERATOR, HeroEnum.FLORAVULP, HeroEnum.MARIVULP, HeroEnum.GENERATOR, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP)
     };
 
@@ -49,13 +49,13 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(31, 2, HeroEnum.SPIRIFLOW, HeroEnum.MARIVULP, HeroEnum.LEPAQUA, HeroEnum.ARDOWSE, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(32, 2, HeroEnum.SPIRIGROW, HeroEnum.FLORAVULP, HeroEnum.LEPHYTA, HeroEnum.ARBERRY, HeroEnum.SPIRIGROW, HeroEnum.ARBERRY),
         new MissionInfo(33, 2, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.LEPYRA, HeroEnum.SCOROVULP, HeroEnum.LEPYRA),
-        new MissionInfo(34, 2, HeroEnum.FREEZER, HeroEnum.ICECAP, HeroEnum.ICECAP, HeroEnum.GLACITAUR, HeroEnum.FREEZER, HeroEnum.SNOW_MAN),
-        new MissionInfo(35, 2, HeroEnum.GENERATOR, HeroEnum.BOLTCAP, HeroEnum.BOLTCAP, HeroEnum.ZAPATAUR, HeroEnum.GENERATOR, HeroEnum.STATIC_CLING),
-        new MissionInfo(36, 2, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.MUDCAP, HeroEnum.DUST_ELEMENTAL, HeroEnum.ROCKOTAUR, HeroEnum.MUDCAP),
+        new MissionInfo(34, 2, HeroEnum.FREEZER, HeroEnum.ICECAP, HeroEnum.ICECAP, HeroEnum.GLACITAUR, HeroEnum.FREEZER, HeroEnum.ARCTIBOAR),
+        new MissionInfo(35, 2, HeroEnum.GENERATOR, HeroEnum.BOLTCAP, HeroEnum.BOLTCAP, HeroEnum.ZAPATAUR, HeroEnum.GENERATOR, HeroEnum.ELECTIBOAR),
+        new MissionInfo(36, 2, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.MUDCAP, HeroEnum.SEISMIBOAR, HeroEnum.ROCKOTAUR, HeroEnum.MUDCAP),
         new MissionInfo(37, 2, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.SPIRIFLOW, HeroEnum.GLACITAUR, HeroEnum.ARDOWSE, HeroEnum.FREEZER),
         new MissionInfo(38, 2, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.PULVERIZER, HeroEnum.ARBERRY, HeroEnum.SPIRIGROW, HeroEnum.ROCKOTAUR),
         new MissionInfo(39, 2, HeroEnum.SCOROVULP, HeroEnum.SPIRIGNITE, HeroEnum.BOLTCAP, HeroEnum.ARBURN, HeroEnum.GENERATOR, HeroEnum.SCOROVULP),
-        new MissionInfo(40, 2, HeroEnum.TERRIKAHT, HeroEnum.TERRIKAHT, HeroEnum.SNOW_MAN, HeroEnum.LEPAQUA, HeroEnum.LEPHYTA, HeroEnum.LEPYRA)
+        new MissionInfo(40, 2, HeroEnum.TERRIKAHT, HeroEnum.TERRIKAHT, HeroEnum.ARCTIBOAR, HeroEnum.LEPAQUA, HeroEnum.LEPHYTA, HeroEnum.LEPYRA)
     };
 
         private static readonly MissionInfo[] chapter5 = {

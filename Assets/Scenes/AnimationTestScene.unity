@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabHolder: {fileID: 1142001479}
-  selectedHero: 27
+  selectedHero: 26
 --- !u!4 &154922606
 Transform:
   m_ObjectHideFlags: 0
