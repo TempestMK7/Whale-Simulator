@@ -11,11 +11,11 @@ namespace Com.Tempest.Whale.GameObjects {
         // Fire
         CANDLE_MAN = 11, EMBER = 12, TORCH = 13, LAVA_GOLEM = 14, INFERNIKAHT = 15,
         // Ice
-        SNOW_MAN = 16, ICE_CUBE = 17, ICICLE_FLINGER = 18, BLIZZARD_WIZZARD = 19, CRYOKAHT = 20,
+        SNOW_MAN = 16, ICE_CUBE = 17, ICICLE_FLINGER = 18, FREEZER = 19, CRYOKAHT = 20,
         // Earth
-        DUST_ELEMENTAL = 21, BOULDER = 22, PEBBLE_FLINGER = 23, LIVING_WALL = 24, TERRIKAHT = 25,
+        DUST_ELEMENTAL = 21, BOULDER = 22, PEBBLE_FLINGER = 23, PULVERIZER = 24, TERRIKAHT = 25,
         // Electric
-        STATIC_CLING = 26, BATTERY = 27, SPARK_ELEMENTAL = 28, LIGHTNING_WRAITH = 29, REZAKAHT = 30
+        STATIC_CLING = 26, BATTERY = 27, SPARK_ELEMENTAL = 28, GENERATOR = 29, ZEPHYKAHT = 30
     }
 
     public class BaseHero {
@@ -224,9 +224,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.ICICLE_THROW, AttackEnum.FLINGING_SPREE, AbilityEnum.COLD_BLOODED,
                         null, null, EquipmentType.GREAT_AXE,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
-                case HeroEnum.BLIZZARD_WIZZARD:
-                    return new BaseHero(hero, "Blizzard Wizard", "Icons/Element02_256_19", "Characters/IceOverrideController", null,
-                        RoleEnum.SUPPORT, FactionEnum.ICE, 4,
+                case HeroEnum.FREEZER:
+                    return new BaseHero(hero, "Freezer", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Freezer/Large/MainPrefab",
+                        RoleEnum.PROTECTION, FactionEnum.ICE, 4,
                         65, 60, 75, 0.05, 0.15, 70, 0.1, 0,
                         AttackEnum.SNOWY_WIND, AttackEnum.BLIZZARD, AbilityEnum.NONE,
                         null, null, EquipmentType.STAFF,
@@ -261,8 +261,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.GRAVEL_SHOT, AttackEnum.PEBBLE_SHOWER, AbilityEnum.NONE,
                         null, null, EquipmentType.GREAT_SWORD,
                         EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
-                case HeroEnum.LIVING_WALL:
-                    return new BaseHero(hero, "Living Wall", "Icons/Element02_256_22", "Characters/EarthOverrideController", null,
+                case HeroEnum.PULVERIZER:
+                    return new BaseHero(hero, "Pulverizer", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Pulverizer/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.EARTH, 4,
                         70, 70, 50, 0.4, 0.2, 50, 0, 0.2,
                         AttackEnum.ROCK_SLAM, AttackEnum.GIFT_OF_EARTH, AbilityEnum.JAGGED_SURFACE,
@@ -298,14 +298,14 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.LIGHTNING_BOLT, AttackEnum.OVERCHARGED_BOLT, AbilityEnum.CONDUCTIVITY,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.LIGHTNING_WRAITH:
-                    return new BaseHero(hero, "Lightning Wraith", "Icons/Element02_256_16", "Characters/ElectricOverrideController", null,
-                        RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 4,
+                case HeroEnum.GENERATOR:
+                    return new BaseHero(hero, "Generator", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Generator/Large/MainPrefab",
+                        RoleEnum.PROTECTION, FactionEnum.ELECTRIC, 4,
                         60, 50, 80, 0.1, 0.1, 90, 0.2, 0,
                         AttackEnum.LIGHTNING_BOLT, AttackEnum.LIGHTNING_FLASH, AbilityEnum.CONDUCTIVITY,
                         null, null, EquipmentType.STAFF,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.REZAKAHT:
+                case HeroEnum.ZEPHYKAHT:
                     return new BaseHero(hero, "Zephykaht", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Zephykaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 5,
                         70, 50, 80, 0.05, 0.15, 90, 0.1, 0,
