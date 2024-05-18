@@ -5,11 +5,11 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public enum HeroEnum {
         // Water
-        VAPOR_MAGE = 1, RAIN_MAN = 2, FEESH = 3, MIST_CALLER = 4, HYDROKAHT = 5,
+        VAPOR_MAGE = 1, RAIN_MAN = 2, FEESH = 3, SPIRIFLOW = 4, HYDROKAHT = 5,
         // Grass
-        HAPPY_FLOWER = 6, BUSH_WHACKER = 7, BALL_OF_ROOTS = 8, DRYAD = 9, BOTANIKAHT = 10,
+        HAPPY_FLOWER = 6, BUSH_WHACKER = 7, BALL_OF_ROOTS = 8, SPIRIGROW = 9, BOTANIKAHT = 10,
         // Fire
-        CANDLE_MAN = 11, EMBER = 12, TORCH = 13, LAVA_GOLEM = 14, INFERNIKAHT = 15,
+        CANDLE_MAN = 11, EMBER = 12, TORCH = 13, SPIRIGNITE = 14, INFERNIKAHT = 15,
         // Ice
         SNOW_MAN = 16, ICE_CUBE = 17, ICICLE_FLINGER = 18, FREEZER = 19, CRYOKAHT = 20,
         // Earth
@@ -113,9 +113,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.FISH_SLAP, AttackEnum.ENSCALE_TEAM, AbilityEnum.NONE,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
-                case HeroEnum.MIST_CALLER:
-                    return new BaseHero(hero, "Mist Caller", "Icons/Element02_256_04", "Characters/WaterOverrideController", null,
-                        RoleEnum.DAMAGE, FactionEnum.WATER, 4,
+                case HeroEnum.SPIRIFLOW:
+                    return new BaseHero(hero, "Spiriflow", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Spiriflow/Large/MainPrefab",
+                        RoleEnum.SUPPORT, FactionEnum.WATER, 4,
                         55, 55, 90, 0.1, 0.15, 80, 0.15, 0,
                         AttackEnum.VAPOR_CLOUD, AttackEnum.TSUNAMI, AbilityEnum.VAPORIZE,
                         null, null, EquipmentType.STAFF,
@@ -150,8 +150,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.PETAL_SLAP, AttackEnum.ENTANGLING_ROOTS, AbilityEnum.BARK_SKIN,
                         EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
-                case HeroEnum.DRYAD:
-                    return new BaseHero(hero, "Dryad", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
+                case HeroEnum.SPIRIGROW:
+                    return new BaseHero(hero, "Spirigrow", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Spirigrow/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
                         75, 60, 95, 0.2, 0.2, 70, 0, 0,
                         AttackEnum.MOONLIGHT, AttackEnum.RITUAL_OF_THE_SUN, AbilityEnum.NONE,
@@ -187,9 +187,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         AttackEnum.FIRE_BOLT, AttackEnum.IMMOLATE, AbilityEnum.KINDLING,
                         EquipmentType.SCEPTER, EquipmentType.TOME, null,
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
-                case HeroEnum.LAVA_GOLEM:
-                    return new BaseHero(hero, "Lava Golem", "Icons/Element02_256_01", "Characters/FireOverrideController", null,
-                        RoleEnum.PROTECTION, FactionEnum.FIRE, 4,
+                case HeroEnum.SPIRIGNITE:
+                    return new BaseHero(hero, "Spirignite", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Spirignite/Large/MainPrefab",
+                        RoleEnum.DAMAGE, FactionEnum.FIRE, 4,
                         65, 50, 70, 0.3, 0.25, 50, 0, 0.3,
                         AttackEnum.FIRE_PUNCH, AttackEnum.GIFT_OF_LAVA, AbilityEnum.HOT_BLOODED,
                         EquipmentType.SCEPTER, EquipmentType.METAL_SHIELD, null,

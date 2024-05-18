@@ -10,7 +10,7 @@ public class AnimationTestSceneManager : MonoBehaviour {
     private List<BaseWhaleAnimation> discoveredAnimators;
 
     public void Awake() {
-        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(HeroEnum.TERRIKAHT).HarshPath), prefabHolder.transform);
+        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(HeroEnum.PULVERIZER).HarshPath), prefabHolder.transform);
         harshAnimation.OnCreate(prefabHolder.transform.localScale);
 
         var harshAnimations = FindObjectsOfType<BaseWhaleAnimation>();
