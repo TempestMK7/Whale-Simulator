@@ -13,54 +13,54 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(4, 1, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN),
         new MissionInfo(5, 1, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING),
         new MissionInfo(6, 1, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL),
-        new MissionInfo(7, 1, HeroEnum.RAIN_MAN, HeroEnum.RAIN_MAN, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.VAPOR_MAGE, HeroEnum.VAPOR_MAGE),
-        new MissionInfo(8, 1, HeroEnum.BUSH_WHACKER, HeroEnum.BUSH_WHACKER, HeroEnum.BUSH_WHACKER, HeroEnum.HAPPY_FLOWER, HeroEnum.HAPPY_FLOWER, HeroEnum.HAPPY_FLOWER),
-        new MissionInfo(9, 1, HeroEnum.EMBER, HeroEnum.EMBER, HeroEnum.EMBER, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN),
-        new MissionInfo(10, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_MAGE)
+        new MissionInfo(7, 1, HeroEnum.ARDOWSE, HeroEnum.ARDOWSE, HeroEnum.ARDOWSE, HeroEnum.VAPOR_MAGE, HeroEnum.VAPOR_MAGE, HeroEnum.VAPOR_MAGE),
+        new MissionInfo(8, 1, HeroEnum.ARBERRY, HeroEnum.ARBERRY, HeroEnum.ARBERRY, HeroEnum.HAPPY_FLOWER, HeroEnum.HAPPY_FLOWER, HeroEnum.HAPPY_FLOWER),
+        new MissionInfo(9, 1, HeroEnum.ARBURN, HeroEnum.ARBURN, HeroEnum.ARBURN, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN, HeroEnum.CANDLE_MAN),
+        new MissionInfo(10, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.ARDOWSE, HeroEnum.VAPOR_MAGE, HeroEnum.ARDOWSE, HeroEnum.VAPOR_MAGE)
     };
 
         private static readonly MissionInfo[] chapter2 = {
         new MissionInfo(11, 1, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN, HeroEnum.SNOW_MAN),
         new MissionInfo(12, 1, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING, HeroEnum.STATIC_CLING),
         new MissionInfo(13, 1, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL, HeroEnum.DUST_ELEMENTAL),
-        new MissionInfo(14, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_MAGE),
-        new MissionInfo(15, 1, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.BUSH_WHACKER, HeroEnum.HAPPY_FLOWER, HeroEnum.BUSH_WHACKER, HeroEnum.HAPPY_FLOWER),
-        new MissionInfo(16, 1, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.EMBER, HeroEnum.CANDLE_MAN, HeroEnum.EMBER, HeroEnum.CANDLE_MAN),
+        new MissionInfo(14, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.ARDOWSE, HeroEnum.VAPOR_MAGE, HeroEnum.ARDOWSE, HeroEnum.VAPOR_MAGE),
+        new MissionInfo(15, 1, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.ARBERRY, HeroEnum.HAPPY_FLOWER, HeroEnum.ARBERRY, HeroEnum.HAPPY_FLOWER),
+        new MissionInfo(16, 1, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.ARBURN, HeroEnum.CANDLE_MAN, HeroEnum.ARBURN, HeroEnum.CANDLE_MAN),
         new MissionInfo(17, 1, HeroEnum.GLACITAUR, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.SNOW_MAN, HeroEnum.GLACITAUR, HeroEnum.SNOW_MAN),
         new MissionInfo(18, 1, HeroEnum.ZAPATAUR, HeroEnum.ZAPATAUR, HeroEnum.BATTERY, HeroEnum.STATIC_CLING, HeroEnum.BATTERY, HeroEnum.STATIC_CLING),
         new MissionInfo(19, 1, HeroEnum.ROCKOTAUR, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.DUST_ELEMENTAL, HeroEnum.ROCKOTAUR, HeroEnum.DUST_ELEMENTAL),
-        new MissionInfo(20, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HAPPY_FLOWER, HeroEnum.CANDLE_MAN, HeroEnum.EMBER, HeroEnum.BUSH_WHACKER)
+        new MissionInfo(20, 1, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HAPPY_FLOWER, HeroEnum.CANDLE_MAN, HeroEnum.ARBURN, HeroEnum.ARBERRY)
     };
 
         private static readonly MissionInfo[] chapter3 = {
-        new MissionInfo(21, 2, HeroEnum.RAIN_MAN, HeroEnum.ICE_CUBE, HeroEnum.SNOW_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.GLACITAUR, HeroEnum.RAIN_MAN),
-        new MissionInfo(22, 2, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.BOULDER, HeroEnum.HAPPY_FLOWER, HeroEnum.ROCKOTAUR, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(23, 2, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.EMBER, HeroEnum.BATTERY, HeroEnum.ZAPATAUR, HeroEnum.STATIC_CLING),
-        new MissionInfo(24, 2, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HAPPY_FLOWER, HeroEnum.VAPOR_MAGE, HeroEnum.RAIN_MAN, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(25, 2, HeroEnum.BUSH_WHACKER, HeroEnum.FLORAVULP, HeroEnum.EMBER, HeroEnum.HAPPY_FLOWER, HeroEnum.BUSH_WHACKER, HeroEnum.SCOROVULP),
-        new MissionInfo(26, 2, HeroEnum.EMBER, HeroEnum.ICE_CUBE, HeroEnum.EMBER, HeroEnum.SNOW_MAN, HeroEnum.SCOROVULP, HeroEnum.GLACITAUR),
+        new MissionInfo(21, 2, HeroEnum.ARDOWSE, HeroEnum.ICE_CUBE, HeroEnum.SNOW_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.GLACITAUR, HeroEnum.ARDOWSE),
+        new MissionInfo(22, 2, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.BOULDER, HeroEnum.HAPPY_FLOWER, HeroEnum.ROCKOTAUR, HeroEnum.ARBERRY),
+        new MissionInfo(23, 2, HeroEnum.SCOROVULP, HeroEnum.SCOROVULP, HeroEnum.ARBURN, HeroEnum.BATTERY, HeroEnum.ZAPATAUR, HeroEnum.STATIC_CLING),
+        new MissionInfo(24, 2, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HAPPY_FLOWER, HeroEnum.VAPOR_MAGE, HeroEnum.ARDOWSE, HeroEnum.ARBERRY),
+        new MissionInfo(25, 2, HeroEnum.ARBERRY, HeroEnum.FLORAVULP, HeroEnum.ARBURN, HeroEnum.HAPPY_FLOWER, HeroEnum.ARBERRY, HeroEnum.SCOROVULP),
+        new MissionInfo(26, 2, HeroEnum.ARBURN, HeroEnum.ICE_CUBE, HeroEnum.ARBURN, HeroEnum.SNOW_MAN, HeroEnum.SCOROVULP, HeroEnum.GLACITAUR),
         new MissionInfo(27, 2, HeroEnum.GLACITAUR, HeroEnum.ICE_CUBE, HeroEnum.BATTERY, HeroEnum.SNOW_MAN, HeroEnum.ZAPATAUR, HeroEnum.GLACITAUR),
         new MissionInfo(28, 2, HeroEnum.ZAPATAUR, HeroEnum.BOULDER, HeroEnum.ZAPATAUR, HeroEnum.STATIC_CLING, HeroEnum.ROCKOTAUR, HeroEnum.BATTERY),
-        new MissionInfo(29, 2, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.RAIN_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.ROCKOTAUR, HeroEnum.DUST_ELEMENTAL),
+        new MissionInfo(29, 2, HeroEnum.BOULDER, HeroEnum.BOULDER, HeroEnum.ARDOWSE, HeroEnum.VAPOR_MAGE, HeroEnum.ROCKOTAUR, HeroEnum.DUST_ELEMENTAL),
         new MissionInfo(30, 2, HeroEnum.GENERATOR, HeroEnum.FLORAVULP, HeroEnum.MARIVULP, HeroEnum.GENERATOR, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP)
     };
 
         private static readonly MissionInfo[] chapter4 = {
-        new MissionInfo(31, 2, HeroEnum.SPIRIFLOW, HeroEnum.MARIVULP, HeroEnum.VAPOR_MAGE, HeroEnum.RAIN_MAN, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
-        new MissionInfo(32, 2, HeroEnum.SPIRIGROW, HeroEnum.FLORAVULP, HeroEnum.HAPPY_FLOWER, HeroEnum.BUSH_WHACKER, HeroEnum.SPIRIGROW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(33, 2, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.CANDLE_MAN, HeroEnum.SCOROVULP, HeroEnum.CANDLE_MAN),
+        new MissionInfo(31, 2, HeroEnum.SPIRIFLOW, HeroEnum.MARIVULP, HeroEnum.VAPOR_MAGE, HeroEnum.ARDOWSE, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
+        new MissionInfo(32, 2, HeroEnum.SPIRIGROW, HeroEnum.FLORAVULP, HeroEnum.HAPPY_FLOWER, HeroEnum.ARBERRY, HeroEnum.SPIRIGROW, HeroEnum.ARBERRY),
+        new MissionInfo(33, 2, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.CANDLE_MAN, HeroEnum.SCOROVULP, HeroEnum.CANDLE_MAN),
         new MissionInfo(34, 2, HeroEnum.FREEZER, HeroEnum.ICE_CUBE, HeroEnum.ICE_CUBE, HeroEnum.GLACITAUR, HeroEnum.FREEZER, HeroEnum.SNOW_MAN),
         new MissionInfo(35, 2, HeroEnum.GENERATOR, HeroEnum.BATTERY, HeroEnum.BATTERY, HeroEnum.ZAPATAUR, HeroEnum.GENERATOR, HeroEnum.STATIC_CLING),
         new MissionInfo(36, 2, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.BOULDER, HeroEnum.DUST_ELEMENTAL, HeroEnum.ROCKOTAUR, HeroEnum.BOULDER),
-        new MissionInfo(37, 2, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.SPIRIFLOW, HeroEnum.GLACITAUR, HeroEnum.RAIN_MAN, HeroEnum.FREEZER),
-        new MissionInfo(38, 2, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.PULVERIZER, HeroEnum.BUSH_WHACKER, HeroEnum.SPIRIGROW, HeroEnum.ROCKOTAUR),
-        new MissionInfo(39, 2, HeroEnum.SCOROVULP, HeroEnum.SPIRIGNITE, HeroEnum.BATTERY, HeroEnum.EMBER, HeroEnum.GENERATOR, HeroEnum.SCOROVULP),
+        new MissionInfo(37, 2, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.SPIRIFLOW, HeroEnum.GLACITAUR, HeroEnum.ARDOWSE, HeroEnum.FREEZER),
+        new MissionInfo(38, 2, HeroEnum.FLORAVULP, HeroEnum.FLORAVULP, HeroEnum.PULVERIZER, HeroEnum.ARBERRY, HeroEnum.SPIRIGROW, HeroEnum.ROCKOTAUR),
+        new MissionInfo(39, 2, HeroEnum.SCOROVULP, HeroEnum.SPIRIGNITE, HeroEnum.BATTERY, HeroEnum.ARBURN, HeroEnum.GENERATOR, HeroEnum.SCOROVULP),
         new MissionInfo(40, 2, HeroEnum.TERRIKAHT, HeroEnum.TERRIKAHT, HeroEnum.SNOW_MAN, HeroEnum.VAPOR_MAGE, HeroEnum.HAPPY_FLOWER, HeroEnum.CANDLE_MAN)
     };
 
         private static readonly MissionInfo[] chapter5 = {
-        new MissionInfo(41, 3, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(42, 3, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(41, 3, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(42, 3, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(43, 3, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(44, 3, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(45, 3, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -75,11 +75,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(51, 3, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(52, 3, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(53, 3, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(54, 3, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(54, 3, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(55, 3, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(56, 3, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(57, 3, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(58, 3, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(58, 3, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(59, 3, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(60, 3, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -87,19 +87,19 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter7 = {
         new MissionInfo(61, 4, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(62, 4, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(63, 4, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(63, 4, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(64, 4, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(65, 4, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(66, 4, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(67, 4, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(67, 4, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(68, 4, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(69, 4, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(69, 4, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(70, 4, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
         private static readonly MissionInfo[] chapter8 = {
-        new MissionInfo(71, 4, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(72, 4, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(71, 4, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(72, 4, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(73, 4, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(74, 4, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(75, 4, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -114,11 +114,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(81, 5, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(82, 5, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(83, 5, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(84, 5, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(84, 5, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(85, 5, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(86, 5, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(87, 5, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(88, 5, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(88, 5, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(89, 5, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(90, 5, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -126,19 +126,19 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter10 = {
         new MissionInfo(91, 5, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(92, 5, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(93, 5, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(93, 5, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(94, 5, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(95, 5, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(96, 5, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(97, 5, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(97, 5, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(98, 5, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(99, 5, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(99, 5, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(100, 5, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
         private static readonly MissionInfo[] chapter11 = {
-        new MissionInfo(101, 6, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(102, 6, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(101, 6, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(102, 6, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(103, 6, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(104, 6, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(105, 6, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -153,11 +153,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(111, 6, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(112, 6, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(113, 6, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(114, 6, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(114, 6, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(115, 6, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(116, 6, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(117, 6, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(118, 6, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(118, 6, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(119, 6, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(120, 6, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -165,19 +165,19 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter13 = {
         new MissionInfo(121, 7, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(122, 7, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(123, 7, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(123, 7, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(124, 7, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(125, 7, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(126, 7, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(127, 7, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(127, 7, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(128, 7, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(129, 7, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(129, 7, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(130, 7, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
         private static readonly MissionInfo[] chapter14 = {
-        new MissionInfo(131, 7, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(132, 7, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(131, 7, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(132, 7, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(133, 7, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(134, 7, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(135, 7, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -192,11 +192,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(141, 8, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(142, 8, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(143, 8, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(144, 8, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(144, 8, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(145, 8, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(146, 8, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(147, 8, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(148, 8, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(148, 8, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(149, 8, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(150, 8, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -204,19 +204,19 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter16 = {
         new MissionInfo(151, 8, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(152, 8, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(153, 8, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(153, 8, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(154, 8, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(155, 8, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(156, 8, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(157, 8, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(157, 8, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(158, 8, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(159, 8, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(159, 8, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(160, 8, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
         private static readonly MissionInfo[] chapter17 = {
-        new MissionInfo(161, 9, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(162, 9, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(161, 9, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(162, 9, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(163, 9, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(164, 9, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(165, 9, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -231,11 +231,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(171, 9, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(172, 9, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(173, 9, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(174, 9, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(174, 9, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(175, 9, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(176, 9, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(177, 9, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(178, 9, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(178, 9, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(179, 9, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(180, 9, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -243,19 +243,19 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter19 = {
         new MissionInfo(181, 10, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(182, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(183, 10, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(183, 10, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(184, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(185, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(186, 10, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(187, 10, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(187, 10, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(188, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(189, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(189, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(190, 10, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
         private static readonly MissionInfo[] chapter20 = {
-        new MissionInfo(191, 10, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(192, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(191, 10, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(192, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(193, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(194, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(195, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -270,11 +270,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(201, 10, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(202, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(203, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(204, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(204, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(205, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(206, 10, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(207, 10, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(208, 10, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(208, 10, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(209, 10, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(210, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -282,19 +282,19 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter22 = {
         new MissionInfo(211, 10, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(212, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(213, 10, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(213, 10, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(214, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(215, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(216, 10, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(217, 10, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(217, 10, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(218, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(219, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(219, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(220, 10, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
         private static readonly MissionInfo[] chapter23 = {
-        new MissionInfo(231, 10, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.BUSH_WHACKER),
-        new MissionInfo(232, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.EMBER, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
+        new MissionInfo(231, 10, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.ARBERRY),
+        new MissionInfo(232, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ARBURN, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP, HeroEnum.SPIRIGROW),
         new MissionInfo(233, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FREEZER, HeroEnum.INFERNIKAHT, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP),
         new MissionInfo(234, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.FREEZER, HeroEnum.ROCKOTAUR, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(235, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.TERRIKAHT, HeroEnum.BATTERY),
@@ -309,11 +309,11 @@ namespace Com.Tempest.Whale.GameObjects {
         new MissionInfo(241, 10, HeroEnum.HYDROKAHT, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.ZAPATAUR, HeroEnum.SPIRIFLOW, HeroEnum.GENERATOR),
         new MissionInfo(242, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW),
         new MissionInfo(243, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.FLORAVULP, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGROW, HeroEnum.SCOROVULP),
-        new MissionInfo(244, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.EMBER, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
+        new MissionInfo(244, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ARBURN, HeroEnum.GLACITAUR, HeroEnum.SCOROVULP, HeroEnum.FREEZER),
         new MissionInfo(245, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.FREEZER, HeroEnum.TERRIKAHT, HeroEnum.GLACITAUR, HeroEnum.ROCKOTAUR),
         new MissionInfo(246, 10, HeroEnum.ZEPHYKAHT, HeroEnum.PULVERIZER, HeroEnum.ZEPHYKAHT, HeroEnum.GENERATOR, HeroEnum.ROCKOTAUR, HeroEnum.ZAPATAUR),
         new MissionInfo(247, 10, HeroEnum.MARIVULP, HeroEnum.MARIVULP, HeroEnum.HYDROKAHT, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIFLOW),
-        new MissionInfo(248, 10, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.EMBER, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
+        new MissionInfo(248, 10, HeroEnum.SPIRIGNITE, HeroEnum.SPIRIGNITE, HeroEnum.ARBURN, HeroEnum.SCOROVULP, HeroEnum.INFERNIKAHT, HeroEnum.SCOROVULP),
         new MissionInfo(249, 10, HeroEnum.SPIRIGROW, HeroEnum.BOTANIKAHT, HeroEnum.HAPPY_FLOWER, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW, HeroEnum.SPIRIGROW),
         new MissionInfo(250, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.ROCKOTAUR, HeroEnum.FREEZER, HeroEnum.GENERATOR)
     };
@@ -321,13 +321,13 @@ namespace Com.Tempest.Whale.GameObjects {
         private static readonly MissionInfo[] chapter25 = {
         new MissionInfo(251, 10, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGNITE, HeroEnum.HYDROKAHT, HeroEnum.SPIRIGROW, HeroEnum.SPIRIFLOW, HeroEnum.SCOROVULP),
         new MissionInfo(252, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.SPIRIGROW, HeroEnum.GLACITAUR),
-        new MissionInfo(253, 10, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.EMBER, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
+        new MissionInfo(253, 10, HeroEnum.INFERNIKAHT, HeroEnum.PULVERIZER, HeroEnum.ARBURN, HeroEnum.ROCKOTAUR, HeroEnum.INFERNIKAHT, HeroEnum.FREEZER),
         new MissionInfo(254, 10, HeroEnum.CRYOKAHT, HeroEnum.CRYOKAHT, HeroEnum.PULVERIZER, HeroEnum.GENERATOR, HeroEnum.FREEZER, HeroEnum.ZAPATAUR),
         new MissionInfo(255, 10, HeroEnum.TERRIKAHT, HeroEnum.PULVERIZER, HeroEnum.SPIRIFLOW, HeroEnum.TERRIKAHT, HeroEnum.GENERATOR, HeroEnum.ZAPATAUR),
         new MissionInfo(256, 10, HeroEnum.ZEPHYKAHT, HeroEnum.FLORAVULP, HeroEnum.ZEPHYKAHT, HeroEnum.SPIRIFLOW, HeroEnum.ZAPATAUR, HeroEnum.SPIRIGROW),
-        new MissionInfo(257, 10, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.RAIN_MAN),
+        new MissionInfo(257, 10, HeroEnum.HYDROKAHT, HeroEnum.CRYOKAHT, HeroEnum.HYDROKAHT, HeroEnum.FREEZER, HeroEnum.SPIRIFLOW, HeroEnum.ARDOWSE),
         new MissionInfo(258, 10, HeroEnum.BOTANIKAHT, HeroEnum.BOTANIKAHT, HeroEnum.BOULDER, HeroEnum.SPIRIGROW, HeroEnum.TERRIKAHT, HeroEnum.ROCKOTAUR),
-        new MissionInfo(259, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.EMBER),
+        new MissionInfo(259, 10, HeroEnum.INFERNIKAHT, HeroEnum.SPIRIGNITE, HeroEnum.ZEPHYKAHT, HeroEnum.INFERNIKAHT, HeroEnum.ZAPATAUR, HeroEnum.ARBURN),
         new MissionInfo(260, 10, HeroEnum.CRYOKAHT, HeroEnum.BOTANIKAHT, HeroEnum.ZEPHYKAHT, HeroEnum.CRYOKAHT, HeroEnum.TERRIKAHT, HeroEnum.INFERNIKAHT)
     };
 
