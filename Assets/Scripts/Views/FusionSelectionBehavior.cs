@@ -56,7 +56,7 @@ public class FusionSelectionBehavior : MonoBehaviour {
             heroIcon.sprite = addSprite;
             heroIcon.color = new Color(1, 1, 1, 1);
         } else {
-            var baseHero = BaseHeroContainer.GetBaseHero(requiredHero ?? HeroEnum.VAPOR_MAGE);
+            var baseHero = BaseHeroContainer.GetBaseHero(requiredHero ?? HeroEnum.LEPAQUA);
             heroIcon.sprite = Resources.Load<Sprite>(baseHero.HeroIconPath);
             heroIcon.color = new Color(1, 1, 1, 0.5f);
         }

@@ -5,11 +5,11 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public enum HeroEnum {
         // Water
-        VAPOR_MAGE = 1, ARDOWSE = 2, MARIVULP = 3, SPIRIFLOW = 4, HYDROKAHT = 5,
+        LEPAQUA = 1, ARDOWSE = 2, MARIVULP = 3, SPIRIFLOW = 4, HYDROKAHT = 5,
         // Grass
-        HAPPY_FLOWER = 6, ARBERRY = 7, FLORAVULP = 8, SPIRIGROW = 9, BOTANIKAHT = 10,
+        LEPHYTA = 6, ARBERRY = 7, FLORAVULP = 8, SPIRIGROW = 9, BOTANIKAHT = 10,
         // Fire
-        CANDLE_MAN = 11, ARBURN = 12, SCOROVULP = 13, SPIRIGNITE = 14, INFERNIKAHT = 15,
+        LEPYRA = 11, ARBURN = 12, SCOROVULP = 13, SPIRIGNITE = 14, INFERNIKAHT = 15,
         // Ice
         SNOW_MAN = 16, ICE_CUBE = 17, GLACITAUR = 18, FREEZER = 19, CRYOKAHT = 20,
         // Earth
@@ -92,8 +92,8 @@ namespace Com.Tempest.Whale.GameObjects {
         public static BaseHero GetHero(HeroEnum hero) {
             switch (hero) {
                 // Water heroes.
-                case HeroEnum.VAPOR_MAGE:
-                    return new BaseHero(hero, "Vapor Mage", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/VaporMage/VaporMagePrefab",
+                case HeroEnum.LEPAQUA:
+                    return new BaseHero(hero, "Lepaqua", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Lepaqua/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.WATER, 1,
                         70, 60, 85, 0.1, 0.25, 70, 0.2, 0,
                         AttackEnum.CRYSTAL_SMASH, AttackEnum.WATER_SHOT, AbilityEnum.WATER_BODY,
@@ -129,8 +129,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
 
                 // Grass heroes.
-                case HeroEnum.HAPPY_FLOWER:
-                    return new BaseHero(hero, "Happy Flower", "Icons/Element02_256_10", "Characters/GrassOverrideController", null,
+                case HeroEnum.LEPHYTA:
+                    return new BaseHero(hero, "Lephyta", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Lephyta/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 1,
                         80, 70, 80, 0.2, 0.2, 60, 0, 0.1,
                         AttackEnum.PETAL_SLAP, AttackEnum.HEALING_SUN, AbilityEnum.ABSORB_RAIN,
@@ -166,8 +166,8 @@ namespace Com.Tempest.Whale.GameObjects {
                         EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
 
                 // Fire heroes.
-                case HeroEnum.CANDLE_MAN:
-                    return new BaseHero(hero, "Candle Man", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Candle/CandlePrefab",
+                case HeroEnum.LEPYRA:
+                    return new BaseHero(hero, "Lepyra", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Lepyra/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
                         60, 55, 90, 0.1, 0.2, 85, 0.2, 0,
                         AttackEnum.FIRE_BOLT, AttackEnum.TWIN_FLAME, AbilityEnum.KINDLING,
