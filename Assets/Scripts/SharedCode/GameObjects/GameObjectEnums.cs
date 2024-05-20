@@ -11,7 +11,7 @@ namespace Com.Tempest.Whale.GameObjects {
     }
 
     public enum FactionEnum {
-        WATER = 1, GRASS = 2, FIRE = 3, ICE = 4, EARTH = 5, ELECTRIC = 6
+        NONE = 0, WATER = 1, GRASS = 2, FIRE = 3, ICE = 4, EARTH = 5, ELECTRIC = 6
     }
 
     public enum AttackParticleEnum {

@@ -4,89 +4,225 @@ using Com.Tempest.Whale.Combat;
 namespace Com.Tempest.Whale.GameObjects {
 
     public enum AttackEnum {
-        // BASIC ATTACKS.
-        BASIC_PHYSICAL = 1,
-        BASIC_MAGIC = 2,
 
-        // Water
-        VAPOR_CLOUD = 101,
-        FISH_SLAP = 102,
-        HEALING_MIST = 103,
-        CRYSTAL_SMASH = 104,
+        // No Faction, Physical
+        BASIC_PUNCH = 0,
+        BASIC_KICK = 1,
+        CHARGE_RUNNING_PUNCH = 2,
+        CHARGE_FLYING_KICK = 3,
+        CHARGE_RECKLESS_TACKLE = 4,
 
-        // Grass
-        PETAL_SLAP = 201,
-        NEEDLE_STAB = 202,
-        MOONLIGHT = 203,
-        BRANCH_SLAM = 204,
+        // No Faction, Magic
+        BASIC_ENERGY_SHOT = 10,
+        BASIC_ENERGY_BEAM = 11,
+        CHARGE_PIERCING_SHRIEK = 12,
 
-        // Fire
-        FIRE_BOLT = 301,
-        SCORCH = 302,
-        FIRE_PUNCH = 303,
+        // No Faction, Buff
+        CHARGE_RALLYING_CHEER = 20,
+        CHARGE_TAKE_COVER = 21,
 
-        // Ice
-        ICE_PUNCH = 401,
-        ICICLE_THROW = 402,
-        SNOWY_WIND = 403,
+        // No Faction, Debuff
+        CHARGE_LOOK_ADORABLE = 30,
+        CHARGE_INTIMIDATE = 31,
 
-        // Electric
-        SPARK = 501,
-        ENERGY_DRAIN = 502,
-        LIGHTNING_BOLT = 503,
-        FORKED_LIGHTNING = 504,
+        // Water, Physical
+        BASIC_FIN_SLAP = 100, // small
+        BASIC_TAIL_SLAP = 101, // medium
+        BASIC_BREACHING_CRASH = 102, // large
+        CHARGE_SPLASHING_LEAP = 103, // small
+        CHARGE_DIVE = 104, // medium
 
-        // Earth
-        ROCK_SLAM = 601,
-        TWISTER = 602,
-        GRAVEL_SHOT = 603,
-        AXE_SLASH = 604,
+        // Water, Magic
+        BASIC_SPRAY = 110, // small
+        BASIC_DELUGE = 111, // medium
+        BASIC_TORRENT = 112, // large
+        CHARGE_WATER_SHOT = 113, // small
+        CHARGE_WATER_GLOBE = 114, // medium
+        CHARGE_PRESSURE_JET = 115, // large
 
-        // SPECIAL ATTACKS.
-        SPECIAL_PHYSICAL = 1000,
-        SPECIAL_MAGIC = 1001,
+        // Water, Physical, Area
+        CHARGE_FEEDING_FRENZY = 120, // medium
+        CHARGE_SHIPWRECK = 121, // large
 
-        // Water
-        WATER_SHOT = 1101,
-        DRENCHING_WAVE = 1102,
-        ENSCALE_TEAM = 1103,
-        TSUNAMI = 1104,
-        HEALING_WAVE = 1105,
+        // Water, Magic, Area
+        BASIC_SPLASHING_WAVE = 130, // medium
+        BASIC_WHIRLPOOL = 131, // large
+        CHARGE_TSUNAMI = 132, // large
+        
+        // Water, Debuff
+        CREATE_BOG = 140, // Reduce speed for enemy team
 
-        // Grass
-        HEALING_SUN = 1201,
-        WEED_WHACKER = 1202,
-        ENTANGLING_ROOTS = 1203,
-        RITUAL_OF_THE_SUN = 1204,
-        GIFT_OF_THORNS = 1205,
+        // Water, Buff
+        BASIC_HEALING_MIST = 150, // Small heal on 2 targets
+        BASIC_HEALING_RAIN = 151, // Small heal on all targets
+        CHARGE_SHROUD_IN_MIST = 152, // Reduce crit chance
+        CHARGE_HEALING_WAVE = 153, // Big heal single target
+        CHARGE_CLEANSING_WAVE = 154, // Remove debuffs single target
+        CHARGE_CLEANSING_RAIN = 155, // Reduce debuff timers by 1 all targets
+        CHARGE_ENSCALE = 156, // Increase armor
+        CHARGE_FAVORABLE_CURRENT = 157, // Increase speed for whole team
 
-        // Fire
-        TWIN_FLAME = 1301,
-        TURN_UP_THE_HEAT = 1302,
-        IMMOLATE = 1303,
-        GIFT_OF_LAVA = 1304,
-        FIRE_STORM = 1305,
+        // Grass, Physical
+        BASIC_PETAL_SLAP = 200, // small
+        BASIC_BRANCH_SLAP = 201, // medium
+        BASIC_RAZOR_VINE = 202, // large
+        CHARGE_WEED_WHACKER = 203, // small
+        CHARGE_CABER_TOSS = 204, // medium
+        CHARGE_TIMBER = 205, // large
 
-        // Ice
-        CHILLY_WIND = 1401,
-        ENCASE_IN_ICE = 1402,
-        FLINGING_SPREE = 1403,
-        BLIZZARD = 1404,
-        GIFT_OF_ICE = 1405,
+        // Grass, Magic
+        BASIC_NEEDLE_SHOT = 210, // small
+        BASIC_GRAPE_SHOT = 211, // medium
+        BASIC_COCONUT_CATAPULT = 212, // large
+        CHARGE_DRAIN_LIFE = 213, // medium
+        CHARGE_MOONBEAM = 214, // large
 
-        // Earth
-        DUST_STORM = 1501,
-        ENCASE_IN_ROCK = 1502,
-        PEBBLE_SHOWER = 1503,
-        GIFT_OF_EARTH = 1504,
-        SPLIT_SKULL = 1505,
+        // Grass, Physical, Area
+        BASIC_WHIRLING_BRANCHES = 220, // medium
+        BASIC_LOG_ROLL = 221, // large
+        CHARGE_NEEDLE_SPRAY = 222, // medium
+        CHARGE_STRANGLING_VINES = 223, // large
 
-        // Electric
-        FLASH_OF_LIGHT = 1601,
-        CHARGE_TEAM = 1602,
-        OVERCHARGED_BOLT = 1603,
-        LIGHTNING_FLASH = 1604,
-        BRAIN_STORM = 1605
+        // Grass, Magic, Area
+        CHARGE_PETAL_STORM = 230, // small
+        CHARGE_LEAF_WHIRLWIND = 231, // medium
+
+        // Grass, Buff
+        BASIC_REGROW = 240, // large heal single target
+        CHARGE_TAKE_ROOT = 241, // medium heal self
+        CHARGE_TRANQUIL_GROVE = 242, // large heal team wide
+        CHARGE_BARKSKIN = 243, // small defense buff, based on user's defense
+        CHARGE_THORN_ARMOR = 244, // medium defense buff and physical damage reflection, uses opponent's attack
+        CHARGE_SHADY_BRANCHES = 245, // medium protection against team-wide area attacks
+
+        // Grass, Debuff
+        INVOKE_ALLERGIES = 250, // small poison
+        TOXIC_SPORES = 251, // large poison, uses magic
+
+        // Fire, Physical
+        BASIC_BURNING_FIST = 300, // small
+        BASIC_BLAZING_FIST = 301, // medium
+        BASIC_JET_TACKLE = 302, // large
+        CHARGE_BURNING_BOULDER = 303, // medium
+
+        // Fire, Magic
+        BASIC_SINGE = 310, // small
+        BASIC_SCORCH = 311, // medium
+        BASIC_IMMOLATE = 312, // large
+        CHARGE_BLAZE = 313, // small
+        CHARGE_INCINERATE = 314, // medium
+        CHARGE_INFERNO = 315, // large
+
+        // Fire, Physical, Area
+        CHARGE_BURNING_PEBBLES = 320, // small
+        CHARGE_METEOR_SHOWER = 321, // medium
+        CHARGE_ERUPTION = 322, // large
+
+        // Fire, Magic, Area
+        BASIC_FIRE_BREATH = 330, // small
+        BASIC_LAVA_WAVE = 331, // medium
+        BASIC_SEARING_WIND = 332, // large
+        CHARGE_TWIN_FLAME = 333, // small
+        CHARGE_FIREBALL = 334, // medium
+        CHARGE_EXPLOSION = 335, // large
+
+        // Fire, Buff
+        CHARGE_FIRE_OF_YOUTH = 340, // small, raises speed
+        CHARGE_BURNING_HASTE = 341, // medium, raises offensive stats
+        CHARGE_RECKLESS_ABANDON = 342, // large, raises all offensive stats, lowers defensive stats
+        CHARGE_KINDLE = 343, // medium, gives energy to team
+
+        // Fire, Debuff
+        CHARGE_ASH_CLOUD = 350, // medium, blinds enemy team
+        CHARGE_MELT_ARMOR = 351, // medium, reduces enemy defensive stats
+
+        // Ice, Physical
+        ICE_CUBE = 400,
+        SNOWBALL = 401,
+        SUB_ZERO_MACHINE_GUN = 402,
+        ICICLE = 403,
+
+        // Ice, Magic
+        CHILLING_WIND = 410,
+        FREEZE_RAY = 411,
+        ABSOLUTE_ZERO = 412,
+
+        // Ice, Physical, Area
+        SNOW_DRIFT = 420,
+        SNOW_SLIDE = 421,
+        AVALANCHE = 422,
+
+        // Ice, Magic, Area
+        SNOWFALL = 430,
+        BLIZZARD = 431,
+
+        // Ice, Buff
+        REFLECTIVE_ARMOR = 440,
+
+        // Ice, Debuff
+        WINTER_STORM = 450,
+        CRYSTALLIZE = 451,
+        FREEZE_EARTH = 452,
+
+        // Earth, Physical
+        PEBBLE,
+        BOULDER,
+        ROCK_FIST,
+        ROLLING_TACKLE,
+        JAGGED_ROCKS,
+        SMASH,
+
+        // Earth, Magic
+        MUD_SHOT,
+        MUD_BLAST,
+
+        // Earth, Physcial, Area
+        ROCK_SLIDE,
+        TREMOR,
+        EARTHQUAKE,
+
+        // Earth, Magic, Area
+        DUST_STORM,
+        TWISTER,
+
+        // Earth, Buff
+        ROCKSKIN,
+        HIGH_GROUND,
+        STRENGTH_OF_EARTH,
+        HARDEN_FIST,
+        JAGGED_TEETH,
+
+        // Earth, Debuff
+        CHOKING_DUST,
+
+        // Electric, Physical
+        ELECTRIC_CHARGE,
+
+        // Electric, Magic
+        ZAP,
+        SPARK,
+        SHOCK,
+        LIGHTNING_BOLT,
+        LASER_BEAM,
+
+        // Electric, Physcial, Area
+
+        // Electric, Magic, Area
+        FORKED_LIGHTNING,
+        ELECTRICAL_STORM,
+        TEMPEST,
+
+        // Electric, Buff
+        POLARIZE,
+        ILLUMINATE,
+        OVERCHARGE,
+        REVERSE_POLARITY,
+
+        // Electric, Debuff
+        BRAINSTORM,
+        DEAFENING_THUNDER,
+        POWER_DRAIN,
+        BLINDING_FLASH,
     }
 
     public class AttackInfo {
@@ -100,15 +236,13 @@ namespace Com.Tempest.Whale.GameObjects {
         public AttackParticleEnum? AllyParticle { get; }
         public ParticleOriginEnum? AllyParticleOrigin { get; }
         public bool IsMelee { get; }
-        public bool IsRanged { get; }
         public bool IsPhysical { get; }
-        public bool IsSpecial { get; }
         public TargetType EnemyTargetType { get; }
         public int EnemyTargetCount { get; }
         public TargetType AllyTargetType { get; }
         public int AllyTargetCount { get; }
-        public double DamageMultiplier { get; }
-        public double HealingMultiplier { get; }
+        public double BaseDamage { get; }
+        public double BaseHealing { get; }
         public int AttackerEnergyGained { get; }
         public int TargetEnergyGained { get; }
         public int AllyEnergyGained { get; }
@@ -121,7 +255,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
         public AttackInfo(AttackEnum attack, string attackName, string attackIcon, string attackSound,
             AttackParticleEnum? enemyParticle, ParticleOriginEnum? enemyParticleOrigin, AttackParticleEnum? allyParticle, ParticleOriginEnum? allyParticleOrigin,
-            bool isMelee, bool isRanged, bool isPhysical, bool isSpecial,
+            bool isMelee, bool isPhysical,
             TargetType enemyTargetType, int enemyTargetCount, TargetType allyTargetType, int allyTargetCount,
             double damageMultiplier, double healingMultiplier,
             int attackerEnergyGained, int targetEnergyGained, int allyEnergyGained,
@@ -139,17 +273,15 @@ namespace Com.Tempest.Whale.GameObjects {
             AllyParticleOrigin = allyParticleOrigin;
 
             IsMelee = isMelee;
-            IsRanged = isRanged;
             IsPhysical = isPhysical;
-            IsSpecial = isSpecial;
 
             EnemyTargetType = enemyTargetType;
             EnemyTargetCount = enemyTargetCount;
             AllyTargetType = allyTargetType;
             AllyTargetCount = allyTargetCount;
 
-            DamageMultiplier = damageMultiplier;
-            HealingMultiplier = healingMultiplier;
+            BaseDamage = damageMultiplier;
+            BaseHealing = healingMultiplier;
 
             AttackerEnergyGained = attackerEnergyGained;
             TargetEnergyGained = targetEnergyGained;
