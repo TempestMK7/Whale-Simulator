@@ -243,8 +243,9 @@ namespace Com.Tempest.Whale.GameObjects {
         public int EnemyTargetCount { get; }
         public TargetType AllyTargetType { get; }
         public int AllyTargetCount { get; }
-        public double BaseDamage { get; }
-        public double BaseHealing { get; }
+        public int BaseDamage { get; }
+        public int BaseHealing { get; }
+        public FactionEnum AttackFaction { get; }
         public int AttackerEnergyGained { get; }
         public int TargetEnergyGained { get; }
         public int AllyEnergyGained { get; }
@@ -256,13 +257,10 @@ namespace Com.Tempest.Whale.GameObjects {
         public int AllyStatusDuration { get; }
 
         public AttackInfo(AttackEnum attack, string attackName, string attackIcon, string attackSound,
-            AttackParticleEnum? enemyParticle, ParticleOriginEnum? enemyParticleOrigin, AttackParticleEnum? allyParticle, ParticleOriginEnum? allyParticleOrigin,
-            bool isMelee, bool isPhysical,
-            TargetType enemyTargetType, int enemyTargetCount, TargetType allyTargetType, int allyTargetCount,
-            double damageMultiplier, double healingMultiplier,
+            AttackParticleEnum? enemyParticle, ParticleOriginEnum? enemyParticleOrigin, AttackParticleEnum? allyParticle, ParticleOriginEnum? allyParticleOrigin, bool isMelee,
+            bool isPhysical, TargetType enemyTargetType, int enemyTargetCount, TargetType allyTargetType, int allyTargetCount, int baseDamage, int baseHealing, FactionEnum attackFaction,
             int attackerEnergyGained, int targetEnergyGained, int allyEnergyGained,
-            StatusEnum? targetStatus, double targetStatusValue, int targetStatusDuration,
-            StatusEnum? allyStatus, double allyStatusValue, int allyStatusDuration) {
+            StatusEnum? targetStatus, double targetStatusValue, int targetStatusDuration, StatusEnum? allyStatus, double allyStatusValue, int allyStatusDuration) {
 
             Attack = attack;
             AttackName = attackName;
@@ -282,8 +280,9 @@ namespace Com.Tempest.Whale.GameObjects {
             AllyTargetType = allyTargetType;
             AllyTargetCount = allyTargetCount;
 
-            BaseDamage = damageMultiplier;
-            BaseHealing = healingMultiplier;
+            BaseDamage = baseDamage;
+            BaseHealing = baseHealing;
+            AttackFaction = attackFaction;
 
             AttackerEnergyGained = attackerEnergyGained;
             TargetEnergyGained = targetEnergyGained;
@@ -299,12 +298,12 @@ namespace Com.Tempest.Whale.GameObjects {
         }
 
         public List<CombatStep> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
+            var hasStab = attacker.baseHero.Faction == AttackFaction;
             var hitType = CombatMath.RollHitType(attacker, target);
-            var hitEffectivity = CombatMath.GetEffectivity(attacker, target);
+            var hitEffectivity = CombatMath.GetEffectivity(AttackFaction, target.baseHero.Faction);
             var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
             var defenseValue = IsPhysical ? target.GetModifiedDefense() : target.GetModifiedReflection();
-            var damage = CombatMath.Damage(attackValue, defenseValue, hitType, hitEffectivity);
-            damage *= DamageMultiplier;
+            var damage = CombatMath.Damage(attackValue, defenseValue, BaseDamage, hasStab, hitType, hitEffectivity);
             target.currentHealth -= damage;
             target.currentEnergy += TargetEnergyGained;
 
@@ -325,6 +324,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 return allInstances;
             }
 
+            // TODO: Figure out status math.
             if (TargetStatus != null) {
                 switch (target.baseHero.PassiveAbility) {
                     case AbilityEnum.WATER_BODY:
@@ -395,8 +395,10 @@ namespace Com.Tempest.Whale.GameObjects {
         }
 
         public CombatStep ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
+            var hasStab = attacker.baseHero.Faction == AttackFaction;
+            var hitType = CombatMath.RollHitType(attacker);
             var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
-            var healing = attackValue * HealingMultiplier;
+            var healing = CombatMath.Healing(attackValue, attacker.currentLevel, BaseHealing, hasStab, hitType);
             healing = ally.ReceiveHealing(healing);
             ally.currentEnergy += AllyEnergyGained;
 
@@ -414,6 +416,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 return step;
             }
 
+            // TODO: Figure out status math.
             if (AllyStatus != null) {
                 var bestowedStatus = AllyStatus.GetValueOrDefault();
                 var statusValue = AllyStatusValue;
@@ -461,19 +464,17 @@ namespace Com.Tempest.Whale.GameObjects {
             string output = "";
 
             if (EnemyTargetType != TargetType.NONE) {
-                string damageMultiplier = (DamageMultiplier * 100).ToString("0");
-                string damageType = IsPhysical ? "attack" : "magic";
+                string damageType = IsPhysical ? "physical" : "magic";
                 string targetting = GetTargettingTooltip(EnemyTargetType, EnemyTargetCount, false);
-                string firstPart = DamageMultiplier == 0 ? "Targets" : string.Format("Deals damage equal to {0}% of {1} to", damageMultiplier, damageType);
+                string firstPart = BaseDamage == 0 ? "Targets" : string.Format("Deals base {0} {1} damage to", BaseDamage, damageType);
                 output = string.Format("{0} {1}.{2}", firstPart, targetting,
                     GetStatusTooltip(TargetStatus.GetValueOrDefault(), TargetStatusDuration, TargetStatusValue, false));
             }
 
             if (AllyTargetType != TargetType.NONE) {
-                string healMultiplier = (HealingMultiplier * 100).ToString("0");
-                string damageType = IsPhysical ? "attack" : "magic";
+                string damageType = IsPhysical ? "physical" : "magic";
                 string targetting = GetTargettingTooltip(AllyTargetType, AllyTargetCount, true);
-                string firstPart = HealingMultiplier == 0 ? "Targets" : string.Format("Restores health equal to {0}% of {1} to", healMultiplier, damageType);
+                string firstPart = BaseHealing == 0 ? "Targets" : string.Format("Deals base {0} {1} healing to", BaseHealing, damageType);
                 string allyTip = string.Format("{0} {1}.{2}", firstPart, targetting,
                     GetStatusTooltip(AllyStatus.GetValueOrDefault(), AllyStatusDuration, AllyStatusValue, true));
 
@@ -558,6 +559,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 case StatusEnum.DOWSE:
                     return string.Format(" Dowses for {0} {1}.  Dowsed targets receive double penalties from Daze and Chill.", statusDuration, turnPlural);
 
+                // TODO: Figure out status math.
                 case StatusEnum.REGENERATION:
                     return string.Format(" Bestows Regeneration for {0} {1}, healing for {2}% of magic each turn.",
                         statusDuration, turnPlural, statusValue);
@@ -601,6 +603,12 @@ namespace Com.Tempest.Whale.GameObjects {
         public static void Initialize() {
             if (attackDict != null) return;
             attackDict = new Dictionary<AttackEnum, AttackInfo>();
+
+            attackDict[AttackEnum.BASIC_PUNCH] = new AttackInfo(AttackEnum.BASIC_PUNCH,
+                "Basic Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0, 40, 0, FactionEnum.NONE, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
 
             // These are all basic attacks.
             attackDict[AttackEnum.BASIC_PHYSICAL] = new AttackInfo(

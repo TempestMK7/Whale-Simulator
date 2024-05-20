@@ -20,10 +20,13 @@ namespace Com.Tempest.Whale.Combat {
 
         #region Hit calculation and modifiers.
 
-        public static double Damage(double modifiedAttack, double modifiedDefense, HitType hitType, HitEffectivity hitEffectivity) {
-            var usableDefense = modifiedDefense;
-            if (usableDefense > 0.9) usableDefense = 0.9;
-            var damage = modifiedAttack * (1.0 - usableDefense);
+        public static double Damage(double modifiedAttack, double modifiedDefense, int baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity) {
+            var damage = baseDamage * (modifiedAttack / modifiedDefense);
+
+            if (hasStab) {
+                damage *= 1.5;
+            }
+
             if (hitType == HitType.CRITICAL) {
                 damage *= 1.5;
             } else if (hitType == HitType.DEFLECTION) {
@@ -31,11 +34,28 @@ namespace Com.Tempest.Whale.Combat {
             }
 
             if (hitEffectivity == HitEffectivity.EMPOWERED) {
-                damage *= 1.2;
+                damage *= 1.5;
             } else if (hitEffectivity == HitEffectivity.RESISTED) {
-                damage *= 0.8;
+                damage *= 0.67;
             }
+
             return damage;
+        }
+
+        public static double Healing(double modifiedAttack, int attackerLevel, int baseHealing, bool hasStab, HitType hitType) {
+            var subtractedModifier = 5 + (2 * attackerLevel);
+            var healingMultiplier = (modifiedAttack - subtractedModifier) / 1000.0;
+            var healing = healingMultiplier * baseHealing;
+
+            if (hasStab) {
+                healing *= 1.5;
+            }
+
+            if (hitType == HitType.CRITICAL) {
+                healing *= 1.5;
+            }
+
+            return healing;
         }
 
         public static HitType RollHitType(CombatHero attacker, CombatHero defender) {
@@ -64,11 +84,9 @@ namespace Com.Tempest.Whale.Combat {
             }
         }
 
-        public static HitEffectivity GetEffectivity(CombatHero attacker, CombatHero target) {
-            var attackerFaction = attacker.baseHero.Faction;
-            var targetFaction = target.baseHero.Faction;
-            if (IsEmpowered(attackerFaction, targetFaction)) return HitEffectivity.EMPOWERED;
-            if (IsEmpowered(targetFaction, attackerFaction)) return HitEffectivity.RESISTED;
+        public static HitEffectivity GetEffectivity(FactionEnum moveFaction, FactionEnum targetFaction) {
+            if (IsEmpowered(moveFaction, targetFaction)) return HitEffectivity.EMPOWERED;
+            if (IsEmpowered(targetFaction, moveFaction)) return HitEffectivity.RESISTED;
             return HitEffectivity.NORMAL;
         }
 
