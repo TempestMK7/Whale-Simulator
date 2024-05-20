@@ -6,24 +6,24 @@ namespace Com.Tempest.Whale.GameObjects {
     public enum AttackEnum {
 
         // No Faction, Physical
-        BASIC_PUNCH = 0,
-        BASIC_KICK = 1,
-        CHARGE_RUNNING_PUNCH = 2,
-        CHARGE_FLYING_KICK = 3,
-        CHARGE_RECKLESS_TACKLE = 4,
+        BASIC_PUNCH = 0, // small
+        BASIC_KICK = 1, // medium
+        CHARGE_RUNNING_PUNCH = 2, // small
+        CHARGE_FLYING_KICK = 3, // medium
+        CHARGE_RECKLESS_TACKLE = 4, // large
 
         // No Faction, Magic
-        BASIC_ENERGY_SHOT = 10,
-        BASIC_ENERGY_BEAM = 11,
-        CHARGE_PIERCING_SHRIEK = 12,
+        BASIC_ENERGY_SHOT = 10, // small
+        BASIC_ENERGY_BEAM = 11, // medium
+        CHARGE_PIERCING_SHRIEK = 12, // medium
 
         // No Faction, Buff
-        CHARGE_RALLYING_CHEER = 20,
-        CHARGE_TAKE_COVER = 21,
+        CHARGE_RALLYING_CHEER = 20, // small
+        CHARGE_TAKE_COVER = 21, // medium
 
         // No Faction, Debuff
-        CHARGE_LOOK_ADORABLE = 30,
-        CHARGE_INTIMIDATE = 31,
+        CHARGE_LOOK_ADORABLE = 30, // small
+        CHARGE_INTIMIDATE = 31, // medium
 
         // Water, Physical
         BASIC_FIN_SLAP = 100, // small
@@ -96,8 +96,8 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_SHADY_BRANCHES = 245, // medium protection against team-wide area attacks
 
         // Grass, Debuff
-        INVOKE_ALLERGIES = 250, // small poison
-        TOXIC_SPORES = 251, // large poison, uses magic
+        CHARGE_INVOKE_ALLERGIES = 250, // small poison
+        CHARGE_TOXIC_SPORES = 251, // large poison, uses magic
 
         // Fire, Physical
         BASIC_BURNING_FIST = 300, // small
@@ -137,92 +137,94 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_MELT_ARMOR = 351, // medium, reduces enemy defensive stats
 
         // Ice, Physical
-        ICE_CUBE = 400,
-        SNOWBALL = 401,
-        SUB_ZERO_MACHINE_GUN = 402,
-        ICICLE = 403,
+        BASIC_ICE_CUBE = 400, // small
+        BASIC_ICICLE_TOSS = 403, // medium
+        BASIC_FROZEN_SLIDE = 402, // large
+        CHARGE_FROZEN_FIST, // small
+        CHARGE_ICICLE_DROP, // medium
+        CHARGE_ICEBERG, // large
 
         // Ice, Magic
-        CHILLING_WIND = 410,
-        FREEZE_RAY = 411,
-        ABSOLUTE_ZERO = 412,
+        BASIC_CHILLING_WIND = 410, // small
+        BASIC_FREEZING_WIND = 411, // medium
+        BASIC_SNOWBLAST = 412, // large
+        CHARGE_FROSTBITE = 413, // small
+        CHARGE_FREEZE_RAY = 414, // medium
+        CHARGE_ABSOLUTE_ZERO = 415, // large
 
         // Ice, Physical, Area
-        SNOW_DRIFT = 420,
-        SNOW_SLIDE = 421,
-        AVALANCHE = 422,
+        BASIC_SNOWBALL = 420, // small
+        BASIC_SNOWBALL_STORM = 421, // medium
+        BASIC_SUB_ZERO_MACHINE_GUN = 422, // large
+        CHARGE_SNOW_DRIFT = 423, // small
+        CHARGE_SNOW_SLIDE = 424, // medium
+        CHARGE_AVALANCHE = 425, // large
 
         // Ice, Magic, Area
-        SNOWFALL = 430,
-        BLIZZARD = 431,
+        CHARGE_SNOWFALL = 430, // medium
+        CHARGE_BLIZZARD = 431, // large
 
         // Ice, Buff
-        REFLECTIVE_ARMOR = 440,
+        CHARGE_REFLECTIVE_ARMOR = 440, // medium, grants resistance
 
         // Ice, Debuff
-        WINTER_STORM = 450,
-        CRYSTALLIZE = 451,
-        FREEZE_EARTH = 452,
+        CHARGE_WINTER_STORM = 450, // medium, small blind and small chill
+        CHARGE_CRYSTALLIZE = 451, //  medium, greatly reduces offensive stats, single target
+        CHARGE_FREEZE_EARTH = 452, // medium, reduces offensive stats, team wide
 
         // Earth, Physical
-        PEBBLE,
-        BOULDER,
-        ROCK_FIST,
-        ROLLING_TACKLE,
-        JAGGED_ROCKS,
-        SMASH,
+        BASIC_PEBBLE = 500, // small
+        BASIC_JAGGED_ROCK = 501, // medium
+        BASIC_BOULDER = 502, // large
+        CHARGE_STONE_FIST = 503, // small
+        CHARGE_ROLLING_TACKLE = 504, // medium
+        CHARGE_SMASH_TO_SMITHEREENS = 505, // large
 
         // Earth, Magic
-        MUD_SHOT,
-        MUD_BLAST,
 
         // Earth, Physcial, Area
-        ROCK_SLIDE,
-        TREMOR,
-        EARTHQUAKE,
+        BASIC_DUST_STORM = 520, // medium
+        BASIC_ROCK_SLIDE = 521, // large
+        CHARGE_TREMOR = 522, // medium
+        CHARGE_EARTHQUAKE = 523, // large
 
         // Earth, Magic, Area
-        DUST_STORM,
-        TWISTER,
 
-        // Earth, Buff
-        ROCKSKIN,
-        HIGH_GROUND,
-        STRENGTH_OF_EARTH,
-        HARDEN_FIST,
-        JAGGED_TEETH,
+        // Earth, 
+        CHARGE_HARDEN_FIST = 540, // small, offensive buff
+        CHARGE_STRENGTH_OF_EARTH = 541, // medium, offensive buff
+        CHARGE_HIGH_GROUND = 542, // large, offensive and defensive buff
+        CHARGE_ROCKSKIN = 543, // medium, defensive buff
 
         // Earth, Debuff
-        CHOKING_DUST,
+        CHARGE_CHOKING_DUST = 550, // medium, blinds enemy team
 
         // Electric, Physical
-        ELECTRIC_CHARGE,
 
         // Electric, Magic
-        ZAP,
-        SPARK,
-        SHOCK,
-        LIGHTNING_BOLT,
-        LASER_BEAM,
+        BASIC_SPARK = 610, // small
+        BASIC_SHOCK = 611, // medium
+        BASIC_ZAP = 612, // large
+        CHARGE_LIGHTNING_BOLT = 613, // small
+        CHARGE_LIGHTNING_BLAST = 614, // medium
+        CHARGE_LASER_BEAM = 615, // large
 
         // Electric, Physcial, Area
 
         // Electric, Magic, Area
-        FORKED_LIGHTNING,
-        ELECTRICAL_STORM,
-        TEMPEST,
+        BASIC_FORKED_LIGHTNING = 630, // medium
+        BASIC_CHAIN_LIGHTNING = 631, // large
+        CHARGE_ELECTRICAL_STORM = 632, // medium
+        CHARGE_TEMPEST = 633, // large
 
         // Electric, Buff
-        POLARIZE,
-        ILLUMINATE,
-        OVERCHARGE,
-        REVERSE_POLARITY,
+        CHARGE_OVERCHARGE = 640, // medium, gives energy to team
 
         // Electric, Debuff
-        BRAINSTORM,
-        DEAFENING_THUNDER,
-        POWER_DRAIN,
-        BLINDING_FLASH,
+        BASIC_POWER_DRAIN = 650, // medium, steals energy from highest target
+        CHARGE_REVERSE_POLARITY = 651, // medium, turns healing into damage
+        CHARGE_BRAINSTORM = 652, // medium, stuns with highest energy
+        CHARGE_BLINDING_FLASH = 653, // medium, blinds enemy team
     }
 
     public class AttackInfo {
