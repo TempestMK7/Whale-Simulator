@@ -27,15 +27,19 @@ namespace Com.Tempest.Whale.GameObjects {
 
         ATTACK_UP = 16,
         MAGIC_UP = 17,
-        DEFENSE_UP = 18,
-        REFLECTION_UP = 19,
-        SPEED_UP = 20,
+        ATTACK_MAGIC_UP = 18,
+        DEFENSE_UP = 19,
+        REFLECTION_UP = 20,
+        DEFENSE_REFLECTION_UP = 21,
+        SPEED_UP = 22,
 
-        ATTACK_DOWN = 21,
-        MAGIC_DOWN = 22,
-        DEFENSE_DOWN = 23,
-        REFLECTION_DOWN = 24,
-        SPEED_DOWN = 25
+        ATTACK_DOWN = 23,
+        MAGIC_DOWN = 24,
+        ATTACK_MAGIC_DOWN = 25,
+        DEFENSE_DOWN = 26,
+        REFLECTION_DOWN = 27,
+        DEFENSE_REFLECTION_DOWN = 28,
+        SPEED_DOWN = 29
     }
 
     public class StatusInfo {

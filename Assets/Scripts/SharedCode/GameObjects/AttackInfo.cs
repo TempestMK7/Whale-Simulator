@@ -15,11 +15,12 @@ namespace Com.Tempest.Whale.GameObjects {
         // No Faction, Magic
         BASIC_ENERGY_SHOT = 10, // small
         BASIC_ENERGY_BEAM = 11, // medium
-        CHARGE_PIERCING_SHRIEK = 12, // medium
+        CHARGE_LOUD_SCREAM = 12, // small
+        CHARGE_PIERCING_SHRIEK = 13, // medium
 
         // No Faction, Buff
         CHARGE_RALLYING_CHEER = 20, // small
-        CHARGE_TAKE_COVER = 21, // medium
+        CHARGE_PLANT_FLAG = 21, // medium
 
         // No Faction, Debuff
         CHARGE_LOOK_ADORABLE = 30, // small
@@ -31,6 +32,7 @@ namespace Com.Tempest.Whale.GameObjects {
         BASIC_BREACHING_CRASH = 102, // large
         CHARGE_SPLASHING_LEAP = 103, // small
         CHARGE_DIVE = 104, // medium
+        CHARGE_DEPTH_CHARGE = 105, // large
 
         // Water, Magic
         BASIC_SPRAY = 110, // small
@@ -38,7 +40,9 @@ namespace Com.Tempest.Whale.GameObjects {
         BASIC_TORRENT = 112, // large
         CHARGE_WATER_SHOT = 113, // small
         CHARGE_WATER_GLOBE = 114, // medium
-        CHARGE_PRESSURE_JET = 115, // large
+        CHARGE_WATER_CUTTER = 115, // medium
+        CHARGE_PRESSURE_JET = 116, // large
+        CHARGE_LIQUIFY = 117, // large
 
         // Water, Physical, Area
         CHARGE_FEEDING_FRENZY = 120, // medium
@@ -47,20 +51,24 @@ namespace Com.Tempest.Whale.GameObjects {
         // Water, Magic, Area
         BASIC_SPLASHING_WAVE = 130, // medium
         BASIC_WHIRLPOOL = 131, // large
-        CHARGE_TSUNAMI = 132, // large
-        
+        CHARGE_TIDAL_WAVE = 132, // medium
+        CHARGE_TSUNAMI = 133, // large
+
+        // Water, Healing
+        BASIC_HEALING_MIST = 140, // medium, heal 2 targets
+        BASIC_HEALING_RAIN = 141, // large, heal all targets
+        CHARGE_HEALING_WAVE = 142, // small, heal 1 target
+        CHARGE_HEALING_DELUGE = 143, // medium, heal 1 target
+        CHARGE_HEALING_TORRENT = 144, // large, heal 1 target
+        CHARGE_CLEANSING_MIST = 145, // medium, heal all targets, reduce 1 debuff by 1 turn
+        CHARGE_CLEANSING_RAIN = 146, // large, heal all targets, reduce all debuffs by 1 turn
+
         // Water, Debuff
-        CREATE_BOG = 140, // Reduce speed for enemy team
+        CREATE_BOG = 150, // Reduce speed for enemy team
 
         // Water, Buff
-        BASIC_HEALING_MIST = 150, // Small heal on 2 targets
-        BASIC_HEALING_RAIN = 151, // Small heal on all targets
-        CHARGE_SHROUD_IN_MIST = 152, // Reduce crit chance
-        CHARGE_HEALING_WAVE = 153, // Big heal single target
-        CHARGE_CLEANSING_WAVE = 154, // Remove debuffs single target
-        CHARGE_CLEANSING_RAIN = 155, // Reduce debuff timers by 1 all targets
-        CHARGE_ENSCALE = 156, // Increase armor
-        CHARGE_FAVORABLE_CURRENT = 157, // Increase speed for whole team
+        CHARGE_ENSCALE = 160, // Increase armor
+        CHARGE_FAVORABLE_CURRENT = 161, // Increase speed for whole team
 
         // Grass, Physical
         BASIC_PETAL_SLAP = 200, // small
@@ -604,246 +612,275 @@ namespace Com.Tempest.Whale.GameObjects {
             if (attackDict != null) return;
             attackDict = new Dictionary<AttackEnum, AttackInfo>();
 
+            // No Faction, physical, single target
             attackDict[AttackEnum.BASIC_PUNCH] = new AttackInfo(AttackEnum.BASIC_PUNCH,
                 "Basic Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
                 null, null, null, null, true,
-                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0, 40, 0, FactionEnum.NONE, 50, 10, 0,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                50, 0, FactionEnum.NONE, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_KICK] = new AttackInfo(AttackEnum.BASIC_KICK,
+                "Basic Kick", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                95, 0, FactionEnum.NONE, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_RUNNING_PUNCH] = new AttackInfo(AttackEnum.CHARGE_RUNNING_PUNCH,
+                "Running Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.NONE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_FLYING_KICK] = new AttackInfo(AttackEnum.CHARGE_RUNNING_PUNCH,
+                "Running Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                180, 0, FactionEnum.NONE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_RECKLESS_TACKLE] = new AttackInfo(AttackEnum.CHARGE_RECKLESS_TACKLE,
+                "Reckless Tackle", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                230, 0, FactionEnum.NONE, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
 
-            // These are all basic attacks.
-            attackDict[AttackEnum.BASIC_PHYSICAL] = new AttackInfo(
-                AttackEnum.BASIC_PHYSICAL, "Basic Physical", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1, 0, 25, 10, 0,
+            // No Faction, magic, single target
+            attackDict[AttackEnum.BASIC_ENERGY_SHOT] = new AttackInfo(AttackEnum.BASIC_ENERGY_SHOT,
+                "Energy Shot", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                50, 0, FactionEnum.NONE, 50, 10, 0,
                 null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.BASIC_MAGIC] = new AttackInfo(
-                AttackEnum.BASIC_MAGIC, "Basic Magic", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1, 0, 25, 10, 0,
+            attackDict[AttackEnum.BASIC_ENERGY_BEAM] = new AttackInfo(AttackEnum.BASIC_ENERGY_BEAM,
+                "Energy Beam", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                95, 0, FactionEnum.NONE, 50, 10, 0,
                 null, 0, 0, null, 0, 0);
 
-            // Water
-            attackDict[AttackEnum.VAPOR_CLOUD] = new AttackInfo(
-                AttackEnum.VAPOR_CLOUD, "Vapor Cloud", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
-                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, false,
-                TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
-                0.6, 0, 25, 10, 0,
-                StatusEnum.DOWSE, 0, 2, null, 0, 0);
-            attackDict[AttackEnum.FISH_SLAP] = new AttackInfo(
-                AttackEnum.FISH_SLAP, "Fish Slap", "Icons/Attacks/Slap", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
-            attackDict[AttackEnum.HEALING_MIST] = new AttackInfo(
-                AttackEnum.HEALING_MIST, "Healing Mist", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
-                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER,
-                false, true, false, false,
-                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
-                0, 1, 25, 0, 0,
-                null, 0, 0, StatusEnum.REGENERATION, 0.2, 2);
-            attackDict[AttackEnum.CRYSTAL_SMASH] = new AttackInfo(
-                AttackEnum.CRYSTAL_SMASH, "Crystal Smash", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
-                null, null, null, null,
-                true, true, false, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
-
-            // Grass
-            attackDict[AttackEnum.PETAL_SLAP] = new AttackInfo(
-                AttackEnum.PETAL_SLAP, "Petal Slap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.5, 0, 25, 10, 0,
+            // No Faction, magic, area
+            attackDict[AttackEnum.CHARGE_LOUD_SCREAM] = new AttackInfo(AttackEnum.CHARGE_LOUD_SCREAM,
+                "Energy Beam", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                45, 0, FactionEnum.NONE, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.NEEDLE_STAB] = new AttackInfo(
-                AttackEnum.NEEDLE_STAB, "Needle Stab", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
-                1, 0, 25, 10, 0,
-                StatusEnum.POISON, 0.4, 2, null, 0, 0);
-            attackDict[AttackEnum.MOONLIGHT] = new AttackInfo(
-                AttackEnum.MOONLIGHT, "Moonlight", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
-                false, true, false, false,
-                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 3,
-                0, 1, 25, 10, 0,
-                null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.BRANCH_SLAM] = new AttackInfo(
-                AttackEnum.BRANCH_SLAM, "Branch Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.4, 1, null, 0, 0);
-
-            // Fire
-            attackDict[AttackEnum.FIRE_BOLT] = new AttackInfo(
-                AttackEnum.FIRE_BOLT, "Fire Bolt", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
-                true, false, false, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.BURN, 0.2, 2, null, 0, 0);
-            attackDict[AttackEnum.SCORCH] = new AttackInfo(
-                AttackEnum.SCORCH, "Scorch", "Icons/RoleDamage", "AttackSounds/Scorch",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, false,
-                TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
-                0.5, 0, 25, 10, 0,
-                StatusEnum.BURN, 0.2, 2, null, 0, 0);
-            attackDict[AttackEnum.FIRE_PUNCH] = new AttackInfo(
-                AttackEnum.FIRE_PUNCH, "Fire Punch", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, false, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1, 0, 25, 10, 0,
-                StatusEnum.BURN, 0.2, 2, null, 0, 0);
-
-            // Ice
-            attackDict[AttackEnum.ICE_PUNCH] = new AttackInfo(
-                AttackEnum.ICE_PUNCH, "Ice Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.CHILL, 0.2, 1, null, 0, 0);
-            attackDict[AttackEnum.ICICLE_THROW] = new AttackInfo(
-                AttackEnum.ICICLE_THROW, "Icicle Throw", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.3, 0, 25, 10, 0,
-                StatusEnum.CHILL, 0.1, 1, null, 0, 0);
-            attackDict[AttackEnum.SNOWY_WIND] = new AttackInfo(
-                AttackEnum.SNOWY_WIND, "Snowy Wind", "Icons/RoleDamage", "AttackSounds/SnowyWind2",
-                AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, false,
-                TargetType.RANDOM, 2, TargetType.NONE, 0,
-                0.5, 0, 25, 10, 0,
-                StatusEnum.CHILL, 0.2, 1, null, 0, 0);
-
-            // Earth
-            attackDict[AttackEnum.TWISTER] = new AttackInfo(
-                AttackEnum.TWISTER, "Twister", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
-            attackDict[AttackEnum.ROCK_SLAM] = new AttackInfo(
-                AttackEnum.ROCK_SLAM, "Rock Slam", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
-            attackDict[AttackEnum.GRAVEL_SHOT] = new AttackInfo(
-                AttackEnum.GRAVEL_SHOT, "Pebble Toss", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.4, 0, 25, 10, 0,
-                null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.AXE_SLASH] = new AttackInfo(
-                AttackEnum.AXE_SLASH, "Axe Slash", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.DEFENSE_DOWN, 0.2, 2, null, 0, 0);
-
-            // Electric
-            attackDict[AttackEnum.SPARK] = new AttackInfo(
-                AttackEnum.SPARK, "Spark", "Icons/RoleDamage", "AttackSounds/Spark",
-                null, null, null, null,
-                true, false, false, false,
-                TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
-                0.5, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
-            attackDict[AttackEnum.ENERGY_DRAIN] = new AttackInfo(
-                AttackEnum.ENERGY_DRAIN, "Energy Drain", "Icons/RoleDamage", "AttackSounds/EnergyDrain",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER,
-                false, true, false, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.RANDOM, 1,
-                1, 0, 25, -25, 25,
-                null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.LIGHTNING_BOLT] = new AttackInfo(
-                AttackEnum.LIGHTNING_BOLT, "Lightning Bolt", "Icons/RoleDamage", "AttackSounds/LightningBolt",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, false,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                1.2, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
-            attackDict[AttackEnum.FORKED_LIGHTNING] = new AttackInfo(
-                AttackEnum.FORKED_LIGHTNING, "Forked Lightning", "Icons/RoleDamage", "AttackSounds/LightningBolt",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, false,
-                TargetType.RANDOM, 2, TargetType.NONE, 0,
-                0.5, 0, 25, 10, 0,
-                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
-
-            // These are all special attacks.
-            attackDict[AttackEnum.SPECIAL_PHYSICAL] = new AttackInfo(
-                AttackEnum.SPECIAL_PHYSICAL, "Special Physical", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, true,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                4, 0, -100, 10, 0,
-                null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.SPECIAL_MAGIC] = new AttackInfo(
-                AttackEnum.SPECIAL_MAGIC, "Special Magic", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, true,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                4, 0, -100, 10, 0,
+            attackDict[AttackEnum.CHARGE_PIERCING_SHRIEK] = new AttackInfo(AttackEnum.CHARGE_PIERCING_SHRIEK,
+                "Energy Beam", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                75, 0, FactionEnum.NONE, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
 
-            // Water
-            attackDict[AttackEnum.WATER_SHOT] = new AttackInfo(
-                AttackEnum.WATER_SHOT, "Water Shot", "Icons/Attacks/WaterSwirl", "AttackSounds/BasicMagic",
-                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 2, TargetType.NONE, 0,
-                2, 0, -100, 10, 0,
-                StatusEnum.DOWSE, 0, 2, null, 0, 0);
-            attackDict[AttackEnum.DRENCHING_WAVE] = new AttackInfo(
-                AttackEnum.DRENCHING_WAVE, "Drenching Wave", "Icons/Attacks/Trident", "AttackSounds/BasicMagic",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 3, TargetType.NONE, 0,
-                1, 0, -100, 10, 0,
-                StatusEnum.REFLECTION_DOWN, 0.5, 3, null, 0, 0);
-            attackDict[AttackEnum.ENSCALE_TEAM] = new AttackInfo(
-                AttackEnum.ENSCALE_TEAM, "Enscale Team", "Icons/Attacks/WaterScale", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, true,
-                TargetType.FIRST_ALIVE, 1, TargetType.RANDOM, 5,
-                2, 0, -100, 10, 0,
-                StatusEnum.DEFENSE_DOWN, 0.2, 2, StatusEnum.DEFENSE_UP, 0.3, 3);
-            attackDict[AttackEnum.TSUNAMI] = new AttackInfo(
-                AttackEnum.TSUNAMI, "Tsunami", "Icons/Attacks/Rainstorm", "AttackSounds/VaporCloud",
-                AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 5, TargetType.NONE, 0,
-                0.8, 0, -100, 10, 0,
-                StatusEnum.DOWSE, 0, 2, null, 0, 0);
-            attackDict[AttackEnum.HEALING_WAVE] = new AttackInfo(
-                AttackEnum.HEALING_WAVE, "Healing Wave", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
-                AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD,
-                false, false, false, true,
-                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
-                0, 1, -100, 0, 0,
-                null, 0, 0, StatusEnum.REGENERATION, 0.5, 2);
+            // No Faction, buff
+            attackDict[AttackEnum.CHARGE_RALLYING_CHEER] = new AttackInfo(AttackEnum.CHARGE_RALLYING_CHEER,
+                "Rallying Cheer", "Icons/RoleSupport", "AttackSounds/BasicMagic",
+                null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.FIRST_ALIVE, 5,
+                0, 0, FactionEnum.NONE, -100, 0, 15,
+                null, 0, 0, StatusEnum.ATTACK_MAGIC_UP, 0.4, 2);
+            attackDict[AttackEnum.CHARGE_RALLYING_CHEER] = new AttackInfo(AttackEnum.CHARGE_PLANT_FLAG,
+                "Plant Flag", "Icons/RoleSupport", "AttackSounds/BasicMagic",
+                null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.FIRST_ALIVE, 5,
+                0, 0, FactionEnum.NONE, -100, 0, 25,
+                null, 0, 0, StatusEnum.ATTACK_MAGIC_UP, 0.5, 3);
+
+            // Water, physical, single target
+            attackDict[AttackEnum.BASIC_FIN_SLAP] = new AttackInfo(AttackEnum.BASIC_FIN_SLAP,
+                "Fin Slap", "Icons/Attacks/Slap", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.WATER, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_TAIL_SLAP] = new AttackInfo(AttackEnum.BASIC_TAIL_SLAP,
+                "Tail Slap", "Icons/Attacks/Slap", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.WATER, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_BREACHING_CRASH] = new AttackInfo(AttackEnum.BASIC_BREACHING_CRASH,
+                "Breaching Crash", "Icons/Attacks/WaterSplash", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                150, 0, FactionEnum.WATER, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_SPLASHING_LEAP] = new AttackInfo(AttackEnum.CHARGE_SPLASHING_LEAP,
+                "Splashing Leap", "Icons/Attacks/WaterSplash", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                120, 0, FactionEnum.WATER, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_DIVE] = new AttackInfo(AttackEnum.CHARGE_DIVE,
+                "Dive", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                200, 0, FactionEnum.WATER, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_DEPTH_CHARGE] = new AttackInfo(AttackEnum.CHARGE_DEPTH_CHARGE,
+                "Depth Charge", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                260, 0, FactionEnum.WATER, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Water, magic, single target
+            attackDict[AttackEnum.BASIC_SPRAY] = new AttackInfo(AttackEnum.BASIC_SPRAY,
+                "Spray", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.WATER, 50, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.BASIC_DELUGE] = new AttackInfo(AttackEnum.BASIC_DELUGE,
+                "Deluge", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.WATER, 50, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.BASIC_TORRENT] = new AttackInfo(AttackEnum.BASIC_TORRENT,
+                "Torrent", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                150, 0, FactionEnum.WATER, 50, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_WATER_SHOT] = new AttackInfo(AttackEnum.CHARGE_WATER_SHOT,
+                "Water Shot", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                120, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_WATER_GLOBE] = new AttackInfo(AttackEnum.CHARGE_WATER_GLOBE,
+                "Water Globe", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                200, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_WATER_CUTTER] = new AttackInfo(AttackEnum.CHARGE_WATER_CUTTER,
+                "Water Cutter", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.LOWEST_HEALTH, 0, TargetType.NONE, 0,
+                160, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_PRESSURE_JET] = new AttackInfo(AttackEnum.CHARGE_PRESSURE_JET,
+                "Pressure Jet", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                260, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_LIQUIFY] = new AttackInfo(AttackEnum.CHARGE_LIQUIFY,
+                "Liquify", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.LOWEST_HEALTH, 0, TargetType.NONE, 0,
+                210, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+
+            // Water, physical, area
+            attackDict[AttackEnum.CHARGE_FEEDING_FRENZY] = new AttackInfo(AttackEnum.CHARGE_FEEDING_FRENZY,
+                "Feeding Frenzy", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
+                null, null, null, null, false,
+                true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                75, 0, FactionEnum.WATER, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_SHIPWRECK] = new AttackInfo(AttackEnum.CHARGE_SHIPWRECK,
+                "Shipwreck", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
+                null, null, null, null, false,
+                true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                100, 0, FactionEnum.WATER, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Water, magic, area
+            attackDict[AttackEnum.BASIC_SPLASHING_WAVE] = new AttackInfo(AttackEnum.BASIC_SPLASHING_WAVE,
+                "Splashing Wave", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                65, 0, FactionEnum.WATER, 50, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.BASIC_WHIRLPOOL] = new AttackInfo(AttackEnum.BASIC_WHIRLPOOL,
+                "Whirlpool", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                90, 0, FactionEnum.WATER, 50, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TIDAL_WAVE] = new AttackInfo(AttackEnum.CHARGE_TIDAL_WAVE,
+                "Tidal Wave", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                120, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TSUNAMI] = new AttackInfo(AttackEnum.CHARGE_TSUNAMI,
+                "Tsunami", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                155, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.DOWSE, 1, 1, null, 0, 0);
+
+            // Water, healing
+            attackDict[AttackEnum.BASIC_HEALING_MIST] = new AttackInfo(AttackEnum.BASIC_HEALING_MIST,
+                "Healing Mist", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
+                0, 65, FactionEnum.WATER, 50, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_HEALING_RAIN] = new AttackInfo(AttackEnum.BASIC_HEALING_RAIN,
+                "Healing Rain", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 50, FactionEnum.WATER, 50, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_HEALING_WAVE] = new AttackInfo(AttackEnum.CHARGE_HEALING_WAVE,
+                "Healing Wave", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 1,
+                0, 120, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_HEALING_DELUGE] = new AttackInfo(AttackEnum.CHARGE_HEALING_DELUGE,
+                "Healing Deluge", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 1,
+                0, 200, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_HEALING_TORRENT] = new AttackInfo(AttackEnum.CHARGE_HEALING_TORRENT,
+                "Healing Torrent", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 1,
+                0, 260, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_CLEANSING_MIST] = new AttackInfo(AttackEnum.CHARGE_CLEANSING_MIST,
+                "Cleansing Mist", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 90, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_CLEANSING_RAIN] = new AttackInfo(AttackEnum.CHARGE_CLEANSING_RAIN,
+                "Cleansing Rain", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 100, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+
+            // Water, debuff
+
+            attackDict[AttackEnum.CREATE_BOG] = new AttackInfo(AttackEnum.CREATE_BOG,
+                "Create Bog", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                0, 0, FactionEnum.WATER, -100, 10, 0,
+                StatusEnum.SPEED_DOWN, 0.25, 2, null, 0, 0);
+
+            // Water, buff
+
+            attackDict[AttackEnum.CHARGE_ENSCALE] = new AttackInfo(AttackEnum.CHARGE_ENSCALE,
+                "Enscale", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 0, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, StatusEnum.DEFENSE_UP, 0.5, 2);
+            attackDict[AttackEnum.CHARGE_FAVORABLE_CURRENT] = new AttackInfo(AttackEnum.CHARGE_FAVORABLE_CURRENT,
+                "Favorable Current", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 0, FactionEnum.WATER, -100, 0, 10,
+                null, 0, 0, StatusEnum.SPEED_UP, 0.25, 0);
 
             // Grass
             attackDict[AttackEnum.HEALING_SUN] = new AttackInfo(
