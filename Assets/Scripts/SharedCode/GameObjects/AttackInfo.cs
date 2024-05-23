@@ -82,8 +82,9 @@ namespace Com.Tempest.Whale.GameObjects {
         BASIC_NEEDLE_SHOT = 210, // small
         BASIC_GRAPE_SHOT = 211, // medium
         BASIC_COCONUT_CATAPULT = 212, // large
-        CHARGE_DRAIN_LIFE = 213, // medium
-        CHARGE_MOONBEAM = 214, // large
+        CHARGE_BERRY_BLAST = 213, // small
+        CHARGE_SALAD_TOSS = 214, // medium
+        CHARGE_MOONBEAM = 215, // large
 
         // Grass, Physical, Area
         BASIC_WHIRLING_BRANCHES = 220, // medium
@@ -95,17 +96,22 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_PETAL_STORM = 230, // small
         CHARGE_LEAF_WHIRLWIND = 231, // medium
 
+        // Grass, Healing
+        BASIC_REGROW = 240, // small, heal 1 target
+        BASIC_REJUVENATE = 241, // medium, heal 2 targets
+        BASIC_REVITALIZE = 242, // large, heal 3 targets
+        CHARGE_PEACEFUL_MEADOW = 243, // small, heal team
+        CHARGE_TRANQUIL_GROVE = 244, // medium, heal team
+        CHARGE_SERENE_FOREST = 245, // large, heal team
+
         // Grass, Buff
-        BASIC_REGROW = 240, // large heal single target
-        CHARGE_TAKE_ROOT = 241, // medium heal self
-        CHARGE_TRANQUIL_GROVE = 242, // large heal team wide
-        CHARGE_BARKSKIN = 243, // small defense buff, based on user's defense
-        CHARGE_THORN_ARMOR = 244, // medium defense buff and physical damage reflection, uses opponent's attack
-        CHARGE_SHADY_BRANCHES = 245, // medium protection against team-wide area attacks
+        CHARGE_BARKSKIN = 250, // small defense buff, based on user's defense
+        CHARGE_THORN_ARMOR = 251, // medium defense buff and physical damage reflection, uses opponent's attack
+        CHARGE_SHADY_BRANCHES = 252, // medium protection against team-wide area attacks
 
         // Grass, Debuff
-        CHARGE_INVOKE_ALLERGIES = 250, // small poison
-        CHARGE_TOXIC_SPORES = 251, // large poison, uses magic
+        CHARGE_INVOKE_ALLERGIES = 260, // small poison
+        CHARGE_TOXIC_SPORES = 261, // large poison
 
         // Fire, Physical
         BASIC_BURNING_FIST = 300, // small
@@ -708,19 +714,19 @@ namespace Com.Tempest.Whale.GameObjects {
             attackDict[AttackEnum.CHARGE_SPLASHING_LEAP] = new AttackInfo(AttackEnum.CHARGE_SPLASHING_LEAP,
                 "Splashing Leap", "Icons/Attacks/WaterSplash", "AttackSounds/BasicPhysical",
                 null, null, null, null, true,
-                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 120, 0, FactionEnum.WATER, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
             attackDict[AttackEnum.CHARGE_DIVE] = new AttackInfo(AttackEnum.CHARGE_DIVE,
                 "Dive", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
                 null, null, null, null, true,
-                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 200, 0, FactionEnum.WATER, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
             attackDict[AttackEnum.CHARGE_DEPTH_CHARGE] = new AttackInfo(AttackEnum.CHARGE_DEPTH_CHARGE,
                 "Depth Charge", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
                 null, null, null, null, true,
-                true, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 260, 0, FactionEnum.WATER, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
 
@@ -746,44 +752,44 @@ namespace Com.Tempest.Whale.GameObjects {
             attackDict[AttackEnum.CHARGE_WATER_SHOT] = new AttackInfo(AttackEnum.CHARGE_WATER_SHOT,
                 "Water Shot", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
-                false, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 120, 0, FactionEnum.WATER, -100, 10, 0,
                 StatusEnum.DOWSE, 1, 1, null, 0, 0);
             attackDict[AttackEnum.CHARGE_WATER_GLOBE] = new AttackInfo(AttackEnum.CHARGE_WATER_GLOBE,
                 "Water Globe", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
-                false, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 200, 0, FactionEnum.WATER, -100, 10, 0,
                 StatusEnum.DOWSE, 1, 1, null, 0, 0);
             attackDict[AttackEnum.CHARGE_WATER_CUTTER] = new AttackInfo(AttackEnum.CHARGE_WATER_CUTTER,
                 "Water Cutter", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
-                false, TargetType.LOWEST_HEALTH, 0, TargetType.NONE, 0,
+                false, TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
                 160, 0, FactionEnum.WATER, -100, 10, 0,
                 StatusEnum.DOWSE, 1, 1, null, 0, 0);
             attackDict[AttackEnum.CHARGE_PRESSURE_JET] = new AttackInfo(AttackEnum.CHARGE_PRESSURE_JET,
                 "Pressure Jet", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
-                false, TargetType.FIRST_ALIVE, 0, TargetType.NONE, 0,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
                 260, 0, FactionEnum.WATER, -100, 10, 0,
                 StatusEnum.DOWSE, 1, 1, null, 0, 0);
             attackDict[AttackEnum.CHARGE_LIQUIFY] = new AttackInfo(AttackEnum.CHARGE_LIQUIFY,
                 "Liquify", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
-                false, TargetType.LOWEST_HEALTH, 0, TargetType.NONE, 0,
+                false, TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
                 210, 0, FactionEnum.WATER, -100, 10, 0,
                 StatusEnum.DOWSE, 1, 1, null, 0, 0);
 
             // Water, physical, area
             attackDict[AttackEnum.CHARGE_FEEDING_FRENZY] = new AttackInfo(AttackEnum.CHARGE_FEEDING_FRENZY,
                 "Feeding Frenzy", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
-                null, null, null, null, false,
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
                 true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
                 75, 0, FactionEnum.WATER, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
             attackDict[AttackEnum.CHARGE_SHIPWRECK] = new AttackInfo(AttackEnum.CHARGE_SHIPWRECK,
                 "Shipwreck", "Icons/Attacks/CloudSwirl", "AttackSounds/BasicPhysical",
-                null, null, null, null, false,
+                AttackParticleEnum.WATER, ParticleOriginEnum.ATTACKER, null, null, false,
                 true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
                 100, 0, FactionEnum.WATER, -100, 10, 0,
                 null, 0, 0, null, 0, 0);
@@ -859,7 +865,6 @@ namespace Com.Tempest.Whale.GameObjects {
                 null, 0, 0, null, 0, 0);
 
             // Water, debuff
-
             attackDict[AttackEnum.CREATE_BOG] = new AttackInfo(AttackEnum.CREATE_BOG,
                 "Create Bog", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
                 AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, null, null, false,
@@ -868,7 +873,6 @@ namespace Com.Tempest.Whale.GameObjects {
                 StatusEnum.SPEED_DOWN, 0.25, 2, null, 0, 0);
 
             // Water, buff
-
             attackDict[AttackEnum.CHARGE_ENSCALE] = new AttackInfo(AttackEnum.CHARGE_ENSCALE,
                 "Enscale", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
@@ -882,42 +886,193 @@ namespace Com.Tempest.Whale.GameObjects {
                 0, 0, FactionEnum.WATER, -100, 0, 10,
                 null, 0, 0, StatusEnum.SPEED_UP, 0.25, 0);
 
-            // Grass
-            attackDict[AttackEnum.HEALING_SUN] = new AttackInfo(
-                AttackEnum.HEALING_SUN, "Healing Sun", "Icons/RoleSupport", "AttackSounds/BasicMagic",
-                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD,
-                false, false, false, true,
-                TargetType.NONE, 0, TargetType.RANDOM, 5,
-                0, 1, -100, 0, 0,
-                null, 0, 0, StatusEnum.REGENERATION, 0.2, 5);
-            attackDict[AttackEnum.WEED_WHACKER] = new AttackInfo(
-                 AttackEnum.WEED_WHACKER, "Weed Whacker", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                 null, null, null, null,
-                 true, false, true, true,
-                 TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
-                 1.5, 0, -100, 10, 0,
-                 StatusEnum.POISON, 1, 2, null, 0, 0);
-            attackDict[AttackEnum.ENTANGLING_ROOTS] = new AttackInfo(
-                 AttackEnum.ENTANGLING_ROOTS, "Entangling Roots", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                 null, null, null, null,
-                 true, false, true, true,
-                 TargetType.RANDOM, 5, TargetType.NONE, 0,
-                 0.6, 0, -100, 10, 0,
-                 StatusEnum.ROOT, 0.5, 2, null, 0, 0);
-            attackDict[AttackEnum.RITUAL_OF_THE_SUN] = new AttackInfo(
-                 AttackEnum.RITUAL_OF_THE_SUN, "Ritual of the Sun", "Icons/RoleSupport", "AttackSounds/BasicMagic",
-                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
-                 false, false, false, true,
-                 TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 3,
-                 0, 2, -100, 0, 0,
-                 null, 0, 0, StatusEnum.REGENERATION, 0.5, 3);
-            attackDict[AttackEnum.GIFT_OF_THORNS] = new AttackInfo(
-                AttackEnum.GIFT_OF_THORNS, "Gift of Thorns", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER,
-                false, false, true, true,
-                TargetType.NONE, 0, TargetType.RANDOM, 5,
-                0, 0, -100, 0, 0,
-                null, 0, 0, StatusEnum.THORN_ARMOR, 0.2, 3);
+            // Grass, physical, single target
+            attackDict[AttackEnum.BASIC_PETAL_SLAP] = new AttackInfo(AttackEnum.BASIC_PETAL_SLAP,
+                "Petal Slap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_BRANCH_SLAP] = new AttackInfo(AttackEnum.BASIC_BRANCH_SLAP,
+                "Branch Slap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_RAZOR_VINE] = new AttackInfo(AttackEnum.BASIC_RAZOR_VINE,
+                "Razor Vine", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                150, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_WEED_WHACKER] = new AttackInfo(AttackEnum.CHARGE_WEED_WHACKER,
+                "Weed Whacker", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                120, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_CABER_TOSS] = new AttackInfo(AttackEnum.CHARGE_CABER_TOSS,
+                "Caber Toss", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                200, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TIMBER] = new AttackInfo(AttackEnum.CHARGE_TIMBER,
+                "Timber", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                260, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Grass, magic, single target
+            attackDict[AttackEnum.BASIC_NEEDLE_SHOT] = new AttackInfo(AttackEnum.BASIC_NEEDLE_SHOT,
+                "Fin Slap", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_GRAPE_SHOT] = new AttackInfo(AttackEnum.BASIC_GRAPE_SHOT,
+                "Tail Slap", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_COCONUT_CATAPULT] = new AttackInfo(AttackEnum.BASIC_COCONUT_CATAPULT,
+                "Breaching Crash", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                150, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_BERRY_BLAST] = new AttackInfo(AttackEnum.CHARGE_BERRY_BLAST,
+                "Splashing Leap", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                120, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_SALAD_TOSS] = new AttackInfo(AttackEnum.CHARGE_SALAD_TOSS,
+                "Dive", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                200, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_MOONBEAM] = new AttackInfo(AttackEnum.CHARGE_MOONBEAM,
+                "Depth Charge", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                260, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Grass, physical, area
+            attackDict[AttackEnum.BASIC_WHIRLING_BRANCHES] = new AttackInfo(AttackEnum.BASIC_WHIRLING_BRANCHES,
+                "Whirling Branches", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FIRST_ALIVE, 2, TargetType.NONE, 0,
+                65, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_LOG_ROLL] = new AttackInfo(AttackEnum.BASIC_LOG_ROLL,
+                "Log Roll", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                90, 0, FactionEnum.GRASS, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_NEEDLE_SPRAY] = new AttackInfo(AttackEnum.CHARGE_NEEDLE_SPRAY,
+                "Needle Spray", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                120, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_STRANGLING_VINES] = new AttackInfo(AttackEnum.CHARGE_STRANGLING_VINES,
+                "Strangling Vines", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                105, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Grass, magic, area
+            attackDict[AttackEnum.CHARGE_PETAL_STORM] = new AttackInfo(AttackEnum.CHARGE_PETAL_STORM,
+                "Needle Spray", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                80, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_LEAF_WHIRLWIND] = new AttackInfo(AttackEnum.CHARGE_LEAF_WHIRLWIND,
+                "Strangling Vines", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                105, 0, FactionEnum.GRASS, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Grass, healing
+            attackDict[AttackEnum.BASIC_REGROW] = new AttackInfo(AttackEnum.BASIC_REGROW,
+                "Regrow", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
+                0, 35, FactionEnum.GRASS, 50, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_REJUVENATE] = new AttackInfo(AttackEnum.BASIC_REJUVENATE,
+                "Rejuvenate", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 3,
+                0, 55, FactionEnum.GRASS, 50, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_REVITALIZE] = new AttackInfo(AttackEnum.BASIC_REVITALIZE,
+                "Revitalize", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 60, FactionEnum.GRASS, 50, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_PEACEFUL_MEADOW] = new AttackInfo(AttackEnum.CHARGE_PEACEFUL_MEADOW,
+                "Peaceful Meadow", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 45, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TRANQUIL_GROVE] = new AttackInfo(AttackEnum.CHARGE_TRANQUIL_GROVE,
+                "Tranquil Grove", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 80, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_SERENE_FOREST] = new AttackInfo(AttackEnum.CHARGE_SERENE_FOREST,
+                "Serene Forest", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 105, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
+
+            // Grass, debuff
+            attackDict[AttackEnum.CHARGE_INVOKE_ALLERGIES] = new AttackInfo(AttackEnum.CHARGE_INVOKE_ALLERGIES,
+                "Invoke Allergies", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                0, 0, FactionEnum.GRASS, -100, 10, 0,
+                StatusEnum.POISON, 40, 3, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TOXIC_SPORES] = new AttackInfo(AttackEnum.CHARGE_TOXIC_SPORES,
+                "Toxic Spores", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                0, 0, FactionEnum.GRASS, -100, 10, 0,
+                StatusEnum.POISON, 55, 3, null, 0, 0);
+
+            // Grass, buff
+            attackDict[AttackEnum.CHARGE_BARKSKIN] = new AttackInfo(AttackEnum.CHARGE_BARKSKIN,
+                "Enscale", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.SELF, 1,
+                0, 0, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, StatusEnum.DEFENSE_UP, 1, 2);
+            attackDict[AttackEnum.CHARGE_THORN_ARMOR] = new AttackInfo(AttackEnum.CHARGE_THORN_ARMOR,
+                "Enscale", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 0, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, StatusEnum.THORN_ARMOR, 0.5, 2);
+            attackDict[AttackEnum.CHARGE_SHADY_BRANCHES] = new AttackInfo(AttackEnum.CHARGE_SHADY_BRANCHES,
+                "Favorable Current", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 0, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, null, 0, 0);
 
             // Fire
             attackDict[AttackEnum.TWIN_FLAME] = new AttackInfo(
