@@ -4,63 +4,55 @@ using System.Collections.Generic;
 namespace Com.Tempest.Whale.GameObjects {
 
     public enum StatusEnum {
-        STUN = 1,
-        BLIND = 2,
-        ROOT = 3,
+        DOWSE = 1,
+        CHILL = 2,
+        DAZE = 3,
+        BLIND = 4,
+        ROOT = 5,
 
-        BLEED = 4,
-        BURN = 5,
-        POISON = 6,
+        BLEED = 6,
+        BURN = 7,
+        POISON = 8,
 
-        REGENERATION = 7,
+        REGENERATION = 9,
 
-        THORN_ARMOR = 8,
-        LAVA_ARMOR = 9,
-        ICE_ARMOR = 10,
-        EARTH_ARMOR = 11,
+        THORN_ARMOR = 10,
+        LAVA_ARMOR = 11,
+        ICE_ARMOR = 12,
+        EARTH_ARMOR = 13,
+        SHADY_BRANCHES = 14,
 
-        DOWSE = 12,
-        CHILL = 13,
-        FREEZE = 14,
+        ATTACK_UP = 15,
+        MAGIC_UP = 16,
+        ATTACK_MAGIC_UP = 17,
+        DEFENSE_UP = 18,
+        REFLECTION_UP = 19,
+        DEFENSE_REFLECTION_UP = 20,
+        SPEED_UP = 21,
 
-        DAZE = 15,
-
-        ATTACK_UP = 16,
-        MAGIC_UP = 17,
-        ATTACK_MAGIC_UP = 18,
-        DEFENSE_UP = 19,
-        REFLECTION_UP = 20,
-        DEFENSE_REFLECTION_UP = 21,
-        SPEED_UP = 22,
-
-        ATTACK_DOWN = 23,
-        MAGIC_DOWN = 24,
-        ATTACK_MAGIC_DOWN = 25,
-        DEFENSE_DOWN = 26,
-        REFLECTION_DOWN = 27,
-        DEFENSE_REFLECTION_DOWN = 28,
-        SPEED_DOWN = 29
+        ATTACK_DOWN = 22,
+        MAGIC_DOWN = 23,
+        ATTACK_MAGIC_DOWN = 24,
+        DEFENSE_DOWN = 25,
+        REFLECTION_DOWN = 26,
+        DEFENSE_REFLECTION_DOWN = 27,
+        SPEED_DOWN = 28
     }
 
     public class StatusInfo {
 
         public StatusEnum Status { get; }
         public string StatusName { get; }
-        public FactionEnum AssociatedFaction { get; }
         public bool IsBeneficial { get; }
-        public bool ModifiesAttack { get; }
-        public bool BlocksMelee { get; }
-        public bool BlocksRanged { get; }
+        public bool ModifiesOffense { get; }
+        public bool ModifiesDefense { get; }
 
-        public StatusInfo(StatusEnum status, string statusName, FactionEnum associatedFaction,
-            bool isBeneficial, bool modifiesAttack, bool blocksMelee, bool blocksRanged) {
+        public StatusInfo(StatusEnum status, string statusName, bool isBeneficial, bool modifiesOffense, bool modifiesDefense) {
             Status = status;
             StatusName = statusName;
-            AssociatedFaction = associatedFaction;
+            ModifiesOffense = modifiesOffense;
+            ModifiesDefense = modifiesDefense;
             IsBeneficial = isBeneficial;
-            ModifiesAttack = modifiesAttack;
-            BlocksMelee = blocksMelee;
-            BlocksRanged = blocksRanged;
         }
     }
 
@@ -70,56 +62,34 @@ namespace Com.Tempest.Whale.GameObjects {
 
         public static void Intialize() {
             statusDict = new Dictionary<StatusEnum, StatusInfo>();
-            statusDict[StatusEnum.STUN] = new StatusInfo(StatusEnum.STUN, "Stun", FactionEnum.ELECTRIC,
-                false, true, true, true);
-            statusDict[StatusEnum.BLIND] = new StatusInfo(StatusEnum.BLIND, "Blind", FactionEnum.ELECTRIC,
-                false, true, false, true);
-            statusDict[StatusEnum.ROOT] = new StatusInfo(StatusEnum.ROOT, "Root", FactionEnum.GRASS,
-                false, true, true, false);
-            statusDict[StatusEnum.BLEED] = new StatusInfo(StatusEnum.BLEED, "Bleed", FactionEnum.GRASS,
-                false, false, false, false);
-            statusDict[StatusEnum.BURN] = new StatusInfo(StatusEnum.BURN, "Burn", FactionEnum.FIRE,
-                false, false, false, false);
-            statusDict[StatusEnum.POISON] = new StatusInfo(StatusEnum.POISON, "Poison", FactionEnum.GRASS,
-                false, false, false, false);
-            statusDict[StatusEnum.REGENERATION] = new StatusInfo(StatusEnum.REGENERATION, "Regen", FactionEnum.WATER,
-                true, false, false, false);
-            statusDict[StatusEnum.THORN_ARMOR] = new StatusInfo(StatusEnum.THORN_ARMOR, "Thorn Arm.", FactionEnum.GRASS,
-                true, false, false, false);
-            statusDict[StatusEnum.LAVA_ARMOR] = new StatusInfo(StatusEnum.LAVA_ARMOR, "Lava Arm.", FactionEnum.FIRE,
-                true, false, false, false);
-            statusDict[StatusEnum.ICE_ARMOR] = new StatusInfo(StatusEnum.ICE_ARMOR, "Ice Arm.", FactionEnum.ICE,
-                true, false, false, false);
-            statusDict[StatusEnum.EARTH_ARMOR] = new StatusInfo(StatusEnum.EARTH_ARMOR, "Earth Arm.", FactionEnum.EARTH,
-                true, false, false, false);
-            statusDict[StatusEnum.DOWSE] = new StatusInfo(StatusEnum.DOWSE, "Dowse", FactionEnum.WATER,
-                false, true, false, false);
-            statusDict[StatusEnum.CHILL] = new StatusInfo(StatusEnum.CHILL, "Chill", FactionEnum.ICE,
-                false, true, false, false);
-            statusDict[StatusEnum.FREEZE] = new StatusInfo(StatusEnum.FREEZE, "Freeze", FactionEnum.ICE,
-                false, true, true, true);
-            statusDict[StatusEnum.DAZE] = new StatusInfo(StatusEnum.DAZE, "Daze", FactionEnum.ELECTRIC,
-                false, true, false, false);
-            statusDict[StatusEnum.ATTACK_UP] = new StatusInfo(StatusEnum.ATTACK_UP, "Att. Up", FactionEnum.GRASS,
-                true, true, false, false);
-            statusDict[StatusEnum.MAGIC_UP] = new StatusInfo(StatusEnum.MAGIC_UP, "Mag. Up", FactionEnum.FIRE,
-                true, true, false, false);
-            statusDict[StatusEnum.DEFENSE_UP] = new StatusInfo(StatusEnum.DEFENSE_UP, "Def. Up", FactionEnum.EARTH,
-                true, false, false, false);
-            statusDict[StatusEnum.REFLECTION_UP] = new StatusInfo(StatusEnum.REFLECTION_UP, "Ref. Up", FactionEnum.ICE,
-                true, false, false, false);
-            statusDict[StatusEnum.SPEED_UP] = new StatusInfo(StatusEnum.SPEED_UP, "Spe. Up", FactionEnum.ELECTRIC,
-                true, true, false, false);
-            statusDict[StatusEnum.ATTACK_DOWN] = new StatusInfo(StatusEnum.ATTACK_DOWN, "Att. Down", FactionEnum.GRASS,
-                false, true, false, false);
-            statusDict[StatusEnum.MAGIC_DOWN] = new StatusInfo(StatusEnum.MAGIC_DOWN, "Mag. Down", FactionEnum.FIRE,
-                false, true, false, false);
-            statusDict[StatusEnum.DEFENSE_DOWN] = new StatusInfo(StatusEnum.DEFENSE_DOWN, "Def. Down", FactionEnum.EARTH,
-                false, false, false, false);
-            statusDict[StatusEnum.REFLECTION_DOWN] = new StatusInfo(StatusEnum.REFLECTION_DOWN, "Ref. Down", FactionEnum.ICE,
-                false, false, false, false);
-            statusDict[StatusEnum.SPEED_DOWN] = new StatusInfo(StatusEnum.SPEED_DOWN, "Spe. Down", FactionEnum.ELECTRIC,
-                false, true, false, false);
+            statusDict[StatusEnum.DOWSE] = new StatusInfo(StatusEnum.DOWSE, "Dowse", false, false, false);
+            statusDict[StatusEnum.CHILL] = new StatusInfo(StatusEnum.CHILL, "Chill", false, true, false);
+            statusDict[StatusEnum.DAZE] = new StatusInfo(StatusEnum.DAZE, "Daze", false, true, false);
+            statusDict[StatusEnum.BLIND] = new StatusInfo(StatusEnum.BLIND, "Blind", false, true, false);
+            statusDict[StatusEnum.ROOT] = new StatusInfo(StatusEnum.ROOT, "Root", false, true, false);
+            statusDict[StatusEnum.BLEED] = new StatusInfo(StatusEnum.BLEED, "Bleed", false, false, false);
+            statusDict[StatusEnum.BURN] = new StatusInfo(StatusEnum.BURN, "Burn", false, false, false);
+            statusDict[StatusEnum.POISON] = new StatusInfo(StatusEnum.POISON, "Poison", false, false, false);
+            statusDict[StatusEnum.REGENERATION] = new StatusInfo(StatusEnum.REGENERATION, "Regen", true, true, true);
+            statusDict[StatusEnum.THORN_ARMOR] = new StatusInfo(StatusEnum.THORN_ARMOR, "Thorn Arm.", true, false, true);
+            statusDict[StatusEnum.LAVA_ARMOR] = new StatusInfo(StatusEnum.LAVA_ARMOR, "Lava Arm.", true, false, true);
+            statusDict[StatusEnum.ICE_ARMOR] = new StatusInfo(StatusEnum.ICE_ARMOR, "Ice Arm.", true, false, true);
+            statusDict[StatusEnum.EARTH_ARMOR] = new StatusInfo(StatusEnum.EARTH_ARMOR, "Earth Arm.", true, false, true);
+            statusDict[StatusEnum.SHADY_BRANCHES] = new StatusInfo(StatusEnum.SHADY_BRANCHES, "Shade", true, false, false);
+            statusDict[StatusEnum.ATTACK_UP] = new StatusInfo(StatusEnum.ATTACK_UP, "Att. Up", true, true, false);
+            statusDict[StatusEnum.MAGIC_UP] = new StatusInfo(StatusEnum.MAGIC_UP, "Mag. Up", true, true, false);
+            statusDict[StatusEnum.ATTACK_MAGIC_UP] = new StatusInfo(StatusEnum.ATTACK_MAGIC_UP, "Off. Up", true, true, false);
+            statusDict[StatusEnum.DEFENSE_UP] = new StatusInfo(StatusEnum.DEFENSE_UP, "Def. Up", true, false, true);
+            statusDict[StatusEnum.REFLECTION_UP] = new StatusInfo(StatusEnum.REFLECTION_UP, "Ref. Up", true, false, true);
+            statusDict[StatusEnum.DEFENSE_REFLECTION_UP] = new StatusInfo(StatusEnum.DEFENSE_REFLECTION_UP, "Def. Up", true, false, true);
+            statusDict[StatusEnum.SPEED_UP] = new StatusInfo(StatusEnum.SPEED_UP, "Spe. Up", true, true, false);
+            statusDict[StatusEnum.ATTACK_DOWN] = new StatusInfo(StatusEnum.ATTACK_DOWN, "Att. Down", false, true, false);
+            statusDict[StatusEnum.MAGIC_DOWN] = new StatusInfo(StatusEnum.MAGIC_DOWN, "Mag. Down", false, true, false);
+            statusDict[StatusEnum.ATTACK_MAGIC_DOWN] = new StatusInfo(StatusEnum.ATTACK_MAGIC_DOWN, "Off. Down", false, true, false);
+            statusDict[StatusEnum.DEFENSE_DOWN] = new StatusInfo(StatusEnum.DEFENSE_DOWN, "Def. Down", false, false, true);
+            statusDict[StatusEnum.REFLECTION_DOWN] = new StatusInfo(StatusEnum.REFLECTION_DOWN, "Ref. Down", false, false, true);
+            statusDict[StatusEnum.DEFENSE_REFLECTION_DOWN] = new StatusInfo(StatusEnum.DEFENSE_REFLECTION_DOWN, "Def. Down", false, false, true);
+            statusDict[StatusEnum.SPEED_DOWN] = new StatusInfo(StatusEnum.SPEED_DOWN, "Spe. Down", false, true, false);
         }
 
         public static StatusInfo GetStatusInfo(StatusEnum status) {
