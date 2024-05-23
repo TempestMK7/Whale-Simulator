@@ -315,8 +315,8 @@ namespace Com.Tempest.Whale.GameObjects {
             var hasStab = attacker.baseHero.Faction == AttackFaction;
             var hitType = CombatMath.RollHitType(attacker, target);
             var hitEffectivity = CombatMath.GetEffectivity(AttackFaction, target.baseHero.Faction);
-            var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
-            var defenseValue = IsPhysical ? target.GetModifiedDefense() : target.GetModifiedReflection();
+            var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
+            var defenseValue = IsPhysical ? target.GetModifiedToughness() : target.GetModifiedResistance();
             var damage = CombatMath.Damage(attackValue, defenseValue, BaseDamage, hasStab, hitType, hitEffectivity);
             target.currentHealth -= damage;
             target.currentEnergy += TargetEnergyGained;
@@ -352,7 +352,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         }
                         break;
                     case AbilityEnum.COLD_BLOODED:
-                        if (TargetStatus == StatusEnum.CHILL || TargetStatus == StatusEnum.FREEZE) {
+                        if (TargetStatus == StatusEnum.CHILL) {
                             return allInstances;
                         }
                         break;
@@ -363,13 +363,20 @@ namespace Com.Tempest.Whale.GameObjects {
                 var statusDuration = TargetStatusDuration;
                 switch (inflictedStatus) {
                     case StatusEnum.BURN:
-                        statusValue *= attacker.GetModifiedMagic();
+                        var burnPow = attacker.GetModifiedPower();
+                        var burnDef = target.GetModifiedResistance();
+                        statusValue = CombatMath.Damage(burnPow, burnDef, (int) TargetStatusValue, hasStab, hitType, hitEffectivity);
                         break;
                     case StatusEnum.BLEED:
-                        statusValue *= attacker.GetModifiedAttack();
+                        var bleedPow = attacker.GetModifiedStrength();
+                        var bleedDef = target.GetModifiedToughness();
+                        statusValue = CombatMath.Damage(bleedPow, bleedDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity);
                         break;
                     case StatusEnum.POISON:
-                        statusValue *= attacker.GetModifiedMagic();
+                        var poisonPow = attacker.GetModifiedPower();
+                        var poisonDef = target.GetModifiedResistance();
+                        statusValue = CombatMath.Damage(poisonPow, poisonDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity);
+                        statusValue *= attacker.GetModifiedPower();
                         break;
                     case StatusEnum.CHILL:
                         if (target.HasStatus(StatusEnum.DOWSE)) {
@@ -381,11 +388,18 @@ namespace Com.Tempest.Whale.GameObjects {
                             statusValue *= 2;
                         }
                         break;
+                    case StatusEnum.ROOT:
+                        if (target.HasStatus(StatusEnum.DOWSE)) {
+                            statusValue *= 2;
+                        }
+                        break;
                 }
 
                 if (target.baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
-                    if (inflictedStatus == StatusEnum.MAGIC_DOWN) {
-                        inflictedStatus = StatusEnum.MAGIC_UP;
+                    if (inflictedStatus == StatusEnum.POWER_DOWN) {
+                        inflictedStatus = StatusEnum.POWER_UP;
+                    } else if (inflictedStatus == StatusEnum.STRENGTH_DOWN) {
+                        inflictedStatus = StatusEnum.STRENGTH_UP;
                     } else if (inflictedStatus == StatusEnum.SPEED_DOWN) {
                         inflictedStatus = StatusEnum.SPEED_UP;
                     }
@@ -393,13 +407,13 @@ namespace Com.Tempest.Whale.GameObjects {
 
                 // This is going to break everything.
                 if (target.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE && !IsPhysical) {
-                    var statusContainer = new CombatStatus(inflictedStatus, target.combatHeroGuid, attacker.combatHeroGuid, statusValue, statusDuration);
+                    var statusContainer = new CombatStatus(inflictedStatus, target.combatHeroGuid, attacker.combatHeroGuid, statusValue, statusDuration, AttackFaction);
                     attacker.AddStatus(statusContainer);
                     var mirrorInstance = new CombatStep(null, null, target.combatHeroGuid, attacker.combatHeroGuid);
                     mirrorInstance.AddStatus(statusContainer);
                     allInstances.Add(mirrorInstance);
                 } else {
-                    var statusContainer = new CombatStatus(inflictedStatus, attacker.combatHeroGuid, target.combatHeroGuid, statusValue, statusDuration);
+                    var statusContainer = new CombatStatus(inflictedStatus, attacker.combatHeroGuid, target.combatHeroGuid, statusValue, statusDuration, AttackFaction);
                     target.AddStatus(statusContainer);
                     step.AddStatus(statusContainer);
                 }
@@ -411,7 +425,7 @@ namespace Com.Tempest.Whale.GameObjects {
         public CombatStep ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
             var hasStab = attacker.baseHero.Faction == AttackFaction;
             var hitType = CombatMath.RollHitType(attacker);
-            var attackValue = IsPhysical ? attacker.GetModifiedAttack() : attacker.GetModifiedMagic();
+            var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
             var healing = CombatMath.Healing(attackValue, attacker.currentLevel, BaseHealing, hasStab, hitType);
             healing = ally.ReceiveHealing(healing);
             ally.currentEnergy += AllyEnergyGained;
@@ -437,18 +451,18 @@ namespace Com.Tempest.Whale.GameObjects {
                 var statusDuration = AllyStatusDuration;
                 switch (bestowedStatus) {
                     case StatusEnum.REGENERATION:
-                        statusValue *= attacker.GetModifiedMagic();
+                        statusValue = CombatMath.Healing(attackValue, attacker.currentLevel, (int) AllyStatusValue, hasStab, hitType);
                         break;
                     case StatusEnum.LAVA_ARMOR:
-                        statusValue *= attacker.GetModifiedMagic();
+                        statusValue = CombatMath.Damage(attacker.GetModifiedPower(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL);
                         break;
                     case StatusEnum.THORN_ARMOR:
-                        statusValue *= attacker.GetModifiedAttack();
+                        statusValue = CombatMath.Damage(attacker.GetModifiedStrength(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL);
                         break;
                     default:
                         break;
                 }
-                var statusContainer = new CombatStatus(bestowedStatus, attacker.combatHeroGuid, ally.combatHeroGuid, statusValue, statusDuration);
+                var statusContainer = new CombatStatus(bestowedStatus, attacker.combatHeroGuid, ally.combatHeroGuid, statusValue, statusDuration, AttackFaction);
                 ally.AddStatus(statusContainer);
                 step.AddStatus(statusContainer);
             }
@@ -544,50 +558,48 @@ namespace Com.Tempest.Whale.GameObjects {
                 case StatusEnum.POISON:
                     return GetEnemyDamageStatusTooltip(statusType, statusDuration, value);
 
-                case StatusEnum.ATTACK_UP:
-                case StatusEnum.ATTACK_DOWN:
-                case StatusEnum.MAGIC_UP:
-                case StatusEnum.MAGIC_DOWN:
-                case StatusEnum.DEFENSE_UP:
-                case StatusEnum.DEFENSE_DOWN:
-                case StatusEnum.REFLECTION_UP:
-                case StatusEnum.REFLECTION_DOWN:
+                case StatusEnum.STRENGTH_UP:
+                case StatusEnum.STRENGTH_DOWN:
+                case StatusEnum.POWER_UP:
+                case StatusEnum.POWER_DOWN:
+                case StatusEnum.TOUGHNESS_UP:
+                case StatusEnum.TOUGHNESS_DOWN:
+                case StatusEnum.RESISTANCE_UP:
+                case StatusEnum.RESISTANCE_DOWN:
                 case StatusEnum.SPEED_UP:
                 case StatusEnum.SPEED_DOWN:
                     return GetStatModStatusTooltip(statusType, statusDuration, value, ally);
 
+                case StatusEnum.DOWSE:
+                    return string.Format(" Dowses for {0} {1} doubling penalties from Daze (electric only), Chill, and Root.", statusDuration, turnPlural);
                 case StatusEnum.CHILL:
-                    return string.Format(" Chills for {0} {1} reducing attack and speed by {2}%.",
+                    return string.Format(" Chills for {0} {1} reducing offenses and speed by {2}%.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.DAZE:
-                    return string.Format(" Dazes for {0} {1} reducing magic, crit, and deflection by {2}%.",
+                    return string.Format(" Dazes for {0} {1} reducing defenses, crit, and deflection by {2}%.",
                         statusDuration, turnPlural, statusValue);
-                case StatusEnum.FREEZE:
-                    return string.Format(" Freezes for {0} {1} preventing all attacks.", statusDuration, turnPlural);
-                case StatusEnum.STUN:
-                    return string.Format(" Stuns for {0} {1} preventing all attacks.", statusDuration, turnPlural);
                 case StatusEnum.BLIND:
-                    return string.Format(" Blinds for {0} {1} preventing ranged attacks.", statusDuration, turnPlural);
+                    return string.Format(" Blinds for {0} {1} reducing offenses and crit by {2}%.", statusDuration, turnPlural, statusValue);
                 case StatusEnum.ROOT:
-                    return string.Format(" Entangles for {0} {1} preventing melee attacks.", statusDuration, turnPlural);
-                case StatusEnum.DOWSE:
-                    return string.Format(" Dowses for {0} {1}.  Dowsed targets receive double penalties from Daze and Chill.", statusDuration, turnPlural);
+                    return string.Format(" Entangles for {0} {1} reducing offenses and speed by {2}%.", statusDuration, turnPlural, statusValue);
 
                 // TODO: Figure out status math.
                 case StatusEnum.REGENERATION:
-                    return string.Format(" Bestows Regeneration for {0} {1}, healing for {2}% of magic each turn.",
+                    return string.Format(" Bestows Regeneration for {0} {1}, healing with a base power of {2} per turn.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.THORN_ARMOR:
-                    return string.Format(" Bestows Thorn Armor for {0} {1}.  Whenever a hero with thorn armor is attacked, the attacker takes damage equal to {2}% of attack.",
+                    return string.Format(" Bestows Thorn Armor for {0} {1}.  Whenever a hero with thorn armor is attacked, the attacker takes damage with a base strength of {2}.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.LAVA_ARMOR:
-                    return string.Format(" Bestows Lava Armor for {0} {1}.  Whenever a hero with lava armor is attacked, the attacker is burned for 2 turns, taking {2}% of magic each turn.",
+                    return string.Format(" Bestows Lava Armor for {0} {1}.  Whenever a hero with lava armor is attacked, the attacker is burned for 2 turns, taking damage with a base power of {2} each turn.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.ICE_ARMOR:
-                    return string.Format(" Bestows Ice Armor for {0} {1}.  Whenever a hero with ice armor is attacked, the attacker is chilled for 2 turns, reducing speed by {2}%.",
+                    return string.Format(" Bestows Ice Armor for {0} {1}.  Whenever a hero with ice armor is attacked, the attacker is chilled by {2}% for 2 turns.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.EARTH_ARMOR:
-                    return string.Format(" Bestows Earth Armor for {0} {1}, raising defense by {2}% and reflection by {3}%.", statusDuration, turnPlural, statusValue, (value * 100 / 2).ToString("0"));
+                    return string.Format(" Bestows Earth Armor for {0} {1}, raising toughness by {2}.", statusDuration, turnPlural, statusValue);
+                case StatusEnum.SHADY_BRANCHES:
+                    return string.Format(" Bestows Shady Branches for {0} {1}, reducing damage taken from area attacks by {2}%.", statusDuration, turnPlural, statusValue);
                 default:
                     return "";
             }
@@ -684,13 +696,13 @@ namespace Com.Tempest.Whale.GameObjects {
                 null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, false,
                 false, TargetType.NONE, 0, TargetType.FIRST_ALIVE, 5,
                 0, 0, FactionEnum.NONE, -100, 0, 15,
-                null, 0, 0, StatusEnum.ATTACK_MAGIC_UP, 0.4, 2);
+                null, 0, 0, StatusEnum.OFFENSE_UP, 0.4, 2);
             attackDict[AttackEnum.CHARGE_RALLYING_CHEER] = new AttackInfo(AttackEnum.CHARGE_PLANT_FLAG,
                 "Plant Flag", "Icons/RoleSupport", "AttackSounds/BasicMagic",
                 null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, false,
                 false, TargetType.NONE, 0, TargetType.FIRST_ALIVE, 5,
                 0, 0, FactionEnum.NONE, -100, 0, 25,
-                null, 0, 0, StatusEnum.ATTACK_MAGIC_UP, 0.5, 3);
+                null, 0, 0, StatusEnum.OFFENSE_UP, 0.5, 3);
 
             // Water, physical, single target
             attackDict[AttackEnum.BASIC_FIN_SLAP] = new AttackInfo(AttackEnum.BASIC_FIN_SLAP,
@@ -878,7 +890,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
                 0, 0, FactionEnum.WATER, -100, 0, 10,
-                null, 0, 0, StatusEnum.DEFENSE_UP, 0.5, 2);
+                null, 0, 0, StatusEnum.TOUGHNESS_UP, 0.5, 2);
             attackDict[AttackEnum.CHARGE_FAVORABLE_CURRENT] = new AttackInfo(AttackEnum.CHARGE_FAVORABLE_CURRENT,
                 "Favorable Current", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.WATER, ParticleOriginEnum.OVERHEAD, false,
@@ -1060,167 +1072,19 @@ namespace Com.Tempest.Whale.GameObjects {
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
                 false, TargetType.NONE, 0, TargetType.SELF, 1,
                 0, 0, FactionEnum.GRASS, -100, 0, 10,
-                null, 0, 0, StatusEnum.DEFENSE_UP, 1, 2);
+                null, 0, 0, StatusEnum.TOUGHNESS_UP, 1, 2);
             attackDict[AttackEnum.CHARGE_THORN_ARMOR] = new AttackInfo(AttackEnum.CHARGE_THORN_ARMOR,
                 "Enscale", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
                 0, 0, FactionEnum.GRASS, -100, 0, 10,
-                null, 0, 0, StatusEnum.THORN_ARMOR, 0.5, 2);
+                null, 0, 0, StatusEnum.THORN_ARMOR, 100, 2);
             attackDict[AttackEnum.CHARGE_SHADY_BRANCHES] = new AttackInfo(AttackEnum.CHARGE_SHADY_BRANCHES,
                 "Favorable Current", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
                 0, 0, FactionEnum.GRASS, -100, 0, 10,
-                null, 0, 0, null, 0, 0);
-
-            // Fire
-            attackDict[AttackEnum.TWIN_FLAME] = new AttackInfo(
-                AttackEnum.TWIN_FLAME, "Twin Flame", "Icons/RoleDamage", "AttackSounds/Scorch",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, true,
-                TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
-                2, 0, -100, 10, 0,
-                StatusEnum.BURN, 0.5, 2, null, 0, 0);
-            attackDict[AttackEnum.TURN_UP_THE_HEAT] = new AttackInfo(
-                AttackEnum.TURN_UP_THE_HEAT, "Turn Up The Heat", "Icons/RoleSupport", "AttackSounds/BasicMagic",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD,
-                false, false, false, true,
-                TargetType.RANDOM, 5, TargetType.RANDOM, 5,
-                0, 0, -100, 0, 0,
-                StatusEnum.BURN, 0.25, 2, StatusEnum.SPEED_UP, 0.2, 2);
-            attackDict[AttackEnum.IMMOLATE] = new AttackInfo(
-                AttackEnum.IMMOLATE, "Immolate", "Icons/RoleDamage", "AttackSounds/Scorch",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.TARGET, null, null,
-                false, true, false, true,
-                TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
-                2, 0, -100, 10, 0,
-                StatusEnum.BURN, 2, 3, null, 0, 0);
-            attackDict[AttackEnum.GIFT_OF_LAVA] = new AttackInfo(
-                AttackEnum.GIFT_OF_LAVA, "Gift of Lava", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD,
-                false, false, false, true,
-                TargetType.NONE, 0, TargetType.RANDOM, 10,
-                0, 0, -100, 0, 0,
-                null, 0, 0, StatusEnum.LAVA_ARMOR, 0.3, 3);
-            attackDict[AttackEnum.FIRE_STORM] = new AttackInfo(
-                AttackEnum.FIRE_STORM, "Fire Storm", "Icons/RoleDamage", "AttackSounds/Scorch",
-                AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 10, TargetType.NONE, 0,
-                0.6, 0, -100, 10, 0,
-                StatusEnum.BURN, 0.4, 2, null, 0, 0);
-
-            // Ice
-            attackDict[AttackEnum.CHILLY_WIND] = new AttackInfo(
-                AttackEnum.CHILLY_WIND, "Chilly Wind", "Icons/RoleDamage", "AttackSounds/SnowyWind2",
-                AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, true, true,
-                TargetType.RANDOM, 3, TargetType.NONE, 0,
-                1.2, 0, -100, 10, 0,
-                StatusEnum.CHILL, 0.5, 2, null, 0, 0);
-            attackDict[AttackEnum.ENCASE_IN_ICE] = new AttackInfo(
-                AttackEnum.ENCASE_IN_ICE, "Encase in Ice", "Icons/RoleDamage", "AttackSounds/FrozenMirror",
-                null, null, AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER,
-                false, false, true, true,
-                TargetType.NONE, 0, TargetType.SELF, 1,
-                0, 0, -100, 0, 0,
-                null, 0, 0, StatusEnum.ICE_ARMOR, 1, 3);
-            attackDict[AttackEnum.FLINGING_SPREE] = new AttackInfo(
-                AttackEnum.FLINGING_SPREE, "Flinging Spree", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, true, true,
-                TargetType.LOWEST_HEALTH, 2, TargetType.NONE, 0,
-                2.5, 0, -100, 10, 0,
-                null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.BLIZZARD] = new AttackInfo(
-                AttackEnum.BLIZZARD, "Blizzard", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                AttackParticleEnum.ICE, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 5, TargetType.NONE, 0,
-                0.6, 0, -100, 10, 0,
-                StatusEnum.CHILL, 0.5, 2, null, 0, 0);
-            attackDict[AttackEnum.GIFT_OF_ICE] = new AttackInfo(
-                AttackEnum.GIFT_OF_ICE, "Gift of Ice", "Icons/RoleDamage", "AttackSounds/FrozenMirror",
-                null, null, AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER,
-                false, false, false, true,
-                TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 10,
-                0, 0, -100, 0, 0,
-                null, 0, 0, StatusEnum.ICE_ARMOR, 0.5, 2);
-
-            // Earth
-            attackDict[AttackEnum.DUST_STORM] = new AttackInfo(
-                AttackEnum.DUST_STORM, "Dust Storm", "Icons/RoleDamage", "AttackSounds/BasePhysical",
-                AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, true, true,
-                TargetType.RANDOM, 5, TargetType.NONE, 0,
-                0.6, 0, -100, 10, 0,
-                StatusEnum.BLIND, 0.5, 2, null, 0, 0);
-            attackDict[AttackEnum.ENCASE_IN_ROCK] = new AttackInfo(
-                AttackEnum.ENCASE_IN_ROCK, "Encase in Rock", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                null, null, AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER,
-                false, false, true, true,
-                TargetType.NONE, 0, TargetType.SELF, 1,
-                0, 0, -100, 0, 0,
-                null, 0, 0, StatusEnum.EARTH_ARMOR, 1.5, 3);
-            attackDict[AttackEnum.PEBBLE_SHOWER] = new AttackInfo(
-                AttackEnum.PEBBLE_SHOWER, "Pebble Shower", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, true, true,
-                TargetType.RANDOM, 5, TargetType.NONE, 0,
-                0.6, 0, -100, 10, 0,
-                StatusEnum.BLIND, 0.5, 1, null, 0, 0);
-            attackDict[AttackEnum.GIFT_OF_EARTH] = new AttackInfo(
-                AttackEnum.GIFT_OF_EARTH, "Gift of Earth", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                null, null, AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER,
-                false, false, true, true,
-                TargetType.NONE, 0, TargetType.RANDOM, 5,
-                0, 0, -100, 0, 0,
-                null, 0, 0, StatusEnum.EARTH_ARMOR, 0.5, 3);
-            attackDict[AttackEnum.SPLIT_SKULL] = new AttackInfo(
-                AttackEnum.SPLIT_SKULL, "Split Skull", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
-                null, null, null, null,
-                true, false, true, true,
-                TargetType.FIRST_ALIVE, 1, TargetType.SELF, 1,
-                3, 0, -100, 10, 0,
-                StatusEnum.BLEED, 1, 2, StatusEnum.ATTACK_UP, 0.4, CombatStatus.INDEFINITE);
-
-            // Electric
-            attackDict[AttackEnum.FLASH_OF_LIGHT] = new AttackInfo(
-                AttackEnum.FLASH_OF_LIGHT, "Flash of Light", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 3, TargetType.NONE, 0,
-                1, 0, -100, 10, 0,
-                StatusEnum.BLIND, 0.6, 1, null, 0, 0);
-            attackDict[AttackEnum.CHARGE_TEAM] = new AttackInfo(
-                AttackEnum.CHARGE_TEAM, "Charge Team", "Icons/RoleSupport", "AttackSounds/BasicMagic",
-                null, null, AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER,
-                false, false, false, true,
-                TargetType.NONE, 0, TargetType.LOWEST_ENERGY, 3,
-                0, 0, -100, 0, 40,
-                null, 0, 0, StatusEnum.MAGIC_UP, 0.5, 3);
-            attackDict[AttackEnum.OVERCHARGED_BOLT] = new AttackInfo(
-                AttackEnum.OVERCHARGED_BOLT, "Overcharged Bolt", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, true,
-                TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
-                5, 0, -100, 10, 0,
-                null, 0, 0, null, 0, 0);
-            attackDict[AttackEnum.LIGHTNING_FLASH] = new AttackInfo(
-                AttackEnum.LIGHTNING_FLASH, "Lightning Flash", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 3, TargetType.NONE, 0,
-                1.2, 0, -100, 10, 0,
-                StatusEnum.BLIND, 0.5, 1, null, 0, 0);
-            attackDict[AttackEnum.BRAIN_STORM] = new AttackInfo(
-                AttackEnum.BRAIN_STORM, "Brain Storm", "Icons/RoleDamage", "AttackSounds/BasicMagic",
-                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null,
-                false, true, false, true,
-                TargetType.RANDOM, 5, TargetType.NONE, 0,
-                0.6, 0, -100, 10, 0,
-                StatusEnum.DAZE, 0.4, 1, null, 0, 0);
+                null, 0, 0, StatusEnum.SHADY_BRANCHES, 0.5, 0);
         }
 
         public static AttackInfo GetAttackInfo(AttackEnum attack) {

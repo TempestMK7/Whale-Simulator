@@ -16,10 +16,10 @@ namespace Com.Tempest.Whale.Combat {
         public int currentLevel;
 
         public double health;
-        public double attack;
-        public double magic;
-        public double defense;
-        public double reflection;
+        public double strength;
+        public double power;
+        public double toughness;
+        public double resistance;
         public double speed;
         public double critChance;
         public double deflectionChance;
@@ -40,10 +40,10 @@ namespace Com.Tempest.Whale.Combat {
             currentLevel = accountHero.CurrentLevel;
 
             health = GetBigStat(baseHero.BaseHealth) * 10.0;
-            attack = GetBigStat(baseHero.BaseAttack);
-            magic = GetBigStat(baseHero.BaseMagic);
-            defense = baseHero.BaseDefense;
-            reflection = baseHero.BaseReflection;
+            strength = GetBigStat(baseHero.BaseStrength);
+            power = GetBigStat(baseHero.BasePower);
+            toughness = GetBigStat(baseHero.BaseToughness);
+            resistance = GetBigStat(baseHero.BaseResistance);
             speed = GetBigStat(baseHero.BaseSpeed);
             critChance = baseHero.BaseCritChance;
             deflectionChance = baseHero.BaseDeflectionChance;
@@ -54,10 +54,10 @@ namespace Com.Tempest.Whale.Combat {
 
             foreach (AccountEquipment equipment in equipped) {
                 var baseEquipment = equipment.GetBaseEquipment();
-                attack += baseEquipment.BaseAttack * equipment.Level;
-                magic += baseEquipment.BaseMagic * equipment.Level;
-                defense += equipment.GetDefense();
-                reflection += equipment.GetReflection();
+                strength += baseEquipment.BaseStrength * equipment.Level;
+                power += baseEquipment.BasePower * equipment.Level;
+                toughness += baseEquipment.BaseToughness * equipment.Level;
+                resistance += baseEquipment.BaseResistance * equipment.Level;
                 critChance += baseEquipment.BaseCrit;
                 deflectionChance += baseEquipment.BaseDeflect;
             }
@@ -71,10 +71,10 @@ namespace Com.Tempest.Whale.Combat {
             currentLevel = other.currentLevel;
 
             health = other.health;
-            attack = other.attack;
-            magic = other.magic;
-            defense = other.defense;
-            reflection = other.reflection;
+            strength = other.strength;
+            power = other.power;
+            toughness = other.toughness;
+            resistance = other.resistance;
             speed = other.speed;
             critChance = other.critChance;
             deflectionChance = other.deflectionChance;
@@ -131,7 +131,7 @@ namespace Com.Tempest.Whale.Combat {
             var newStatus = new List<CombatStatus>();
             foreach (CombatStatus status in currentStatus) {
                 var statusDisplay = StatusInfoContainer.GetStatusInfo(status.status);
-                if (!statusDisplay.ModifiesAttack) {
+                if (!statusDisplay.ModifiesOffense) {
                     newStatus.Add(status);
                 }
             }
@@ -144,7 +144,7 @@ namespace Com.Tempest.Whale.Combat {
                 var statusDisplay = StatusInfoContainer.GetStatusInfo(status.status);
                 if (status.turnsRemaining == CombatStatus.INDEFINITE) {
                     newStatus.Add(status);
-                } else if (modifiesAttack == statusDisplay.ModifiesAttack) {
+                } else if (modifiesAttack == statusDisplay.ModifiesOffense) {
                     status.turnsRemaining--;
                     if (status.turnsRemaining > 0) {
                         newStatus.Add(status);
@@ -156,12 +156,12 @@ namespace Com.Tempest.Whale.Combat {
             currentStatus = newStatus;
         }
 
-        public double GetModifiedAttack() {
+        public double GetModifiedStrength() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.ATTACK_UP) {
+                if (status.status == StatusEnum.STRENGTH_UP) {
                     multiplier += status.value;
-                } else if (status.status == StatusEnum.ATTACK_DOWN) {
+                } else if (status.status == StatusEnum.STRENGTH_DOWN) {
                     multiplier -= status.value;
                 } else if (status.status == StatusEnum.CHILL) {
                     multiplier -= status.value;
@@ -169,15 +169,15 @@ namespace Com.Tempest.Whale.Combat {
                     multiplier -= status.value;
                 }
             }
-            return multiplier * attack;
+            return multiplier * strength;
         }
 
-        public double GetAttackModifier() {
+        public double GetStrengthModifier() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.ATTACK_UP) {
+                if (status.status == StatusEnum.STRENGTH_UP) {
                     multiplier += status.value;
-                } else if (status.status == StatusEnum.ATTACK_DOWN) {
+                } else if (status.status == StatusEnum.STRENGTH_DOWN) {
                     multiplier -= status.value;
                 } else if (status.status == StatusEnum.CHILL) {
                     multiplier -= status.value;
@@ -188,12 +188,12 @@ namespace Com.Tempest.Whale.Combat {
             return multiplier;
         }
 
-        public double GetModifiedMagic() {
+        public double GetModifiedPower() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.MAGIC_UP) {
+                if (status.status == StatusEnum.POWER_UP) {
                     multiplier += status.value;
-                } else if (status.status == StatusEnum.MAGIC_DOWN) {
+                } else if (status.status == StatusEnum.POWER_DOWN) {
                     multiplier -= status.value;
                 } else if (status.status == StatusEnum.DAZE) {
                     if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
@@ -209,15 +209,15 @@ namespace Com.Tempest.Whale.Combat {
                     }
                 }
             }
-            return multiplier * magic;
+            return multiplier * power;
         }
 
-        public double GetMagicModifier() {
+        public double GetPowerModifier() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.MAGIC_UP) {
+                if (status.status == StatusEnum.POWER_UP) {
                     multiplier += status.value;
-                } else if (status.status == StatusEnum.MAGIC_DOWN) {
+                } else if (status.status == StatusEnum.POWER_DOWN) {
                     multiplier -= status.value;
                 } else if (status.status == StatusEnum.DAZE) {
                     if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
@@ -236,12 +236,12 @@ namespace Com.Tempest.Whale.Combat {
             return multiplier;
         }
 
-        public double GetModifiedDefense() {
+        public double GetModifiedToughness() {
             var modifier = 0.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.DEFENSE_UP) {
+                if (status.status == StatusEnum.TOUGHNESS_UP) {
                     modifier += status.value;
-                } else if (status.status == StatusEnum.DEFENSE_DOWN) {
+                } else if (status.status == StatusEnum.TOUGHNESS_DOWN) {
                     modifier -= status.value;
                 } else if (status.status == StatusEnum.ICE_ARMOR) {
                     modifier += 0.1;
@@ -253,15 +253,15 @@ namespace Com.Tempest.Whale.Combat {
                     modifier += 0.3;
                 }
             }
-            return defense + modifier;
+            return toughness + modifier;
         }
 
-        public double GetModifiedReflection() {
+        public double GetModifiedResistance() {
             var modifier = 0.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.REFLECTION_UP) {
+                if (status.status == StatusEnum.RESISTANCE_UP) {
                     modifier += status.value;
-                } else if (status.status == StatusEnum.REFLECTION_DOWN) {
+                } else if (status.status == StatusEnum.RESISTANCE_DOWN) {
                     modifier -= status.value;
                 } else if (status.status == StatusEnum.ICE_ARMOR) {
                     modifier += 0.3;
@@ -273,7 +273,7 @@ namespace Com.Tempest.Whale.Combat {
                     modifier += 0.1;
                 }
             }
-            return reflection + modifier;
+            return resistance + modifier;
         }
 
         public double GetModifiedSpeed() {

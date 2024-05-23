@@ -22,20 +22,20 @@ namespace Com.Tempest.Whale.GameObjects {
         EARTH_ARMOR = 13,
         SHADY_BRANCHES = 14,
 
-        ATTACK_UP = 15,
-        MAGIC_UP = 16,
-        ATTACK_MAGIC_UP = 17,
-        DEFENSE_UP = 18,
-        REFLECTION_UP = 19,
-        DEFENSE_REFLECTION_UP = 20,
+        STRENGTH_UP = 15,
+        POWER_UP = 16,
+        OFFENSE_UP = 17,
+        TOUGHNESS_UP = 18,
+        RESISTANCE_UP = 19,
+        DEFENSE_UP = 20,
         SPEED_UP = 21,
 
-        ATTACK_DOWN = 22,
-        MAGIC_DOWN = 23,
-        ATTACK_MAGIC_DOWN = 24,
-        DEFENSE_DOWN = 25,
-        REFLECTION_DOWN = 26,
-        DEFENSE_REFLECTION_DOWN = 27,
+        STRENGTH_DOWN = 22,
+        POWER_DOWN = 23,
+        OFFENSE_DOWN = 24,
+        TOUGHNESS_DOWN = 25,
+        RESISTANCE_DOWN = 26,
+        DEFENSE_DOWN = 27,
         SPEED_DOWN = 28
     }
 
@@ -76,19 +76,19 @@ namespace Com.Tempest.Whale.GameObjects {
             statusDict[StatusEnum.ICE_ARMOR] = new StatusInfo(StatusEnum.ICE_ARMOR, "Ice Arm.", true, false, true);
             statusDict[StatusEnum.EARTH_ARMOR] = new StatusInfo(StatusEnum.EARTH_ARMOR, "Earth Arm.", true, false, true);
             statusDict[StatusEnum.SHADY_BRANCHES] = new StatusInfo(StatusEnum.SHADY_BRANCHES, "Shade", true, false, false);
-            statusDict[StatusEnum.ATTACK_UP] = new StatusInfo(StatusEnum.ATTACK_UP, "Att. Up", true, true, false);
-            statusDict[StatusEnum.MAGIC_UP] = new StatusInfo(StatusEnum.MAGIC_UP, "Mag. Up", true, true, false);
-            statusDict[StatusEnum.ATTACK_MAGIC_UP] = new StatusInfo(StatusEnum.ATTACK_MAGIC_UP, "Off. Up", true, true, false);
+            statusDict[StatusEnum.STRENGTH_UP] = new StatusInfo(StatusEnum.STRENGTH_UP, "Str. Up", true, true, false);
+            statusDict[StatusEnum.POWER_UP] = new StatusInfo(StatusEnum.POWER_UP, "Pow. Up", true, true, false);
+            statusDict[StatusEnum.OFFENSE_UP] = new StatusInfo(StatusEnum.OFFENSE_UP, "Off. Up", true, true, false);
+            statusDict[StatusEnum.TOUGHNESS_UP] = new StatusInfo(StatusEnum.TOUGHNESS_UP, "Tuf. Up", true, false, true);
+            statusDict[StatusEnum.RESISTANCE_UP] = new StatusInfo(StatusEnum.RESISTANCE_UP, "Res. Up", true, false, true);
             statusDict[StatusEnum.DEFENSE_UP] = new StatusInfo(StatusEnum.DEFENSE_UP, "Def. Up", true, false, true);
-            statusDict[StatusEnum.REFLECTION_UP] = new StatusInfo(StatusEnum.REFLECTION_UP, "Ref. Up", true, false, true);
-            statusDict[StatusEnum.DEFENSE_REFLECTION_UP] = new StatusInfo(StatusEnum.DEFENSE_REFLECTION_UP, "Def. Up", true, false, true);
             statusDict[StatusEnum.SPEED_UP] = new StatusInfo(StatusEnum.SPEED_UP, "Spe. Up", true, true, false);
-            statusDict[StatusEnum.ATTACK_DOWN] = new StatusInfo(StatusEnum.ATTACK_DOWN, "Att. Down", false, true, false);
-            statusDict[StatusEnum.MAGIC_DOWN] = new StatusInfo(StatusEnum.MAGIC_DOWN, "Mag. Down", false, true, false);
-            statusDict[StatusEnum.ATTACK_MAGIC_DOWN] = new StatusInfo(StatusEnum.ATTACK_MAGIC_DOWN, "Off. Down", false, true, false);
+            statusDict[StatusEnum.STRENGTH_DOWN] = new StatusInfo(StatusEnum.STRENGTH_DOWN, "Str. Down", false, true, false);
+            statusDict[StatusEnum.POWER_DOWN] = new StatusInfo(StatusEnum.POWER_DOWN, "Pow. Down", false, true, false);
+            statusDict[StatusEnum.OFFENSE_DOWN] = new StatusInfo(StatusEnum.OFFENSE_DOWN, "Off. Down", false, true, false);
+            statusDict[StatusEnum.TOUGHNESS_DOWN] = new StatusInfo(StatusEnum.TOUGHNESS_DOWN, "Tuf. Down", false, false, true);
+            statusDict[StatusEnum.RESISTANCE_DOWN] = new StatusInfo(StatusEnum.RESISTANCE_DOWN, "Res. Down", false, false, true);
             statusDict[StatusEnum.DEFENSE_DOWN] = new StatusInfo(StatusEnum.DEFENSE_DOWN, "Def. Down", false, false, true);
-            statusDict[StatusEnum.REFLECTION_DOWN] = new StatusInfo(StatusEnum.REFLECTION_DOWN, "Ref. Down", false, false, true);
-            statusDict[StatusEnum.DEFENSE_REFLECTION_DOWN] = new StatusInfo(StatusEnum.DEFENSE_REFLECTION_DOWN, "Def. Down", false, false, true);
             statusDict[StatusEnum.SPEED_DOWN] = new StatusInfo(StatusEnum.SPEED_DOWN, "Spe. Down", false, true, false);
         }
 

@@ -132,7 +132,7 @@ namespace Com.Tempest.Whale.Combat {
 
             List<CombatStep> infernoEndOfTurn = new List<CombatStep>();
             foreach (CombatHero inferno in allInferno) {
-                var magicUp = new CombatStatus(StatusEnum.MAGIC_UP, inferno.combatHeroGuid, inferno.combatHeroGuid, 0.05 * burnCount, CombatStatus.INDEFINITE);
+                var magicUp = new CombatStatus(StatusEnum.POWER_UP, inferno.combatHeroGuid, inferno.combatHeroGuid, 0.05 * burnCount, CombatStatus.INDEFINITE, inferno.baseHero.Faction);
                 inferno.AddStatus(magicUp);
 
                 var infernoInstance = new CombatStep(null, null, inferno.combatHeroGuid, inferno.combatHeroGuid);
@@ -419,17 +419,19 @@ namespace Com.Tempest.Whale.Combat {
         public Guid targetGuid;
         public double value;
         public int turnsRemaining;
+        public FactionEnum associatedFaction;
 
         public CombatStatus() {
             // Empty constructor required by NewtonSoft.
         }
 
-        public CombatStatus(StatusEnum status, Guid inflicterGuid, Guid targetGuid, double value, int turnsRemaining) {
+        public CombatStatus(StatusEnum status, Guid inflicterGuid, Guid targetGuid, double value, int turnsRemaining, FactionEnum associatedFaction) {
             this.status = status;
             this.inflicterGuid = inflicterGuid;
             this.targetGuid = targetGuid;
             this.value = value;
             this.turnsRemaining = turnsRemaining;
+            this.associatedFaction = associatedFaction;
         }
 
         public CombatStatus(CombatStatus other) {
@@ -438,6 +440,7 @@ namespace Com.Tempest.Whale.Combat {
             targetGuid = other.targetGuid;
             value = other.value;
             turnsRemaining = other.turnsRemaining;
+            associatedFaction = other.associatedFaction;
         }
 
         public string ToHumanReadableString(Dictionary<Guid, BaseHero> heroDict) {

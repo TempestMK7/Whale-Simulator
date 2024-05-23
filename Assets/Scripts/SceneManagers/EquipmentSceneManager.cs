@@ -170,11 +170,11 @@ public class EquipmentSceneManager : MonoBehaviour {
         equipmentRarityView.SetLevel(0, currentEquipment.Level, true);
         ToggleStatFusePanels(true);
 
-        attackLabel.text = string.Format("Attack: {0}", baseEquipment.BaseAttack * currentEquipment.Level);
-        magicLabel.text = string.Format("Magic: {0}", baseEquipment.BaseMagic * currentEquipment.Level);
+        attackLabel.text = string.Format("Attack: {0}", baseEquipment.BaseStrength * currentEquipment.Level);
+        magicLabel.text = string.Format("Magic: {0}", baseEquipment.BasePower * currentEquipment.Level);
         critLabel.text = string.Format("Critical: {0}%", (baseEquipment.BaseCrit * 100).ToString("0"));
-        defenseLabel.text = string.Format("Defense: {0}", baseEquipment.BaseDefense * currentEquipment.Level);
-        reflectionLabel.text = string.Format("Reflection: {0}", baseEquipment.BaseReflection * currentEquipment.Level);
+        defenseLabel.text = string.Format("Defense: {0}", baseEquipment.BaseToughness * currentEquipment.Level);
+        reflectionLabel.text = string.Format("Reflection: {0}", baseEquipment.BaseResistance * currentEquipment.Level);
         deflectLabel.text = string.Format("Deflect: {0}%", (baseEquipment.BaseDeflect * 100).ToString("0"));
     }
 
