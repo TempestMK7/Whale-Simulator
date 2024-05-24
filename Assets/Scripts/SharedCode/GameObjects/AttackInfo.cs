@@ -117,7 +117,9 @@ namespace Com.Tempest.Whale.GameObjects {
         BASIC_BURNING_FIST = 300, // small
         BASIC_BLAZING_FIST = 301, // medium
         BASIC_JET_TACKLE = 302, // large
-        CHARGE_BURNING_BOULDER = 303, // medium
+        CHARGE_BURNING_STONE = 303, // small
+        CHARGE_BURNING_BOULDER = 304, // medium
+        CHARGE_METEOR = 305, // large
 
         // Fire, Magic
         BASIC_SINGE = 310, // small
@@ -128,9 +130,7 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_INFERNO = 315, // large
 
         // Fire, Physical, Area
-        CHARGE_BURNING_PEBBLES = 320, // small
-        CHARGE_METEOR_SHOWER = 321, // medium
-        CHARGE_ERUPTION = 322, // large
+        CHARGE_ERUPTION = 320, // large
 
         // Fire, Magic, Area
         BASIC_FIRE_BREATH = 330, // small
@@ -141,10 +141,9 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_EXPLOSION = 335, // large
 
         // Fire, Buff
-        CHARGE_FIRE_OF_YOUTH = 340, // small, raises speed
-        CHARGE_BURNING_HASTE = 341, // medium, raises offensive stats
-        CHARGE_RECKLESS_ABANDON = 342, // large, raises all offensive stats, lowers defensive stats
-        CHARGE_KINDLE = 343, // medium, gives energy to team
+        BASIC_KINDLE = 340, // medium, gives energy to 2 allies
+        CHARGE_STOKE_FLAMES = 341, // medium, gives energy to team
+        CHARGE_BURNING_HASTE = 342, // medium, raises offensive stats
 
         // Fire, Debuff
         CHARGE_ASH_CLOUD = 350, // medium, blinds enemy team
@@ -543,6 +542,12 @@ namespace Com.Tempest.Whale.GameObjects {
                     count = targetCount != 1 ? string.Format("{0} {1}", targetCount, plural) : singular;
                     targetting = string.Format("the {0} with the highest energy", count);
                     break;
+                case TargetType.FRONT_ROW_FIRST:
+                    targetting = string.Format("all {0} on the front row", plural);
+                    break;
+                case TargetType.BACK_ROW_FIRST:
+                    targetting = string.Format("all {0} on the back row", plural);
+                    break;
                 case TargetType.SELF:
                     return "self";
                 case TargetType.RANDOM:
@@ -581,10 +586,10 @@ namespace Com.Tempest.Whale.GameObjects {
                     return string.Format(" Chills for {0} {1} reducing offenses and speed by {2}%.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.DAZE:
-                    return string.Format(" Dazes for {0} {1} reducing defenses, crit, and deflection by {2}%.",
+                    return string.Format(" Dazes for {0} {1} reducing offenses, crit, and deflection by {2}%.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.BLIND:
-                    return string.Format(" Blinds for {0} {1} reducing offenses and crit by {2}%.", statusDuration, turnPlural, statusValue);
+                    return string.Format(" Blinds for {0} {1} reducing offenses, crit, and deflection by {2}%.", statusDuration, turnPlural, statusValue);
                 case StatusEnum.ROOT:
                     return string.Format(" Entangles for {0} {1} reducing offenses and speed by {2}%.", statusDuration, turnPlural, statusValue);
 
@@ -1090,6 +1095,162 @@ namespace Com.Tempest.Whale.GameObjects {
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
                 0, 0, FactionEnum.GRASS, -100, 0, 10,
                 null, 0, 0, StatusEnum.SHADY_BRANCHES, 0.5, 0);
+
+            // Fire, physical, single taget
+            attackDict[AttackEnum.BASIC_BURNING_FIST] = new AttackInfo(AttackEnum.BASIC_BURNING_FIST,
+                "Burning Fist", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.FIRE, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_BLAZING_FIST] = new AttackInfo(AttackEnum.BASIC_BLAZING_FIST,
+                "Blazing Fist", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.FIRE, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_JET_TACKLE] = new AttackInfo(AttackEnum.BASIC_JET_TACKLE,
+                "Jet Tackle", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                150, 0, FactionEnum.FIRE, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_BURNING_STONE] = new AttackInfo(AttackEnum.CHARGE_BURNING_STONE,
+                "Burning Stone", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                120, 0, FactionEnum.FIRE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_BURNING_BOULDER] = new AttackInfo(AttackEnum.CHARGE_BURNING_BOULDER,
+                "Burning Boulder", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                200, 0, FactionEnum.FIRE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_METEOR] = new AttackInfo(AttackEnum.CHARGE_METEOR,
+                "Meteor", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                260, 0, FactionEnum.FIRE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Fire, magic, single target
+            attackDict[AttackEnum.BASIC_SINGE] = new AttackInfo(AttackEnum.BASIC_SINGE,
+                "Singe", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                30, 0, FactionEnum.FIRE, 50, 10, 0,
+                StatusEnum.BURN, 30, 2, null, 0, 0);
+            attackDict[AttackEnum.BASIC_SCORCH] = new AttackInfo(AttackEnum.BASIC_SCORCH,
+                "Scorch", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                55, 0, FactionEnum.FIRE, 50, 10, 0,
+                StatusEnum.BURN, 55, 2, null, 0, 0);
+            attackDict[AttackEnum.BASIC_IMMOLATE] = new AttackInfo(AttackEnum.BASIC_IMMOLATE,
+                "Immolate", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                75, 0, FactionEnum.FIRE, 50, 10, 0,
+                StatusEnum.BURN, 55, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_BLAZE] = new AttackInfo(AttackEnum.CHARGE_BLAZE,
+                "Blaze", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BURN, 60, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_INCINERATE] = new AttackInfo(AttackEnum.CHARGE_INCINERATE,
+                "Incinerate", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                100, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BURN, 100, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_INFERNO] = new AttackInfo(AttackEnum.CHARGE_INFERNO,
+                "Inferno", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                100, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BURN, 100, 4, null, 0, 0);
+
+            // Fire, physical, area
+            attackDict[AttackEnum.CHARGE_ERUPTION] = new AttackInfo(AttackEnum.CHARGE_ERUPTION,
+                "Eruption", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                105, 0, FactionEnum.FIRE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Fire, magic, area
+            attackDict[AttackEnum.BASIC_FIRE_BREATH] = new AttackInfo(AttackEnum.BASIC_FIRE_BREATH,
+                "Fire Breath", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                20, 0, FactionEnum.FIRE, 50, 10, 0,
+                StatusEnum.BURN, 20, 2, null, 0, 0);
+            attackDict[AttackEnum.BASIC_LAVA_WAVE] = new AttackInfo(AttackEnum.BASIC_LAVA_WAVE,
+                "Laval Wave", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                35, 0, FactionEnum.FIRE, 50, 10, 0,
+                StatusEnum.BURN, 35, 2, null, 0, 0);
+            attackDict[AttackEnum.BASIC_SEARING_WIND] = new AttackInfo(AttackEnum.BASIC_SEARING_WIND,
+                "Searing Wind", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                30, 0, FactionEnum.FIRE, 50, 10, 0,
+                StatusEnum.BURN, 30, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TWIN_FLAME] = new AttackInfo(AttackEnum.CHARGE_TWIN_FLAME,
+                "Twin Flame", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.RANDOM, 2, TargetType.NONE, 0,
+                35, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BURN, 35, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_FIREBALL] = new AttackInfo(AttackEnum.CHARGE_FIREBALL,
+                "Fireball", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                40, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BURN, 40, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_EXPLOSION] = new AttackInfo(AttackEnum.CHARGE_EXPLOSION,
+                "Explosion", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                45, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BURN, 45, 4, null, 0, 0);
+
+            // Fire, buff
+            attackDict[AttackEnum.BASIC_KINDLE] = new AttackInfo(AttackEnum.BASIC_KINDLE,
+                "Kindle", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_ENERGY, 2,
+                0, 0, FactionEnum.FIRE, 30, 0, 30,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_STOKE_FLAMES] = new AttackInfo(AttackEnum.CHARGE_STOKE_FLAMES,
+                "Stoke Flames", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_ENERGY, 5,
+                0, 0, FactionEnum.FIRE, -100, 0, 50,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_BURNING_HASTE] = new AttackInfo(AttackEnum.CHARGE_BURNING_HASTE,
+                "Burning Haste", "Icons/Attacks/WaterSplash", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
+                0, 0, FactionEnum.FIRE, -100, 0, 10,
+                null, 0, 0, StatusEnum.SPEED_UP, 0.25, 0);
+
+            // Fire, debuff
+            attackDict[AttackEnum.CHARGE_ASH_CLOUD] = new AttackInfo(AttackEnum.CHARGE_ASH_CLOUD,
+                "Ash Cloud", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                30, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.BLIND, 0.2, 3, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_MELT_ARMOR] = new AttackInfo(AttackEnum.CHARGE_MELT_ARMOR,
+                "Melt Armor", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.FIRE, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                50, 0, FactionEnum.FIRE, -100, 10, 0,
+                StatusEnum.DEFENSE_DOWN, 0.4, 3, null, 0, 0);
         }
 
         public static AttackInfo GetAttackInfo(AttackEnum attack) {

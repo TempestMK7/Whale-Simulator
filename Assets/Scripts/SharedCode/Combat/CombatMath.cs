@@ -185,6 +185,32 @@ namespace Com.Tempest.Whale.Combat {
             return allLiving;
         }
 
+        public static List<CombatHero> FrontRowFirst(CombatHero[] heroes, int targetCount) {
+            var output = new List<CombatHero>();
+            if (heroes[0].IsAlive() || heroes[1].IsAlive()) {
+                if (heroes[0].IsAlive()) output.Add(heroes[0]);
+                if (heroes[1].IsAlive()) output.Add(heroes[1]);
+            } else {
+                if (heroes[2].IsAlive()) output.Add(heroes[2]);
+                if (heroes[3].IsAlive()) output.Add(heroes[3]);
+                if (heroes[4].IsAlive()) output.Add(heroes[4]);
+            }
+            return output;
+        }
+
+        public static List<CombatHero> BackRowFirst(CombatHero[] heroes, int targetCount) {
+            var output = new List<CombatHero>();
+            if (heroes[2].IsAlive() || heroes[3].IsAlive() || heroes[4].IsAlive()) {
+                if (heroes[2].IsAlive()) output.Add(heroes[2]);
+                if (heroes[3].IsAlive()) output.Add(heroes[3]);
+                if (heroes[4].IsAlive()) output.Add(heroes[4]);
+            } else {
+                if (heroes[0].IsAlive()) output.Add(heroes[0]);
+                if (heroes[1].IsAlive()) output.Add(heroes[1]);
+            }
+            return output;
+        }
+
         public static List<CombatHero> AllLiving(CombatHero[] heroes) {
             var newList = new List<CombatHero>();
             foreach (CombatHero hero in heroes) {
@@ -228,6 +254,12 @@ namespace Com.Tempest.Whale.Combat {
                     break;
                 case TargetType.HIGHEST_ENERGY:
                     targets.AddRange(HighestEnergy(potentialTargets, targetCount));
+                    break;
+                case TargetType.FRONT_ROW_FIRST:
+                    targets.AddRange(FrontRowFirst(potentialTargets, targetCount));
+                    break;
+                case TargetType.BACK_ROW_FIRST:
+                    targets.AddRange(BackRowFirst(potentialTargets, targetCount));
                     break;
             }
             return targets;
