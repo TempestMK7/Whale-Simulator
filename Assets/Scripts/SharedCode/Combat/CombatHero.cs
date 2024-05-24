@@ -123,6 +123,13 @@ namespace Com.Tempest.Whale.Combat {
             return false;
         }
 
+        public CombatStatus GetStatus(StatusEnum status) {
+            foreach (CombatStatus container in currentStatus) {
+                if (container.status == status) return container;
+            }
+            return null;
+        }
+
         public void AddStatus(CombatStatus status) {
             currentStatus.Add(status);
         }

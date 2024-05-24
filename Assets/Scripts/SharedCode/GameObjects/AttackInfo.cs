@@ -318,6 +318,12 @@ namespace Com.Tempest.Whale.GameObjects {
             var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
             var defenseValue = IsPhysical ? target.GetModifiedToughness() : target.GetModifiedResistance();
             var damage = CombatMath.Damage(attackValue, defenseValue, BaseDamage, hasStab, hitType, hitEffectivity);
+
+            var shadyBranches = target.GetStatus(StatusEnum.SHADY_BRANCHES);
+            if (shadyBranches != null && EnemyTargetCount > 1) {
+                damage *= shadyBranches.value;
+            }
+
             target.currentHealth -= damage;
             target.currentEnergy += TargetEnergyGained;
 
@@ -376,7 +382,6 @@ namespace Com.Tempest.Whale.GameObjects {
                         var poisonPow = attacker.GetModifiedPower();
                         var poisonDef = target.GetModifiedResistance();
                         statusValue = CombatMath.Damage(poisonPow, poisonDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity);
-                        statusValue *= attacker.GetModifiedPower();
                         break;
                     case StatusEnum.CHILL:
                         if (target.HasStatus(StatusEnum.DOWSE)) {
@@ -1019,52 +1024,52 @@ namespace Com.Tempest.Whale.GameObjects {
                 "Regrow", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 2,
-                0, 35, FactionEnum.GRASS, 50, 0, 10,
-                null, 0, 0, null, 0, 0);
+                0, 25, FactionEnum.GRASS, 50, 0, 10,
+                null, 0, 0, StatusEnum.REGENERATION, 25, 1);
             attackDict[AttackEnum.BASIC_REJUVENATE] = new AttackInfo(AttackEnum.BASIC_REJUVENATE,
                 "Rejuvenate", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 3,
-                0, 55, FactionEnum.GRASS, 50, 0, 10,
-                null, 0, 0, null, 0, 0);
+                0, 25, FactionEnum.GRASS, 50, 0, 10,
+                null, 0, 0, StatusEnum.REGENERATION, 25, 4);
             attackDict[AttackEnum.BASIC_REVITALIZE] = new AttackInfo(AttackEnum.BASIC_REVITALIZE,
                 "Revitalize", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
-                0, 60, FactionEnum.GRASS, 50, 0, 10,
-                null, 0, 0, null, 0, 0);
+                0, 25, FactionEnum.GRASS, 50, 0, 10,
+                null, 0, 0, StatusEnum.REGENERATION, 25, 4);
             attackDict[AttackEnum.CHARGE_PEACEFUL_MEADOW] = new AttackInfo(AttackEnum.CHARGE_PEACEFUL_MEADOW,
                 "Peaceful Meadow", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
-                0, 45, FactionEnum.GRASS, -100, 0, 10,
-                null, 0, 0, null, 0, 0);
+                0, 25, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, StatusEnum.REGENERATION, 25, 2);
             attackDict[AttackEnum.CHARGE_TRANQUIL_GROVE] = new AttackInfo(AttackEnum.CHARGE_TRANQUIL_GROVE,
                 "Tranquil Grove", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
-                0, 80, FactionEnum.GRASS, -100, 0, 10,
-                null, 0, 0, null, 0, 0);
+                0, 35, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, StatusEnum.REGENERATION, 35, 4);
             attackDict[AttackEnum.CHARGE_SERENE_FOREST] = new AttackInfo(AttackEnum.CHARGE_SERENE_FOREST,
                 "Serene Forest", "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
                 null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, false,
                 false, TargetType.NONE, 0, TargetType.LOWEST_HEALTH, 5,
-                0, 105, FactionEnum.GRASS, -100, 0, 10,
-                null, 0, 0, null, 0, 0);
+                0, 45, FactionEnum.GRASS, -100, 0, 10,
+                null, 0, 0, StatusEnum.REGENERATION, 45, 4);
 
             // Grass, debuff
             attackDict[AttackEnum.CHARGE_INVOKE_ALLERGIES] = new AttackInfo(AttackEnum.CHARGE_INVOKE_ALLERGIES,
                 "Invoke Allergies", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
                 AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, null, null, false,
                 false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
-                0, 0, FactionEnum.GRASS, -100, 10, 0,
-                StatusEnum.POISON, 40, 3, null, 0, 0);
+                35, 0, FactionEnum.GRASS, -100, 10, 0,
+                StatusEnum.POISON, 35, 4, null, 0, 0);
             attackDict[AttackEnum.CHARGE_TOXIC_SPORES] = new AttackInfo(AttackEnum.CHARGE_TOXIC_SPORES,
                 "Toxic Spores", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
                 AttackParticleEnum.GRASS, ParticleOriginEnum.OVERHEAD, null, null, false,
                 false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
-                0, 0, FactionEnum.GRASS, -100, 10, 0,
-                StatusEnum.POISON, 55, 3, null, 0, 0);
+                45, 0, FactionEnum.GRASS, -100, 10, 0,
+                StatusEnum.POISON, 45, 3, null, 0, 0);
 
             // Grass, buff
             attackDict[AttackEnum.CHARGE_BARKSKIN] = new AttackInfo(AttackEnum.CHARGE_BARKSKIN,
