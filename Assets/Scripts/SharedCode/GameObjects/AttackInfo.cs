@@ -191,7 +191,9 @@ namespace Com.Tempest.Whale.GameObjects {
         BASIC_BOULDER = 502, // large
         CHARGE_STONE_FIST = 503, // small
         CHARGE_ROLLING_TACKLE = 504, // medium
-        CHARGE_SMASH_TO_SMITHEREENS = 505, // large
+        CHARGE_FALLING_ROCK_TRAP = 505, // medium, causes daze
+        CHARGE_SMASH_TO_SMITHEREENS = 506, // large
+        CHARGE_RENDING_STONE = 507, // large, causes bleed
 
         // Earth, Magic
 
@@ -203,14 +205,14 @@ namespace Com.Tempest.Whale.GameObjects {
 
         // Earth, Magic, Area
 
-        // Earth, 
+        // Earth, Buff
         CHARGE_HARDEN_FIST = 540, // small, offensive buff
-        CHARGE_STRENGTH_OF_EARTH = 541, // medium, offensive buff
+        CHARGE_GIFT_OF_EARTH = 541, // medium, offensive buff
         CHARGE_HIGH_GROUND = 542, // large, offensive and defensive buff
-        CHARGE_ROCKSKIN = 543, // medium, defensive buff
 
         // Earth, Debuff
         CHARGE_CHOKING_DUST = 550, // medium, blinds enemy team
+        CHARGE_SHATTER_GLASS = 551, // medium, reduces highest resistance
 
         // Electric, Physical
 
@@ -229,6 +231,7 @@ namespace Com.Tempest.Whale.GameObjects {
         BASIC_CHAIN_LIGHTNING = 631, // large
         CHARGE_ELECTRICAL_STORM = 632, // medium
         CHARGE_TEMPEST = 633, // large
+        CHARGE_STRIKE_TWICE = 634, // large, random targets
 
         // Electric, Buff
         CHARGE_OVERCHARGE = 640, // medium, gives energy to team
@@ -236,8 +239,7 @@ namespace Com.Tempest.Whale.GameObjects {
         // Electric, Debuff
         BASIC_POWER_DRAIN = 650, // medium, steals energy from highest target
         CHARGE_REVERSE_POLARITY = 651, // medium, turns healing into damage
-        CHARGE_BRAINSTORM = 652, // medium, stuns with highest energy
-        CHARGE_BLINDING_FLASH = 653, // medium, blinds enemy team
+        CHARGE_BRAINSTORM = 652, // medium, high stun low damage
     }
 
     public class AttackInfo {
@@ -343,7 +345,6 @@ namespace Com.Tempest.Whale.GameObjects {
                 return allInstances;
             }
 
-            // TODO: Figure out status math.
             if (TargetStatus != null) {
                 switch (target.baseHero.PassiveAbility) {
                     case AbilityEnum.WATER_BODY:
@@ -448,7 +449,6 @@ namespace Com.Tempest.Whale.GameObjects {
                 return step;
             }
 
-            // TODO: Figure out status math.
             if (AllyStatus != null) {
                 var bestowedStatus = AllyStatus.GetValueOrDefault();
                 var statusValue = AllyStatusValue;
@@ -462,6 +462,9 @@ namespace Com.Tempest.Whale.GameObjects {
                         break;
                     case StatusEnum.THORN_ARMOR:
                         statusValue = CombatMath.Damage(attacker.GetModifiedStrength(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL);
+                        break;
+                    case StatusEnum.EARTH_ARMOR:
+                        statusValue = attacker.GetModifiedToughness() * statusValue;
                         break;
                     default:
                         break;
@@ -596,20 +599,22 @@ namespace Com.Tempest.Whale.GameObjects {
                 // TODO: Figure out status math.
                 case StatusEnum.REGENERATION:
                     return string.Format(" Bestows Regeneration for {0} {1}, healing with a base power of {2} per turn.",
-                        statusDuration, turnPlural, statusValue);
+                        statusDuration, turnPlural, value);
                 case StatusEnum.THORN_ARMOR:
                     return string.Format(" Bestows Thorn Armor for {0} {1}.  Whenever a hero with thorn armor is attacked, the attacker takes damage with a base strength of {2}.",
-                        statusDuration, turnPlural, statusValue);
+                        statusDuration, turnPlural, value);
                 case StatusEnum.LAVA_ARMOR:
                     return string.Format(" Bestows Lava Armor for {0} {1}.  Whenever a hero with lava armor is attacked, the attacker is burned for 2 turns, taking damage with a base power of {2} each turn.",
-                        statusDuration, turnPlural, statusValue);
+                        statusDuration, turnPlural, value);
                 case StatusEnum.ICE_ARMOR:
                     return string.Format(" Bestows Ice Armor for {0} {1}.  Whenever a hero with ice armor is attacked, the attacker is chilled by {2}% for 2 turns.",
                         statusDuration, turnPlural, statusValue);
                 case StatusEnum.EARTH_ARMOR:
-                    return string.Format(" Bestows Earth Armor for {0} {1}, raising toughness by {2}.", statusDuration, turnPlural, statusValue);
+                    return string.Format(" Bestows Earth Armor for {0} {1}, raising toughness by {2}% of the user's toughness.", statusDuration, turnPlural, statusValue);
                 case StatusEnum.SHADY_BRANCHES:
                     return string.Format(" Bestows Shady Branches for {0} {1}, reducing damage taken from area attacks by {2}%.", statusDuration, turnPlural, statusValue);
+                case StatusEnum.HIGH_GROUND:
+                    return string.Format(" Bestows High Ground for {0} {1}, increasing offensive and defensive stats by {2}%.", statusDuration, turnPlural, statusValue);
                 default:
                     return "";
             }
@@ -1342,7 +1347,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 70, 0, FactionEnum.ICE, 50, 10, 0,
                 null, 0, 0, null, 0, 0);
             attackDict[AttackEnum.BASIC_SUB_ZERO_MACHINE_GUN] = new AttackInfo(AttackEnum.BASIC_SUB_ZERO_MACHINE_GUN,
-                "Zub Zero Machine Gun", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                "Sub Zero Machine Gun", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
                 AttackParticleEnum.ICE, ParticleOriginEnum.ATTACKER, null, null, false,
                 true, TargetType.RANDOM, 3, TargetType.NONE, 0,
                 95, 0, FactionEnum.ICE, 50, 10, 0,
@@ -1407,6 +1412,214 @@ namespace Com.Tempest.Whale.GameObjects {
                 false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
                 0, 0, FactionEnum.ICE, -100, 10, 0,
                 StatusEnum.OFFENSE_DOWN, 0.4, 2, null, 0, 0);
+
+            // Earth, physical, single target
+            attackDict[AttackEnum.BASIC_PEBBLE] = new AttackInfo(AttackEnum.BASIC_PEBBLE,
+                "Pebble", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                60, 0, FactionEnum.EARTH, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_JAGGED_ROCK] = new AttackInfo(AttackEnum.BASIC_JAGGED_ROCK,
+                "Jagged Rock", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                110, 0, FactionEnum.EARTH, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.BASIC_BOULDER] = new AttackInfo(AttackEnum.BASIC_BOULDER,
+                "Boulder", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                150, 0, FactionEnum.EARTH, 50, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_STONE_FIST] = new AttackInfo(AttackEnum.CHARGE_STONE_FIST,
+                "Stone Fist", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                120, 0, FactionEnum.EARTH, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_ROLLING_TACKLE] = new AttackInfo(AttackEnum.CHARGE_ROLLING_TACKLE,
+                "Rolling Tackle", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                200, 0, FactionEnum.EARTH, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_FALLING_ROCK_TRAP] = new AttackInfo(AttackEnum.CHARGE_ROLLING_TACKLE,
+                "Falling Rock Trap", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
+                125, 0, FactionEnum.EARTH, -100, 10, 0,
+                StatusEnum.DAZE, 0.5, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_SMASH_TO_SMITHEREENS] = new AttackInfo(AttackEnum.CHARGE_SMASH_TO_SMITHEREENS,
+                "Smash to Smithereens", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                260, 0, FactionEnum.EARTH, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_RENDING_STONE] = new AttackInfo(AttackEnum.CHARGE_SMASH_TO_SMITHEREENS,
+                "Rending Stone", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                0, 0, FactionEnum.EARTH, -100, 10, 0,
+                StatusEnum.BLEED, 130, 3, null, 0, 0);
+
+            // Earth, physical, area
+            attackDict[AttackEnum.BASIC_DUST_STORM] = new AttackInfo(AttackEnum.BASIC_DUST_STORM,
+                "Dust Storm", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.RANDOM, 3, TargetType.NONE, 0,
+                30, 0, FactionEnum.EARTH, 50, 10, 0,
+                StatusEnum.BLIND, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.BASIC_ROCK_SLIDE] = new AttackInfo(AttackEnum.BASIC_ROCK_SLIDE,
+                "Rock Slide", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.RANDOM, 3, TargetType.NONE, 0,
+                50, 0, FactionEnum.EARTH, 50, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TREMOR] = new AttackInfo(AttackEnum.CHARGE_TREMOR,
+                "Tremor", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                80, 0, FactionEnum.EARTH, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_EARTHQUAKE] = new AttackInfo(AttackEnum.CHARGE_EARTHQUAKE,
+                "Earthquake", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                AttackParticleEnum.EARTH, ParticleOriginEnum.ATTACKER, null, null, false,
+                true, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                120, 0, FactionEnum.EARTH, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Earth, Buff
+            attackDict[AttackEnum.CHARGE_HARDEN_FIST] = new AttackInfo(AttackEnum.CHARGE_HARDEN_FIST,
+                "Harden Fist", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.HIGHEST_ENERGY, 2,
+                0, 0, FactionEnum.EARTH, -100, 0, 10,
+                null, 0, 0, StatusEnum.STRENGTH_UP, 0.5, 2);
+            attackDict[AttackEnum.CHARGE_GIFT_OF_EARTH] = new AttackInfo(AttackEnum.CHARGE_GIFT_OF_EARTH,
+                "Gift of Earth", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.RANDOM, 5,
+                0, 0, FactionEnum.EARTH, -100, 0, 10,
+                null, 0, 0, StatusEnum.EARTH_ARMOR, 0.3, 2);
+            attackDict[AttackEnum.CHARGE_HIGH_GROUND] = new AttackInfo(AttackEnum.CHARGE_HIGH_GROUND,
+                "High Ground", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.RANDOM, 5,
+                0, 0, FactionEnum.EARTH, -100, 0, 10,
+                null, 0, 0, StatusEnum.HIGH_GROUND, 0.2, 2);
+
+            // Earth, Debuff
+            attackDict[AttackEnum.CHARGE_CHOKING_DUST] = new AttackInfo(AttackEnum.CHARGE_CHOKING_DUST,
+                "Choking Dust", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.EARTH, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                20, 0, FactionEnum.EARTH, -100, 10, 0,
+                StatusEnum.BLIND, 0.4, 3, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_SHATTER_GLASS] = new AttackInfo(AttackEnum.CHARGE_SHATTER_GLASS,
+                "Shatter Glass", "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.HIGHEST_RESISTANCE, 1, TargetType.NONE, 0,
+                100, 0, FactionEnum.EARTH, -100, 10, 0,
+                StatusEnum.RESISTANCE_DOWN, 0.4, 3, null, 0, 0);
+
+            // Electric, Magic, Single Target
+            attackDict[AttackEnum.BASIC_SPARK] = new AttackInfo(AttackEnum.BASIC_SPARK,
+                "Spark", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                50, 0, FactionEnum.ELECTRIC, 50, 10, 0,
+                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
+            attackDict[AttackEnum.BASIC_SHOCK] = new AttackInfo(AttackEnum.BASIC_SHOCK,
+                "Shock", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                90, 0, FactionEnum.ELECTRIC, 50, 10, 0,
+                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
+            attackDict[AttackEnum.BASIC_ZAP] = new AttackInfo(AttackEnum.BASIC_ZAP,
+                "Zap", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                120, 0, FactionEnum.ELECTRIC, 50, 10, 0,
+                StatusEnum.DAZE, 0.2, 1, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_LIGHTNING_BOLT] = new AttackInfo(AttackEnum.CHARGE_LIGHTNING_BOLT,
+                "Lightning Bolt", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                100, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_LIGHTNING_BLAST] = new AttackInfo(AttackEnum.CHARGE_LIGHTNING_BLAST,
+                "Lightning Blast", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 1, TargetType.NONE, 0,
+                160, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_LASER_BEAM] = new AttackInfo(AttackEnum.CHARGE_LASER_BEAM,
+                "Laser Beam", "Icons/RoleDamage", "AttackSounds/BasicMagic",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.LOWEST_HEALTH, 1, TargetType.NONE, 0,
+                240, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // Electric, Magic, Area
+            attackDict[AttackEnum.BASIC_FORKED_LIGHTNING] = new AttackInfo(AttackEnum.BASIC_FORKED_LIGHTNING,
+                "Forked Lightning", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.RANDOM, 2, TargetType.NONE, 0,
+                75, 0, FactionEnum.ELECTRIC, 50, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.BASIC_CHAIN_LIGHTNING] = new AttackInfo(AttackEnum.BASIC_FORKED_LIGHTNING,
+                "Chain Lightning", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.RANDOM, 3, TargetType.NONE, 0,
+                75, 0, FactionEnum.ELECTRIC, 50, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_ELECTRICAL_STORM] = new AttackInfo(AttackEnum.CHARGE_ELECTRICAL_STORM,
+                "Electrical Storm", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FRONT_ROW_FIRST, 5, TargetType.NONE, 0,
+                75, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_TEMPEST] = new AttackInfo(AttackEnum.CHARGE_TEMPEST,
+                "Tempest", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                95, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_STRIKE_TWICE] = new AttackInfo(AttackEnum.CHARGE_STRIKE_TWICE,
+                "Strike Twice", "Icons/Attacks/WaterSplash", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.ATTACKER, null, null, false,
+                false, TargetType.RANDOM, 2, TargetType.NONE, 0,
+                160, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.DAZE, 0.2, 2, null, 0, 0);
+
+            // Electric, Buff
+            attackDict[AttackEnum.CHARGE_OVERCHARGE] = new AttackInfo(AttackEnum.CHARGE_OVERCHARGE,
+                "Overcharge", "Icons/Attacks/WaterScale", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, false,
+                false, TargetType.NONE, 0, TargetType.LOWEST_ENERGY, 3,
+                0, 0, FactionEnum.ELECTRIC, -100, 0, 80,
+                null, 0, 0, null, 0, 0);
+
+            // Electric, Debuff
+            attackDict[AttackEnum.BASIC_POWER_DRAIN] = new AttackInfo(AttackEnum.BASIC_POWER_DRAIN,
+                "Power Drain", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.HIGHEST_ENERGY, 1, TargetType.NONE, 0,
+                0, 0, FactionEnum.ELECTRIC, 80, -30, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_REVERSE_POLARITY] = new AttackInfo(AttackEnum.CHARGE_REVERSE_POLARITY,
+                "Reverse Polarity", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
+                0, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.REVERSE_POLARITY, 0, 2, null, 0, 0);
+            attackDict[AttackEnum.CHARGE_BRAINSTORM] = new AttackInfo(AttackEnum.CHARGE_BRAINSTORM,
+                "Brainstorm", "Icons/Attacks/CloudSwirl", "AttackSounds/VaporCloud",
+                AttackParticleEnum.ELECTRIC, ParticleOriginEnum.OVERHEAD, null, null, false,
+                false, TargetType.HIGHEST_POWER, 1, TargetType.NONE, 0,
+                0, 0, FactionEnum.ELECTRIC, -100, 10, 0,
+                StatusEnum.POWER_DOWN, 0.5, 2, null, 0, 0);
         }
 
         public static AttackInfo GetAttackInfo(AttackEnum attack) {

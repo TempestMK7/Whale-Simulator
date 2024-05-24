@@ -185,6 +185,70 @@ namespace Com.Tempest.Whale.Combat {
             return allLiving;
         }
 
+        public static List<CombatHero> HighestStrength(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestStrength = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedStrength() < lowestStrength) {
+                        lowestStrength = hero.GetModifiedStrength();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> HighestPower(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestPower = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedPower() < lowestPower) {
+                        lowestPower = hero.GetModifiedPower();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> HighestToughness(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestToughness = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedToughness() < lowestToughness) {
+                        lowestToughness = hero.GetModifiedToughness();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> HighestResistance(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestResistance = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedResistance() < lowestResistance) {
+                        lowestResistance = hero.GetModifiedResistance();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
         public static List<CombatHero> FrontRowFirst(CombatHero[] heroes, int targetCount) {
             var output = new List<CombatHero>();
             if (heroes[0].IsAlive() || heroes[1].IsAlive()) {
@@ -260,6 +324,18 @@ namespace Com.Tempest.Whale.Combat {
                     break;
                 case TargetType.BACK_ROW_FIRST:
                     targets.AddRange(BackRowFirst(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_STRENGTH:
+                    targets.AddRange(HighestStrength(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_POWER:
+                    targets.AddRange(HighestPower(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_TOUGHNESS:
+                    targets.AddRange(HighestToughness(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_RESISTANCE:
+                    targets.AddRange(HighestResistance(potentialTargets, targetCount));
                     break;
             }
             return targets;

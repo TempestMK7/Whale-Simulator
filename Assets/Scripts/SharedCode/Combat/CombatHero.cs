@@ -180,7 +180,8 @@ namespace Com.Tempest.Whale.Combat {
                     multiplier -= status.value;
                 }
             }
-            return multiplier * strength;
+            var baseValue = HasStatus(StatusEnum.REVERSE_POLARITY) ? power : strength;
+            return multiplier * baseValue;
         }
 
         public double GetModifiedPower() {
@@ -198,7 +199,8 @@ namespace Com.Tempest.Whale.Combat {
                     }
                 }
             }
-            return multiplier * power;
+            var baseValue = HasStatus(StatusEnum.REVERSE_POLARITY) ? strength : power;
+            return multiplier * baseValue;
         }
 
         public double GetModifiedToughness() {
