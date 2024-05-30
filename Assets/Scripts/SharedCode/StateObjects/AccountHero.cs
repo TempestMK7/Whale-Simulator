@@ -13,6 +13,10 @@ namespace Com.Tempest.Whale.StateObjects {
         public int AwakeningLevel { get; set; }
         public int CurrentLevel { get; set; }
 
+        public AttackEnum? CurrentBasicAttack { get; set; }
+        public AttackEnum? CurrentChargeAttack { get; set; }
+        public List<AttackEnum> UnlockedAttacks { get; set; }
+
         [NonSerialized] private BaseHero baseHero;
 
         public AccountHero() {
@@ -25,6 +29,7 @@ namespace Com.Tempest.Whale.StateObjects {
             baseHero = BaseHeroContainer.GetBaseHero(HeroType);
             AwakeningLevel = baseHero.Rarity;
             CurrentLevel = 1;
+            UnlockedAttacks = new List<AttackEnum>();
         }
 
         public void LoadBaseHero() {
@@ -44,6 +49,14 @@ namespace Com.Tempest.Whale.StateObjects {
 
         public CombatHero GetCombatHero(List<AccountEquipment> fakeEquipment) {
             return new CombatHero(this, fakeEquipment);
+        }
+
+        public AttackEnum GetBasicAttackEnum() {
+            return CurrentBasicAttack ?? (AwakeningLevel >= 6 ? baseHero.SimpleBasic : baseHero.IntermediateBasic);
+        }
+
+        public AttackEnum GetChargeAttackEnum() {
+            return CurrentChargeAttack ?? (AwakeningLevel >= 6 ? baseHero.SimpleCharge : baseHero.IntermediateCharge);
         }
 
         public int CompareTo(AccountHero other) {

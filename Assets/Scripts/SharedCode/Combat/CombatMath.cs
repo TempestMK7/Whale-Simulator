@@ -20,10 +20,13 @@ namespace Com.Tempest.Whale.Combat {
 
         #region Hit calculation and modifiers.
 
-        public static double Damage(double modifiedAttack, double modifiedDefense, HitType hitType, HitEffectivity hitEffectivity) {
-            var usableDefense = modifiedDefense;
-            if (usableDefense > 0.9) usableDefense = 0.9;
-            var damage = modifiedAttack * (1.0 - usableDefense);
+        public static double Damage(double modifiedAttack, double modifiedDefense, double baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity) {
+            var damage = baseDamage * (modifiedAttack / modifiedDefense);
+
+            if (hasStab) {
+                damage *= 1.333;
+            }
+
             if (hitType == HitType.CRITICAL) {
                 damage *= 1.5;
             } else if (hitType == HitType.DEFLECTION) {
@@ -31,11 +34,30 @@ namespace Com.Tempest.Whale.Combat {
             }
 
             if (hitEffectivity == HitEffectivity.EMPOWERED) {
-                damage *= 1.2;
+                damage *= 1.333;
             } else if (hitEffectivity == HitEffectivity.RESISTED) {
-                damage *= 0.8;
+                damage *= 0.75;
             }
+
             return damage;
+        }
+
+        public static double Healing(double modifiedAttack, double attackerLevel, double targetAwakening, double baseHealing, bool hasStab, HitType hitType) {
+            // This will likely need work later.  Because I do not have a defense value to divide attack by,
+            // I take the average defense a target would have at the attacker's level and defender's awakening.
+            var effectiveDefense = 75.0 + (2.75 * attackerLevel);
+            effectiveDefense *= Math.Pow(1.1, targetAwakening);
+            var healing = baseHealing * (modifiedAttack / effectiveDefense);
+
+            if (hasStab) {
+                healing *= 1.333;
+            }
+
+            if (hitType == HitType.CRITICAL) {
+                healing *= 1.5;
+            }
+
+            return healing;
         }
 
         public static HitType RollHitType(CombatHero attacker, CombatHero defender) {
@@ -64,11 +86,9 @@ namespace Com.Tempest.Whale.Combat {
             }
         }
 
-        public static HitEffectivity GetEffectivity(CombatHero attacker, CombatHero target) {
-            var attackerFaction = attacker.baseHero.Faction;
-            var targetFaction = target.baseHero.Faction;
-            if (IsEmpowered(attackerFaction, targetFaction)) return HitEffectivity.EMPOWERED;
-            if (IsEmpowered(targetFaction, attackerFaction)) return HitEffectivity.RESISTED;
+        public static HitEffectivity GetEffectivity(FactionEnum moveFaction, FactionEnum targetFaction) {
+            if (IsEmpowered(moveFaction, targetFaction)) return HitEffectivity.EMPOWERED;
+            if (IsEmpowered(targetFaction, moveFaction)) return HitEffectivity.RESISTED;
             return HitEffectivity.NORMAL;
         }
 
@@ -168,6 +188,96 @@ namespace Com.Tempest.Whale.Combat {
             return allLiving;
         }
 
+        public static List<CombatHero> HighestStrength(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestStrength = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedStrength() < lowestStrength) {
+                        lowestStrength = hero.GetModifiedStrength();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> HighestPower(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestPower = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedPower() < lowestPower) {
+                        lowestPower = hero.GetModifiedPower();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> HighestToughness(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestToughness = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedToughness() < lowestToughness) {
+                        lowestToughness = hero.GetModifiedToughness();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> HighestResistance(CombatHero[] heroes, int targetCount) {
+            var allLiving = AllLiving(heroes);
+            while (allLiving.Count > targetCount) {
+                double lowestResistance = double.MaxValue;
+                CombatHero selection = null;
+                foreach (CombatHero hero in allLiving) {
+                    if (hero.GetModifiedResistance() < lowestResistance) {
+                        lowestResistance = hero.GetModifiedResistance();
+                        selection = hero;
+                    }
+                }
+                allLiving.Remove(selection);
+            }
+            return allLiving;
+        }
+
+        public static List<CombatHero> FrontRowFirst(CombatHero[] heroes, int targetCount) {
+            var output = new List<CombatHero>();
+            if (heroes[0].IsAlive() || heroes[1].IsAlive()) {
+                if (heroes.Length > 0 && heroes[0].IsAlive()) output.Add(heroes[0]);
+                if (heroes.Length > 1 && heroes[1].IsAlive()) output.Add(heroes[1]);
+            } else {
+                if (heroes.Length > 2 && heroes[2].IsAlive()) output.Add(heroes[2]);
+                if (heroes.Length > 3 && heroes[3].IsAlive()) output.Add(heroes[3]);
+                if (heroes.Length > 4 && heroes[4].IsAlive()) output.Add(heroes[4]);
+            }
+            return output;
+        }
+
+        public static List<CombatHero> BackRowFirst(CombatHero[] heroes, int targetCount) {
+            var output = new List<CombatHero>();
+            if (heroes[2].IsAlive() || heroes[3].IsAlive() || heroes[4].IsAlive()) {
+                if (heroes.Length > 2 && heroes[2].IsAlive()) output.Add(heroes[2]);
+                if (heroes.Length > 3 && heroes[3].IsAlive()) output.Add(heroes[3]);
+                if (heroes.Length > 4 && heroes[4].IsAlive()) output.Add(heroes[4]);
+            } else {
+                if (heroes.Length > 0 && heroes[0].IsAlive()) output.Add(heroes[0]);
+                if (heroes.Length > 1 && heroes[1].IsAlive()) output.Add(heroes[1]);
+            }
+            return output;
+        }
+
         public static List<CombatHero> AllLiving(CombatHero[] heroes) {
             var newList = new List<CombatHero>();
             foreach (CombatHero hero in heroes) {
@@ -212,6 +322,24 @@ namespace Com.Tempest.Whale.Combat {
                 case TargetType.HIGHEST_ENERGY:
                     targets.AddRange(HighestEnergy(potentialTargets, targetCount));
                     break;
+                case TargetType.FRONT_ROW_FIRST:
+                    targets.AddRange(FrontRowFirst(potentialTargets, targetCount));
+                    break;
+                case TargetType.BACK_ROW_FIRST:
+                    targets.AddRange(BackRowFirst(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_STRENGTH:
+                    targets.AddRange(HighestStrength(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_POWER:
+                    targets.AddRange(HighestPower(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_TOUGHNESS:
+                    targets.AddRange(HighestToughness(potentialTargets, targetCount));
+                    break;
+                case TargetType.HIGHEST_RESISTANCE:
+                    targets.AddRange(HighestResistance(potentialTargets, targetCount));
+                    break;
             }
             return targets;
         }
@@ -255,9 +383,9 @@ namespace Com.Tempest.Whale.Combat {
             if (hero.GetModifiedSpeed() <= 0) return false;
 
             if (attackInfo.IsPhysical) {
-                if (hero.GetModifiedAttack() <= 0) return false;
+                if (hero.GetModifiedStrength() <= 0) return false;
             } else {
-                if (hero.GetModifiedMagic() <= 0) return false;
+                if (hero.GetModifiedPower() <= 0) return false;
             }
             return true;
         }
@@ -278,18 +406,18 @@ namespace Com.Tempest.Whale.Combat {
                     switch (status.status) {
                         case StatusEnum.ICE_ARMOR:
                             if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.COLD_BLOODED) break;
-                            double value = 0.2;
+                            double value = status.value;
                             if (tempAttacker.HasStatus(StatusEnum.DOWSE)) {
                                 value *= 2;
                             }
-                            var chilled = new CombatStatus(StatusEnum.CHILL, status.inflicterGuid, tempTarget.combatHeroGuid, value, 3);
+                            var chilled = new CombatStatus(StatusEnum.CHILL, status.inflicterGuid, tempTarget.combatHeroGuid, value, 2, status.associatedFaction);
                             var step = new CombatStep(null, StatusEnum.ICE_ARMOR, status.inflicterGuid, tempAttacker.combatHeroGuid);
                             step.AddStatus(chilled);
                             output.Add(step);
                             break;
                         case StatusEnum.LAVA_ARMOR:
                             if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.WATER_BODY) break;
-                            var burn = new CombatStatus(StatusEnum.BURN, status.inflicterGuid, tempTarget.combatHeroGuid, status.value, 2);
+                            var burn = new CombatStatus(StatusEnum.BURN, status.inflicterGuid, tempTarget.combatHeroGuid, status.value / attacker.GetModifiedResistance(), 2, status.associatedFaction);
                             if (statusingSelf) {
                                 newEnemyStatus.Add(burn);
                             } else {
@@ -301,7 +429,7 @@ namespace Com.Tempest.Whale.Combat {
                             output.Add(step);
                             break;
                         case StatusEnum.THORN_ARMOR:
-                            var damage = status.value;
+                            var damage = status.value / attacker.GetModifiedToughness();
                             attacker.currentHealth -= damage;
 
                             step = new CombatStep(null, StatusEnum.THORN_ARMOR, status.inflicterGuid, attacker.combatHeroGuid);
@@ -318,8 +446,8 @@ namespace Com.Tempest.Whale.Combat {
                     case AbilityEnum.VAPORIZE:
                         if (attacker.baseHero.Faction == FactionEnum.FIRE) {
                             var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var magicUp = new CombatStatus(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
-                            var reflectionUp = new CombatStatus(StatusEnum.REFLECTION_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                            var magicUp = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
+                            var reflectionUp = new CombatStatus(StatusEnum.RESISTANCE_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
                             enemy.AddStatus(magicUp);
                             enemy.AddStatus(reflectionUp);
                             damageInstance.AddStatus(magicUp);
@@ -331,7 +459,7 @@ namespace Com.Tempest.Whale.Combat {
                         var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
                         if (attackInfo.IsPhysical) {
                             var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var attackUp = new CombatStatus(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                            var attackUp = new CombatStatus(StatusEnum.STRENGTH_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
                             enemy.AddStatus(attackUp);
                             damageInstance.AddStatus(attackUp);
                             output.Add(damageInstance);
@@ -340,8 +468,8 @@ namespace Com.Tempest.Whale.Combat {
                     case AbilityEnum.ABSORB_RAIN:
                         if (attacker.baseHero.Faction == FactionEnum.WATER) {
                             var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var attackUp = new CombatStatus(StatusEnum.ATTACK_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
-                            var defenseUp = new CombatStatus(StatusEnum.DEFENSE_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                            var attackUp = new CombatStatus(StatusEnum.STRENGTH_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
+                            var defenseUp = new CombatStatus(StatusEnum.TOUGHNESS_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
                             enemy.AddStatus(attackUp);
                             enemy.AddStatus(defenseUp);
                             damageInstance.AddStatus(attackUp);
@@ -352,8 +480,8 @@ namespace Com.Tempest.Whale.Combat {
                     case AbilityEnum.KINDLING:
                         if (attacker.baseHero.Faction == FactionEnum.GRASS) {
                             var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var magicUp = new CombatStatus(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
-                            var speedUp = new CombatStatus(StatusEnum.SPEED_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                            var magicUp = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
+                            var speedUp = new CombatStatus(StatusEnum.SPEED_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
                             enemy.AddStatus(magicUp);
                             enemy.AddStatus(speedUp);
                             damageInstance.AddStatus(magicUp);
@@ -380,7 +508,7 @@ namespace Com.Tempest.Whale.Combat {
                         attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
                         if (!attackInfo.IsPhysical) {
                             var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var magicUp = new CombatStatus(StatusEnum.MAGIC_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2);
+                            var magicUp = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
                             enemy.AddStatus(magicUp);
                             damageInstance.AddStatus(magicUp);
                             output.Add(damageInstance);
@@ -395,7 +523,7 @@ namespace Com.Tempest.Whale.Combat {
             var output = new List<CombatStep>();
             switch (hero.baseHero.PassiveAbility) {
                 case AbilityEnum.MOUNTING_RAGE:
-                    var status = new CombatStatus(StatusEnum.ATTACK_UP, hero.combatHeroGuid, hero.combatHeroGuid, 0.2, CombatStatus.INDEFINITE);
+                    var status = new CombatStatus(StatusEnum.STRENGTH_UP, hero.combatHeroGuid, hero.combatHeroGuid, 0.2, CombatStatus.INDEFINITE, hero.baseHero.Faction);
                     hero.AddStatus(status);
                     var damageInstance = new CombatStep(null, null, hero.combatHeroGuid, hero.combatHeroGuid);
                     damageInstance.AddStatus(status);

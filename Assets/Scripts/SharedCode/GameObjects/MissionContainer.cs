@@ -344,20 +344,6 @@ namespace Com.Tempest.Whale.GameObjects {
         public static GenerationInfo GetGenerationInfo(AccountState currentState) {
             return new GenerationInfo(currentState.CurrentChapter);
         }
-
-        public static List<AccountEquipment> GetStockEquipmentLoadout(AccountHero hero, bool nerfGear) {
-            var equipped = new List<AccountEquipment>();
-            var baseHero = hero.GetBaseHero();
-            var awakeningLevel = nerfGear ? hero.AwakeningLevel - 2 : hero.AwakeningLevel;
-            if (awakeningLevel < 1) return equipped;
-            if (baseHero.PreferredMainHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredMainHand.GetValueOrDefault(), awakeningLevel));
-            if (baseHero.PreferredOffHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredOffHand.GetValueOrDefault(), awakeningLevel));
-            if (baseHero.PreferredTwoHand != null) equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredTwoHand.GetValueOrDefault(), awakeningLevel));
-            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredChest, awakeningLevel));
-            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredLegs, awakeningLevel));
-            equipped.Add(new AccountEquipment(hero.GetBaseHero().PreferredHead, awakeningLevel));
-            return equipped;
-        }
     }
 
     public class MissionInfo {

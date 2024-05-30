@@ -64,9 +64,9 @@ public class AnimatedHero : MonoBehaviour {
         }
 
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
-        if (baseHero.HarshPath != null) {
+        if (baseHero.PrefabPath != null) {
             spriteRenderer.enabled = false;
-            harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.HarshPath), gameObject.transform);
+            harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.PrefabPath), gameObject.transform);
             harshByteAnimation.OnCreate(gameObject.transform.localScale);
         } else {
             spriteRenderer.enabled = true;
@@ -81,9 +81,9 @@ public class AnimatedHero : MonoBehaviour {
                 harshByteAnimation = null;
             }
 
-            if (hero.baseHero.HarshPath != null) {
+            if (hero.baseHero.PrefabPath != null) {
                 spriteRenderer.enabled = false;
-                harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(hero.baseHero.HarshPath), gameObject.transform);
+                harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(hero.baseHero.PrefabPath), gameObject.transform);
                 harshByteAnimation.OnCreate(gameObject.transform.localScale);
             } else {
                 spriteRenderer.enabled = true;
@@ -177,10 +177,10 @@ public class AnimatedHero : MonoBehaviour {
         var target = placeholders[turn.enemyTargets[0].combatHeroGuid];
 
         // Each swing has a half second windup, so start the swing before we begin moving.
-        if (attackInfo.IsSpecial) {
-            Special();
-        } else {
+        if (attackInfo.IsPhysical) {
             Attack();
+        } else {
+            Special();
         }
         var swingStart = Time.time;
 
@@ -223,10 +223,10 @@ public class AnimatedHero : MonoBehaviour {
         soundEffect.clip = Resources.Load<AudioClip>(attackInfo.AttackSoundPath);
         soundEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
 
-        if (attackInfo.IsSpecial) {
-            Special();
-        } else {
+        if (attackInfo.IsPhysical) {
             Attack();
+        } else {
+            Special();
         }
         yield return new WaitForSeconds(ATTACK_WINDUP_SECONDS);
 

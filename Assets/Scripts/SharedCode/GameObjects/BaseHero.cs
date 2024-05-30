@@ -24,69 +24,62 @@ namespace Com.Tempest.Whale.GameObjects {
         public string HeroName { get; }
         public string HeroIconPath { get; }
         public string AnimatorPath { get; }
-        public string HarshPath { get; }
+        public string PrefabPath { get; }
 
         public RoleEnum Role { get; }
         public FactionEnum Faction { get; }
         public int Rarity { get; }
 
         public double BaseHealth { get; }
-        public double BaseAttack { get; }
-        public double BaseMagic { get; }
-        public double BaseDefense { get; }
-        public double BaseReflection { get; }
+        public double BaseStrength { get; }
+        public double BasePower { get; }
+        public double BaseToughness { get; }
+        public double BaseResistance { get; }
         public double BaseSpeed { get; }
         public double BaseCritChance { get; }
         public double BaseDeflectionChance { get; }
 
-        public AttackEnum BasicAttack { get; }
-        public AttackEnum SpecialAttack { get; }
         public AbilityEnum PassiveAbility { get; }
+        public AttackEnum SimpleBasic { get; }
+        public AttackEnum IntermediateBasic { get; }
+        public AttackEnum SimpleCharge { get; }
+        public AttackEnum IntermediateCharge { get; }
+        public AttackEnum[] TeachableBasics { get; }
+        public AttackEnum[] TeachableCharges { get; }
 
-        public EquipmentType? PreferredMainHand { get; }
-        public EquipmentType? PreferredOffHand { get; }
-        public EquipmentType? PreferredTwoHand { get; }
-        public EquipmentType PreferredChest { get; }
-        public EquipmentType PreferredLegs { get; }
-        public EquipmentType PreferredHead { get; }
-
-        public BaseHero(HeroEnum hero, string heroName, string heroIconPath, string animatorPath, string harshPath,
+        public BaseHero(HeroEnum hero, string heroName, string heroIconPath, string animatorPath, string prefabPath,
             RoleEnum role, FactionEnum faction, int rarity,
-            double baseHealth, double baseAttack, double baseMagic,
-            double baseDefense, double baseReflection, double baseSpeed, double baseCritChance, double baseDeflectionChance,
-            AttackEnum basicAttack, AttackEnum specialAttack, AbilityEnum passiveAbility,
-            EquipmentType? preferredMainHand, EquipmentType? preferredOffHand, EquipmentType? preferredTwoHand,
-            EquipmentType preferredChest, EquipmentType preferredLegs, EquipmentType preferredHead) {
+            double baseHealth, double baseStrength, double basePower,
+            double baseToughness, double baseResistance, double baseSpeed, double baseCritChance, double baseDeflectionChance,
+            AbilityEnum passiveAbility, AttackEnum simpleBasic, AttackEnum intermediateBasic, AttackEnum simpleCharge, AttackEnum intermediateCharge,
+            AttackEnum[] teachableBasics, AttackEnum[] teachableCharges) {
 
             Hero = hero;
             HeroName = heroName;
             HeroIconPath = heroIconPath;
             AnimatorPath = animatorPath;
-            HarshPath = harshPath;
+            PrefabPath = prefabPath;
 
             Role = role;
             Faction = faction;
             Rarity = rarity;
 
             BaseHealth = baseHealth;
-            BaseAttack = baseAttack;
-            BaseMagic = baseMagic;
-            BaseDefense = baseDefense;
-            BaseReflection = baseReflection;
+            BaseStrength = baseStrength;
+            BasePower = basePower;
+            BaseToughness = baseToughness;
+            BaseResistance = baseResistance;
             BaseSpeed = baseSpeed;
             BaseCritChance = baseCritChance;
             BaseDeflectionChance = baseDeflectionChance;
 
-            BasicAttack = basicAttack;
-            SpecialAttack = specialAttack;
             PassiveAbility = passiveAbility;
-
-            PreferredMainHand = preferredMainHand;
-            PreferredOffHand = preferredOffHand;
-            PreferredTwoHand = preferredTwoHand;
-            PreferredChest = preferredChest;
-            PreferredLegs = preferredLegs;
-            PreferredHead = preferredHead;
+            SimpleBasic = simpleBasic;
+            IntermediateBasic = intermediateBasic;
+            SimpleCharge = simpleCharge;
+            IntermediateCharge = intermediateCharge;
+            TeachableBasics = teachableBasics;
+            TeachableCharges = teachableCharges;
         }
 
         public static BaseHero GetHero(HeroEnum hero) {
@@ -95,237 +88,236 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.LEPAQUA:
                     return new BaseHero(hero, "Lepaqua", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Lepaqua/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.WATER, 1,
-                        70, 60, 85, 0.1, 0.25, 70, 0.2, 0,
-                        AttackEnum.CRYSTAL_SMASH, AttackEnum.WATER_SHOT, AbilityEnum.WATER_BODY,
-                        EquipmentType.SCEPTER, EquipmentType.TOME, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        65, 90, 55, 65, 60, 90, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_FIN_SLAP, AttackEnum.BASIC_TAIL_SLAP, AttackEnum.CHARGE_SPLASHING_LEAP, AttackEnum.CHARGE_DIVE,
+                        new [] { AttackEnum.BASIC_BREACHING_CRASH, AttackEnum.BASIC_KICK, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.BASIC_FROZEN_SLIDE },
+                        new [] { AttackEnum.CHARGE_DEPTH_CHARGE, AttackEnum.CHARGE_FEEDING_FRENZY, AttackEnum.CHARGE_SHIPWRECK, AttackEnum.CHARGE_FAVORABLE_CURRENT, AttackEnum.CHARGE_RENDING_STONE });
                 case HeroEnum.ARDOWSE:
                     return new BaseHero(hero, "Ardowse", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Ardowse/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.WATER, 2,
-                        80, 60, 80, 0.1, 0.25, 75, 0, 0.1,
-                        AttackEnum.VAPOR_CLOUD, AttackEnum.DRENCHING_WAVE, AbilityEnum.VAPORIZE,
-                        EquipmentType.AXE, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        85, 50, 75, 80, 80, 50, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_WATER_SHOT, AttackEnum.CHARGE_ENSCALE,
+                        new AttackEnum[] { AttackEnum.BASIC_TORRENT, AttackEnum.BASIC_HEALING_MIST, AttackEnum.BASIC_HEALING_RAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_PRESSURE_JET, AttackEnum.CHARGE_CLEANSING_MIST, AttackEnum.CHARGE_WATER_GLOBE, AttackEnum.CREATE_BOG });
                 case HeroEnum.MARIVULP:
                     return new BaseHero(hero, "Marivulp", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Marivulp/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.WATER, 3,
-                        85, 70, 60, 0.35, 0.2, 50, 0, 0.2,
-                        AttackEnum.FISH_SLAP, AttackEnum.ENSCALE_TEAM, AbilityEnum.NONE,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        75, 55, 90, 60, 70, 75, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_WATER_SHOT, AttackEnum.CHARGE_WATER_CUTTER,
+                        new AttackEnum[] { AttackEnum.BASIC_TORRENT, AttackEnum.BASIC_HEALING_MIST, AttackEnum.BASIC_HEALING_RAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_WATER_GLOBE, AttackEnum.CHARGE_PRESSURE_JET, AttackEnum.CHARGE_LIQUIFY, AttackEnum.CHARGE_HEALING_DELUGE, AttackEnum.CHARGE_HEALING_TORRENT });
                 case HeroEnum.SPIRIFLOW:
                     return new BaseHero(hero, "Spiriflow", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Spiriflow/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.WATER, 4,
-                        55, 55, 90, 0.1, 0.15, 80, 0.15, 0,
-                        AttackEnum.VAPOR_CLOUD, AttackEnum.TSUNAMI, AbilityEnum.VAPORIZE,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        85, 55, 90, 60, 65, 70, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_HEALING_WAVE, AttackEnum.CHARGE_HEALING_DELUGE,
+                        new AttackEnum[] { AttackEnum.BASIC_HEALING_MIST, AttackEnum.BASIC_HEALING_RAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_HEALING_TORRENT, AttackEnum.CHARGE_CLEANSING_MIST, AttackEnum.CHARGE_CLEANSING_RAIN, AttackEnum.CREATE_BOG, AttackEnum.CHARGE_FAVORABLE_CURRENT });
                 case HeroEnum.HYDROKAHT:
                     return new BaseHero(hero, "Hydrokaht", "Icons/Element02_256_04", "Characters/Oracle/OracleController", "Characters/Hydrokaht/Large/MainPrefab", 
                         RoleEnum.SUPPORT, FactionEnum.WATER, 5,
-                        80, 55, 95, 0.1, 0.2, 60, 0, 0,
-                        AttackEnum.HEALING_MIST, AttackEnum.HEALING_WAVE, AbilityEnum.CLEANSING_RAIN,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        75, 50, 95, 65, 70, 75, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_SPLASHING_WAVE, AttackEnum.CHARGE_WATER_SHOT, AttackEnum.CHARGE_TIDAL_WAVE,
+                        new AttackEnum[] { AttackEnum.BASIC_WHIRLPOOL, AttackEnum.BASIC_HEALING_MIST, AttackEnum.BASIC_HEALING_RAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_TSUNAMI, AttackEnum.CHARGE_HEALING_DELUGE, AttackEnum.CHARGE_HEALING_TORRENT, AttackEnum.CHARGE_CLEANSING_MIST, AttackEnum.CHARGE_CLEANSING_RAIN });
 
                 // Grass heroes.
                 case HeroEnum.LEPHYTA:
                     return new BaseHero(hero, "Lephyta", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Lephyta/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 1,
-                        80, 70, 80, 0.2, 0.2, 60, 0, 0.1,
-                        AttackEnum.PETAL_SLAP, AttackEnum.HEALING_SUN, AbilityEnum.ABSORB_RAIN,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        70, 90, 55, 65, 60, 85, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PETAL_SLAP, AttackEnum.BASIC_BRANCH_SLAP, AttackEnum.CHARGE_WEED_WHACKER, AttackEnum.CHARGE_CABER_TOSS,
+                        new AttackEnum[] { AttackEnum.BASIC_RAZOR_VINE, AttackEnum.BASIC_WHIRLING_BRANCHES, AttackEnum.BASIC_LOG_ROLL, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.BASIC_BOULDER, },
+                        new AttackEnum[] { AttackEnum.CHARGE_TIMBER, AttackEnum.CHARGE_NEEDLE_SPRAY, AttackEnum.CHARGE_STRANGLING_VINES, AttackEnum.CHARGE_RENDING_STONE });
                 case HeroEnum.ARBERRY:
                     return new BaseHero(hero, "Arberry", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Arberry/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.GRASS, 2,
-                        60, 90, 70, 0.1, 0, 90, 0.3, -0.1,
-                        AttackEnum.NEEDLE_STAB, AttackEnum.WEED_WHACKER, AbilityEnum.NONE,
-                        EquipmentType.AXE, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        90, 50, 70, 85, 75, 55, 0, 0.25,
+                        AbilityEnum.NONE, AttackEnum.BASIC_NEEDLE_SHOT, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.CHARGE_BERRY_BLAST, AttackEnum.CHARGE_THORN_ARMOR,
+                        new AttackEnum[] { AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
+                        new AttackEnum[] { AttackEnum.CHARGE_MOONBEAM, AttackEnum.CHARGE_INVOKE_ALLERGIES, AttackEnum.CHARGE_TOXIC_SPORES, AttackEnum.CHARGE_SALAD_TOSS, AttackEnum.CHARGE_SHADY_BRANCHES });
                 case HeroEnum.FLORAVULP:
                     return new BaseHero(hero, "Floravulp", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Floravulp/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.GRASS, 3,
-                        80, 70, 60, 0.3, 0.2, 55, 0, 0.25,
-                        AttackEnum.PETAL_SLAP, AttackEnum.ENTANGLING_ROOTS, AbilityEnum.BARK_SKIN,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        90, 55, 80, 70, 65, 65, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_NEEDLE_SHOT, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.CHARGE_BERRY_BLAST, AttackEnum.CHARGE_SALAD_TOSS,
+                        new AttackEnum[] { AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_CHAIN_LIGHTNING },
+                        new AttackEnum[] { AttackEnum.CHARGE_MOONBEAM, AttackEnum.CHARGE_LEAF_WHIRLWIND, AttackEnum.CHARGE_INVOKE_ALLERGIES, AttackEnum.CHARGE_TOXIC_SPORES });
                 case HeroEnum.SPIRIGROW:
                     return new BaseHero(hero, "Spirigrow", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Spirigrow/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
-                        75, 60, 95, 0.2, 0.2, 70, 0, 0,
-                        AttackEnum.MOONLIGHT, AttackEnum.RITUAL_OF_THE_SUN, AbilityEnum.NONE,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
+                        90, 55, 85, 75, 65, 65, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_REGROW, AttackEnum.BASIC_REJUVENATE, AttackEnum.CHARGE_PEACEFUL_MEADOW, AttackEnum.CHARGE_TRANQUIL_GROVE,
+                        new AttackEnum[] { AttackEnum.BASIC_REVITALIZE },
+                        new AttackEnum[] { AttackEnum.CHARGE_SERENE_FOREST, AttackEnum.CHARGE_CLEANSING_MIST, AttackEnum.CHARGE_CLEANSING_RAIN, AttackEnum.CHARGE_SHADY_BRANCHES, AttackEnum.CHARGE_TOXIC_SPORES });
                 case HeroEnum.BOTANIKAHT:
                     return new BaseHero(hero, "Botanikaht", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Botanikaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.GRASS, 5,
-                        100, 60, 50, 0.3, 0.2, 50, 0, 0.1,
-                        AttackEnum.BRANCH_SLAM, AttackEnum.GIFT_OF_THORNS, AbilityEnum.DEEP_ROOTS,
-                        EquipmentType.SWORD, EquipmentType.CRYSTAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        100, 70, 70, 75, 75, 55, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PETAL_SLAP, AttackEnum.BASIC_BRANCH_SLAP, AttackEnum.BASIC_NEEDLE_SHOT, AttackEnum.BASIC_GRAPE_SHOT,
+                        new AttackEnum[] { AttackEnum.BASIC_RAZOR_VINE, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
+                        new AttackEnum[] { AttackEnum.CHARGE_CABER_TOSS, AttackEnum.CHARGE_TIMBER, AttackEnum.CHARGE_MOONBEAM, AttackEnum.CHARGE_TRANQUIL_GROVE, AttackEnum.CHARGE_SERENE_FOREST });
 
                 // Fire heroes.
                 case HeroEnum.LEPYRA:
                     return new BaseHero(hero, "Lepyra", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Lepyra/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 1,
-                        60, 55, 90, 0.1, 0.2, 85, 0.2, 0,
-                        AttackEnum.FIRE_BOLT, AttackEnum.TWIN_FLAME, AbilityEnum.KINDLING,
-                        EquipmentType.SCEPTER, EquipmentType.TOME, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        55, 85, 80, 50, 55, 95, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_BURNING_FIST, AttackEnum.BASIC_BLAZING_FIST, AttackEnum.CHARGE_BURNING_STONE, AttackEnum.CHARGE_BURNING_BOULDER,
+                        new AttackEnum[] { AttackEnum.BASIC_JET_TACKLE, AttackEnum.BASIC_SCORCH, AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_ZAP },
+                        new AttackEnum[] { AttackEnum.CHARGE_METEOR, AttackEnum.CHARGE_INCINERATE, AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_ERUPTION, AttackEnum.CHARGE_RENDING_STONE });
                 case HeroEnum.ARBURN:
                     return new BaseHero(hero, "Arburn", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Arburn/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.FIRE, 2,
-                        75, 60, 80, 0.2, 0.25, 60, 0.1, 0.1,
-                        AttackEnum.SCORCH, AttackEnum.TURN_UP_THE_HEAT, AbilityEnum.HOT_BLOODED,
-                        EquipmentType.AXE, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        80, 50, 70, 70, 80, 70, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
+                        new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_LAVA_WAVE, AttackEnum.BASIC_SEARING_WIND },
+                        new AttackEnum[] { AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_STOKE_FLAMES });
                 case HeroEnum.SCOROVULP:
                     return new BaseHero(hero, "Scorovulp", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Scorovulp/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 3,
-                        65, 55, 95, 0.05, 0.1, 80, 0.3, 0,
-                        AttackEnum.FIRE_BOLT, AttackEnum.IMMOLATE, AbilityEnum.KINDLING,
-                        EquipmentType.SCEPTER, EquipmentType.TOME, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        75, 55, 90, 60, 65, 80, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
+                        new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_LAVA_WAVE, AttackEnum.BASIC_SEARING_WIND, AttackEnum.BASIC_ZAP },
+                        new AttackEnum[] { AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_FIREBALL, AttackEnum.CHARGE_EXPLOSION, AttackEnum.CHARGE_STRIKE_TWICE });
                 case HeroEnum.SPIRIGNITE:
                     return new BaseHero(hero, "Spirignite", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Spirignite/Large/MainPrefab",
-                        RoleEnum.DAMAGE, FactionEnum.FIRE, 4,
-                        65, 50, 70, 0.3, 0.25, 50, 0, 0.3,
-                        AttackEnum.FIRE_PUNCH, AttackEnum.GIFT_OF_LAVA, AbilityEnum.HOT_BLOODED,
-                        EquipmentType.SCEPTER, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        RoleEnum.SUPPORT, FactionEnum.FIRE, 4,
+                        65, 55, 85, 60, 65, 95, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
+                        new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_KINDLE, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
+                        new AttackEnum[] { AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_STOKE_FLAMES, AttackEnum.CHARGE_BURNING_HASTE, AttackEnum.CHARGE_ASH_CLOUD, AttackEnum.CHARGE_MELT_ARMOR });
                 case HeroEnum.INFERNIKAHT:
                     return new BaseHero(hero, "Infernikaht", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Infernikaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 5,
-                        55, 50, 100, 0.05, 0.1, 90, 0.1, 0,
-                        AttackEnum.SCORCH, AttackEnum.FIRE_STORM, AbilityEnum.FEED_THE_INFERNO,
-                        EquipmentType.SCEPTER, EquipmentType.TOME, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        55, 50, 100, 60, 65, 100, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_FIRE_BREATH, AttackEnum.BASIC_LAVA_WAVE, AttackEnum.CHARGE_TWIN_FLAME, AttackEnum.CHARGE_FIREBALL,
+                        new AttackEnum[] { AttackEnum.BASIC_SEARING_WIND },
+                        new AttackEnum[] { AttackEnum.CHARGE_EXPLOSION });
 
                 // Ice heroes.
                 case HeroEnum.ARCTIBOAR:
                     return new BaseHero(hero, "Arctiboar", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Arctiboar/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ICE, 1,
-                        80, 80, 60, 0.2, 0.3, 60, 0, 0.1,
-                        AttackEnum.ICE_PUNCH, AttackEnum.CHILLY_WIND, AbilityEnum.COLD_BLOODED,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        85, 70, 50, 70, 90, 60, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_ICE_CUBE, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.CHARGE_FROZEN_FIST, AttackEnum.CHARGE_ICICLE_DROP,
+                        new AttackEnum[] { AttackEnum.BASIC_FROZEN_SLIDE, AttackEnum.BASIC_SUB_ZERO_MACHINE_GUN },
+                        new AttackEnum[] { AttackEnum.CHARGE_ICEBERG, AttackEnum.CHARGE_CRYSTALLIZE, AttackEnum.CHARGE_ENSCALE });
                 case HeroEnum.ICECAP:
                     return new BaseHero(hero, "Icecap", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Icecap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.ICE, 2,
-                        70, 80, 60, 0.2, 0.4, 50, 0, 0.3,
-                        AttackEnum.ICE_PUNCH, AttackEnum.ENCASE_IN_ICE, AbilityEnum.COLD_BLOODED,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        80, 55, 90, 65, 75, 60, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_CHILLING_WIND, AttackEnum.BASIC_FREEZING_WIND, AttackEnum.CHARGE_FROSTBITE, AttackEnum.CHARGE_FREEZE_RAY,
+                        new AttackEnum[] { AttackEnum.BASIC_SNOWBLAST, AttackEnum.BASIC_POWER_DRAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_ABSOLUTE_ZERO, AttackEnum.CHARGE_SNOWFALL, AttackEnum.CHARGE_BLIZZARD, AttackEnum.CHARGE_FREEZE_EARTH });
                 case HeroEnum.GLACITAUR:
                     return new BaseHero(hero, "Glacitaur", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Glacitaur/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ICE, 3,
-                        60, 95, 55, 0.1, 0.2, 80, 0.2, 0,
-                        AttackEnum.ICICLE_THROW, AttackEnum.FLINGING_SPREE, AbilityEnum.COLD_BLOODED,
-                        null, null, EquipmentType.GREAT_AXE,
-                        EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
+                        75, 95, 50, 60, 70, 75, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_ICE_CUBE, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.CHARGE_SNOW_DRIFT, AttackEnum.CHARGE_SNOW_SLIDE,
+                        new AttackEnum[] { AttackEnum.BASIC_FROZEN_SLIDE, AttackEnum.BASIC_SNOWBALL_STORM, AttackEnum.BASIC_SUB_ZERO_MACHINE_GUN, AttackEnum.CHARGE_SMASH_TO_SMITHEREENS },
+                        new AttackEnum[] { AttackEnum.CHARGE_ICICLE_DROP, AttackEnum.CHARGE_ICEBERG, AttackEnum.CHARGE_AVALANCHE, AttackEnum.CHARGE_TIMBER, AttackEnum.CHARGE_EARTHQUAKE });
                 case HeroEnum.FREEZER:
                     return new BaseHero(hero, "Freezer", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Freezer/Large/MainPrefab",
-                        RoleEnum.PROTECTION, FactionEnum.ICE, 4,
-                        65, 60, 75, 0.05, 0.15, 70, 0.1, 0,
-                        AttackEnum.SNOWY_WIND, AttackEnum.BLIZZARD, AbilityEnum.NONE,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        RoleEnum.DAMAGE, FactionEnum.ICE, 4,
+                        85, 80, 50, 70, 80, 60, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_ICE_CUBE, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.CHARGE_FROZEN_FIST, AttackEnum.CHARGE_ICICLE_DROP,
+                        new AttackEnum[] { AttackEnum.BASIC_FROZEN_SLIDE, AttackEnum.BASIC_BREACHING_CRASH },
+                        new AttackEnum[] { AttackEnum.CHARGE_ICEBERG, AttackEnum.CHARGE_DEPTH_CHARGE });
                 case HeroEnum.CRYOKAHT:
                     return new BaseHero(hero, "Cryokaht", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Cryokaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ICE, 5,
-                        70, 70, 50, 0.2, 0.5, 50, 0, 0.15,
-                        AttackEnum.ICE_PUNCH, AttackEnum.GIFT_OF_ICE, AbilityEnum.MIRROR_ICE,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.CRYSTAL_CHEST, EquipmentType.CRYSTAL_PANTS, EquipmentType.CRYSTAL_HELMET);
+                        90, 55, 65, 70, 100, 50, 0, 0.25,
+                        AbilityEnum.NONE, AttackEnum.BASIC_CHILLING_WIND, AttackEnum.BASIC_FREEZING_WIND, AttackEnum.CHARGE_FROSTBITE, AttackEnum.CHARGE_REFLECTIVE_ARMOR,
+                        new AttackEnum[] { AttackEnum.BASIC_SNOWBLAST },
+                        new AttackEnum[] { AttackEnum.CHARGE_WINTER_STORM, AttackEnum.CHARGE_CRYSTALLIZE, AttackEnum.CHARGE_FREEZE_EARTH });
 
                 // Earth heroes.
                 case HeroEnum.SEISMIBOAR:
                     return new BaseHero(hero, "Seismiboar", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Seismiboar/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.EARTH, 1,
-                        70, 80, 60, 0.2, 0.1, 80, 0.2, 0,
-                        AttackEnum.TWISTER, AttackEnum.DUST_STORM, AbilityEnum.JAGGED_SURFACE,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        95, 65, 50, 90, 65, 60, 0, 0.25,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_FALLING_ROCK_TRAP,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER },
+                        new AttackEnum[] { AttackEnum.CHARGE_SMASH_TO_SMITHEREENS, AttackEnum.CHARGE_ROLLING_TACKLE, AttackEnum.CHARGE_GIFT_OF_EARTH, AttackEnum.CHARGE_SHATTER_GLASS });
                 case HeroEnum.MUDCAP:
                     return new BaseHero(hero, "Mudcap", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Mudcap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.EARTH, 2,
-                        80, 80, 50, 0.3, 0.1, 60, 0, 0.3,
-                        AttackEnum.ROCK_SLAM, AttackEnum.ENCASE_IN_ROCK, AbilityEnum.JAGGED_SURFACE,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        80, 75, 75, 70, 55, 75, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_FALLING_ROCK_TRAP,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
+                        new AttackEnum[] { AttackEnum.CHARGE_RENDING_STONE, AttackEnum.CHARGE_PETAL_STORM, AttackEnum.CHARGE_LEAF_WHIRLWIND, AttackEnum.CHARGE_TRANQUIL_GROVE, AttackEnum.CHARGE_SERENE_FOREST });
                 case HeroEnum.ROCKOTAUR:
                     return new BaseHero(hero, "Rockotaur", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Rockotaur/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 3,
-                        60, 90, 60, 0.2, 0.1, 80, 0.2, 0,
-                        AttackEnum.GRAVEL_SHOT, AttackEnum.PEBBLE_SHOWER, AbilityEnum.NONE,
-                        null, null, EquipmentType.GREAT_SWORD,
-                        EquipmentType.LEATHER_CHEST, EquipmentType.LEATHER_PANTS, EquipmentType.LEATHER_HAT);
+                        80, 95, 50, 75, 55, 70, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_ROLLING_TACKLE,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER, AttackEnum.BASIC_DUST_STORM, AttackEnum.BASIC_ROCK_SLIDE },
+                        new AttackEnum[] { AttackEnum.CHARGE_SMASH_TO_SMITHEREENS, AttackEnum.CHARGE_TREMOR, AttackEnum.CHARGE_EARTHQUAKE, AttackEnum.CHARGE_BURNING_BOULDER, AttackEnum.CHARGE_METEOR });
                 case HeroEnum.PULVERIZER:
                     return new BaseHero(hero, "Pulverizer", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Pulverizer/Large/MainPrefab",
-                        RoleEnum.PROTECTION, FactionEnum.EARTH, 4,
-                        70, 70, 50, 0.4, 0.2, 50, 0, 0.2,
-                        AttackEnum.ROCK_SLAM, AttackEnum.GIFT_OF_EARTH, AbilityEnum.JAGGED_SURFACE,
-                        EquipmentType.SWORD, EquipmentType.METAL_SHIELD, null,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        RoleEnum.DAMAGE, FactionEnum.EARTH, 4,
+                        85, 95, 50, 70, 65, 60, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_ROLLING_TACKLE,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER },
+                        new AttackEnum[] { AttackEnum.CHARGE_SMASH_TO_SMITHEREENS });
                 case HeroEnum.TERRIKAHT:
                     return new BaseHero(hero, "Terrikaht", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Terrikaht/Large/MainPrefab",
-                        RoleEnum.DAMAGE, FactionEnum.EARTH, 5,
-                        60, 100, 50, 0.1, 0, 80, 0.4, -0.2,
-                        AttackEnum.AXE_SLASH, AttackEnum.SPLIT_SKULL, AbilityEnum.MOUNTING_RAGE,
-                        null, null, EquipmentType.GREAT_AXE,
-                        EquipmentType.PLATE_CHEST, EquipmentType.PLATE_PANTS, EquipmentType.PLATE_HELMET);
+                        RoleEnum.PROTECTION, FactionEnum.EARTH, 5,
+                        90, 60, 50, 100, 75, 60, 0, 0.25,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_HARDEN_FIST, AttackEnum.CHARGE_GIFT_OF_EARTH,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER },
+                        new AttackEnum[] { AttackEnum.CHARGE_HIGH_GROUND, AttackEnum.CHARGE_CHOKING_DUST, AttackEnum.CHARGE_SHATTER_GLASS });
 
                 // Electric heroes.
                 case HeroEnum.ELECTIBOAR:
                     return new BaseHero(hero, "Electiboar", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Electiboar/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ELECTRIC, 1,
-                        70, 60, 80, 0.1, 0.1, 90, 0.2, 0,
-                        AttackEnum.SPARK, AttackEnum.FLASH_OF_LIGHT, AbilityEnum.CONDUCTIVITY,
-                        EquipmentType.SCEPTER, EquipmentType.TOME, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        80, 50, 75, 60, 85, 75, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_BRAINSTORM, AttackEnum.CHARGE_SHATTER_GLASS });
                 case HeroEnum.BOLTCAP:
                     return new BaseHero(hero, "Boltcap", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Boltcap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 2,
-                        70, 50, 80, 0.2, 0.3, 90, 0, 0,
-                        AttackEnum.ENERGY_DRAIN, AttackEnum.CHARGE_TEAM, AbilityEnum.CONDUCTIVITY,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        65, 55, 85, 60, 70, 90, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_POWER_DRAIN, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_SHOCK, AttackEnum.BASIC_ZAP },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_REVERSE_POLARITY, AttackEnum.CHARGE_BURNING_HASTE });
                 case HeroEnum.ZAPATAUR:
                     return new BaseHero(hero, "Zapataur", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Zapataur/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 3,
-                        60, 50, 90, 0.1, 0.1, 90, 0.3, 0,
-                        AttackEnum.LIGHTNING_BOLT, AttackEnum.OVERCHARGED_BOLT, AbilityEnum.CONDUCTIVITY,
-                        EquipmentType.SCEPTER, EquipmentType.TOME, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        70, 50, 90, 60, 70, 85, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP, AttackEnum.BASIC_FORKED_LIGHTNING, AttackEnum.BASIC_CHAIN_LIGHTNING },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_ELECTRICAL_STORM, AttackEnum.CHARGE_TEMPEST, AttackEnum.CHARGE_STRIKE_TWICE });
                 case HeroEnum.GENERATOR:
                     return new BaseHero(hero, "Generator", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Generator/Large/MainPrefab",
-                        RoleEnum.PROTECTION, FactionEnum.ELECTRIC, 4,
-                        60, 50, 80, 0.1, 0.1, 90, 0.2, 0,
-                        AttackEnum.LIGHTNING_BOLT, AttackEnum.LIGHTNING_FLASH, AbilityEnum.CONDUCTIVITY,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 4,
+                        75, 50, 75, 70, 80, 75, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP, AttackEnum.BASIC_POWER_DRAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_OVERCHARGE });
                 case HeroEnum.ZEPHYKAHT:
                     return new BaseHero(hero, "Zephykaht", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Zephykaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 5,
-                        70, 50, 80, 0.05, 0.15, 90, 0.1, 0,
-                        AttackEnum.FORKED_LIGHTNING, AttackEnum.BRAIN_STORM, AbilityEnum.MENTAL_GYMNASTICS,
-                        null, null, EquipmentType.STAFF,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        60, 50, 90, 60, 70, 100, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP, AttackEnum.BASIC_FORKED_LIGHTNING, AttackEnum.BASIC_CHAIN_LIGHTNING, AttackEnum.BASIC_KINDLE },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_ELECTRICAL_STORM, AttackEnum.CHARGE_TEMPEST, AttackEnum.CHARGE_STRIKE_TWICE, AttackEnum.CHARGE_BRAINSTORM, AttackEnum.CHARGE_OVERCHARGE });
 
                 default:
                     return new BaseHero(hero, "Unknown", "Icons/icon_gem", "Characters/FacelessOverrideController", null,
                         RoleEnum.DAMAGE, FactionEnum.WATER, 1,
-                        50, 50, 50,
-                        0, 0, 50, 0, 0,
-                        AttackEnum.BASIC_PHYSICAL, AttackEnum.SPECIAL_PHYSICAL, AbilityEnum.NONE,
-                        null, null, null,
-                        EquipmentType.CLOTH_CHEST, EquipmentType.CLOTH_PANTS, EquipmentType.CLOTH_HAT);
+                        50, 50, 50, 50, 50, 50, 0, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
+                        new AttackEnum[] { },
+                        new AttackEnum[] { });
             }
         }
 
         public static double GetBigStatGain(double baseStat) {
-            return ((baseStat - 50.0) / 20.0) + 2.0;
+            return ((baseStat - 50.0) / 20.0) + 1.5;
         }
     }
 

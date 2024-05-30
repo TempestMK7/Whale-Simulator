@@ -43,13 +43,5 @@ namespace Com.Tempest.Whale.StateObjects {
             if (other.EquippedHeroId == null && EquippedHeroId != null) return -1;
             return 0;
         }
-
-        public double GetDefense() {
-            return baseEquipment.BaseDefense + (baseEquipment.DefensePerLevel * Level);
-        }
-
-        public double GetReflection() {
-            return baseEquipment.BaseReflection + (baseEquipment.ReflectionPerLevel * Level);
-        }
     }
 }

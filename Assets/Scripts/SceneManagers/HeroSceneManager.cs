@@ -235,9 +235,9 @@ public class HeroSceneManager : MonoBehaviour {
             Destroy(existingHarshAnimation.gameObject);
         }
 
-        if (baseHero.HarshPath != null) {
+        if (baseHero.PrefabPath != null) {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
-            var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.HarshPath), heroAnimation.transform);
+            var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.PrefabPath), heroAnimation.transform);
             harshAnimation.OnCreate(heroAnimation.transform.localScale);
         } else {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = true;
@@ -273,18 +273,16 @@ public class HeroSceneManager : MonoBehaviour {
         soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
 
         healthLabel.text = string.Format("Health: {0}", combatHero.health.ToString("0"));
-        attackLabel.text = string.Format("Attack: {0}", combatHero.attack.ToString("0"));
-        magicLabel.text = string.Format("Magic: {0}", combatHero.magic.ToString("0"));
-        var defense = combatHero.defense * 100.0;
-        defenseLabel.text = string.Format("Defense: {0}%", defense.ToString("0"));
-        var reflection = combatHero.reflection * 100.0;
-        reflectionLabel.text = string.Format("Reflection: {0}%", reflection.ToString("0"));
+        attackLabel.text = string.Format("Strength: {0}", combatHero.strength.ToString("0"));
+        magicLabel.text = string.Format("Power: {0}", combatHero.power.ToString("0"));
+        defenseLabel.text = string.Format("Toughness: {0}", combatHero.toughness.ToString("0"));
+        reflectionLabel.text = string.Format("Resistance: {0}", combatHero.resistance.ToString("0"));
         speedLabel.text = string.Format("Speed: {0}", combatHero.speed.ToString("0"));
         deflectionLabel.text = string.Format("Deflection: {0}%", (combatHero.deflectionChance * 100).ToString("0"));
         critLabel.text = string.Format("Critical: {0}%", (combatHero.critChance* 100).ToString("0"));
 
-        var basicAttack = AttackInfoContainer.GetAttackInfo(baseHero.BasicAttack);
-        var specialAttack = AttackInfoContainer.GetAttackInfo(baseHero.SpecialAttack);
+        var basicAttack = AttackInfoContainer.GetAttackInfo(currentHero.GetBasicAttackEnum());
+        var specialAttack = AttackInfoContainer.GetAttackInfo(currentHero.GetChargeAttackEnum());
         var passiveAbility = AbilityInfoContainer.GetAbilityInfo(baseHero.PassiveAbility);
 
         basicAttackImage.sprite = Resources.Load<Sprite>(basicAttack.AttackIconPath);
@@ -332,7 +330,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void LaunchAttackTooltip() {
         if (ButtonsBlocked()) return;
-        var attack = filteredList[currentPosition].GetBaseHero().BasicAttack;
+        var attack = filteredList[currentPosition].GetBasicAttackEnum();
         var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
         var popup = Instantiate(tooltipPrefab, detailContainer.transform);
         popup.SetTooltip(attackInfo.AttackName, attackInfo.GetTooltip());
@@ -340,7 +338,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void LaunchSpecialTooltip() {
         if (ButtonsBlocked()) return;
-        var attack = filteredList[currentPosition].GetBaseHero().SpecialAttack;
+        var attack = filteredList[currentPosition].GetChargeAttackEnum();
         var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
         var popup = Instantiate(tooltipPrefab, detailContainer.transform);
         popup.SetTooltip(attackInfo.AttackName, attackInfo.GetTooltip());

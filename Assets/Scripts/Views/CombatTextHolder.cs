@@ -33,7 +33,7 @@ public class CombatTextHolder : MonoBehaviour {
         foreach (CombatStatus status in step.inflictedStatus) {
             var statusDisplay = StatusInfoContainer.GetStatusInfo(status.status);
             var combatText = Instantiate(combatTextPrefab, container.transform as RectTransform);
-            combatText.GetComponent<CombatText>().SetText(statusDisplay.StatusName, ColorContainer.ColorFromFaction(statusDisplay.AssociatedFaction));
+            combatText.GetComponent<CombatText>().SetText(statusDisplay.StatusName, ColorContainer.ColorFromFaction(status.associatedFaction));
             yield return new WaitForSeconds(0.3f);
         }
     }

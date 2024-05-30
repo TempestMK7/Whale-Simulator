@@ -1,5 +1,4 @@
 ﻿using Com.Tempest.Whale.GameObjects;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ public class AnimationTestSceneManager : MonoBehaviour {
     private List<BaseWhaleAnimation> discoveredAnimators;
 
     public void Awake() {
-        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(selectedHero).HarshPath), prefabHolder.transform);
+        var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(BaseHero.GetHero(selectedHero).PrefabPath), prefabHolder.transform);
         harshAnimation.OnCreate(prefabHolder.transform.localScale);
 
         var harshAnimations = FindObjectsOfType<BaseWhaleAnimation>();
