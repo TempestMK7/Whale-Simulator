@@ -20,7 +20,7 @@ namespace Com.Tempest.Whale.Combat {
 
         #region Hit calculation and modifiers.
 
-        public static double Damage(double modifiedAttack, double modifiedDefense, int baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity) {
+        public static double Damage(double modifiedAttack, double modifiedDefense, double baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity) {
             var damage = baseDamage * (modifiedAttack / modifiedDefense);
 
             if (hasStab) {
@@ -42,10 +42,10 @@ namespace Com.Tempest.Whale.Combat {
             return damage;
         }
 
-        public static double Healing(double modifiedAttack, int attackerLevel, int targetAwakening, int baseHealing, bool hasStab, HitType hitType) {
+        public static double Healing(double modifiedAttack, double attackerLevel, double targetAwakening, double baseHealing, bool hasStab, HitType hitType) {
             // This will likely need work later.  Because I do not have a defense value to divide attack by,
-            // I take the lowest defense a target could have at the attacker's level at awakening 5 and treat that as the defense.
-            var effectiveDefense = 75 + (2.75 * attackerLevel);
+            // I take the average defense a target would have at the attacker's level and defender's awakening.
+            var effectiveDefense = 75.0 + (2.75 * attackerLevel);
             effectiveDefense *= Math.Pow(1.1, targetAwakening);
             var healing = baseHealing * (modifiedAttack / effectiveDefense);
 
@@ -255,12 +255,12 @@ namespace Com.Tempest.Whale.Combat {
         public static List<CombatHero> FrontRowFirst(CombatHero[] heroes, int targetCount) {
             var output = new List<CombatHero>();
             if (heroes[0].IsAlive() || heroes[1].IsAlive()) {
-                if (heroes[0].IsAlive()) output.Add(heroes[0]);
-                if (heroes[1].IsAlive()) output.Add(heroes[1]);
+                if (heroes.Length > 0 && heroes[0].IsAlive()) output.Add(heroes[0]);
+                if (heroes.Length > 1 && heroes[1].IsAlive()) output.Add(heroes[1]);
             } else {
-                if (heroes[2].IsAlive()) output.Add(heroes[2]);
-                if (heroes[3].IsAlive()) output.Add(heroes[3]);
-                if (heroes[4].IsAlive()) output.Add(heroes[4]);
+                if (heroes.Length > 2 && heroes[2].IsAlive()) output.Add(heroes[2]);
+                if (heroes.Length > 3 && heroes[3].IsAlive()) output.Add(heroes[3]);
+                if (heroes.Length > 4 && heroes[4].IsAlive()) output.Add(heroes[4]);
             }
             return output;
         }
@@ -268,12 +268,12 @@ namespace Com.Tempest.Whale.Combat {
         public static List<CombatHero> BackRowFirst(CombatHero[] heroes, int targetCount) {
             var output = new List<CombatHero>();
             if (heroes[2].IsAlive() || heroes[3].IsAlive() || heroes[4].IsAlive()) {
-                if (heroes[2].IsAlive()) output.Add(heroes[2]);
-                if (heroes[3].IsAlive()) output.Add(heroes[3]);
-                if (heroes[4].IsAlive()) output.Add(heroes[4]);
+                if (heroes.Length > 2 && heroes[2].IsAlive()) output.Add(heroes[2]);
+                if (heroes.Length > 3 && heroes[3].IsAlive()) output.Add(heroes[3]);
+                if (heroes.Length > 4 && heroes[4].IsAlive()) output.Add(heroes[4]);
             } else {
-                if (heroes[0].IsAlive()) output.Add(heroes[0]);
-                if (heroes[1].IsAlive()) output.Add(heroes[1]);
+                if (heroes.Length > 0 && heroes[0].IsAlive()) output.Add(heroes[0]);
+                if (heroes.Length > 1 && heroes[1].IsAlive()) output.Add(heroes[1]);
             }
             return output;
         }

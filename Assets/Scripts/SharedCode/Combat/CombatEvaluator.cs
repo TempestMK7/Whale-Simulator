@@ -67,8 +67,8 @@ namespace Com.Tempest.Whale.Combat {
                     enemyTeam = allies;
                 }
 
-                var nextSpecial = AttackInfoContainer.GetAttackInfo(next.chargeAttack);
-                var attack = next.currentEnergy >= Math.Abs(nextSpecial.AttackerEnergyGained) ? next.chargeAttack : next.basicAttack;
+                var nextCharge = AttackInfoContainer.GetAttackInfo(next.chargeAttack);
+                var attack = next.currentEnergy >= Math.Abs(nextCharge.AttackerEnergyGained) ? next.chargeAttack : next.basicAttack;
 
                 var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
                 var enemyTargets = CombatMath.DecideTargets(next, attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);

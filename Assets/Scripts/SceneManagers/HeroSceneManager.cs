@@ -273,12 +273,10 @@ public class HeroSceneManager : MonoBehaviour {
         soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
 
         healthLabel.text = string.Format("Health: {0}", combatHero.health.ToString("0"));
-        attackLabel.text = string.Format("Attack: {0}", combatHero.strength.ToString("0"));
-        magicLabel.text = string.Format("Magic: {0}", combatHero.power.ToString("0"));
-        var defense = combatHero.toughness * 100.0;
-        defenseLabel.text = string.Format("Defense: {0}%", defense.ToString("0"));
-        var reflection = combatHero.resistance * 100.0;
-        reflectionLabel.text = string.Format("Reflection: {0}%", reflection.ToString("0"));
+        attackLabel.text = string.Format("Strength: {0}", combatHero.strength.ToString("0"));
+        magicLabel.text = string.Format("Power: {0}", combatHero.power.ToString("0"));
+        defenseLabel.text = string.Format("Toughness: {0}", combatHero.toughness.ToString("0"));
+        reflectionLabel.text = string.Format("Resistance: {0}", combatHero.resistance.ToString("0"));
         speedLabel.text = string.Format("Speed: {0}", combatHero.speed.ToString("0"));
         deflectionLabel.text = string.Format("Deflection: {0}%", (combatHero.deflectionChance * 100).ToString("0"));
         critLabel.text = string.Format("Critical: {0}%", (combatHero.critChance* 100).ToString("0"));

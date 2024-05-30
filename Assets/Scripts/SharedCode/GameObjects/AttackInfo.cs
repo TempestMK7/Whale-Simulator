@@ -320,7 +320,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
             var shadyBranches = target.GetStatus(StatusEnum.SHADY_BRANCHES);
             if (shadyBranches != null && EnemyTargetCount > 1) {
-                damage *= shadyBranches.value;
+                damage *= 1.0 - shadyBranches.value;
             }
 
             target.currentHealth -= damage;

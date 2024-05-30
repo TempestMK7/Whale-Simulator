@@ -210,7 +210,7 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         public double GetModifiedToughness() {
-            var modifier = 0.0;
+            var modifier = 1.0;
             var flatAmount = 0.0;
             foreach (CombatStatus status in currentStatus) {
                 if (status.status == StatusEnum.TOUGHNESS_UP) {
@@ -225,7 +225,7 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         public double GetModifiedResistance() {
-            var modifier = 0.0;
+            var modifier = 1.0;
             foreach (CombatStatus status in currentStatus) {
                 if (status.status == StatusEnum.RESISTANCE_UP) {
                     modifier += status.value;
