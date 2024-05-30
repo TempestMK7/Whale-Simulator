@@ -64,9 +64,9 @@ public class AnimatedHero : MonoBehaviour {
         }
 
         var baseHero = BaseHeroContainer.GetBaseHero(hero);
-        if (baseHero.HarshPath != null) {
+        if (baseHero.PrefabPath != null) {
             spriteRenderer.enabled = false;
-            harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.HarshPath), gameObject.transform);
+            harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.PrefabPath), gameObject.transform);
             harshByteAnimation.OnCreate(gameObject.transform.localScale);
         } else {
             spriteRenderer.enabled = true;
@@ -81,9 +81,9 @@ public class AnimatedHero : MonoBehaviour {
                 harshByteAnimation = null;
             }
 
-            if (hero.baseHero.HarshPath != null) {
+            if (hero.baseHero.PrefabPath != null) {
                 spriteRenderer.enabled = false;
-                harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(hero.baseHero.HarshPath), gameObject.transform);
+                harshByteAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(hero.baseHero.PrefabPath), gameObject.transform);
                 harshByteAnimation.OnCreate(gameObject.transform.localScale);
             } else {
                 spriteRenderer.enabled = true;

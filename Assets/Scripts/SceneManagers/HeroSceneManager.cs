@@ -235,9 +235,9 @@ public class HeroSceneManager : MonoBehaviour {
             Destroy(existingHarshAnimation.gameObject);
         }
 
-        if (baseHero.HarshPath != null) {
+        if (baseHero.PrefabPath != null) {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = false;
-            var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.HarshPath), heroAnimation.transform);
+            var harshAnimation = Instantiate(Resources.Load<BaseWhaleAnimation>(baseHero.PrefabPath), heroAnimation.transform);
             harshAnimation.OnCreate(heroAnimation.transform.localScale);
         } else {
             heroAnimation.GetComponent<SpriteRenderer>().enabled = true;
