@@ -199,38 +199,38 @@ namespace Com.Tempest.Whale.GameObjects {
                 case HeroEnum.ARCTIBOAR:
                     return new BaseHero(hero, "Arctiboar", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Arctiboar/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ICE, 1,
-                        85, 65, 50, 75, 90, 60, 0.1, 0.2,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        85, 70, 50, 70, 90, 60, 0.1, 0.2,
+                        AbilityEnum.NONE, AttackEnum.BASIC_ICE_CUBE, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.CHARGE_FROZEN_FIST, AttackEnum.CHARGE_ICICLE_DROP,
+                        new AttackEnum[] { AttackEnum.BASIC_FROZEN_SLIDE, AttackEnum.BASIC_SUB_ZERO_MACHINE_GUN },
+                        new AttackEnum[] { AttackEnum.CHARGE_ICEBERG, AttackEnum.CHARGE_CRYSTALLIZE, AttackEnum.CHARGE_ENSCALE });
                 case HeroEnum.ICECAP:
                     return new BaseHero(hero, "Icecap", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Icecap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.ICE, 2,
-                        85, 60, 80, 55, 75, 70, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        80, 55, 90, 65, 75, 60, 0.2, 0.1,
+                        AbilityEnum.NONE, AttackEnum.BASIC_CHILLING_WIND, AttackEnum.BASIC_FREEZING_WIND, AttackEnum.CHARGE_FROSTBITE, AttackEnum.CHARGE_FREEZE_RAY,
+                        new AttackEnum[] { AttackEnum.BASIC_SNOWBLAST, AttackEnum.BASIC_POWER_DRAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_ABSOLUTE_ZERO, AttackEnum.CHARGE_SNOWFALL, AttackEnum.CHARGE_BLIZZARD, AttackEnum.CHARGE_FREEZE_EARTH });
                 case HeroEnum.GLACITAUR:
                     return new BaseHero(hero, "Glacitaur", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Glacitaur/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ICE, 3,
-                        80, 90, 50, 60, 70, 75, 0.25, 0,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        75, 95, 50, 60, 70, 75, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_ICE_CUBE, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.CHARGE_SNOW_DRIFT, AttackEnum.CHARGE_SNOW_SLIDE,
+                        new AttackEnum[] { AttackEnum.BASIC_FROZEN_SLIDE, AttackEnum.BASIC_SNOWBALL_STORM, AttackEnum.BASIC_SUB_ZERO_MACHINE_GUN, AttackEnum.CHARGE_SMASH_TO_SMITHEREENS },
+                        new AttackEnum[] { AttackEnum.CHARGE_ICICLE_DROP, AttackEnum.CHARGE_ICEBERG, AttackEnum.CHARGE_AVALANCHE, AttackEnum.CHARGE_TIMBER, AttackEnum.CHARGE_EARTHQUAKE });
                 case HeroEnum.FREEZER:
                     return new BaseHero(hero, "Freezer", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Freezer/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ICE, 4,
                         85, 80, 50, 70, 80, 60, 0.1, 0.2,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_ICE_CUBE, AttackEnum.BASIC_ICICLE_TOSS, AttackEnum.CHARGE_FROZEN_FIST, AttackEnum.CHARGE_ICICLE_DROP,
+                        new AttackEnum[] { AttackEnum.BASIC_FROZEN_SLIDE, AttackEnum.BASIC_BREACHING_CRASH },
+                        new AttackEnum[] { AttackEnum.CHARGE_ICEBERG, AttackEnum.CHARGE_DEPTH_CHARGE });
                 case HeroEnum.CRYOKAHT:
                     return new BaseHero(hero, "Cryokaht", "Icons/Element02_256_19", "Characters/IceOverrideController", "Characters/Cryokaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ICE, 5,
-                        90, 60, 60, 70, 100, 50, 0, 0.25,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        90, 55, 65, 70, 100, 50, 0, 0.25,
+                        AbilityEnum.NONE, AttackEnum.BASIC_CHILLING_WIND, AttackEnum.BASIC_FREEZING_WIND, AttackEnum.CHARGE_FROSTBITE, AttackEnum.CHARGE_REFLECTIVE_ARMOR,
+                        new AttackEnum[] { AttackEnum.BASIC_SNOWBLAST },
+                        new AttackEnum[] { AttackEnum.CHARGE_WINTER_STORM, AttackEnum.CHARGE_CRYSTALLIZE, AttackEnum.CHARGE_FREEZE_EARTH });
 
                 // Earth heroes.
                 case HeroEnum.SEISMIBOAR:
