@@ -283,8 +283,8 @@ public class HeroSceneManager : MonoBehaviour {
         deflectionLabel.text = string.Format("Deflection: {0}%", (combatHero.deflectionChance * 100).ToString("0"));
         critLabel.text = string.Format("Critical: {0}%", (combatHero.critChance* 100).ToString("0"));
 
-        var basicAttack = AttackInfoContainer.GetAttackInfo(baseHero.BasicAttack);
-        var specialAttack = AttackInfoContainer.GetAttackInfo(baseHero.SpecialAttack);
+        var basicAttack = AttackInfoContainer.GetAttackInfo(currentHero.GetBasicAttackEnum());
+        var specialAttack = AttackInfoContainer.GetAttackInfo(currentHero.GetChargeAttackEnum());
         var passiveAbility = AbilityInfoContainer.GetAbilityInfo(baseHero.PassiveAbility);
 
         basicAttackImage.sprite = Resources.Load<Sprite>(basicAttack.AttackIconPath);
@@ -332,7 +332,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void LaunchAttackTooltip() {
         if (ButtonsBlocked()) return;
-        var attack = filteredList[currentPosition].GetBaseHero().BasicAttack;
+        var attack = filteredList[currentPosition].GetBasicAttackEnum();
         var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
         var popup = Instantiate(tooltipPrefab, detailContainer.transform);
         popup.SetTooltip(attackInfo.AttackName, attackInfo.GetTooltip());
@@ -340,7 +340,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     public void LaunchSpecialTooltip() {
         if (ButtonsBlocked()) return;
-        var attack = filteredList[currentPosition].GetBaseHero().SpecialAttack;
+        var attack = filteredList[currentPosition].GetChargeAttackEnum();
         var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
         var popup = Instantiate(tooltipPrefab, detailContainer.transform);
         popup.SetTooltip(attackInfo.AttackName, attackInfo.GetTooltip());

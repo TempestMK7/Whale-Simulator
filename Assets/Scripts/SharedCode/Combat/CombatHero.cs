@@ -15,6 +15,9 @@ namespace Com.Tempest.Whale.Combat {
         public int awakeningLevel;
         public int currentLevel;
 
+        public AttackEnum basicAttack;
+        public AttackEnum chargeAttack;
+
         public double health;
         public double strength;
         public double power;
@@ -38,6 +41,9 @@ namespace Com.Tempest.Whale.Combat {
             heroEnum = baseHero.Hero;
             awakeningLevel = accountHero.AwakeningLevel;
             currentLevel = accountHero.CurrentLevel;
+
+            basicAttack = accountHero.GetBasicAttackEnum();
+            chargeAttack = accountHero.GetChargeAttackEnum();
 
             health = GetBigStat(baseHero.BaseHealth) * 10.0;
             strength = GetBigStat(baseHero.BaseStrength);

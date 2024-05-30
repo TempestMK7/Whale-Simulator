@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.StateObjects;
 
@@ -20,7 +19,7 @@ namespace Com.Tempest.Whale.Combat {
             CombatHero[] combatEnemies = new CombatHero[enemies.Length];
             for (int x = 0; x < combatEnemies.Length; x++) {
                 if (enemies[x] != null) {
-                    if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(MissionContainer.GetStockEquipmentLoadout(enemies[x], nerfPreferredGear));
+                    if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(new List<AccountEquipment>());
                     else combatEnemies[x] = enemies[x].GetCombatHeroFromAllEquipment(enemyEquipment);
                 }
             }
@@ -68,7 +67,9 @@ namespace Com.Tempest.Whale.Combat {
                     enemyTeam = allies;
                 }
 
-                var attack = next.currentEnergy >= 100 ? next.baseHero.SpecialAttack : next.baseHero.BasicAttack;
+                var nextSpecial = AttackInfoContainer.GetAttackInfo(next.chargeAttack);
+                var attack = next.currentEnergy >= Math.Abs(nextSpecial.AttackerEnergyGained) ? next.chargeAttack : next.basicAttack;
+
                 var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
                 var enemyTargets = CombatMath.DecideTargets(next, attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
                 var allyTargets = CombatMath.DecideTargets(next, attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
