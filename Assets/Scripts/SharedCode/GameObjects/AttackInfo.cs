@@ -429,7 +429,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var hasStab = attacker.baseHero.Faction == AttackFaction;
             var hitType = CombatMath.RollHitType(attacker);
             var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
-            var healing = CombatMath.Healing(attackValue, attacker.currentLevel, BaseHealing, hasStab, hitType);
+            var healing = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, BaseHealing, hasStab, hitType);
             healing = ally.ReceiveHealing(healing);
             ally.currentEnergy += AllyEnergyGained;
 
@@ -453,7 +453,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 var statusDuration = AllyStatusDuration;
                 switch (bestowedStatus) {
                     case StatusEnum.REGENERATION:
-                        statusValue = CombatMath.Healing(attackValue, attacker.currentLevel, (int) AllyStatusValue, hasStab, hitType);
+                        statusValue = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, (int) AllyStatusValue, hasStab, hitType);
                         break;
                     case StatusEnum.LAVA_ARMOR:
                         statusValue = CombatMath.Damage(attacker.GetModifiedPower(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL);

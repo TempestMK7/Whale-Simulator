@@ -185,7 +185,7 @@ namespace Com.Tempest.Whale.GameObjects {
                         RoleEnum.SUPPORT, FactionEnum.FIRE, 4,
                         65, 55, 85, 60, 65, 95, 0.2, 0.1,
                         AbilityEnum.NONE, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
-                        new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_KINDLE },
+                        new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_KINDLE, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
                         new AttackEnum[] { AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_STOKE_FLAMES, AttackEnum.CHARGE_BURNING_HASTE, AttackEnum.CHARGE_ASH_CLOUD, AttackEnum.CHARGE_MELT_ARMOR });
                 case HeroEnum.INFERNIKAHT:
                     return new BaseHero(hero, "Infernikaht", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Infernikaht/Large/MainPrefab",
@@ -237,74 +237,74 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Seismiboar", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Seismiboar/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.EARTH, 1,
                         95, 65, 50, 90, 65, 60, 0, 0.25,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_FALLING_ROCK_TRAP,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER },
+                        new AttackEnum[] { AttackEnum.CHARGE_SMASH_TO_SMITHEREENS, AttackEnum.CHARGE_ROLLING_TACKLE, AttackEnum.CHARGE_GIFT_OF_EARTH, AttackEnum.CHARGE_SHATTER_GLASS });
                 case HeroEnum.MUDCAP:
                     return new BaseHero(hero, "Mudcap", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Mudcap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.EARTH, 2,
                         80, 75, 75, 70, 55, 75, 0.1, 0.2,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_FALLING_ROCK_TRAP,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
+                        new AttackEnum[] { AttackEnum.CHARGE_RENDING_STONE, AttackEnum.CHARGE_PETAL_STORM, AttackEnum.CHARGE_LEAF_WHIRLWIND, AttackEnum.CHARGE_TRANQUIL_GROVE, AttackEnum.CHARGE_SERENE_FOREST });
                 case HeroEnum.ROCKOTAUR:
                     return new BaseHero(hero, "Rockotaur", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Rockotaur/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 3,
-                        80, 85, 50, 75, 60, 75, 0.25, 0,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        80, 95, 50, 75, 55, 70, 0.25, 0,
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_ROLLING_TACKLE,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER, AttackEnum.BASIC_DUST_STORM, AttackEnum.BASIC_ROCK_SLIDE },
+                        new AttackEnum[] { AttackEnum.CHARGE_SMASH_TO_SMITHEREENS, AttackEnum.CHARGE_TREMOR, AttackEnum.CHARGE_EARTHQUAKE, AttackEnum.CHARGE_BURNING_BOULDER, AttackEnum.CHARGE_METEOR });
                 case HeroEnum.PULVERIZER:
                     return new BaseHero(hero, "Pulverizer", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Pulverizer/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.EARTH, 4,
                         85, 95, 50, 70, 65, 60, 0.1, 0.2,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_STONE_FIST, AttackEnum.CHARGE_ROLLING_TACKLE,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER },
+                        new AttackEnum[] { AttackEnum.CHARGE_SMASH_TO_SMITHEREENS });
                 case HeroEnum.TERRIKAHT:
                     return new BaseHero(hero, "Terrikaht", "Icons/Element02_256_22", "Characters/EarthOverrideController", "Characters/Terrikaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.EARTH, 5,
                         90, 60, 50, 100, 75, 60, 0, 0.25,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_PEBBLE, AttackEnum.BASIC_JAGGED_ROCK, AttackEnum.CHARGE_HARDEN_FIST, AttackEnum.CHARGE_GIFT_OF_EARTH,
+                        new AttackEnum[] { AttackEnum.BASIC_BOULDER },
+                        new AttackEnum[] { AttackEnum.CHARGE_HIGH_GROUND, AttackEnum.CHARGE_CHOKING_DUST, AttackEnum.CHARGE_SHATTER_GLASS });
 
                 // Electric heroes.
                 case HeroEnum.ELECTIBOAR:
                     return new BaseHero(hero, "Electiboar", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Electiboar/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.ELECTRIC, 1,
                         80, 50, 75, 60, 85, 75, 0.1, 0.2,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_BRAINSTORM, AttackEnum.CHARGE_SHATTER_GLASS });
                 case HeroEnum.BOLTCAP:
                     return new BaseHero(hero, "Boltcap", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Boltcap/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 2,
                         65, 55, 85, 60, 70, 90, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_POWER_DRAIN, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_SHOCK, AttackEnum.BASIC_ZAP },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_REVERSE_POLARITY, AttackEnum.CHARGE_BURNING_HASTE });
                 case HeroEnum.ZAPATAUR:
                     return new BaseHero(hero, "Zapataur", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Zapataur/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 3,
                         70, 50, 90, 60, 70, 85, 0.25, 0,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP, AttackEnum.BASIC_FORKED_LIGHTNING, AttackEnum.BASIC_CHAIN_LIGHTNING },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_ELECTRICAL_STORM, AttackEnum.CHARGE_TEMPEST, AttackEnum.CHARGE_STRIKE_TWICE });
                 case HeroEnum.GENERATOR:
                     return new BaseHero(hero, "Generator", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Generator/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.ELECTRIC, 4,
                         75, 50, 75, 70, 80, 75, 0.1, 0.2,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP, AttackEnum.BASIC_POWER_DRAIN },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_OVERCHARGE });
                 case HeroEnum.ZEPHYKAHT:
                     return new BaseHero(hero, "Zephykaht", "Icons/Element02_256_16", "Characters/ElectricOverrideController", "Characters/Zephykaht/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.ELECTRIC, 5,
                         60, 50, 90, 60, 70, 100, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_PUNCH, AttackEnum.BASIC_KICK, AttackEnum.CHARGE_RUNNING_PUNCH, AttackEnum.CHARGE_FLYING_KICK,
-                        new AttackEnum[] { },
-                        new AttackEnum[] { });
+                        AbilityEnum.NONE, AttackEnum.BASIC_SPARK, AttackEnum.BASIC_SHOCK, AttackEnum.CHARGE_LIGHTNING_BOLT, AttackEnum.CHARGE_LIGHTNING_BLAST,
+                        new AttackEnum[] { AttackEnum.BASIC_ZAP, AttackEnum.BASIC_FORKED_LIGHTNING, AttackEnum.BASIC_CHAIN_LIGHTNING, AttackEnum.BASIC_KINDLE },
+                        new AttackEnum[] { AttackEnum.CHARGE_LASER_BEAM, AttackEnum.CHARGE_ELECTRICAL_STORM, AttackEnum.CHARGE_TEMPEST, AttackEnum.CHARGE_STRIKE_TWICE, AttackEnum.CHARGE_BRAINSTORM, AttackEnum.CHARGE_OVERCHARGE });
 
                 default:
                     return new BaseHero(hero, "Unknown", "Icons/icon_gem", "Characters/FacelessOverrideController", null,

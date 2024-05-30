@@ -24,7 +24,7 @@ namespace Com.Tempest.Whale.Combat {
             var damage = baseDamage * (modifiedAttack / modifiedDefense);
 
             if (hasStab) {
-                damage *= 1.5;
+                damage *= 1.333;
             }
 
             if (hitType == HitType.CRITICAL) {
@@ -34,20 +34,23 @@ namespace Com.Tempest.Whale.Combat {
             }
 
             if (hitEffectivity == HitEffectivity.EMPOWERED) {
-                damage *= 1.5;
+                damage *= 1.333;
             } else if (hitEffectivity == HitEffectivity.RESISTED) {
-                damage *= 0.67;
+                damage *= 0.75;
             }
 
             return damage;
         }
 
-        public static double Healing(double modifiedAttack, int attackerLevel, int baseHealing, bool hasStab, HitType hitType) {
-            var effectiveDefense = 50 + (1.5 * attackerLevel);
+        public static double Healing(double modifiedAttack, int attackerLevel, int targetAwakening, int baseHealing, bool hasStab, HitType hitType) {
+            // This will likely need work later.  Because I do not have a defense value to divide attack by,
+            // I take the lowest defense a target could have at the attacker's level at awakening 5 and treat that as the defense.
+            var effectiveDefense = 75 + (2.75 * attackerLevel);
+            effectiveDefense *= Math.Pow(1.1, targetAwakening);
             var healing = baseHealing * (modifiedAttack / effectiveDefense);
 
             if (hasStab) {
-                healing *= 1.5;
+                healing *= 1.333;
             }
 
             if (hitType == HitType.CRITICAL) {
