@@ -172,18 +172,22 @@ namespace Com.Tempest.Whale.Combat {
         public double GetModifiedStrength() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.STRENGTH_UP) {
-                    multiplier += status.value;
-                } else if (status.status == StatusEnum.STRENGTH_DOWN) {
-                    multiplier -= status.value;
-                } else if (status.status == StatusEnum.CHILL) {
-                    multiplier -= status.value;
-                } else if (status.status == StatusEnum.ROOT) {
-                    multiplier -= status.value;
-                } else if (status.status == StatusEnum.BLIND) {
-                    multiplier -= status.value;
-                } else if (status.status == StatusEnum.DAZE) {
-                    multiplier -= status.value;
+                switch (status.status) {
+                    case StatusEnum.STRENGTH_DOWN:
+                    case StatusEnum.CHILL:
+                    case StatusEnum.ROOT:
+                    case StatusEnum.BLIND:
+                    case StatusEnum.DAZE:
+                        if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                            multiplier += status.value;
+                        } else {
+                            multiplier -= status.value;
+                        }
+                        break;
+                    case StatusEnum.STRENGTH_UP:
+                    case StatusEnum.HIGH_GROUND:
+                        multiplier += status.value;
+                        break;
                 }
             }
             var baseValue = HasStatus(StatusEnum.REVERSE_POLARITY) ? power : strength;
@@ -193,16 +197,22 @@ namespace Com.Tempest.Whale.Combat {
         public double GetModifiedPower() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.POWER_UP) {
-                    multiplier += status.value;
-                } else if (status.status == StatusEnum.POWER_DOWN) {
-                    multiplier -= status.value;
-                } else if (status.status == StatusEnum.DAZE || status.status == StatusEnum.BLIND || status.status == StatusEnum.CHILL || status.status == StatusEnum.ROOT) {
-                    if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                switch (status.status) {
+                    case StatusEnum.POWER_DOWN:
+                    case StatusEnum.CHILL:
+                    case StatusEnum.ROOT:
+                    case StatusEnum.BLIND:
+                    case StatusEnum.DAZE:
+                        if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                            multiplier += status.value;
+                        } else {
+                            multiplier -= status.value;
+                        }
+                        break;
+                    case StatusEnum.POWER_UP:
+                    case StatusEnum.HIGH_GROUND:
                         multiplier += status.value;
-                    } else {
-                        multiplier -= status.value;
-                    }
+                        break;
                 }
             }
             var baseValue = HasStatus(StatusEnum.REVERSE_POLARITY) ? strength : power;
@@ -219,6 +229,8 @@ namespace Com.Tempest.Whale.Combat {
                     modifier -= status.value;
                 } else if (status.status == StatusEnum.EARTH_ARMOR) {
                     flatAmount += status.value;
+                } else if (status.status == StatusEnum.HIGH_GROUND) {
+                    modifier += status.value;
                 }
             }
             return (toughness * modifier) + flatAmount;
@@ -231,6 +243,8 @@ namespace Com.Tempest.Whale.Combat {
                     modifier += status.value;
                 } else if (status.status == StatusEnum.RESISTANCE_DOWN) {
                     modifier -= status.value;
+                } else if (status.status == StatusEnum.HIGH_GROUND) {
+                    modifier += status.value;
                 }
             }
             return resistance * modifier;
@@ -239,16 +253,19 @@ namespace Com.Tempest.Whale.Combat {
         public double GetModifiedSpeed() {
             var multiplier = 1.0;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.SPEED_UP) {
-                    multiplier += status.value;
-                } else if (status.status == StatusEnum.SPEED_DOWN) {
-                    multiplier -= status.value;
-                } else if (status.status == StatusEnum.CHILL || status.status == StatusEnum.ROOT) {
-                    if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                switch (status.status) {
+                    case StatusEnum.SPEED_DOWN:
+                    case StatusEnum.CHILL:
+                    case StatusEnum.ROOT:
+                        if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                            multiplier += status.value;
+                        } else {
+                            multiplier -= status.value;
+                        }
+                        break;
+                    case StatusEnum.SPEED_UP:
                         multiplier += status.value;
-                    } else {
-                        multiplier -= status.value;
-                    }
+                        break;
                 }
             }
             return multiplier * speed;
@@ -257,8 +274,19 @@ namespace Com.Tempest.Whale.Combat {
         public double GetModifiedCrit() {
             var modified = critChance;
             foreach (CombatStatus status in currentStatus) {
-                if (status.status == StatusEnum.DAZE || status.status == StatusEnum.BLIND) {
-                    modified -= status.value;
+                switch (status.status) {
+                    case StatusEnum.CRITICAL_DOWN:
+                    case StatusEnum.DAZE:
+                    case StatusEnum.BLIND:
+                        if (baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
+                            modified += status.value;
+                        } else {
+                            modified -= status.value;
+                        }
+                        break;
+                    case StatusEnum.CRITICAL_UP:
+                        modified += status.value;
+                        break;
                 }
             }
             return modified;
@@ -268,6 +296,10 @@ namespace Com.Tempest.Whale.Combat {
             var modified = deflectionChance;
             foreach (CombatStatus status in currentStatus) {
                 if (status.status == StatusEnum.DAZE || status.status == StatusEnum.BLIND) {
+                    modified -= status.value;
+                } else if (status.status == StatusEnum.DEFLECTION_UP) {
+                    modified += status.value;
+                } else if (status.status == StatusEnum.DEFLECTION_DOWN) {
                     modified -= status.value;
                 }
             }

@@ -22,6 +22,10 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_RALLYING_CHEER = 20, // small
         CHARGE_PLANT_FLAG = 21, // medium
 
+        // No Faction, Passive Moves
+        PASSIVE_RETALIATION = 30, // only triggers when pig cycle is hit
+        PASSIVE_SCATTER_BERRIES = 31, // only triggers when tree cycle is hit
+
         // Water, Physical
         BASIC_FIN_SLAP = 100, // small
         BASIC_TAIL_SLAP = 101, // medium
@@ -312,6 +316,9 @@ namespace Com.Tempest.Whale.GameObjects {
 
         public List<CombatStep> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
             var hasStab = attacker.baseHero.Faction == AttackFaction;
+            if (attacker.baseHero.PassiveAbility == AbilityEnum.WORLD_TRAVELLER) {
+                hasStab = true;
+            }
             var hitType = CombatMath.RollHitType(attacker, target);
             var hitEffectivity = CombatMath.GetEffectivity(AttackFaction, target.baseHero.Faction);
             var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
@@ -343,28 +350,14 @@ namespace Com.Tempest.Whale.GameObjects {
                 return allInstances;
             }
 
+            // Apply the status on my attack to the target.
             if (TargetStatus != null) {
-                switch (target.baseHero.PassiveAbility) {
-                    case AbilityEnum.WATER_BODY:
-                        if (TargetStatus == StatusEnum.BURN) {
-                            return allInstances;
-                        }
-                        break;
-                    case AbilityEnum.HOT_BLOODED:
-                        if (TargetStatus == StatusEnum.POISON) {
-                            return allInstances;
-                        }
-                        break;
-                    case AbilityEnum.COLD_BLOODED:
-                        if (TargetStatus == StatusEnum.CHILL) {
-                            return allInstances;
-                        }
-                        break;
-                }
-
                 var inflictedStatus = TargetStatus.GetValueOrDefault();
                 var statusValue = TargetStatusValue;
                 var statusDuration = TargetStatusDuration;
+                if (attacker.baseHero.PassiveAbility == AbilityEnum.STICKY_SPORES) {
+                    statusDuration += 1;
+                }
                 switch (inflictedStatus) {
                     case StatusEnum.BURN:
                         var burnPow = attacker.GetModifiedPower();
@@ -398,16 +391,6 @@ namespace Com.Tempest.Whale.GameObjects {
                         break;
                 }
 
-                if (target.baseHero.PassiveAbility == AbilityEnum.MENTAL_GYMNASTICS) {
-                    if (inflictedStatus == StatusEnum.POWER_DOWN) {
-                        inflictedStatus = StatusEnum.POWER_UP;
-                    } else if (inflictedStatus == StatusEnum.STRENGTH_DOWN) {
-                        inflictedStatus = StatusEnum.STRENGTH_UP;
-                    } else if (inflictedStatus == StatusEnum.SPEED_DOWN) {
-                        inflictedStatus = StatusEnum.SPEED_UP;
-                    }
-                }
-
                 // This is going to break everything.
                 if (target.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE && !IsPhysical) {
                     var statusContainer = new CombatStatus(inflictedStatus, target.combatHeroGuid, attacker.combatHeroGuid, statusValue, statusDuration, AttackFaction);
@@ -422,20 +405,61 @@ namespace Com.Tempest.Whale.GameObjects {
                 }
             }
 
+            if (attacker.baseHero.PassiveAbility == AbilityEnum.FORECFUL_BLOWS) {
+                // This too.
+                if (target.baseHero.PassiveAbility == AbilityEnum.MIRROR_ICE && !IsPhysical) {
+                    var statusContainer = new CombatStatus(StatusEnum.DAZE, attacker.combatHeroGuid, target.combatHeroGuid, 0.2, 2, target.baseHero.Faction);
+                    attacker.AddStatus(statusContainer);
+                    var mirrorInstance = new CombatStep(null, null, target.combatHeroGuid, attacker.combatHeroGuid);
+                    mirrorInstance.AddStatus(statusContainer);
+                    allInstances.Add(mirrorInstance);
+                } else {
+                    var statusContainer = new CombatStatus(StatusEnum.DAZE, attacker.combatHeroGuid, target.combatHeroGuid, 0.2, 2, attacker.baseHero.Faction);
+                    target.AddStatus(statusContainer);
+                    step.AddStatus(statusContainer);
+                }
+            }
+
+            if (target.baseHero.PassiveAbility == AbilityEnum.CRYSTALLINE) {
+                if (IsPhysical) {
+                    var offStatus = new CombatStatus(StatusEnum.STRENGTH_UP, attacker.combatHeroGuid, target.combatHeroGuid, 0.2, 2, target.baseHero.Faction);
+                    var defStatus = new CombatStatus(StatusEnum.TOUGHNESS_UP, attacker.combatHeroGuid, target.combatHeroGuid, 0.2, 2, target.baseHero.Faction);
+                    target.AddStatus(offStatus);
+                    target.AddStatus(defStatus);
+                    step.AddStatus(offStatus);
+                    step.AddStatus(defStatus);
+                } else {
+                    var offStatus = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, target.combatHeroGuid, 0.2, 2, target.baseHero.Faction);
+                    var defStatus = new CombatStatus(StatusEnum.RESISTANCE_UP, attacker.combatHeroGuid, target.combatHeroGuid, 0.2, 2, target.baseHero.Faction);
+                    target.AddStatus(offStatus);
+                    target.AddStatus(defStatus);
+                    step.AddStatus(offStatus);
+                    step.AddStatus(defStatus);
+                }
+            }
+
             return allInstances;
         }
 
         public CombatStep ApplyAttackToAlly(CombatHero attacker, CombatHero ally) {
             var hasStab = attacker.baseHero.Faction == AttackFaction;
+            if (attacker.baseHero.PassiveAbility == AbilityEnum.WORLD_TRAVELLER) {
+                hasStab = true;
+            }
             var hitType = CombatMath.RollHitType(attacker);
             var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
             var healing = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, BaseHealing, hasStab, hitType);
             healing = ally.ReceiveHealing(healing);
-            ally.currentEnergy += AllyEnergyGained;
+
+            var allyEnergy = AllyEnergyGained;
+            if (attacker.baseHero.PassiveAbility == AbilityEnum.HELPING_HAND) {
+                allyEnergy += 20;
+            }
+            ally.currentEnergy += allyEnergy;
 
             var step = new CombatStep(Attack, null, attacker.combatHeroGuid, ally.combatHeroGuid);
             step.healing = healing;
-            step.targetEnergy = AllyEnergyGained;
+            step.targetEnergy = allyEnergy;
 
             // If the ally died from this attack somehow, bail before applying status.
             if (!ally.IsAlive()) {
@@ -451,6 +475,9 @@ namespace Com.Tempest.Whale.GameObjects {
                 var bestowedStatus = AllyStatus.GetValueOrDefault();
                 var statusValue = AllyStatusValue;
                 var statusDuration = AllyStatusDuration;
+                if (attacker.baseHero.PassiveAbility == AbilityEnum.STICKY_SPORES) {
+                    statusDuration += 1;
+                }
                 switch (bestowedStatus) {
                     case StatusEnum.REGENERATION:
                         statusValue = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, (int) AllyStatusValue, hasStab, hitType);
@@ -470,24 +497,6 @@ namespace Com.Tempest.Whale.GameObjects {
                 var statusContainer = new CombatStatus(bestowedStatus, attacker.combatHeroGuid, ally.combatHeroGuid, statusValue, statusDuration, AttackFaction);
                 ally.AddStatus(statusContainer);
                 step.AddStatus(statusContainer);
-            }
-
-            if (attacker.baseHero.PassiveAbility == AbilityEnum.CLEANSING_RAIN) {
-                var newStatus = new List<CombatStatus>();
-                foreach (CombatStatus status in ally.currentStatus) {
-                    var statusDisplay = StatusInfoContainer.GetStatusInfo(status.status);
-                    if (status.turnsRemaining == CombatStatus.INDEFINITE) {
-                        newStatus.Add(status);
-                    } else if (statusDisplay.IsBeneficial) {
-                        newStatus.Add(status);
-                    } else {
-                        status.turnsRemaining -= 1;
-                        if (status.turnsRemaining > 0) {
-                            newStatus.Add(status);
-                        }
-                    }
-                }
-                ally.currentStatus = newStatus;
             }
 
             if (Attack == AttackEnum.CHARGE_CLEANSING_MIST) {
@@ -730,6 +739,20 @@ namespace Com.Tempest.Whale.GameObjects {
                 AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
                 false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
                 75, 0, FactionEnum.NONE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // No Faction, Passive Attacks
+            attackDict[AttackEnum.PASSIVE_RETALIATION] = new AttackInfo(AttackEnum.PASSIVE_RETALIATION,
+                "Retaliation", MoveComplexity.INTERMEDIATE, "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.RANDOM, 1, TargetType.NONE, 0,
+                100, 0, FactionEnum.NONE, 0, 0, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.PASSIVE_SCATTER_BERRIES] = new AttackInfo(AttackEnum.PASSIVE_SCATTER_BERRIES,
+                "Scatter Berries", MoveComplexity.COMPLEX, "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.RANDOM, 1,
+                0, 100, FactionEnum.NONE, 0, 0, 0,
                 null, 0, 0, null, 0, 0);
 
             // No Faction, buff

@@ -8,7 +8,7 @@ namespace Com.Tempest.Whale.Combat {
     public class CombatEvaluator {
 
         public static CombatReport GenerateCombatReport(AccountHero[] allies, AccountHero[] enemies, 
-            List<AccountEquipment> allyEquipment, List<AccountEquipment> enemyEquipment, bool usePreferredGear = false, bool nerfPreferredGear = false) {
+            List<AccountEquipment> allyEquipment, List<AccountEquipment> enemyEquipment) {
             CombatHero[] combatAllies = new CombatHero[allies.Length];
             for (int x = 0; x < combatAllies.Length; x++) {
                 if (allies[x] != null) {
@@ -19,8 +19,7 @@ namespace Com.Tempest.Whale.Combat {
             CombatHero[] combatEnemies = new CombatHero[enemies.Length];
             for (int x = 0; x < combatEnemies.Length; x++) {
                 if (enemies[x] != null) {
-                    if (usePreferredGear) combatEnemies[x] = enemies[x].GetCombatHero(new List<AccountEquipment>());
-                    else combatEnemies[x] = enemies[x].GetCombatHeroFromAllEquipment(enemyEquipment);
+                    combatEnemies[x] = enemies[x].GetCombatHeroFromAllEquipment(enemyEquipment);
                 }
             }
 
@@ -32,6 +31,8 @@ namespace Com.Tempest.Whale.Combat {
                 round.turns = PerformRound(combatAllies, combatEnemies);
                 round.endOfTurn = EndOfTurn(combatAllies, combatEnemies);
                 // This ability is so well designed that it deserves its own evaluation step.
+                EvaluateRisingTide(round);
+                // This one too.
                 EvaluateFeedTheInferno(round);
                 report.rounds.Add(round);
             }
@@ -42,7 +43,7 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         public static List<CombatTurn> PerformRound(CombatHero[] allies, CombatHero[] enemies) {
-            var steps = new List<CombatTurn>();
+            var turns = new List<CombatTurn>();
 
             var haveNotMoved = new List<CombatHero>();
             haveNotMoved.AddRange(allies);
@@ -73,17 +74,26 @@ namespace Com.Tempest.Whale.Combat {
                 var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
                 var enemyTargets = CombatMath.DecideTargets(next, attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
                 var allyTargets = CombatMath.DecideTargets(next, attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
-                var step = CombatMath.PerformAttack(next, attack, allyTargets, enemyTargets);
-                steps.Add(step);
-
-                if (step.skippedTurn) {
+                var turn = CombatMath.PerformAttack(next, attack, allyTargets, enemyTargets);
+                turns.Add(turn);
+                if (turn.skippedTurn) {
                     next.ClearControlEffects();
                 }
                 next.CountDownStatus(true);
+
+                if (next.IsAlive()) {
+                    var enemyTeamList = new List<CombatHero>();
+                    enemyTeamList.AddRange(enemyTeam);
+                    var reactiveTurns = CombatMath.PerformTriggeredAttacks(next, enemyTargets, enemyTeamList);
+                    if (reactiveTurns.Count > 0) {
+                        turns.AddRange(reactiveTurns);
+                    }
+                }
+
                 haveNotMoved.Sort();
             }
 
-            return steps;
+            return turns;
         }
 
         public static List<CombatStep> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {
@@ -101,6 +111,41 @@ namespace Com.Tempest.Whale.Combat {
                 }
             }
             return steps;
+        }
+
+        public static void EvaluateRisingTide(CombatRound round) {
+            var allTide = new List<CombatHero>();
+            foreach (CombatHero hero in round.allies) {
+                if (hero != null && hero.IsAlive() && hero.baseHero.PassiveAbility == AbilityEnum.RISING_TIDE) {
+                    allTide.Add(hero);
+                }
+            }
+            foreach (CombatHero hero in round.enemies) {
+                if (hero != null && hero.IsAlive() && hero.baseHero.PassiveAbility == AbilityEnum.RISING_TIDE) {
+                    allTide.Add(hero);
+                }
+            }
+            if (allTide.Count == 0) return;
+
+            int healCount = 0;
+            foreach (CombatTurn turn in round.turns) {
+                foreach (CombatStep stepInstance in turn.steps) {
+                    if (stepInstance.healing > 0 && stepInstance.triggeringStatus == null) {
+                        healCount++;
+                    }
+                }
+            }
+
+            List<CombatStep> tideEndOfTurn = new List<CombatStep>();
+            foreach (CombatHero tideHero in allTide) {
+                var powerUp = new CombatStatus(StatusEnum.POWER_UP, tideHero.combatHeroGuid, tideHero.combatHeroGuid, 0.05 * healCount, CombatStatus.INDEFINITE, tideHero.baseHero.Faction);
+                tideHero.AddStatus(powerUp);
+
+                var tideInstance = new CombatStep(null, null, tideHero.combatHeroGuid, tideHero.combatHeroGuid);
+                tideInstance.AddStatus(powerUp);
+                tideEndOfTurn.Add(tideInstance);
+            }
+            round.endOfTurn.AddRange(tideEndOfTurn);
         }
 
         public static void EvaluateFeedTheInferno(CombatRound round) {
