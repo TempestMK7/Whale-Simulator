@@ -382,6 +382,43 @@ namespace Com.Tempest.Whale.Combat {
             return turn;
         }
 
+        public static List<CombatTurn> PerformTriggeredAttacks(CombatHero attacker, List<CombatHero> targettedEnemies, List<CombatHero> enemyTeam) {
+            var turns = new List<CombatTurn>();
+            foreach (CombatHero enemy in targettedEnemies) {
+                if (enemy.baseHero.PassiveAbility == AbilityEnum.RETALIATION) {
+                    var turn = new CombatTurn(enemy, new List<CombatHero>(), new List<CombatHero> { attacker }, AttackEnum.PASSIVE_RETALIATION);
+                    turn.steps.AddRange(AttackInfoContainer.GetAttackInfo(AttackEnum.PASSIVE_RETALIATION).ApplyAttackToEnemy(enemy, attacker));
+
+                    foreach (CombatStep step in turn.steps) {
+                        turn.totalDamage += step.damage;
+                        turn.totalHealing += step.healing;
+                    }
+                    turns.Add(turn);
+                } else if (enemy.baseHero.PassiveAbility == AbilityEnum.SCATTER_BERRIES) {
+                    var livingEnemies = new List<CombatHero>();
+                    foreach (CombatHero possiblyAlive in enemyTeam) {
+                        if (possiblyAlive.IsAlive() && !possiblyAlive.combatHeroGuid.Equals(enemy.combatHeroGuid)) {
+                            livingEnemies.Add(possiblyAlive);
+                        }
+                    }
+                    if (!enemy.IsAlive() || livingEnemies.Count == 0) {
+                        continue;
+                    }
+                    var selectedEnemy = livingEnemies[RandomInt(0, livingEnemies.Count)];
+
+                    var turn = new CombatTurn(enemy, new List<CombatHero> { selectedEnemy }, new List<CombatHero>(), AttackEnum.PASSIVE_SCATTER_BERRIES);
+                    turn.steps.Add(AttackInfoContainer.GetAttackInfo(AttackEnum.PASSIVE_SCATTER_BERRIES).ApplyAttackToAlly(enemy, selectedEnemy));
+
+                    foreach (CombatStep step in turn.steps) {
+                        turn.totalDamage += step.damage;
+                        turn.totalHealing += step.healing;
+                    }
+                    turns.Add(turn);
+                }
+            }
+            return turns;
+        }
+
         public static bool CanAttack(CombatHero hero, AttackEnum attack) {
             var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
             if (hero.GetModifiedSpeed() <= 0) return false;

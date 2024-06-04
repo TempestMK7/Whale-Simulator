@@ -153,7 +153,7 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void OnFilterPressed(int filterPosition) {
-        FactionEnum faction = (FactionEnum)Enum.GetValues(typeof(FactionEnum)).GetValue(filterPosition);
+        FactionEnum faction = (FactionEnum)Enum.GetValues(typeof(FactionEnum)).GetValue(filterPosition + 1);
         if (currentFilter == faction) {
             currentFilter = null;
         } else {

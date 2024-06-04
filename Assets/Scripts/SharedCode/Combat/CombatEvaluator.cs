@@ -43,7 +43,7 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         public static List<CombatTurn> PerformRound(CombatHero[] allies, CombatHero[] enemies) {
-            var steps = new List<CombatTurn>();
+            var turns = new List<CombatTurn>();
 
             var haveNotMoved = new List<CombatHero>();
             haveNotMoved.AddRange(allies);
@@ -74,17 +74,26 @@ namespace Com.Tempest.Whale.Combat {
                 var attackInfo = AttackInfoContainer.GetAttackInfo(attack);
                 var enemyTargets = CombatMath.DecideTargets(next, attackInfo.EnemyTargetType, attackInfo.EnemyTargetCount, enemyTeam);
                 var allyTargets = CombatMath.DecideTargets(next, attackInfo.AllyTargetType, attackInfo.AllyTargetCount, allyTeam);
-                var step = CombatMath.PerformAttack(next, attack, allyTargets, enemyTargets);
-                steps.Add(step);
-
-                if (step.skippedTurn) {
+                var turn = CombatMath.PerformAttack(next, attack, allyTargets, enemyTargets);
+                turns.Add(turn);
+                if (turn.skippedTurn) {
                     next.ClearControlEffects();
                 }
                 next.CountDownStatus(true);
+
+                if (next.IsAlive()) {
+                    var enemyTeamList = new List<CombatHero>();
+                    enemyTeamList.AddRange(enemyTeam);
+                    var reactiveTurns = CombatMath.PerformTriggeredAttacks(next, enemyTargets, enemyTeamList);
+                    if (reactiveTurns.Count > 0) {
+                        turns.AddRange(reactiveTurns);
+                    }
+                }
+
                 haveNotMoved.Sort();
             }
 
-            return steps;
+            return turns;
         }
 
         public static List<CombatStep> EndOfTurn(CombatHero[] allies, CombatHero[] enemies) {

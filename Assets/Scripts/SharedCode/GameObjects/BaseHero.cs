@@ -103,14 +103,14 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Marivulp", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Marivulp/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.WATER, 3,
                         75, 55, 90, 60, 70, 75, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_WATER_SHOT, AttackEnum.CHARGE_WATER_CUTTER,
+                        AbilityEnum.WORLD_TRAVELLER, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_WATER_SHOT, AttackEnum.CHARGE_WATER_CUTTER,
                         new AttackEnum[] { AttackEnum.BASIC_TORRENT, AttackEnum.BASIC_HEALING_MIST, AttackEnum.BASIC_HEALING_RAIN },
                         new AttackEnum[] { AttackEnum.CHARGE_WATER_GLOBE, AttackEnum.CHARGE_PRESSURE_JET, AttackEnum.CHARGE_LIQUIFY, AttackEnum.CHARGE_HEALING_DELUGE, AttackEnum.CHARGE_HEALING_TORRENT });
                 case HeroEnum.SPIRIFLOW:
                     return new BaseHero(hero, "Spiriflow", "Icons/Element02_256_04", "Characters/WaterOverrideController", "Characters/Spiriflow/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.WATER, 4,
                         85, 55, 90, 60, 65, 70, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_HEALING_WAVE, AttackEnum.CHARGE_HEALING_DELUGE,
+                        AbilityEnum.HELPING_HAND, AttackEnum.BASIC_SPRAY, AttackEnum.BASIC_DELUGE, AttackEnum.CHARGE_HEALING_WAVE, AttackEnum.CHARGE_HEALING_DELUGE,
                         new AttackEnum[] { AttackEnum.BASIC_HEALING_MIST, AttackEnum.BASIC_HEALING_RAIN },
                         new AttackEnum[] { AttackEnum.CHARGE_HEALING_TORRENT, AttackEnum.CHARGE_CLEANSING_MIST, AttackEnum.CHARGE_CLEANSING_RAIN, AttackEnum.CREATE_BOG, AttackEnum.CHARGE_FAVORABLE_CURRENT });
                 case HeroEnum.HYDROKAHT:
@@ -140,14 +140,14 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Floravulp", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Floravulp/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.GRASS, 3,
                         90, 55, 80, 70, 65, 65, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_NEEDLE_SHOT, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.CHARGE_BERRY_BLAST, AttackEnum.CHARGE_SALAD_TOSS,
+                        AbilityEnum.WORLD_TRAVELLER, AttackEnum.BASIC_NEEDLE_SHOT, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.CHARGE_BERRY_BLAST, AttackEnum.CHARGE_SALAD_TOSS,
                         new AttackEnum[] { AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_CHAIN_LIGHTNING },
                         new AttackEnum[] { AttackEnum.CHARGE_MOONBEAM, AttackEnum.CHARGE_LEAF_WHIRLWIND, AttackEnum.CHARGE_INVOKE_ALLERGIES, AttackEnum.CHARGE_TOXIC_SPORES });
                 case HeroEnum.SPIRIGROW:
                     return new BaseHero(hero, "Spirigrow", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Spirigrow/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.GRASS, 4,
                         90, 55, 85, 75, 65, 65, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_REGROW, AttackEnum.BASIC_REJUVENATE, AttackEnum.CHARGE_PEACEFUL_MEADOW, AttackEnum.CHARGE_TRANQUIL_GROVE,
+                        AbilityEnum.HELPING_HAND, AttackEnum.BASIC_REGROW, AttackEnum.BASIC_REJUVENATE, AttackEnum.CHARGE_PEACEFUL_MEADOW, AttackEnum.CHARGE_TRANQUIL_GROVE,
                         new AttackEnum[] { AttackEnum.BASIC_REVITALIZE },
                         new AttackEnum[] { AttackEnum.CHARGE_SERENE_FOREST, AttackEnum.CHARGE_CLEANSING_MIST, AttackEnum.CHARGE_CLEANSING_RAIN, AttackEnum.CHARGE_SHADY_BRANCHES, AttackEnum.CHARGE_TOXIC_SPORES });
                 case HeroEnum.BOTANIKAHT:
@@ -177,14 +177,14 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Scorovulp", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Scorovulp/Large/MainPrefab",
                         RoleEnum.DAMAGE, FactionEnum.FIRE, 3,
                         75, 55, 90, 60, 65, 80, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
+                        AbilityEnum.WORLD_TRAVELLER, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
                         new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_LAVA_WAVE, AttackEnum.BASIC_SEARING_WIND, AttackEnum.BASIC_ZAP },
                         new AttackEnum[] { AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_FIREBALL, AttackEnum.CHARGE_EXPLOSION, AttackEnum.CHARGE_STRIKE_TWICE });
                 case HeroEnum.SPIRIGNITE:
                     return new BaseHero(hero, "Spirignite", "Icons/Element02_256_01", "Characters/FireOverrideController", "Characters/Spirignite/Large/MainPrefab",
                         RoleEnum.SUPPORT, FactionEnum.FIRE, 4,
                         65, 55, 85, 60, 65, 95, 0.2, 0.1,
-                        AbilityEnum.NONE, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
+                        AbilityEnum.HELPING_HAND, AttackEnum.BASIC_SINGE, AttackEnum.BASIC_SCORCH, AttackEnum.CHARGE_BLAZE, AttackEnum.CHARGE_INCINERATE,
                         new AttackEnum[] { AttackEnum.BASIC_IMMOLATE, AttackEnum.BASIC_KINDLE, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
                         new AttackEnum[] { AttackEnum.CHARGE_INFERNO, AttackEnum.CHARGE_STOKE_FLAMES, AttackEnum.CHARGE_BURNING_HASTE, AttackEnum.CHARGE_ASH_CLOUD, AttackEnum.CHARGE_MELT_ARMOR });
                 case HeroEnum.INFERNIKAHT:

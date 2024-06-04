@@ -55,7 +55,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 "Whenever this Gachafren attacks, gain 10% increased critical chance for 3 turns.");
             abilityDict[AbilityEnum.RETALIATION] = new AbilityInfo(
                 AbilityEnum.RETALIATION, "Retaliation", "Icons/Attacks/None",
-                "Whenever this Gachafren is attacked, it performs a counter attack with 100 attack.");
+                "Whenever this Gachafren is attacked, it performs a counter attack with 100 strength.");
             abilityDict[AbilityEnum.SCATTER_BERRIES] = new AbilityInfo(
                 AbilityEnum.SCATTER_BERRIES, "Scatter Berries", "Icons/Attacks/None",
                 "Whenever this Gachafren is attacked, heal a random ally with 100 power.");
@@ -84,7 +84,7 @@ namespace Com.Tempest.Whale.GameObjects {
 
             // CombatEvaluator.EvaluateRisingTide()
             abilityDict[AbilityEnum.RISING_TIDE] = new AbilityInfo(
-                AbilityEnum.RISING_TIDE, "Rising Tide", "Icons/Attack/None",
+                AbilityEnum.RISING_TIDE, "Rising Tide", "Icons/Attacks/None",
                 "At the end of each turn, permanently gain 5% power for each instance of healing applied to any Gachafren this turn. (Heal over time effects do not count.)");
             // CombatMath.EvaluateNegativeSideEffects()
             abilityDict[AbilityEnum.CHOKING_VINES] = new AbilityInfo(
@@ -102,6 +102,9 @@ namespace Com.Tempest.Whale.GameObjects {
             abilityDict[AbilityEnum.CRYSTALLINE] = new AbilityInfo(
                 AbilityEnum.CRYSTALLINE, "Crystalline", "Icons/Attacks/None",
                 "Whenever this Gachafren is attacked, the corresponding offense and defense stats are raised by 20% for 2 turns.");
+            // CombatHero.GetModifiedStrength()
+            // CombatHero.GetModifiedPower()
+            // CombatHero.GetModifiedCrit()
             abilityDict[AbilityEnum.MENTAL_GYMNASTICS] = new AbilityInfo(
                 AbilityEnum.MENTAL_GYMNASTICS, "Mental Gymnastics", "Icons/Attacks/MentalGymnastics",
                 "Any time this Gachafren's offensive stats would be lowered, they are raised instead.");

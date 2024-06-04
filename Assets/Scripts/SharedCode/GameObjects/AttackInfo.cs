@@ -22,6 +22,10 @@ namespace Com.Tempest.Whale.GameObjects {
         CHARGE_RALLYING_CHEER = 20, // small
         CHARGE_PLANT_FLAG = 21, // medium
 
+        // No Faction, Passive Moves
+        PASSIVE_RETALIATION = 30, // only triggers when pig cycle is hit
+        PASSIVE_SCATTER_BERRIES = 31, // only triggers when tree cycle is hit
+
         // Water, Physical
         BASIC_FIN_SLAP = 100, // small
         BASIC_TAIL_SLAP = 101, // medium
@@ -735,6 +739,20 @@ namespace Com.Tempest.Whale.GameObjects {
                 AttackParticleEnum.FIRE, ParticleOriginEnum.ATTACKER, null, null, false,
                 false, TargetType.FIRST_ALIVE, 5, TargetType.NONE, 0,
                 75, 0, FactionEnum.NONE, -100, 10, 0,
+                null, 0, 0, null, 0, 0);
+
+            // No Faction, Passive Attacks
+            attackDict[AttackEnum.PASSIVE_RETALIATION] = new AttackInfo(AttackEnum.PASSIVE_RETALIATION,
+                "Retaliation", MoveComplexity.INTERMEDIATE, "Icons/RoleDamage", "AttackSounds/BasicPhysical",
+                null, null, null, null, true,
+                true, TargetType.RANDOM, 1, TargetType.NONE, 0,
+                100, 0, FactionEnum.NONE, 0, 0, 0,
+                null, 0, 0, null, 0, 0);
+            attackDict[AttackEnum.PASSIVE_SCATTER_BERRIES] = new AttackInfo(AttackEnum.PASSIVE_SCATTER_BERRIES,
+                "Scatter Berries", MoveComplexity.COMPLEX, "Icons/Attacks/HealingWave", "AttackSounds/WaterRenew",
+                null, null, AttackParticleEnum.GRASS, ParticleOriginEnum.ATTACKER, false,
+                false, TargetType.NONE, 0, TargetType.RANDOM, 1,
+                0, 100, FactionEnum.NONE, 0, 0, 0,
                 null, 0, 0, null, 0, 0);
 
             // No Faction, buff
