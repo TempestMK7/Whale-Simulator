@@ -21,7 +21,10 @@ namespace Com.Tempest.Whale.Combat {
         #region Hit calculation and modifiers.
 
         public static double Damage(double modifiedAttack, double modifiedDefense, double baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity) {
-            var damage = baseDamage * (modifiedAttack / modifiedDefense);
+            double multiplier = modifiedAttack / modifiedDefense;
+            if (multiplier > 100) multiplier = 100;
+            if (multiplier < 0.01) multiplier = 0.01;
+            var damage = baseDamage * multiplier;
 
             if (hasStab) {
                 damage *= 1.333;
@@ -368,6 +371,7 @@ namespace Com.Tempest.Whale.Combat {
             attacker.currentEnergy += attackInfo.AttackerEnergyGained;
             turn.energyGained = attackInfo.AttackerEnergyGained;
 
+            turn.steps.AddRange(ApplyPassiveBuffs(attacker, turn));
             turn.steps.AddRange(EvaluateNegativeSideEffects(attacker, enemies, turn));
 
             foreach (CombatStep step in turn.steps) {
@@ -390,6 +394,22 @@ namespace Com.Tempest.Whale.Combat {
             return true;
         }
 
+        public static List<CombatStep> ApplyPassiveBuffs(CombatHero attacker, CombatTurn turn) {
+            var output = new List<CombatStep>();
+            switch (attacker.baseHero.PassiveAbility) {
+                case AbilityEnum.FIND_THE_PATH:
+                    var status = new CombatStatus(StatusEnum.CRITICAL_UP, attacker.combatHeroGuid, attacker.combatHeroGuid, 0.1, 3, attacker.baseHero.Faction);
+                    attacker.AddStatus(status);
+                    var step = new CombatStep(null, null, attacker.combatHeroGuid, attacker.combatHeroGuid);
+                    step.AddStatus(status);
+                    output.Add(step);
+                    break;
+            }
+            return output;
+        }
+
+        // Evaluates the effects of status and passive abilities on the targets.
+        // If the targets have an effect that applies to attackers, they are applied here.
         public static List<CombatStep> EvaluateNegativeSideEffects(CombatHero attacker, List<CombatHero> enemies, CombatTurn turn) {
             var output = new List<CombatStep>();
             foreach (CombatHero enemy in enemies) {
@@ -405,7 +425,6 @@ namespace Com.Tempest.Whale.Combat {
                 foreach (CombatStatus status in enemy.currentStatus) {
                     switch (status.status) {
                         case StatusEnum.ICE_ARMOR:
-                            if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.COLD_BLOODED) break;
                             double value = status.value;
                             if (tempAttacker.HasStatus(StatusEnum.DOWSE)) {
                                 value *= 2;
@@ -416,7 +435,6 @@ namespace Com.Tempest.Whale.Combat {
                             output.Add(step);
                             break;
                         case StatusEnum.LAVA_ARMOR:
-                            if (tempAttacker.baseHero.PassiveAbility == AbilityEnum.WATER_BODY) break;
                             var burn = new CombatStatus(StatusEnum.BURN, status.inflicterGuid, tempTarget.combatHeroGuid, status.value / attacker.GetModifiedResistance(), 2, status.associatedFaction);
                             if (statusingSelf) {
                                 newEnemyStatus.Add(burn);
@@ -443,99 +461,36 @@ namespace Com.Tempest.Whale.Combat {
                 }
 
                 switch (enemy.baseHero.PassiveAbility) {
-                    case AbilityEnum.VAPORIZE:
-                        if (attacker.baseHero.Faction == FactionEnum.FIRE) {
-                            var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var magicUp = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            var reflectionUp = new CombatStatus(StatusEnum.RESISTANCE_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            enemy.AddStatus(magicUp);
-                            enemy.AddStatus(reflectionUp);
-                            damageInstance.AddStatus(magicUp);
-                            damageInstance.AddStatus(reflectionUp);
-                            output.Add(damageInstance);
-                        }
+                    case AbilityEnum.RETALIATION:
                         break;
-                    case AbilityEnum.BARK_SKIN:
-                        var attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
-                        if (attackInfo.IsPhysical) {
-                            var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var attackUp = new CombatStatus(StatusEnum.STRENGTH_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            enemy.AddStatus(attackUp);
-                            damageInstance.AddStatus(attackUp);
-                            output.Add(damageInstance);
-                        }
+                    case AbilityEnum.SCATTER_BERRIES:
                         break;
-                    case AbilityEnum.ABSORB_RAIN:
-                        if (attacker.baseHero.Faction == FactionEnum.WATER) {
-                            var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var attackUp = new CombatStatus(StatusEnum.STRENGTH_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            var defenseUp = new CombatStatus(StatusEnum.TOUGHNESS_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            enemy.AddStatus(attackUp);
-                            enemy.AddStatus(defenseUp);
-                            damageInstance.AddStatus(attackUp);
-                            damageInstance.AddStatus(defenseUp);
-                            output.Add(damageInstance);
+                    case AbilityEnum.CHOKING_VINES:
+                        double value = 0.2;
+                        if (tempAttacker.HasStatus(StatusEnum.DOWSE)) {
+                            value *= 2.0;
                         }
-                        break;
-                    case AbilityEnum.KINDLING:
-                        if (attacker.baseHero.Faction == FactionEnum.GRASS) {
-                            var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var magicUp = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            var speedUp = new CombatStatus(StatusEnum.SPEED_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            enemy.AddStatus(magicUp);
-                            enemy.AddStatus(speedUp);
-                            damageInstance.AddStatus(magicUp);
-                            damageInstance.AddStatus(speedUp);
-                            output.Add(damageInstance);
-                        }
-                        break;
-                    case AbilityEnum.JAGGED_SURFACE:
-                        var cumulativeInstance = new CombatStep(null, null, enemy.combatHeroGuid, attacker.combatHeroGuid);
-                        foreach (CombatStep instance in turn.steps) {
-                            if (instance.attackerGuid.Equals(attacker.combatHeroGuid) && instance.targetGuid.Equals(enemy.combatHeroGuid) && instance.attackUsed != null) {
-                                attackInfo = AttackInfoContainer.GetAttackInfo(instance.attackUsed.GetValueOrDefault());
-                                if (attackInfo.IsMelee) {
-                                    cumulativeInstance.damage += instance.damage * 0.2;
-                                }
-                            }
-                        }
-                        if (cumulativeInstance.damage > 0) {
-                            attacker.currentHealth -= cumulativeInstance.damage;
-                            output.Add(cumulativeInstance);
-                        }
-                        break;
-                    case AbilityEnum.CONDUCTIVITY:
-                        attackInfo = AttackInfoContainer.GetAttackInfo(turn.attackUsed);
-                        if (!attackInfo.IsPhysical) {
-                            var damageInstance = new CombatStep(null, null, attacker.combatHeroGuid, enemy.combatHeroGuid);
-                            var magicUp = new CombatStatus(StatusEnum.POWER_UP, attacker.combatHeroGuid, enemy.combatHeroGuid, 0.2, 2, enemy.baseHero.Faction);
-                            enemy.AddStatus(magicUp);
-                            damageInstance.AddStatus(magicUp);
-                            output.Add(damageInstance);
-                        }
+                        var rooted = new CombatStatus(StatusEnum.ROOT, tempTarget.combatHeroGuid, tempAttacker.combatHeroGuid, value, 2, enemy.baseHero.Faction);
+                        tempAttacker.AddStatus(rooted);
+                        var step = new CombatStep(null, null, tempTarget.combatHeroGuid, tempAttacker.combatHeroGuid);
+                        step.AddStatus(rooted);
+                        output.Add(step);
                         break;
                 }
             }
             return output;
         }
 
+        // Evaluates passive abilities that trigger at end of turn.
         public static List<CombatStep> EvaluatePassives(CombatHero hero) {
             var output = new List<CombatStep>();
             switch (hero.baseHero.PassiveAbility) {
-                case AbilityEnum.MOUNTING_RAGE:
-                    var status = new CombatStatus(StatusEnum.STRENGTH_UP, hero.combatHeroGuid, hero.combatHeroGuid, 0.2, CombatStatus.INDEFINITE, hero.baseHero.Faction);
+                case AbilityEnum.CONTINUOUS_WINDING:
+                    var status = new CombatStatus(StatusEnum.OFFENSE_UP, hero.combatHeroGuid, hero.combatHeroGuid, 0.1, CombatStatus.INDEFINITE, hero.baseHero.Faction);
                     hero.AddStatus(status);
-                    var damageInstance = new CombatStep(null, null, hero.combatHeroGuid, hero.combatHeroGuid);
-                    damageInstance.AddStatus(status);
-                    output.Add(damageInstance);
-                    break;
-                case AbilityEnum.DEEP_ROOTS:
-                    damageInstance = new CombatStep(null, null, hero.combatHeroGuid, hero.combatHeroGuid);
-                    var missingHealth = hero.health - hero.currentHealth;
-                    var healingAmount = missingHealth * 0.05;
-                    hero.currentHealth += healingAmount;
-                    damageInstance.healing = healingAmount;
-                    output.Add(damageInstance);
+                    var step = new CombatStep(null, null, hero.combatHeroGuid, hero.combatHeroGuid);
+                    step.AddStatus(status);
+                    output.Add(step);
                     break;
             }
             return output;

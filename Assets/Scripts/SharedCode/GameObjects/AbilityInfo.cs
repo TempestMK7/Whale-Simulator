@@ -49,6 +49,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 AbilityEnum.NONE, "None", "Icons/Attacks/None",
                 "I haven't gotten around to giving this hero an ability yet.");
 
+            // CombatMath.ApplyPassiveBuffs()
             abilityDict[AbilityEnum.FIND_THE_PATH] = new AbilityInfo(
                 AbilityEnum.FIND_THE_PATH, "Find the Path", "Icons/Attacks/None",
                 "Whenever this Gachafren attacks, gain 10% increased critical chance for 3 turns.");
@@ -58,40 +59,52 @@ namespace Com.Tempest.Whale.GameObjects {
             abilityDict[AbilityEnum.SCATTER_BERRIES] = new AbilityInfo(
                 AbilityEnum.SCATTER_BERRIES, "Scatter Berries", "Icons/Attacks/None",
                 "Whenever this Gachafren is attacked, heal a random ally with 100 power.");
+            // AttackInfo.ApplyAttackToEnemy()
+            // AttackInfo.ApplyAttackToAlly()
             abilityDict[AbilityEnum.STICKY_SPORES] = new AbilityInfo(
                 AbilityEnum.STICKY_SPORES, "Sticky Spores", "Icons/Attacks/None",
                 "Whenever this Gachafren applies any status, the duration is increased by 1 turn.");
+            // AttackInfo.ApplyAttackToEnemy()
+            // AttackInfo.ApplyAttackToAlly()
             abilityDict[AbilityEnum.WORLD_TRAVELLER] = new AbilityInfo(
                 AbilityEnum.WORLD_TRAVELLER, "World Traveller", "Icons/Attacks/None",
                 "This Gachafren can use attacks of any type as though it were that type.");
+            // AttackInfo.ApplyAttackToEnemy()
             abilityDict[AbilityEnum.FORECFUL_BLOWS] = new AbilityInfo(
                 AbilityEnum.FORECFUL_BLOWS, "Forceful Blows", "Icons/Attacks/None",
                 "Each attack applies a 20% daze for 2 turns.");
+            // AttackInfo.ApplyAttackToAlly()
             abilityDict[AbilityEnum.HELPING_HAND] = new AbilityInfo(
                 AbilityEnum.HELPING_HAND, "Helping Hand", "Icons/Attacks/None",
-                "Moves that target allies grant an additional 10 energy to each target.");
+                "Moves that target allies grant an additional 20 energy to each target.");
+            // CombatMath.EvaluatePassives()
             abilityDict[AbilityEnum.CONTINUOUS_WINDING] = new AbilityInfo(
                 AbilityEnum.CONTINUOUS_WINDING, "Continuous Winding", "Icons/Attacks/None",
                 "Permanently gain 10% to all attack stats at the end of each turn.");
 
+            // CombatEvaluator.EvaluateRisingTide()
             abilityDict[AbilityEnum.RISING_TIDE] = new AbilityInfo(
                 AbilityEnum.RISING_TIDE, "Rising Tide", "Icons/Attack/None",
-                "Permanently gain 5% power whenever an ally is healed.");
+                "At the end of each turn, permanently gain 5% power for each instance of healing applied to any Gachafren this turn. (Heal over time effects do not count.)");
+            // CombatMath.EvaluateNegativeSideEffects()
             abilityDict[AbilityEnum.CHOKING_VINES] = new AbilityInfo(
                 AbilityEnum.CHOKING_VINES, "Choking Vines", "Icons/Attacks/None",
                 "Whenever this Gachafren is attacked, the attacker is entangled by 20% for 3 turns.");
+            // CombatEvaluator.EvaluateFeedTheInferno()
             abilityDict[AbilityEnum.FEED_THE_INFERNO] = new AbilityInfo(
                 AbilityEnum.FEED_THE_INFERNO, "Feed the Inferno", "Icons/Attacks/GrowingFire",
-                "Whenever any hero receives the burn status, raise magic by 5% for the rest of the encounter.");
+                "At the end of each turn, permanently gain 5% power for each burn effect applied to any Gachafren this turn.");
+            // AttackInfo.ApplyAttackToEnemy()
             abilityDict[AbilityEnum.MIRROR_ICE] = new AbilityInfo(
                 AbilityEnum.MIRROR_ICE, "Mirror Ice", "Icons/Attacks/Reflection",
-                "Negative status caused by magic abilities get reflected back to the attacker.");
+                "Negative status effects from power attacks get reflected back to the attacker.");
+            // AttackInfo.ApplyAttackToEnemy()
             abilityDict[AbilityEnum.CRYSTALLINE] = new AbilityInfo(
                 AbilityEnum.CRYSTALLINE, "Crystalline", "Icons/Attacks/None",
-                "Whenever this Gachafren is attacked, the corresponding defense stat is raised by 20% for 2 turns.");
+                "Whenever this Gachafren is attacked, the corresponding offense and defense stats are raised by 20% for 2 turns.");
             abilityDict[AbilityEnum.MENTAL_GYMNASTICS] = new AbilityInfo(
                 AbilityEnum.MENTAL_GYMNASTICS, "Mental Gymnastics", "Icons/Attacks/MentalGymnastics",
-                "Any time a magic down or speed down status would be applied to this hero, receive a magic up or speed up for the same amount.");
+                "Any time this Gachafren's offensive stats would be lowered, they are raised instead.");
         }
 
         public static AbilityInfo GetAbilityInfo(AbilityEnum ability) {

@@ -23,22 +23,26 @@ namespace Com.Tempest.Whale.GameObjects {
         RESISTANCE_UP = 14,
         DEFENSE_UP = 15,
         SPEED_UP = 16,
+        CRITICAL_UP = 17,
+        DEFLECTION_UP = 18,
 
-        STRENGTH_DOWN = 17,
-        POWER_DOWN = 18,
-        OFFENSE_DOWN = 19,
-        TOUGHNESS_DOWN = 20,
-        RESISTANCE_DOWN = 21,
-        DEFENSE_DOWN = 22,
-        SPEED_DOWN = 23,
+        STRENGTH_DOWN = 19,
+        POWER_DOWN = 20,
+        OFFENSE_DOWN = 21,
+        TOUGHNESS_DOWN = 22,
+        RESISTANCE_DOWN = 23,
+        DEFENSE_DOWN = 24,
+        SPEED_DOWN = 25,
+        CRITICAL_DOWN = 26,
+        DEFLECTION_DOWN = 27,
 
-        THORN_ARMOR = 24,
-        LAVA_ARMOR = 25,
-        ICE_ARMOR = 26,
-        EARTH_ARMOR = 27,
-        SHADY_BRANCHES = 28,
-        HIGH_GROUND = 29,
-        REVERSE_POLARITY = 30,
+        THORN_ARMOR = 28,
+        LAVA_ARMOR = 29,
+        ICE_ARMOR = 30,
+        EARTH_ARMOR = 31,
+        SHADY_BRANCHES = 32,
+        HIGH_GROUND = 33,
+        REVERSE_POLARITY = 34,
     }
 
     public class StatusInfo {
@@ -80,6 +84,8 @@ namespace Com.Tempest.Whale.GameObjects {
             statusDict[StatusEnum.RESISTANCE_UP] = new StatusInfo(StatusEnum.RESISTANCE_UP, "Res. Up", true, false, true);
             statusDict[StatusEnum.DEFENSE_UP] = new StatusInfo(StatusEnum.DEFENSE_UP, "Def. Up", true, false, true);
             statusDict[StatusEnum.SPEED_UP] = new StatusInfo(StatusEnum.SPEED_UP, "Spe. Up", true, true, false);
+            statusDict[StatusEnum.CRITICAL_UP] = new StatusInfo(StatusEnum.CRITICAL_UP, "Crit. Up", true, true, false);
+            statusDict[StatusEnum.DEFLECTION_UP] = new StatusInfo(StatusEnum.DEFLECTION_UP, "Defl. Up", true, false, true);
             statusDict[StatusEnum.STRENGTH_DOWN] = new StatusInfo(StatusEnum.STRENGTH_DOWN, "Str. Down", false, true, false);
             statusDict[StatusEnum.POWER_DOWN] = new StatusInfo(StatusEnum.POWER_DOWN, "Pow. Down", false, true, false);
             statusDict[StatusEnum.OFFENSE_DOWN] = new StatusInfo(StatusEnum.OFFENSE_DOWN, "Off. Down", false, true, false);
@@ -87,6 +93,8 @@ namespace Com.Tempest.Whale.GameObjects {
             statusDict[StatusEnum.RESISTANCE_DOWN] = new StatusInfo(StatusEnum.RESISTANCE_DOWN, "Res. Down", false, false, true);
             statusDict[StatusEnum.DEFENSE_DOWN] = new StatusInfo(StatusEnum.DEFENSE_DOWN, "Def. Down", false, false, true);
             statusDict[StatusEnum.SPEED_DOWN] = new StatusInfo(StatusEnum.SPEED_DOWN, "Spe. Down", false, true, false);
+            statusDict[StatusEnum.CRITICAL_DOWN] = new StatusInfo(StatusEnum.CRITICAL_DOWN, "Crit. Down", false, true, false);
+            statusDict[StatusEnum.DEFLECTION_DOWN] = new StatusInfo(StatusEnum.DEFLECTION_DOWN, "Defl. Down", false, false, true);
             statusDict[StatusEnum.THORN_ARMOR] = new StatusInfo(StatusEnum.THORN_ARMOR, "Thorn Arm.", true, false, true);
             statusDict[StatusEnum.LAVA_ARMOR] = new StatusInfo(StatusEnum.LAVA_ARMOR, "Lava Arm.", true, false, true);
             statusDict[StatusEnum.ICE_ARMOR] = new StatusInfo(StatusEnum.ICE_ARMOR, "Ice Arm.", true, false, true);
