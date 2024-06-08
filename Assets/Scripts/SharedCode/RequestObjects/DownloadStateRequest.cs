@@ -9,4 +9,3 @@ namespace Com.Tempest.Whale.RequestObjects {
         public bool Verified { get; set; }
     }
 }
-
