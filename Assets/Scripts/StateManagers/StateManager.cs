@@ -28,7 +28,7 @@ public class StateManager {
     public static void OverrideState(AccountState newState) {
         currentState = newState;
         currentState.RetrieveDataAfterLoad();
-        SaveState(false);
+        SaveState();
     }
 
     private static void LoadCurrentState() {
@@ -45,15 +45,13 @@ public class StateManager {
         }
     }
 
-    public static async void SaveState(bool uploadToServer = true) {
+    public static void SaveState() {
         currentState.AccountHeroes.Sort();
         currentState.AccountEquipment.Sort();
 
         StreamWriter writer = new StreamWriter(fileName, false);
         writer.WriteLine(JsonConvert.SerializeObject(currentState));
         writer.Close();
-
-        if (uploadToServer) await UnityEngine.Object.FindObjectOfType<CredentialsManager>().UploadStateToServer();
     }
 
     #endregion
@@ -66,7 +64,7 @@ public class StateManager {
         currentState.CurrentSouls = response.CurrentSouls;
         currentState.CurrentExperience = response.CurrentExperience;
         currentState.CurrentLevel = response.CurrentLevel;
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleSummonResponse(SummonResponse response) {
@@ -76,7 +74,7 @@ public class StateManager {
         currentState.CurrentSummons = response.CurrentSummons;
         currentState.AccountHeroes.AddRange(response.SummonedHeroes);
         currentState.RetrieveDataAfterLoad();
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleSummonResponse(FactionSummonResponse response) {
@@ -88,7 +86,7 @@ public class StateManager {
         currentState.CurrentGoldSummons = response.CurrentGoldSummons;
         currentState.AccountHeroes.AddRange(response.SummonedHeroes);
         currentState.RetrieveDataAfterLoad();
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
@@ -96,7 +94,7 @@ public class StateManager {
         leveledHero.CurrentLevel = response.HeroLevel;
         currentState.CurrentGold = response.CurrentGold;
         currentState.CurrentSouls = response.CurrentSouls;
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
@@ -109,7 +107,7 @@ public class StateManager {
         var newFusedHero = response.FusedHero;
         newFusedHero.LoadBaseHero();
         accountHeroes.Add(newFusedHero);
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleFuseResponse(FuseEquipmentResponse response, AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
@@ -121,7 +119,7 @@ public class StateManager {
         var newFusedEquipment = response.FusedEquipment;
         newFusedEquipment.LoadBaseEquipment();
         accountEquipment.Add(newFusedEquipment);
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
@@ -138,7 +136,7 @@ public class StateManager {
             unequipped.EquippedHeroId = null;
             unequipped.EquippedSlot = null;
         }
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleUnequipResponse(AccountHero hero) {
@@ -149,7 +147,7 @@ public class StateManager {
             e.EquippedHeroId = null;
             e.EquippedSlot = null;
         }
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
@@ -168,14 +166,14 @@ public class StateManager {
                 break;
         }
         currentState.ReceiveRewards(response.Rewards);
-        SaveState(false);
+        SaveState();
     }
 
     public static void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
         var encounter = response.Encounter;
         currentState.LastCaveEntryDate = encounter.Date;
         currentState.CurrentCaveFloor = encounter.Floor;
-        SaveState(false);
+        SaveState();
     }
 
     #endregion
@@ -221,21 +219,25 @@ public class StateManager {
     public static void NotifyHubEntered() {
         currentState.HasEnteredHub = true;
         SaveState();
+        // TODO: Make call to notify server that scene has been entered.
     }
 
     public static void NotifyPortalEntered() {
         currentState.HasEnteredPortal = true;
         SaveState();
+        // TODO: Make call to notify server that scene has been entered.
     }
 
     public static void NotifySanctumEntered() {
         currentState.HasEnteredSanctum = true;
         SaveState();
+        // TODO: Make call to notify server that scene has been entered.
     }
 
     public static void NotifyCampaignEntered() {
         currentState.HasEnteredCampaign = true;
         SaveState();
+        // TODO: Make call to notify server that scene has been entered.
     }
 
     #endregion

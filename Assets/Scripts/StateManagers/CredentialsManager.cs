@@ -91,15 +91,6 @@ public class CredentialsManager : MonoBehaviour {
         Debug.Log("Downloaded new state: " + newState.Id.ToString());
     }
 
-    public async Task UploadStateToServer() {
-        var state = StateManager.GetCurrentState();
-        var uploadRequest = new UploadStateRequest() {
-            UploadedState = state
-        };
-        var response = await MakeLambdaCall<UploadStateResponse, UploadStateRequest>(uploadRequest, "UploadStateFunction");
-        Debug.Log("Upload State Response: " + response.LinesAffected + " lines affected.");
-    }
-
     public async Task ClaimResources() {
         var claimResourcesRequest = new ClaimResourcesRequest();
         ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse, ClaimResourcesRequest>(claimResourcesRequest, "ClaimResourcesFunction");
