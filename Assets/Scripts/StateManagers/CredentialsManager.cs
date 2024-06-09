@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Text;
 
 using Newtonsoft.Json;
 using UnityEngine;
@@ -10,9 +12,7 @@ using UnityEngine;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
-using System.Net.Http;
-using System.Text;
-using System.Security.Policy;
+
 
 public class CredentialsManager : MonoBehaviour {
 
