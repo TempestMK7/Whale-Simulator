@@ -39,14 +39,16 @@ public class LoginSceneManager : MonoBehaviour {
     }
 
     private void ResetLoginPanel() {
-        var credentialsManager = FindObjectOfType<CredentialsManager>();
+/*        var credentialsManager = FindObjectOfType<CredentialsManager>();
         if (credentialsManager.UserIsAuthenticated()) {
             loginCreatePanel.SetActive(false);
             loginLabel.text = string.Format("Logged in as: {0}", credentialsManager.GetUsername());
         } else {
             loginCreatePanel.SetActive(true);
             loginLabel.text = "Not logged in.";
-        }
+        }*/
+        loginCreatePanel.SetActive(true);
+        loginLabel.text = "Not logged in.";
     }
 
     public async void OnLoginPressed() {
