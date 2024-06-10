@@ -16,18 +16,23 @@ using Com.Tempest.Whale.StateObjects;
 
 public class CredentialsManager : MonoBehaviour {
 
+    private const string IDENTITY_API_BASE_URL = "https://h9wf2pigyj.execute-api.us-west-2.amazonaws.com/";
+    private const string STATE_API_BASE_URL = "https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/";
+
     private string refreshTokenFile;
     private string cachedToken;
-    private HttpClient authClient;
-    private HttpClient noAuthClient;
+    private HttpClient identityClient;
+    private HttpClient mainClient;
 
     #region Initialization.
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);
         refreshTokenFile = Application.persistentDataPath + "/access_token.txt";
-        authClient = new HttpClient();
-        noAuthClient = new HttpClient();
+        identityClient = new HttpClient();
+        identityClient.BaseAddress = new Uri(IDENTITY_API_BASE_URL);
+        mainClient = new HttpClient();
+        mainClient.BaseAddress = new Uri(STATE_API_BASE_URL);
     }
 
     public async Task InitializeEverything() {
@@ -38,7 +43,7 @@ public class CredentialsManager : MonoBehaviour {
             }
         } else {
             var httpContent = new StringContent("{}");
-            var httpResponse = await noAuthClient.PostAsync("https://h9wf2pigyj.execute-api.us-west-2.amazonaws.com/createuser", httpContent);
+            var httpResponse = await identityClient.PostAsync("createuser", httpContent);
             if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
                 var newUserResponse = JsonConvert.DeserializeObject<CreateUserResponse>(await httpResponse.Content.ReadAsStringAsync());
                 cachedToken = newUserResponse.AccessToken;
@@ -47,21 +52,24 @@ public class CredentialsManager : MonoBehaviour {
                 Debug.Log("Unable to get a new user token: " + httpResponse.StatusCode + ", " + httpResponse.RequestMessage);
             }
         }
+
+        if (cachedToken != null) {
+            mainClient.DefaultRequestHeaders.Clear();
+            mainClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cachedToken);
+        }
     }
 
     #endregion
 
     #region State altering requests.
 
-    private async Task<T> MakeLambdaCall<T, U>(U request, string url) {
-        var uri = new Uri(url, UriKind.Absolute);
+    private async Task<T> MakeLambdaCall<T, U>(U request, string endPoint) {
         var httpContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-        authClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cachedToken);
-        var httpResponse = await authClient.PostAsync(uri, httpContent);
+        var httpResponse = await mainClient.PostAsync(endPoint, httpContent);
         if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
             return JsonConvert.DeserializeObject<T>(await httpResponse.Content.ReadAsStringAsync());
         } else {
-            Debug.Log("Failed web call: " + httpResponse.StatusCode + " on url: " + url);
+            Debug.Log("Failed web call: " + httpResponse.StatusCode + " on url: " + endPoint);
             if (httpResponse.Content != null) {
                 Debug.Log("Response: " + await httpResponse.Content.ReadAsStringAsync());
             }
@@ -69,15 +77,13 @@ public class CredentialsManager : MonoBehaviour {
         }
     }
 
-    private async Task<T> MakeLambdaCall<T>(string url) {
-        var uri = new Uri(url, UriKind.Absolute);
+    private async Task<T> MakeLambdaCall<T>(string endPoint) {
         var httpContent = new StringContent("{}", Encoding.UTF8, "application/json");
-        authClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cachedToken);
-        var httpResponse = await authClient.PostAsync(uri, httpContent);
+        var httpResponse = await mainClient.PostAsync(endPoint, httpContent);
         if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
             return JsonConvert.DeserializeObject<T>(await httpResponse.Content.ReadAsStringAsync());
         } else {
-            Debug.Log("Failed web call: " + httpResponse.StatusCode + " on url: " + url);
+            Debug.Log("Failed web call: " + httpResponse.StatusCode + " on url: " + endPoint);
             if (httpResponse.Content != null) {
                 Debug.Log("Response: " + await httpResponse.Content.ReadAsStringAsync());
             }
@@ -86,12 +92,12 @@ public class CredentialsManager : MonoBehaviour {
     }
 
     public async Task DownloadState() {
-        var newState = await MakeLambdaCall<AccountState>("https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/downloadstate");
+        var newState = await MakeLambdaCall<AccountState>(STATE_API_BASE_URL + "downloadstate");
         StateManager.OverrideState(newState);
     }
 
     public async Task ClaimResources() {
-        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>("https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/claimresources");
+        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>(STATE_API_BASE_URL + "claimresources");
         StateManager.HandleClaimResourcesResponse(response);
     }
 
@@ -99,7 +105,7 @@ public class CredentialsManager : MonoBehaviour {
         var summonRequest = new SummonRequest() {
             SummonCount = summonCount
         };
-        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, "https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/summonhero");
+        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, STATE_API_BASE_URL + "summonhero");
         StateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
     }
@@ -110,7 +116,7 @@ public class CredentialsManager : MonoBehaviour {
             SummonCount = summonCount,
             SummonRarity = rarity
         };
-        var response = await MakeLambdaCall<FactionSummonResponse, FactionSummonRequest>(summonRequest, "SummonFactionHeroFunction");
+        var response = await MakeLambdaCall<FactionSummonResponse, FactionSummonRequest>(summonRequest, "summonfactionhero");
         StateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
     }
@@ -129,7 +135,7 @@ public class CredentialsManager : MonoBehaviour {
         var request = new LevelupHeroRequest() {
             AccountHeroId = selectedHero.Id
         };
-        var response = await MakeLambdaCall<LevelupHeroResponse, LevelupHeroRequest>(request, "LevelupHeroFunction");
+        var response = await MakeLambdaCall<LevelupHeroResponse, LevelupHeroRequest>(request, "leveluphero");
         StateManager.HandleLevelupResponse(response, selectedHero);
         return response.LevelupSuccessful;
     }
@@ -148,7 +154,7 @@ public class CredentialsManager : MonoBehaviour {
             FusedHeroId = fusedHero.Id,
             DestroyedHeroIds = destroyedHeroIds
         };
-        var response = await MakeLambdaCall<FuseHeroResponse, FuseHeroRequest>(request, "FuseHeroFunction");
+        var response = await MakeLambdaCall<FuseHeroResponse, FuseHeroRequest>(request, "fusehero");
         if (!response.FusionSuccessful) return false;
         StateManager.HandleFuseResponse(response, fusedHero, destroyedHeroes);
         return true;
@@ -167,7 +173,7 @@ public class CredentialsManager : MonoBehaviour {
             FusedEquipmentId = fusedEquipment.Id,
             DestroyedEquipmentIds = destroyedIds
         };
-        var response = await MakeLambdaCall<FuseEquipmentResponse, FuseEquipmentRequest>(request, "FuseEquipmentFunction");
+        var response = await MakeLambdaCall<FuseEquipmentResponse, FuseEquipmentRequest>(request, "fuseequipment");
         if (!response.FusionSuccessful) return false;
         StateManager.HandleFuseResponse(response, fusedEquipment, destroyedEquipment);
         return true;
@@ -182,7 +188,7 @@ public class CredentialsManager : MonoBehaviour {
             HeroId = heroId,
             Slot = slot
         };
-        var response = await MakeLambdaCall<EquipResponse, EquipRequest>(request, "EquipHeroFunction");
+        var response = await MakeLambdaCall<EquipResponse, EquipRequest>(request, "equiphero");
         StateManager.HandleEquipResponse(response, equipment, hero, slot);
     }
 
@@ -190,7 +196,7 @@ public class CredentialsManager : MonoBehaviour {
         var request = new UnequipHeroRequest() {
             HeroId = hero.Id
         };
-        await MakeLambdaCall<UnequipHeroResponse, UnequipHeroRequest>(request, "UnequipHeroFunction");
+        await MakeLambdaCall<UnequipHeroResponse, UnequipHeroRequest>(request, "unequiphero");
         StateManager.HandleUnequipResponse(hero);
     }
 
@@ -203,7 +209,7 @@ public class CredentialsManager : MonoBehaviour {
             EncounterType = battleType,
             SelectedHeroes = selectedGuids
         };
-        var response = await MakeLambdaCall<CombatResponse, CombatRequest>(request, "CombatFunction");
+        var response = await MakeLambdaCall<CombatResponse, CombatRequest>(request, "combat");
         if (response != null && response.Report != null) {
             response.Report.RestoreUnserializedData();
             if (response.Rewards != null) response.Rewards.RestoreUnserializedData();
@@ -214,7 +220,7 @@ public class CredentialsManager : MonoBehaviour {
 
     public async Task<LootCaveEncounter> RequestCaveEncounter() {
         var request = new LootCaveEncounterRequest();
-        var response = await MakeLambdaCall<LootCaveEncounterResponse, LootCaveEncounterRequest>(request, "LootCaveEncounterFunction");
+        var response = await MakeLambdaCall<LootCaveEncounterResponse, LootCaveEncounterRequest>(request, "lootcaveencounter");
         StateManager.HandleCaveEncounterResponse(response);
         return response.Encounter;
     }
