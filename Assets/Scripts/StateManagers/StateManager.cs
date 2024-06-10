@@ -26,6 +26,7 @@ public class StateManager {
     }
 
     public static void OverrideState(AccountState newState) {
+        if (newState == null) return;
         currentState = newState;
         currentState.RetrieveDataAfterLoad();
         SaveState();

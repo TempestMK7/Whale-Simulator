@@ -37,13 +37,12 @@ public class CredentialsManager : MonoBehaviour {
                 reader.Close();
             }
         } else {
-            var httpContent = new StringContent(MangleRequest("{}"));
+            var httpContent = new StringContent("{}");
             var httpResponse = await noAuthClient.PostAsync("https://h9wf2pigyj.execute-api.us-west-2.amazonaws.com/createuser", httpContent);
             if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
                 var newUserResponse = JsonConvert.DeserializeObject<CreateUserResponse>(await httpResponse.Content.ReadAsStringAsync());
                 cachedToken = newUserResponse.AccessToken;
                 SaveUserSession();
-                Debug.Log("Successfully got a new user token.");
             } else {
                 Debug.Log("Unable to get a new user token: " + httpResponse.StatusCode + ", " + httpResponse.RequestMessage);
             }
@@ -56,26 +55,27 @@ public class CredentialsManager : MonoBehaviour {
 
     private async Task<T> MakeLambdaCall<T, U>(U request, string url) {
         var uri = new Uri(url, UriKind.Absolute);
-        var httpContent = new StringContent(MangleRequest(JsonConvert.SerializeObject(request)), Encoding.UTF8, "application/json");
-        authClient.DefaultRequestHeaders.Add("Bearer", cachedToken);
+        var httpContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+        authClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cachedToken);
         var httpResponse = await authClient.PostAsync(uri, httpContent);
         if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
             return JsonConvert.DeserializeObject<T>(await httpResponse.Content.ReadAsStringAsync());
         } else {
-            Debug.Log("Failed web call: " + httpResponse.StatusCode);
+            Debug.Log("Failed web call: " + httpResponse.StatusCode + " on url: " + url);
+            if (httpResponse.Content != null) {
+                Debug.Log("Response: " + await httpResponse.Content.ReadAsStringAsync());
+            }
             return default;
         }
     }
 
     private async Task<T> MakeLambdaCall<T>(string url) {
         var uri = new Uri(url, UriKind.Absolute);
-        var httpContent = new StringContent(MangleRequest("{}"), Encoding.UTF8, "application/json");
+        var httpContent = new StringContent("{}", Encoding.UTF8, "application/json");
         authClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cachedToken);
         var httpResponse = await authClient.PostAsync(uri, httpContent);
         if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
-            var response = await httpResponse.Content.ReadAsStringAsync();
-            Debug.Log("Response: " + response);
-            return JsonConvert.DeserializeObject<T>(response);
+            return JsonConvert.DeserializeObject<T>(await httpResponse.Content.ReadAsStringAsync());
         } else {
             Debug.Log("Failed web call: " + httpResponse.StatusCode + " on url: " + url);
             if (httpResponse.Content != null) {
@@ -88,12 +88,10 @@ public class CredentialsManager : MonoBehaviour {
     public async Task DownloadState() {
         var newState = await MakeLambdaCall<AccountState>("https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/downloadstate");
         StateManager.OverrideState(newState);
-        Debug.Log("Downloaded new state: " + newState.Id.ToString());
     }
 
     public async Task ClaimResources() {
-        var claimResourcesRequest = new ClaimResourcesRequest();
-        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse, ClaimResourcesRequest>(claimResourcesRequest, "ClaimResourcesFunction");
+        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>("https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/claimresources");
         StateManager.HandleClaimResourcesResponse(response);
     }
 
@@ -101,7 +99,7 @@ public class CredentialsManager : MonoBehaviour {
         var summonRequest = new SummonRequest() {
             SummonCount = summonCount
         };
-        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, "SummonHeroFunction");
+        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, "https://qaynofsmwk.execute-api.us-west-2.amazonaws.com/summonhero");
         StateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
     }
@@ -294,16 +292,6 @@ public class CredentialsManager : MonoBehaviour {
         if (File.Exists(refreshTokenFile)) {
             File.Delete(refreshTokenFile);
         }
-    }
-
-    private string MangleRequest(string request) {
-        var mangled = request.Replace("\"", "\\\"");
-        return "\"" + mangled + "\"";
-    }
-
-    private T DeserializeObject<T>(string serverResponse) {
-        var trimmedString = serverResponse.Substring(1, serverResponse.Length - 2);
-        return JsonConvert.DeserializeObject<T>(Regex.Unescape(trimmedString));
     }
 
     public static void DisplayNetworkError(Canvas sceneCanvas, string errorMessage) {
