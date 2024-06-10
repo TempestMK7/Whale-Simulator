@@ -39,7 +39,8 @@ public class PortalSceneManager : MonoBehaviour {
         if (!state.HasEnteredPortal) {
             var tooltip = Instantiate(tooltipPopupPrefab, sceneUiCanvas.transform);
             tooltip.SetTooltip("This is the Portal.", "This is where you summon new heroes.\nWe'll give you 10 basic summoning stones to get started.");
-            StateManager.NotifyPortalEntered();
+            state.HasEnteredPortal = true;
+            _ = FindObjectOfType<CredentialsManager>().UpdateTutorials();
         }
     }
 

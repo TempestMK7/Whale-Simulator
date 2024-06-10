@@ -39,7 +39,8 @@ public class CampaignSceneManager : MonoBehaviour {
         if (!state.HasEnteredCampaign) {
             var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
             tooltip.SetTooltip("This is where you fight!", "As you can see, there are a lot of groups of very bad things attacking us.\nWe'll need to fight our way through, so touch the first one to get started.");
-            StateManager.NotifyCampaignEntered();
+            state.HasEnteredCampaign = true;
+            _ = FindObjectOfType<CredentialsManager>().UpdateTutorials();
         }
     }
 

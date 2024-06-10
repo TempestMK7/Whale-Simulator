@@ -26,7 +26,9 @@ public class HubSceneManager : MonoBehaviour {
             var tooltip = Instantiate(tooltipPopupPrefab, mainCanvas.transform);
             tooltip.SetTooltip("Welcome to W.H.A.L.E.",
                 "Welcome to the World of Horrors And Legends Eternal!\nWe need to get you started with some heroes that you can use to fight against all of the terrible things that have been attacking our village.\nClick on the portal in the middle of the screen.");
-            StateManager.NotifyHubEntered();
+            StateManager.GetCurrentState().HasEnteredHub = true;
+            var credentialsManager = FindObjectOfType<CredentialsManager>();
+            _ = credentialsManager.UpdateTutorials();
         }
     }
 

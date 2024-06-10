@@ -101,6 +101,18 @@ public class CredentialsManager : MonoBehaviour {
         StateManager.HandleClaimResourcesResponse(response);
     }
 
+    public async Task UpdateTutorials() {
+        var accountState = StateManager.GetCurrentState();
+        var request = new UpdateTutorialsRequest() {
+            HasEnteredHub = accountState.HasEnteredHub,
+            HasEnteredSanctum = accountState.HasEnteredSanctum,
+            HasEnteredPortal = accountState.HasEnteredPortal,
+            HasEnteredCampaign = accountState.HasEnteredCampaign,
+        };
+        var response = await MakeLambdaCall<UpdateTutorialsResponse, UpdateTutorialsRequest>(request, "updatetutorials");
+        StateManager.HandleUpdateTutorialsResponse(response);
+    }
+
     public async Task<List<AccountHero>> RequestSummons(int summonCount) {
         var summonRequest = new SummonRequest() {
             SummonCount = summonCount
@@ -219,8 +231,7 @@ public class CredentialsManager : MonoBehaviour {
     }
 
     public async Task<LootCaveEncounter> RequestCaveEncounter() {
-        var request = new LootCaveEncounterRequest();
-        var response = await MakeLambdaCall<LootCaveEncounterResponse, LootCaveEncounterRequest>(request, "lootcaveencounter");
+        var response = await MakeLambdaCall<LootCaveEncounterResponse>("lootcaveencounter");
         StateManager.HandleCaveEncounterResponse(response);
         return response.Encounter;
     }

@@ -59,6 +59,14 @@ public class StateManager {
 
     #region Server response handling.
 
+    public static void HandleUpdateTutorialsResponse(UpdateTutorialsResponse response) {
+        currentState.HasEnteredHub = response.HasEnteredHub;
+        currentState.HasEnteredSanctum = response.HasEnteredSanctum;
+        currentState.HasEnteredPortal = response.HasEnteredPortal;
+        currentState.HasEnteredCampaign = response.HasEnteredCampaign;
+        SaveState();
+    }
+
     public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
         currentState.LastClaimTimeStamp = response.LastClaimTimeStamp;
         currentState.CurrentGold = response.CurrentGold;
@@ -211,34 +219,6 @@ public class StateManager {
             team[x] = matchingHero;
         }
         return team;
-    }
-
-    #endregion
-
-    #region Direct state altering, to be removed.
-
-    public static void NotifyHubEntered() {
-        currentState.HasEnteredHub = true;
-        SaveState();
-        // TODO: Make call to notify server that scene has been entered.
-    }
-
-    public static void NotifyPortalEntered() {
-        currentState.HasEnteredPortal = true;
-        SaveState();
-        // TODO: Make call to notify server that scene has been entered.
-    }
-
-    public static void NotifySanctumEntered() {
-        currentState.HasEnteredSanctum = true;
-        SaveState();
-        // TODO: Make call to notify server that scene has been entered.
-    }
-
-    public static void NotifyCampaignEntered() {
-        currentState.HasEnteredCampaign = true;
-        SaveState();
-        // TODO: Make call to notify server that scene has been entered.
     }
 
     #endregion

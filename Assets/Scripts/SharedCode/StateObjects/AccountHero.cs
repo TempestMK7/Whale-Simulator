@@ -52,11 +52,11 @@ namespace Com.Tempest.Whale.StateObjects {
         }
 
         public AttackEnum GetBasicAttackEnum() {
-            return CurrentBasicAttack ?? (AwakeningLevel >= 6 ? baseHero.SimpleBasic : baseHero.IntermediateBasic);
+            return CurrentBasicAttack ?? (AwakeningLevel < 6 ? baseHero.SimpleBasic : baseHero.IntermediateBasic);
         }
 
         public AttackEnum GetChargeAttackEnum() {
-            return CurrentChargeAttack ?? (AwakeningLevel >= 6 ? baseHero.SimpleCharge : baseHero.IntermediateCharge);
+            return CurrentChargeAttack ?? (AwakeningLevel < 6 ? baseHero.SimpleCharge : baseHero.IntermediateCharge);
         }
 
         public int CompareTo(AccountHero other) {

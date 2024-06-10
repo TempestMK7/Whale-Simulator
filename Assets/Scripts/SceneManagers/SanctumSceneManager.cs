@@ -27,7 +27,8 @@ public class SanctumSceneManager : MonoBehaviour {
         if (!state.HasEnteredSanctum) {
             var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
             tooltip.SetTooltip("This is the Sanctum.", "This is where you claim materials which you can use to upgrade your heroes and purchase things you need.\nProgressing through the campaign will increase the rate at which you accumulate materials.");
-            StateManager.NotifySanctumEntered();
+            state.HasEnteredSanctum = true;
+            _ = FindObjectOfType<CredentialsManager>().UpdateTutorials();
         }
     }
 
