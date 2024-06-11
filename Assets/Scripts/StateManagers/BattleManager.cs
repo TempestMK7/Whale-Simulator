@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Com.Tempest.Whale.GameObjects;
+﻿using Com.Tempest.Whale.GameObjects;
 
 public class BattleManager {
 
