@@ -1,58 +1,29 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using UnityEngine;
-using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
 
 public class StateManager {
 
-    public static string fileName = Application.persistentDataPath + "/WhaleState.txt";
     private static AccountState currentState;
 
     #region Internal state handling.
 
     public static AccountState GetCurrentState() {
-        LoadCurrentState();
         return currentState;
-    }
-
-    public static bool Initialized() {
-        return currentState != null || File.Exists(fileName);
     }
 
     public static void OverrideState(AccountState newState) {
         if (newState == null) return;
         currentState = newState;
         currentState.RetrieveDataAfterLoad();
-        SaveState();
+        ConsolidateState();
     }
 
-    private static void LoadCurrentState() {
-        if (currentState != null) return;
-
-        StreamReader reader = new StreamReader(fileName);
-        try {
-            currentState = JsonConvert.DeserializeObject<AccountState>(reader.ReadLine());
-            currentState.RetrieveDataAfterLoad();
-        } catch (Exception e) {
-            Debug.LogError(e);
-        } finally {
-            reader.Close();
-        }
-    }
-
-    public static void SaveState() {
+    public static void ConsolidateState() {
         currentState.AccountHeroes.Sort();
         currentState.AccountEquipment.Sort();
-
-        StreamWriter writer = new StreamWriter(fileName, false);
-        writer.WriteLine(JsonConvert.SerializeObject(currentState));
-        writer.Close();
     }
 
     #endregion
@@ -64,7 +35,7 @@ public class StateManager {
         currentState.HasEnteredSanctum = response.HasEnteredSanctum;
         currentState.HasEnteredPortal = response.HasEnteredPortal;
         currentState.HasEnteredCampaign = response.HasEnteredCampaign;
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
@@ -73,7 +44,7 @@ public class StateManager {
         currentState.CurrentSouls = response.CurrentSouls;
         currentState.CurrentExperience = response.CurrentExperience;
         currentState.CurrentLevel = response.CurrentLevel;
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleSummonResponse(SummonResponse response) {
@@ -83,7 +54,7 @@ public class StateManager {
         currentState.CurrentSummons = response.CurrentSummons;
         currentState.AccountHeroes.AddRange(response.SummonedHeroes);
         currentState.RetrieveDataAfterLoad();
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleSummonResponse(FactionSummonResponse response) {
@@ -95,7 +66,7 @@ public class StateManager {
         currentState.CurrentGoldSummons = response.CurrentGoldSummons;
         currentState.AccountHeroes.AddRange(response.SummonedHeroes);
         currentState.RetrieveDataAfterLoad();
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
@@ -103,7 +74,7 @@ public class StateManager {
         leveledHero.CurrentLevel = response.HeroLevel;
         currentState.CurrentGold = response.CurrentGold;
         currentState.CurrentSouls = response.CurrentSouls;
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
@@ -116,7 +87,7 @@ public class StateManager {
         var newFusedHero = response.FusedHero;
         newFusedHero.LoadBaseHero();
         accountHeroes.Add(newFusedHero);
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleFuseResponse(FuseEquipmentResponse response, AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
@@ -128,7 +99,7 @@ public class StateManager {
         var newFusedEquipment = response.FusedEquipment;
         newFusedEquipment.LoadBaseEquipment();
         accountEquipment.Add(newFusedEquipment);
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
@@ -145,7 +116,7 @@ public class StateManager {
             unequipped.EquippedHeroId = null;
             unequipped.EquippedSlot = null;
         }
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleUnequipResponse(AccountHero hero) {
@@ -156,7 +127,7 @@ public class StateManager {
             e.EquippedHeroId = null;
             e.EquippedSlot = null;
         }
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
@@ -175,14 +146,14 @@ public class StateManager {
                 break;
         }
         currentState.ReceiveRewards(response.Rewards);
-        SaveState();
+        ConsolidateState();
     }
 
     public static void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
         var encounter = response.Encounter;
         currentState.LastCaveEntryDate = encounter.Date;
         currentState.CurrentCaveFloor = encounter.Floor;
-        SaveState();
+        ConsolidateState();
     }
 
     #endregion
@@ -200,9 +171,9 @@ public class StateManager {
 
     public static void SetLastUsedTeam(AccountHero[] team) {
         var state = GetCurrentState();
-        state.LastTeamSelection = new Guid?[team.Length];
+        state.LastTeamSelection = new Guid[team.Length];
         for (int x = 0; x < team.Length; x++) {
-            if (team[x] == null) state.LastTeamSelection[x] = null;
+            if (team[x] == null) state.LastTeamSelection[x] = Guid.Empty;
             else state.LastTeamSelection[x] = team[x].Id;
         }
     }

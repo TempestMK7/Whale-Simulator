@@ -213,9 +213,10 @@ public class CredentialsManager : MonoBehaviour {
     }
 
     public async Task<CombatResponse> PerformEpicBattle(BattleEnum battleType, AccountHero[] selectedHeroes) {
-        var selectedGuids = new Guid?[selectedHeroes.Length];
+        var selectedGuids = new Guid[selectedHeroes.Length];
         for (int x = 0; x < selectedHeroes.Length; x++) {
             if (selectedHeroes[x] != null) selectedGuids[x] = selectedHeroes[x].Id;
+            else selectedGuids[x] = Guid.Empty;
         }
         var request = new CombatRequest() {
             EncounterType = battleType,

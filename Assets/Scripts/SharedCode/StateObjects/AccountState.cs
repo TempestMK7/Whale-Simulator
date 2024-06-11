@@ -37,8 +37,8 @@ namespace Com.Tempest.Whale.StateObjects {
         public List<AccountHero> AccountHeroes { get; set; }
         public List<AccountEquipment> AccountEquipment { get; set; }
 
-        public Guid?[] LastTeamSelection { get; set; }
-        public Guid?[] LastRaidSelection { get; set; }
+        public Guid[] LastTeamSelection { get; set; }
+        public Guid[] LastRaidSelection { get; set; }
 
         public void InitializeAccount() {
             Id = Guid.NewGuid();
@@ -65,6 +65,15 @@ namespace Com.Tempest.Whale.StateObjects {
 
             AccountHeroes = new List<AccountHero>();
             AccountEquipment = new List<AccountEquipment>();
+
+            LastTeamSelection = new Guid[5];
+            for (int x = 0; x < LastTeamSelection.Length; x++) {
+                LastTeamSelection[x] = Guid.Empty;
+            }
+            LastRaidSelection = new Guid[5];
+            for (int x = 0; x < LastRaidSelection.Length; x++) {
+                LastRaidSelection[x] = Guid.Empty;
+            }
         }
 
         public void FixLevelsFromExperience() {

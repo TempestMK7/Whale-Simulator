@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.IO;
+﻿using System.Collections;
 using UnityEngine;
 
 public class ClearDataPopup : MonoBehaviour {
@@ -14,15 +12,6 @@ public class ClearDataPopup : MonoBehaviour {
     public void ClearData() {
         var credentialsManager = FindObjectOfType<CredentialsManager>();
         credentialsManager.DeleteRefreshToken();
-        if (File.Exists(WhaleCredentials.credentialsFile)) {
-            File.Delete(WhaleCredentials.credentialsFile);
-        }
-        if (File.Exists(WhaleCredentials.identityFile)) {
-            File.Delete(WhaleCredentials.identityFile);
-        }
-        if (File.Exists(StateManager.fileName)) {
-            File.Delete(StateManager.fileName);
-        }
         ClosePopup();
     }
 
