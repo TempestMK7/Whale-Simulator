@@ -92,13 +92,18 @@ public class CredentialsManager : MonoBehaviour {
         }
     }
 
+    public async Task DownloadUserInfo() {
+        GetUserInfoResponse response = await MakeLambdaCall<GetUserInfoResponse>("getuserinfo");
+        stateManager.HandleUserInfoResponse(response);
+    }
+
     public async Task DownloadState() {
-        var newState = await MakeLambdaCall<AccountState>(STATE_API_BASE_URL + "downloadstate");
+        var newState = await MakeLambdaCall<AccountState>("downloadstate");
         stateManager.HandleAccountStateResponse(newState);
     }
 
     public async Task ClaimResources() {
-        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>(STATE_API_BASE_URL + "claimresources");
+        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>("claimresources");
         stateManager.HandleClaimResourcesResponse(response);
     }
 
@@ -118,7 +123,7 @@ public class CredentialsManager : MonoBehaviour {
         var summonRequest = new SummonRequest() {
             SummonCount = summonCount
         };
-        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, STATE_API_BASE_URL + "summonhero");
+        var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, "summonhero");
         stateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
     }
@@ -242,58 +247,47 @@ public class CredentialsManager : MonoBehaviour {
 
     #region Account altering requests.
 
-    public async Task<bool> CreateAccount(string username, string email, string password) {
-        /*        var provider = cachedProvider;
-
-                var attributes = new List<AttributeType>() {
-                    new AttributeType() { Name = "email", Value = email },
-                    new AttributeType() { Name = "custom:custom:accountGuid", Value = StateManager.GetCurrentState().Id.ToString() }
-                };
-
-                var signupRequest = new SignUpRequest() {
-                    ClientId = appClientId,
-                    Username = username,
-                    Password = password,
-                    UserAttributes = attributes
-                };
-
-                try {
-                    var result = await provider.SignUpAsync(signupRequest);
-                    return true;
-                } catch (Exception e) {
-                    Debug.LogError(e);
-                    return false;
-                }*/
-        return true;
-    }
-
-    public async Task<bool> LoginUser(string username, string password) {
-/*        var provider = cachedProvider;
-        CognitoUserPool userPool = new CognitoUserPool(userPoolId, appClientId, provider);
-        CognitoUser user = new CognitoUser(username, appClientId, userPool, provider);
-        InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest() {
+    public async Task<bool> CreateAccount(string email, string password) {
+        var request = new CreateLoginRequest() {
+            Email = email,
             Password = password
         };
-        try {
-            var authResponse = await user.StartWithSrpAuthAsync(authRequest).ConfigureAwait(false);
-            cachedCredentials = user.GetCognitoAWSCredentials(identityPoolId, RegionEndpoint.USWest2);
+        var response = await MakeLambdaCall<CreateLoginResponse, CreateLoginRequest>(request, "createlogin");
+        stateManager.HandleCreateLoginResponse(response);
+        return response.Success;
+    }
 
-            SaveUserSession(user);
+    public async Task<bool> ConfirmEmail(int verificationCode) {
+        var request = new VerifyEmailRequest() {
+            VerificationCode = verificationCode
+        };
+        var response = await MakeLambdaCall<VerifyEmailResponse, VerifyEmailRequest>(request, "verifyemail");
+        stateManager.HandleVerifyEmailResponse(response);
+        return response.Success;
+    }
 
-            cachedProvider = new AmazonCognitoIdentityProviderClient(cachedCredentials, RegionEndpoint.USWest2);
+    public async Task<bool> LoginUser(string email, string password) {
+        var request = new LoginRequest() {
+            Email = email,
+            Password = password
+        };
 
-            var getUserRequest = new GetUserRequest();
-            getUserRequest.AccessToken = authResponse.AuthenticationResult.AccessToken;
-            var getUserResponse = await provider.GetUserAsync(getUserRequest);
-            cachedAccountGuid = getUserResponse.UserAttributes.Find((AttributeType type) => { return type.Name.Equals("custom:custom:accountGuid"); }).Value;
-
-            authenticatedUser = true;
-        } catch (Exception e) {
-            Debug.LogError(e);
+        var httpContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+        var httpResponse = await identityClient.PostAsync("login", httpContent);
+        if (httpResponse.Content != null && httpResponse.IsSuccessStatusCode) {
+            var response = JsonConvert.DeserializeObject<LoginResponse>(await httpResponse.Content.ReadAsStringAsync());
+            if (response.Token != null && response.EmailVerified) {
+                cachedToken = response.Token;
+                SaveUserSession();
+                await InitializeEverything();
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            Debug.Log("Unable to get a new user token: " + httpResponse.StatusCode + ", " + httpResponse.RequestMessage);
             return false;
         }
-        cachedUsername = username;*/
-        return true;
     }
 
     public void SaveUserSession() {

@@ -8,6 +8,7 @@ using UnityEngine;
 public class StateManager : MonoBehaviour {
 
     public AccountState CurrentAccountState { get; private set; }
+    public UserState CurrentUserState { get; private set; }
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);
@@ -32,8 +33,21 @@ public class StateManager : MonoBehaviour {
 
     #region Server response handling.
 
+    public void HandleUserInfoResponse(GetUserInfoResponse response) {
+        CurrentUserState = new UserState();
+        CurrentUserState.AccountCreated = response.AccountCreated;
+        CurrentUserState.EmailVerified = response.EmailVerified;
+    }
+
+    public void HandleCreateLoginResponse(CreateLoginResponse response) {
+        CurrentUserState.AccountCreated = response.Success;
+    }
+
+    public void HandleVerifyEmailResponse(VerifyEmailResponse response) {
+        CurrentUserState.EmailVerified = response.Success;
+    }
+
     public void HandleAccountStateResponse(AccountState newState) {
-        if (newState == null) return;
         CurrentAccountState = newState;
         ConsolidateState();
     }

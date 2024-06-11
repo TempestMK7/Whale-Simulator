@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,25 +12,34 @@ public class LoginSceneManager : MonoBehaviour {
     public Canvas mainCanvas;
     public GameObject baseLoginPanel;
     public GameObject baseCreatePanel;
+    public GameObject baseConfirmEmailPanel;
 
     public Text loginLabel;
     public InputField loginUsernameField;
     public InputField loginPasswordField;
     public GameObject loginCreatePanel;
+    public Text createLoginButtonText;
 
-    public InputField createUsernameField;
     public InputField createEmailField;
     public InputField createPasswordField;
     public InputField createConfirmField;
+
+    public InputField confirmEmailCodeField;
 
     public GameObject loadingPopup;
     public GameObject tooltipPopup;
 
     private bool loading = false;
+    private StateManager stateManager;
+    private CredentialsManager credentialsManager;
 
     public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
+        credentialsManager = FindObjectOfType<CredentialsManager>();
+
         baseLoginPanel.gameObject.SetActive(true);
         baseCreatePanel.gameObject.SetActive(false);
+        baseConfirmEmailPanel.gameObject.SetActive(false);
 
         loginPasswordField.inputType = InputField.InputType.Password;
         createPasswordField.inputType = InputField.InputType.Password;
@@ -39,34 +49,42 @@ public class LoginSceneManager : MonoBehaviour {
     }
 
     private void ResetLoginPanel() {
-/*        var credentialsManager = FindObjectOfType<CredentialsManager>();
-        if (credentialsManager.UserIsAuthenticated()) {
-            loginCreatePanel.SetActive(false);
-            loginLabel.text = string.Format("Logged in as: {0}", credentialsManager.GetUsername());
-        } else {
-            loginCreatePanel.SetActive(true);
-            loginLabel.text = "Not logged in.";
-        }*/
-        loginCreatePanel.SetActive(true);
-        loginLabel.text = "Not logged in.";
+        loginCreatePanel.SetActive(!stateManager.CurrentUserState.EmailVerified);
+        var text = "Logged in.";
+        if (!stateManager.CurrentUserState.AccountCreated) {
+            text = "Not logged in.";
+        } else if (!stateManager.CurrentUserState.EmailVerified) {
+            text = "Need to verify email.";
+        }
+        loginLabel.text = text;
+
+        createLoginButtonText.text = stateManager.CurrentUserState.AccountCreated && !stateManager.CurrentUserState.EmailVerified ? "Confirm Email" : "Create Account";
     }
 
     public async void OnLoginPressed() {
         if (ButtonsBlocked()) return;
 
-        string username = loginUsernameField.text;
-        if (username.Length < 6) {
+        // Validate email field.
+        string email = loginUsernameField.text;
+        if (email.Length < 3) {
             var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
-            tooltip.SetTooltip("Invalid username.", "Username must be at least 6 characters long.");
+            tooltip.SetTooltip("Invalid email.", "Email address is invalid.");
             return;
         }
-        var regexItem = new Regex("^\\w*$");
-        if (!regexItem.IsMatch(username)) {
+        try {
+            var validatedAddress = new System.Net.Mail.MailAddress(email);
+            if (!validatedAddress.Equals(email)) {
+                var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
+                tooltip.SetTooltip("Invalid email.", "Email address is invalid.");
+                return;
+            }
+        } catch {
             var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
-            tooltip.SetTooltip("Invalid username.", "Username may only contain alphanumeric characters (letters and numbers).");
+            tooltip.SetTooltip("Invalid email.", "Email address is invalid.");
             return;
         }
 
+        // Validate password field.
         string password = loginPasswordField.text;
         if (password.Length < 8) {
             var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
@@ -77,12 +95,12 @@ public class LoginSceneManager : MonoBehaviour {
         loading = true;
         var loadingPopupBehavior = Instantiate(loadingPopup, mainCanvas.transform).GetComponent<LoadingPopup>();
         loadingPopupBehavior.LaunchPopup("Logging in...", "Contacting identity server...");
-        var credentialManager = FindObjectOfType<CredentialsManager>();
-        bool successful = await credentialManager.LoginUser(username, password);
+        bool successful = await credentialsManager.LoginUser(email, password);
         loadingPopupBehavior.DismissPopup();
 
         if (successful) {
-            await credentialManager.DownloadState();
+            await credentialsManager.DownloadUserInfo();
+            await credentialsManager.DownloadState();
             var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
             tooltip.SetTooltip("Success!", "Logged in successfully.");
         } else {
@@ -100,7 +118,13 @@ public class LoginSceneManager : MonoBehaviour {
     public void OnLoginCreatePressed() {
         if (ButtonsBlocked()) return;
         baseLoginPanel.gameObject.SetActive(false);
-        baseCreatePanel.gameObject.SetActive(true);
+        if (stateManager.CurrentUserState.AccountCreated) {
+            baseCreatePanel.gameObject.SetActive(false);
+            baseConfirmEmailPanel.gameObject.SetActive(true);
+        } else {
+            baseCreatePanel.gameObject.SetActive(true);
+            baseConfirmEmailPanel.gameObject.SetActive(false);
+        }
     }
 
     public void OnLoginBackPressed() {
@@ -111,23 +135,9 @@ public class LoginSceneManager : MonoBehaviour {
 
     public async void OnCreateAccountPressed() {
         if (ButtonsBlocked()) return;
-        string username = createUsernameField.text;
         string email = createEmailField.text;
         string password = createPasswordField.text;
         string confirmation = createConfirmField.text;
-
-        // Validate username field.
-        if (username.Length < 6) {
-            var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
-            tooltip.SetTooltip("Invalid username.", "Username must be at least 6 characters long.");
-            return;
-        }
-        var regexItem = new Regex("^\\w*$");
-        if (!regexItem.IsMatch(username)) {
-            var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
-            tooltip.SetTooltip("Invalid username.", "Username may only contain alphanumeric characters (letters and numbers).");
-            return;
-        }
 
         // Validate email field.
         if (email.Length < 3) {
@@ -172,27 +182,65 @@ public class LoginSceneManager : MonoBehaviour {
         loading = true;
         var loadingPopupBehavior = Instantiate(loadingPopup, mainCanvas.transform).GetComponent<LoadingPopup>();
         loadingPopupBehavior.SetText("Creating account...", "Contacting identity server...");
-        var credentialManager = FindObjectOfType<CredentialsManager>();
-        bool successful = await credentialManager.CreateAccount(username, email, password);
+        bool successful = await credentialsManager.CreateAccount(email, password);
         loadingPopupBehavior.DismissPopup();
 
         // Display results.
         if (successful) {
             var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
-            tooltip.SetTooltip("Success!", "Your account was created successfully.  Please check your email for a verification and then log in.");
-            baseLoginPanel.gameObject.SetActive(true);
+            tooltip.SetTooltip("Success!", "Your account was created successfully.  Please check your email for a verification code.");
+            baseLoginPanel.gameObject.SetActive(false);
             baseCreatePanel.gameObject.SetActive(false);
+            baseConfirmEmailPanel.gameObject.SetActive(true);
         } else {
             var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
             tooltip.SetTooltip("Failed.", "We were unable to create your account.");
         }
         loading = false;
+        ResetLoginPanel();
     }
 
     public void OnCreateBackPressed() {
         if (ButtonsBlocked()) return;
         baseLoginPanel.gameObject.SetActive(true);
         baseCreatePanel.gameObject.SetActive(false);
+        baseConfirmEmailPanel.gameObject.SetActive(false);
+    }
+
+    public async void OnConfirmEmailPressed() {
+        int confirmationCode = int.Parse(confirmEmailCodeField.text);
+        if (confirmationCode < 100000 || confirmationCode > 999999) {
+            var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Invalid code.", "Code should be a six digit number.");
+            return;
+        }
+
+        loading = true;
+        var loadingPopupBehavior = Instantiate(loadingPopup, mainCanvas.transform).GetComponent<LoadingPopup>();
+        loadingPopupBehavior.SetText("Confirming Email...", "Contacting identity server...");
+        bool successful = await credentialsManager.ConfirmEmail(confirmationCode);
+        loadingPopupBehavior.DismissPopup();
+
+        // Display results.
+        if (successful) {
+            var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Success!", "Your email was verified.");
+            baseLoginPanel.gameObject.SetActive(true);
+            baseCreatePanel.gameObject.SetActive(false);
+            baseConfirmEmailPanel.gameObject.SetActive(false);
+        } else {
+            var tooltip = Instantiate(tooltipPopup, mainCanvas.transform).GetComponent<TooltipPopup>();
+            tooltip.SetTooltip("Failed.", "We were unable to create your account.");
+        }
+        loading = false;
+        ResetLoginPanel();
+    }
+
+    public void OnConfirmBackPressed() {
+        if (ButtonsBlocked()) return;
+        baseLoginPanel.gameObject.SetActive(true);
+        baseCreatePanel.gameObject.SetActive(false);
+        baseConfirmEmailPanel.gameObject.SetActive(false);
     }
 
     private bool ButtonsBlocked() {
