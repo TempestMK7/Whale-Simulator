@@ -24,9 +24,12 @@ class FactionPortalSceneManager : MonoBehaviour {
     public AudioSource portalOpenEffect;
     public AudioSource portalLoopEffect;
 
+    private StateManager stateManager;
     private FactionEnum factionSelection = FactionEnum.WATER;
 
     public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
+
         ResetTextValues();
 
         portalOpenEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
@@ -37,11 +40,10 @@ class FactionPortalSceneManager : MonoBehaviour {
     }
 
     private void ResetTextValues() {
-        var state = StateManager.GetCurrentState();
-        nameText.text = state.PlayerName;
-        bronzeText.text = CustomFormatter.Format(state.CurrentBronzeSummons);
-        silverText.text = CustomFormatter.Format(state.CurrentSilverSummons);
-        goldText.text = CustomFormatter.Format(state.CurrentGoldSummons);
+        nameText.text = stateManager.CurrentAccountState.PlayerName;
+        bronzeText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentBronzeSummons);
+        silverText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSilverSummons);
+        goldText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGoldSummons);
 
         string selection = "None";
         switch (factionSelection) {
@@ -83,20 +85,17 @@ class FactionPortalSceneManager : MonoBehaviour {
     }
 
     public void OnBronzeSummonPressed(int count) {
-        var state = StateManager.GetCurrentState();
-        if (state.CurrentBronzeSummons < count) return;
+        if (stateManager.CurrentAccountState.CurrentBronzeSummons < count) return;
         OnSummonPressed(3, count);
     }
 
     public void OnSilverSummonPressed(int count) {
-        var state = StateManager.GetCurrentState();
-        if (state.CurrentSilverSummons < count) return;
+        if (stateManager.CurrentAccountState.CurrentSilverSummons < count) return;
         OnSummonPressed(4, count);
     }
 
     public void OnGoldSummonPressed(int count) {
-        var state = StateManager.GetCurrentState();
-        if (state.CurrentGoldSummons < count) return;
+        if (stateManager.CurrentAccountState.CurrentGoldSummons < count) return;
         OnSummonPressed(5, count);
     }
 

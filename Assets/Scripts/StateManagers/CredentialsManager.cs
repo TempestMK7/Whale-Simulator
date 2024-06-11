@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text;
@@ -23,6 +22,7 @@ public class CredentialsManager : MonoBehaviour {
     private string cachedToken;
     private HttpClient identityClient;
     private HttpClient mainClient;
+    private StateManager stateManager;
 
     #region Initialization.
 
@@ -33,6 +33,7 @@ public class CredentialsManager : MonoBehaviour {
         identityClient.BaseAddress = new Uri(IDENTITY_API_BASE_URL);
         mainClient = new HttpClient();
         mainClient.BaseAddress = new Uri(STATE_API_BASE_URL);
+        stateManager = FindObjectOfType<StateManager>();
     }
 
     public async Task InitializeEverything() {
@@ -93,16 +94,16 @@ public class CredentialsManager : MonoBehaviour {
 
     public async Task DownloadState() {
         var newState = await MakeLambdaCall<AccountState>(STATE_API_BASE_URL + "downloadstate");
-        StateManager.OverrideState(newState);
+        stateManager.HandleAccountStateResponse(newState);
     }
 
     public async Task ClaimResources() {
         ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>(STATE_API_BASE_URL + "claimresources");
-        StateManager.HandleClaimResourcesResponse(response);
+        stateManager.HandleClaimResourcesResponse(response);
     }
 
     public async Task UpdateTutorials() {
-        var accountState = StateManager.GetCurrentState();
+        var accountState = stateManager.CurrentAccountState;
         var request = new UpdateTutorialsRequest() {
             HasEnteredHub = accountState.HasEnteredHub,
             HasEnteredSanctum = accountState.HasEnteredSanctum,
@@ -110,7 +111,7 @@ public class CredentialsManager : MonoBehaviour {
             HasEnteredCampaign = accountState.HasEnteredCampaign,
         };
         var response = await MakeLambdaCall<UpdateTutorialsResponse, UpdateTutorialsRequest>(request, "updatetutorials");
-        StateManager.HandleUpdateTutorialsResponse(response);
+        stateManager.HandleUpdateTutorialsResponse(response);
     }
 
     public async Task<List<AccountHero>> RequestSummons(int summonCount) {
@@ -118,7 +119,7 @@ public class CredentialsManager : MonoBehaviour {
             SummonCount = summonCount
         };
         var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, STATE_API_BASE_URL + "summonhero");
-        StateManager.HandleSummonResponse(response);
+        stateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
     }
 
@@ -129,7 +130,7 @@ public class CredentialsManager : MonoBehaviour {
             SummonRarity = rarity
         };
         var response = await MakeLambdaCall<FactionSummonResponse, FactionSummonRequest>(summonRequest, "summonfactionhero");
-        StateManager.HandleSummonResponse(response);
+        stateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
     }
 
@@ -139,7 +140,7 @@ public class CredentialsManager : MonoBehaviour {
         }
 
         long cost = LevelContainer.HeroExperienceRequirement(selectedHero.CurrentLevel);
-        var currentState = StateManager.GetCurrentState();
+        var currentState = stateManager.CurrentAccountState;
         if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost) {
             return false;
         }
@@ -148,7 +149,7 @@ public class CredentialsManager : MonoBehaviour {
             AccountHeroId = selectedHero.Id
         };
         var response = await MakeLambdaCall<LevelupHeroResponse, LevelupHeroRequest>(request, "leveluphero");
-        StateManager.HandleLevelupResponse(response, selectedHero);
+        stateManager.HandleLevelupResponse(response, selectedHero);
         return response.LevelupSuccessful;
     }
 
@@ -168,7 +169,7 @@ public class CredentialsManager : MonoBehaviour {
         };
         var response = await MakeLambdaCall<FuseHeroResponse, FuseHeroRequest>(request, "fusehero");
         if (!response.FusionSuccessful) return false;
-        StateManager.HandleFuseResponse(response, fusedHero, destroyedHeroes);
+        stateManager.HandleFuseResponse(response, fusedHero, destroyedHeroes);
         return true;
     }
 
@@ -187,7 +188,7 @@ public class CredentialsManager : MonoBehaviour {
         };
         var response = await MakeLambdaCall<FuseEquipmentResponse, FuseEquipmentRequest>(request, "fuseequipment");
         if (!response.FusionSuccessful) return false;
-        StateManager.HandleFuseResponse(response, fusedEquipment, destroyedEquipment);
+        stateManager.HandleFuseResponse(response, fusedEquipment, destroyedEquipment);
         return true;
     }
 
@@ -201,7 +202,7 @@ public class CredentialsManager : MonoBehaviour {
             Slot = slot
         };
         var response = await MakeLambdaCall<EquipResponse, EquipRequest>(request, "equiphero");
-        StateManager.HandleEquipResponse(response, equipment, hero, slot);
+        stateManager.HandleEquipResponse(response, equipment, hero, slot);
     }
 
     public async Task UnequipHero(AccountHero hero) {
@@ -209,7 +210,7 @@ public class CredentialsManager : MonoBehaviour {
             HeroId = hero.Id
         };
         await MakeLambdaCall<UnequipHeroResponse, UnequipHeroRequest>(request, "unequiphero");
-        StateManager.HandleUnequipResponse(hero);
+        stateManager.HandleUnequipResponse(hero);
     }
 
     public async Task<CombatResponse> PerformEpicBattle(BattleEnum battleType, AccountHero[] selectedHeroes) {
@@ -227,13 +228,13 @@ public class CredentialsManager : MonoBehaviour {
             response.Report.RestoreUnserializedData();
             if (response.Rewards != null) response.Rewards.RestoreUnserializedData();
         }
-        StateManager.HandleCombatResponse(battleType, response);
+        stateManager.HandleCombatResponse(battleType, response);
         return response;
     }
 
     public async Task<LootCaveEncounter> RequestCaveEncounter() {
         var response = await MakeLambdaCall<LootCaveEncounterResponse>("lootcaveencounter");
-        StateManager.HandleCaveEncounterResponse(response);
+        stateManager.HandleCaveEncounterResponse(response);
         return response.Encounter;
     }
 

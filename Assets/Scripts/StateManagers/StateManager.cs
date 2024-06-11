@@ -3,82 +3,90 @@ using System.Collections.Generic;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.RequestObjects;
 using Com.Tempest.Whale.StateObjects;
+using UnityEngine;
 
-public class StateManager {
+public class StateManager : MonoBehaviour {
 
-    private static AccountState currentState;
+    public AccountState CurrentAccountState { get; private set; }
+
+    public void Awake() {
+        DontDestroyOnLoad(gameObject);
+    }
 
     #region Internal state handling.
 
-    public static AccountState GetCurrentState() {
-        return currentState;
-    }
-
-    public static void OverrideState(AccountState newState) {
-        if (newState == null) return;
-        currentState = newState;
-        currentState.RetrieveDataAfterLoad();
-        ConsolidateState();
-    }
-
-    public static void ConsolidateState() {
-        currentState.AccountHeroes.Sort();
-        currentState.AccountEquipment.Sort();
+    private void ConsolidateState() {
+        if (CurrentAccountState.AccountHeroes == null) CurrentAccountState.AccountHeroes = new List<AccountHero>();
+        if (CurrentAccountState.AccountEquipment == null) CurrentAccountState.AccountEquipment = new List<AccountEquipment>();
+        foreach (AccountHero hero in CurrentAccountState.AccountHeroes) {
+            hero.LoadBaseHero();
+        }
+        foreach (AccountEquipment equipment in CurrentAccountState.AccountEquipment) {
+            equipment.LoadBaseEquipment();
+        }
+        CurrentAccountState.AccountHeroes.Sort();
+        CurrentAccountState.AccountEquipment.Sort();
     }
 
     #endregion
 
     #region Server response handling.
 
-    public static void HandleUpdateTutorialsResponse(UpdateTutorialsResponse response) {
-        currentState.HasEnteredHub = response.HasEnteredHub;
-        currentState.HasEnteredSanctum = response.HasEnteredSanctum;
-        currentState.HasEnteredPortal = response.HasEnteredPortal;
-        currentState.HasEnteredCampaign = response.HasEnteredCampaign;
+    public void HandleAccountStateResponse(AccountState newState) {
+        if (newState == null) return;
+        CurrentAccountState = newState;
         ConsolidateState();
     }
 
-    public static void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
-        currentState.LastClaimTimeStamp = response.LastClaimTimeStamp;
-        currentState.CurrentGold = response.CurrentGold;
-        currentState.CurrentSouls = response.CurrentSouls;
-        currentState.CurrentExperience = response.CurrentExperience;
-        currentState.CurrentLevel = response.CurrentLevel;
+    public void HandleUpdateTutorialsResponse(UpdateTutorialsResponse response) {
+        CurrentAccountState.HasEnteredHub = response.HasEnteredHub;
+        CurrentAccountState.HasEnteredSanctum = response.HasEnteredSanctum;
+        CurrentAccountState.HasEnteredPortal = response.HasEnteredPortal;
+        CurrentAccountState.HasEnteredCampaign = response.HasEnteredCampaign;
         ConsolidateState();
     }
 
-    public static void HandleSummonResponse(SummonResponse response) {
+    public void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
+        CurrentAccountState.LastClaimTimeStamp = response.LastClaimTimeStamp;
+        CurrentAccountState.CurrentGold = response.CurrentGold;
+        CurrentAccountState.CurrentSouls = response.CurrentSouls;
+        CurrentAccountState.CurrentExperience = response.CurrentExperience;
+        CurrentAccountState.CurrentLevel = response.CurrentLevel;
+        ConsolidateState();
+    }
+
+    public void HandleSummonResponse(SummonResponse response) {
         foreach (AccountHero hero in response.SummonedHeroes) {
             hero.LoadBaseHero();
         }
-        currentState.CurrentSummons = response.CurrentSummons;
-        currentState.AccountHeroes.AddRange(response.SummonedHeroes);
-        currentState.RetrieveDataAfterLoad();
+        CurrentAccountState.CurrentSummons = response.CurrentSummons;
+        CurrentAccountState.AccountHeroes.AddRange(response.SummonedHeroes);
+        CurrentAccountState.RetrieveDataAfterLoad();
         ConsolidateState();
     }
 
-    public static void HandleSummonResponse(FactionSummonResponse response) {
+    public void HandleSummonResponse(FactionSummonResponse response) {
         foreach (AccountHero hero in response.SummonedHeroes) {
             hero.LoadBaseHero();
         }
-        currentState.CurrentBronzeSummons = response.CurrentBronzeSummons;
-        currentState.CurrentSilverSummons = response.CurrentSilverSummons;
-        currentState.CurrentGoldSummons = response.CurrentGoldSummons;
-        currentState.AccountHeroes.AddRange(response.SummonedHeroes);
-        currentState.RetrieveDataAfterLoad();
+        CurrentAccountState.CurrentBronzeSummons = response.CurrentBronzeSummons;
+        CurrentAccountState.CurrentSilverSummons = response.CurrentSilverSummons;
+        CurrentAccountState.CurrentGoldSummons = response.CurrentGoldSummons;
+        CurrentAccountState.AccountHeroes.AddRange(response.SummonedHeroes);
+        CurrentAccountState.RetrieveDataAfterLoad();
         ConsolidateState();
     }
 
-    public static void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
+    public void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
         if (!response.LevelupSuccessful) return;
         leveledHero.CurrentLevel = response.HeroLevel;
-        currentState.CurrentGold = response.CurrentGold;
-        currentState.CurrentSouls = response.CurrentSouls;
+        CurrentAccountState.CurrentGold = response.CurrentGold;
+        CurrentAccountState.CurrentSouls = response.CurrentSouls;
         ConsolidateState();
     }
 
-    public static void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
-        var accountHeroes = currentState.AccountHeroes;
+    public void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
+        var accountHeroes = CurrentAccountState.AccountHeroes;
         accountHeroes.Remove(fusedHero);
         foreach (AccountHero destroyed in destroyedHeroes) {
             HandleUnequipResponse(destroyed);
@@ -90,8 +98,8 @@ public class StateManager {
         ConsolidateState();
     }
 
-    public static void HandleFuseResponse(FuseEquipmentResponse response, AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
-        var accountEquipment = currentState.AccountEquipment;
+    public void HandleFuseResponse(FuseEquipmentResponse response, AccountEquipment fusedEquipment, List<AccountEquipment> destroyedEquipment) {
+        var accountEquipment = CurrentAccountState.AccountEquipment;
         accountEquipment.Remove(fusedEquipment);
         foreach (AccountEquipment destroyed in destroyedEquipment) {
             accountEquipment.Remove(destroyed);
@@ -102,14 +110,14 @@ public class StateManager {
         ConsolidateState();
     }
 
-    public static void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
+    public void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
         Guid? heroId = null;
         if (hero != null) heroId = hero.Id;
         equipment.EquippedHeroId = heroId;
         equipment.EquippedSlot = slot;
 
         if (response.UnequippedIds.Count == 0) return;
-        var unequippedList = currentState.AccountEquipment.FindAll((AccountEquipment e) => {
+        var unequippedList = CurrentAccountState.AccountEquipment.FindAll((AccountEquipment e) => {
             return response.UnequippedIds.Contains(e.Id);
         });
         foreach (AccountEquipment unequipped in unequippedList) {
@@ -119,8 +127,8 @@ public class StateManager {
         ConsolidateState();
     }
 
-    public static void HandleUnequipResponse(AccountHero hero) {
-        var equipped = currentState.AccountEquipment.FindAll((AccountEquipment e) => {
+    public void HandleUnequipResponse(AccountHero hero) {
+        var equipped = CurrentAccountState.AccountEquipment.FindAll((AccountEquipment e) => {
             return hero.Id.Equals(e.EquippedHeroId);
         });
         foreach (AccountEquipment e in equipped) {
@@ -130,29 +138,29 @@ public class StateManager {
         ConsolidateState();
     }
 
-    public static void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
+    public void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
         if (!response.Report.alliesWon) return;
         switch (battleType) {
             case BattleEnum.CAMPAIGN:
-                if (currentState.CurrentMission == 10) {
-                    currentState.CurrentMission = 1;
-                    currentState.CurrentChapter++;
+                if (CurrentAccountState.CurrentMission == 10) {
+                    CurrentAccountState.CurrentMission = 1;
+                    CurrentAccountState.CurrentChapter++;
                 } else {
-                    currentState.CurrentMission++;
+                    CurrentAccountState.CurrentMission++;
                 }
                 break;
             case BattleEnum.LOOT_CAVE:
-                currentState.CurrentCaveFloor += 1;
+                CurrentAccountState.CurrentCaveFloor += 1;
                 break;
         }
-        currentState.ReceiveRewards(response.Rewards);
+        CurrentAccountState.ReceiveRewards(response.Rewards);
         ConsolidateState();
     }
 
-    public static void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
+    public void HandleCaveEncounterResponse(LootCaveEncounterResponse response) {
         var encounter = response.Encounter;
-        currentState.LastCaveEntryDate = encounter.Date;
-        currentState.CurrentCaveFloor = encounter.Floor;
+        CurrentAccountState.LastCaveEntryDate = encounter.Date;
+        CurrentAccountState.CurrentCaveFloor = encounter.Floor;
         ConsolidateState();
     }
 
@@ -160,32 +168,30 @@ public class StateManager {
 
     #region Allowable state altering, mostly for displaying info to user.
 
-    public static int GetLootCavePosition() {
+    public int GetLootCavePosition() {
         var currentDate = EpochTime.GetCurrentDate();
-        if (!currentDate.Equals(currentState.LastCaveEntryDate)) {
-            currentState.LastCaveEntryDate = EpochTime.GetCurrentDate();
-            currentState.CurrentCaveFloor = 1;
+        if (!currentDate.Equals(CurrentAccountState.LastCaveEntryDate)) {
+            CurrentAccountState.LastCaveEntryDate = EpochTime.GetCurrentDate();
+            CurrentAccountState.CurrentCaveFloor = 1;
         }
-        return currentState.CurrentCaveFloor;
+        return CurrentAccountState.CurrentCaveFloor;
     }
 
-    public static void SetLastUsedTeam(AccountHero[] team) {
-        var state = GetCurrentState();
-        state.LastTeamSelection = new Guid[team.Length];
+    public void SetLastUsedTeam(AccountHero[] team) {
+        CurrentAccountState.LastTeamSelection = new Guid[team.Length];
         for (int x = 0; x < team.Length; x++) {
-            if (team[x] == null) state.LastTeamSelection[x] = Guid.Empty;
-            else state.LastTeamSelection[x] = team[x].Id;
+            if (team[x] == null) CurrentAccountState.LastTeamSelection[x] = Guid.Empty;
+            else CurrentAccountState.LastTeamSelection[x] = team[x].Id;
         }
     }
 
-    public static AccountHero[] GetLastUsedTeam() {
-        var state = GetCurrentState();
+    public AccountHero[] GetLastUsedTeam() {
         var team = new AccountHero[5];
-        if (state.LastTeamSelection == null) return team;
-        for (int x = 0; x < state.LastTeamSelection.Length; x++) {
-            var guid = state.LastTeamSelection[x];
-            var matchingHero = state.AccountHeroes.Find((AccountHero hero) => {
-                return hero.Id.Equals(state.LastTeamSelection[x]);
+        if (CurrentAccountState.LastTeamSelection == null) return team;
+        for (int x = 0; x < CurrentAccountState.LastTeamSelection.Length; x++) {
+            var guid = CurrentAccountState.LastTeamSelection[x];
+            var matchingHero = CurrentAccountState.AccountHeroes.Find((AccountHero hero) => {
+                return hero.Id.Equals(CurrentAccountState.LastTeamSelection[x]);
             });
             team[x] = matchingHero;
         }

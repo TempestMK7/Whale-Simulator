@@ -22,6 +22,12 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
     private HeroSceneManager heroSceneManager;
     private BattleSceneManager battleSceneManager;
 
+    private StateManager stateManager;
+
+    public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
+    }
+
     public void SetHero(AccountHero accountHero, int listPosition) {
         this.accountHero = accountHero;
         this.listPosition = listPosition;
@@ -29,7 +35,7 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         heroIcon.sprite = Resources.Load<Sprite>(baseHero.HeroIconPath);
         blurryBorder.color = ColorContainer.ColorFromFaction(baseHero.Faction);
         levelText.text = accountHero.CurrentLevel.ToString();
-        equipmentIcon.enabled = StateManager.GetCurrentState().GetEquipmentForHero(accountHero).Count > 0;
+        equipmentIcon.enabled = stateManager.CurrentAccountState.GetEquipmentForHero(accountHero).Count > 0;
         rarityView.SetLevel(baseHero.Rarity, accountHero.AwakeningLevel, false);
         HandleSelectionIcon();
     }

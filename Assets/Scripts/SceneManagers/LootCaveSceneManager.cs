@@ -13,7 +13,7 @@ public class LootCaveSceneManager : MonoBehaviour {
     public Text awakeningLabel;
 
     public void Awake() {
-        var position = StateManager.GetLootCavePosition();
+        var position = FindObjectOfType<StateManager>().GetLootCavePosition();
         floorLabel.text = string.Format("Loot Cave: Floor {0}", position);
         int level = position * 5;
         levelLabel.text = string.Format("Level: {0}", level);

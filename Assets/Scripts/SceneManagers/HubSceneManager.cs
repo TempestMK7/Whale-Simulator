@@ -21,12 +21,12 @@ public class HubSceneManager : MonoBehaviour {
     private Vector3? startingClickPosition;
 
     public void Start() {
-        var state = StateManager.GetCurrentState();
-        if (!state.HasEnteredHub) {
+        var stateManager = FindObjectOfType<StateManager>();
+        if (!stateManager.CurrentAccountState.HasEnteredHub) {
             var tooltip = Instantiate(tooltipPopupPrefab, mainCanvas.transform);
             tooltip.SetTooltip("Welcome to W.H.A.L.E.",
                 "Welcome to the World of Horrors And Legends Eternal!\nWe need to get you started with some heroes that you can use to fight against all of the terrible things that have been attacking our village.\nClick on the portal in the middle of the screen.");
-            StateManager.GetCurrentState().HasEnteredHub = true;
+            stateManager.CurrentAccountState.HasEnteredHub = true;
             var credentialsManager = FindObjectOfType<CredentialsManager>();
             _ = credentialsManager.UpdateTutorials();
         }

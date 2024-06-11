@@ -18,7 +18,10 @@ public class FusionPopupBehavior : MonoBehaviour {
 
     private FusionPopupAdapter adapter;
 
+    private StateManager stateManager;
+
     public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
         transform.localScale = new Vector3(0f, 0f);
         sceneManager = FindObjectOfType<HeroSceneManager>();
         adapter = new FusionPopupAdapter(heroListItemPrefab, this);
@@ -26,7 +29,7 @@ public class FusionPopupBehavior : MonoBehaviour {
     }
 
     private void BuildList() {
-        var allHeroes = StateManager.GetCurrentState().AccountHeroes;
+        var allHeroes = stateManager.CurrentAccountState.AccountHeroes;
         var filteredList = allHeroes.FindAll(delegate (AccountHero hero) {
             var baseHero = hero.GetBaseHero();
             if (filteredHero != null && baseHero.Hero != filteredHero) return false;

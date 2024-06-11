@@ -18,7 +18,10 @@ public class EquipmentFusionPopup : MonoBehaviour {
     private EquipmentFusionAdapter adapter;
     private List<AccountEquipment> displayedList;
 
+    private StateManager stateManager;
+
     public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
         transform.localScale = new Vector3();
         sceneManager = FindObjectOfType<EquipmentSceneManager>();
         adapter = new EquipmentFusionAdapter(listItemPrefab, this);
@@ -26,7 +29,7 @@ public class EquipmentFusionPopup : MonoBehaviour {
     }
 
     public void BuildList() {
-        var allEquipment = StateManager.GetCurrentState().AccountEquipment;
+        var allEquipment = stateManager.CurrentAccountState.AccountEquipment;
         displayedList = allEquipment.FindAll((AccountEquipment equipment) => {
             var baseEquipment = equipment.GetBaseEquipment();
             var matchesRequirements = baseEquipment.Type == type && equipment.Level == level;

@@ -74,6 +74,7 @@ public class HeroSceneManager : MonoBehaviour {
     public TooltipPopup tooltipPrefab;
 
     private CredentialsManager credentialsManager;
+    private StateManager stateManager;
 
     private HeroAdapter heroAdapter;
     private FactionEnum? currentFilter;
@@ -87,8 +88,8 @@ public class HeroSceneManager : MonoBehaviour {
     private FusionRequirement? currentFusionRequirement;
 
     public void Awake() {
-        var state = StateManager.GetCurrentState();
-        unfilteredList = state.AccountHeroes;
+        stateManager = FindObjectOfType<StateManager>();
+        unfilteredList = stateManager.CurrentAccountState.AccountHeroes;
         masterContainer.SetActive(true);
         heroAnimation.SetActive(false);
         detailContainer.SetActive(false);
@@ -219,9 +220,8 @@ public class HeroSceneManager : MonoBehaviour {
     }
 
     public void BindDetailView() {
-        var state = StateManager.GetCurrentState();
         var currentHero = filteredList[currentPosition];
-        var combatHero = currentHero.GetCombatHeroFromAllEquipment(state.AccountEquipment);
+        var combatHero = currentHero.GetCombatHeroFromAllEquipment(stateManager.CurrentAccountState.AccountEquipment);
         var baseHero = combatHero.baseHero;
         var currentLevel = combatHero.currentLevel;
 
@@ -245,7 +245,7 @@ public class HeroSceneManager : MonoBehaviour {
             heroAnimation.GetComponent<Animator>().runtimeAnimatorController = animator;
         }
 
-        var equipped = state.GetEquipmentForHero(currentHero);
+        var equipped = stateManager.CurrentAccountState.GetEquipmentForHero(currentHero);
         headEquipment.SetEquipment(
             equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.HEAD; }),
             false, LaunchEquipmentPopup, (int)EquipmentSlot.HEAD);
@@ -267,8 +267,8 @@ public class HeroSceneManager : MonoBehaviour {
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
         levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
-        currentGold.text = CustomFormatter.Format(state.CurrentGold);
-        currentSouls.text = CustomFormatter.Format(state.CurrentSouls);
+        currentGold.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGold);
+        currentSouls.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSouls);
         goldCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
         soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
 
@@ -476,7 +476,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     private void SelectSameHero(FusionSelectionBehavior fusion, List<AccountHero> alreadySelected) {
         var baseHero = filteredList[currentPosition].GetBaseHero();
-        var allHeroes = StateManager.GetCurrentState().AccountHeroes;
+        var allHeroes = stateManager.CurrentAccountState.AccountHeroes;
         var firstSelectable = allHeroes.Find(delegate (AccountHero hero) {
             return !alreadySelected.Contains(hero) && hero.GetBaseHero().Hero == baseHero.Hero && hero.AwakeningLevel == currentFusionRequirement?.SameHeroLevel;
         });
@@ -488,7 +488,7 @@ public class HeroSceneManager : MonoBehaviour {
 
     private void SelectFactionHero(FusionSelectionBehavior fusion, List<AccountHero> alreadySelected) {
         var baseHero = filteredList[currentPosition].GetBaseHero();
-        var allHeroes = StateManager.GetCurrentState().AccountHeroes;
+        var allHeroes = stateManager.CurrentAccountState.AccountHeroes;
         var firstSelectable = allHeroes.Find(delegate (AccountHero hero) {
             bool meetsRequirements = !alreadySelected.Contains(hero) && hero.AwakeningLevel == currentFusionRequirement?.FactionHeroLevel;
             if (currentFusionRequirement?.RequireSameFaction == true) meetsRequirements = meetsRequirements && hero.GetBaseHero().Faction == baseHero.Faction;

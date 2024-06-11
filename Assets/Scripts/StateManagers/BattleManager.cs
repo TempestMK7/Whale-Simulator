@@ -11,8 +11,4 @@ public class BattleManager {
     public static BattleEnum GetBattleType() {
         return currentBattleType;
     }
-
-    public static void ClearBattleType() {
-        currentBattleType = BattleEnum.NONE;
-    }
 }

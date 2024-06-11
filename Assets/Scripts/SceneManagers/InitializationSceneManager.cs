@@ -38,11 +38,12 @@ public class InitializationSceneManager : MonoBehaviour {
             SettingsManager.GetInstance();
 
             loadingPopup.SetText("Step 2 of 4.", "Contacting identity server...");
+            var stateManager = FindObjectOfType<StateManager>();
             var credentialsManager = FindObjectOfType<CredentialsManager>();
             await credentialsManager.InitializeEverything();
             loadingPopup.SetText("Step 3 of 4.", "Downloading account information...");
             await credentialsManager.DownloadState();
-            if (StateManager.GetCurrentState() == null) {
+            if (stateManager.CurrentAccountState == null) {
                 throw new Exception("State is null.");
             }
             loadingPopup.SetText("Step 4 of 4.", "Launching world hub...");

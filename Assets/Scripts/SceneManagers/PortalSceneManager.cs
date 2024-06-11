@@ -22,11 +22,13 @@ public class PortalSceneManager : MonoBehaviour {
     public AudioSource portalOpenEffect;
     public AudioSource portalLoopEffect;
 
+    private StateManager stateManager;
+
     public void Awake() {
-        var state = StateManager.GetCurrentState();
-        nameText.text = state.PlayerName;
-        levelText.text = string.Format("Level {0}", state.CurrentLevel);
-        summonText.text = CustomFormatter.Format(state.CurrentSummons);
+        stateManager = FindObjectOfType<StateManager>();
+        nameText.text = stateManager.CurrentAccountState.PlayerName;
+        levelText.text = string.Format("Level {0}", stateManager.CurrentAccountState.CurrentLevel);
+        summonText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSummons);
         portalOpenEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         portalOpenEffect.PlayDelayed(0.3f);
         portalLoopEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
@@ -35,11 +37,10 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     public void Start() {
-        var state = StateManager.GetCurrentState();
-        if (!state.HasEnteredPortal) {
+        if (!stateManager.CurrentAccountState.HasEnteredPortal) {
             var tooltip = Instantiate(tooltipPopupPrefab, sceneUiCanvas.transform);
             tooltip.SetTooltip("This is the Portal.", "This is where you summon new heroes.\nWe'll give you 10 basic summoning stones to get started.");
-            state.HasEnteredPortal = true;
+            stateManager.CurrentAccountState.HasEnteredPortal = true;
             _ = FindObjectOfType<CredentialsManager>().UpdateTutorials();
         }
     }
@@ -65,8 +66,7 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {
-        var state = StateManager.GetCurrentState();
-        summonText.text = CustomFormatter.Format(state.CurrentSummons);
+        summonText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSummons);
         if (summonedHeroes.Count == 1) {
             var hero = summonedHeroes[0];
             var popup = Instantiate(singleSummonPopupPrefab, sceneUiCanvas.transform);

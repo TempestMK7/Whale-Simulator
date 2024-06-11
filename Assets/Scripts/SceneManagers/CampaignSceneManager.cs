@@ -30,16 +30,18 @@ public class CampaignSceneManager : MonoBehaviour {
     private Vector3? startingClickPosition;
     private GameObject background;
 
+    private StateManager stateManager;
+
     public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
         BindEverything();
     }
 
     public void Start() {
-        var state = StateManager.GetCurrentState();
-        if (!state.HasEnteredCampaign) {
+        if (!stateManager.CurrentAccountState.HasEnteredCampaign) {
             var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
             tooltip.SetTooltip("This is where you fight!", "As you can see, there are a lot of groups of very bad things attacking us.\nWe'll need to fight our way through, so touch the first one to get started.");
-            state.HasEnteredCampaign = true;
+            stateManager.CurrentAccountState.HasEnteredCampaign = true;
             _ = FindObjectOfType<CredentialsManager>().UpdateTutorials();
         }
     }
@@ -54,23 +56,22 @@ public class CampaignSceneManager : MonoBehaviour {
         background = Instantiate(fieldBackgroundPrefab);
         background.transform.position = new Vector3();
 
-        var state = StateManager.GetCurrentState();
-        nameText.text = state.PlayerName;
-        chapterText.text = string.Format("Chapter {0}", state.CurrentChapter);
-        missionText.text = string.Format("Mission {0}", state.CurrentMission);
+        nameText.text = stateManager.CurrentAccountState.PlayerName;
+        chapterText.text = string.Format("Chapter {0}", stateManager.CurrentAccountState.CurrentChapter);
+        missionText.text = string.Format("Mission {0}", stateManager.CurrentAccountState.CurrentMission);
 
         for (int x = 0; x < heroPlaceholders.Length; x++) {
-            var mission = MissionContainer.GetMission(state.CurrentChapter, x + 1);
+            var mission = MissionContainer.GetMission(stateManager.CurrentAccountState.CurrentChapter, x + 1);
             if (mission == null) {
                 heroPlaceholders[x].gameObject.SetActive(false);
             } else {
                 heroPlaceholders[x].SetHero(mission.FaceOfMission);
 
-                if (state.CurrentMission > x + 1) {
+                if (stateManager.CurrentAccountState.CurrentMission > x + 1) {
                     heroPlaceholders[x].Death();
                 }
 
-                if (x == state.CurrentMission - 1) {
+                if (x == stateManager.CurrentAccountState.CurrentMission - 1) {
                     heroPlaceholders[x].RegisterOnClick(LaunchNextMission);
                     mainCamera.transform.position = new Vector3(heroPlaceholders[x].transform.position.x, -2f, -10f);
 
