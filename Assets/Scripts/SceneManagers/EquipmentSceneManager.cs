@@ -46,6 +46,7 @@ public class EquipmentSceneManager : MonoBehaviour {
     public Text deflectLabel;
 
     private CredentialsManager credentialsManager;
+    private StateManager stateManager;
     private bool loadingFromServer = false;
 
     // Master panel things.
@@ -59,6 +60,7 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     public void Awake() {
         credentialsManager = FindObjectOfType<CredentialsManager>();
+        stateManager = FindObjectOfType<StateManager>();
 
         masterPanel.SetActive(true);
         detailPanel.SetActive(false);
@@ -82,7 +84,7 @@ public class EquipmentSceneManager : MonoBehaviour {
     }
 
     private void FilterList() {
-        var unfiltered = new List<AccountEquipment>(StateManager.GetCurrentState().AccountEquipment);
+        var unfiltered = new List<AccountEquipment>(stateManager.CurrentAccountState.AccountEquipment);
         if (currentFilter == null) {
             filteredList = unfiltered;
         } else {
@@ -149,7 +151,6 @@ public class EquipmentSceneManager : MonoBehaviour {
     #region Detail panel methods
 
     public void BindDetailPanel() {
-        var state = StateManager.GetCurrentState();
         var currentEquipment = filteredList[currentSelection];
         var baseEquipment = currentEquipment.GetBaseEquipment();
 
@@ -159,7 +160,7 @@ public class EquipmentSceneManager : MonoBehaviour {
             equipmentOwnerIcon.enabled = false;
         } else {
             equipmentOwnerIcon.enabled = true;
-            var equippedHero = state.AccountHeroes.Find((AccountHero hero) => {
+            var equippedHero = stateManager.CurrentAccountState.AccountHeroes.Find((AccountHero hero) => {
                 return hero.Id.Equals(currentEquipment.EquippedHeroId);
             });
             if (equippedHero != null) equipmentOwnerIcon.sprite = Resources.Load<Sprite>(equippedHero.GetBaseHero().HeroIconPath);
@@ -310,7 +311,7 @@ public class EquipmentSceneManager : MonoBehaviour {
     private void SelectSameEquipment(EquipmentFusionButton fusion, List<AccountEquipment> alreadySelected) {
         var accountEquipment = filteredList[currentSelection];
         var baseEquipment = accountEquipment.GetBaseEquipment();
-        var allEquipment = StateManager.GetCurrentState().AccountEquipment;
+        var allEquipment = stateManager.CurrentAccountState.AccountEquipment;
         var firstSelectable = allEquipment.Find((AccountEquipment equipment) => {
             return !alreadySelected.Contains(equipment) && equipment.Level == accountEquipment.Level && equipment.GetBaseEquipment().Type == baseEquipment.Type;
         });

@@ -425,7 +425,7 @@ namespace Com.Tempest.Whale.Combat {
                 var statusDisplay = StatusInfoContainer.GetStatusInfo(triggeringStatus.GetValueOrDefault());
                 string type = damage == 0 ? "healing" : "damage";
                 string value = damage == 0 ? healing.ToString("0") : damage.ToString("0");
-                string inflicter = attackerGuid == null ? "" : string.Format(" ({0})", heroDict[attackerGuid].HeroName);
+                string inflicter = attackerGuid == Guid.Empty ? "" : string.Format(" ({0})", heroDict[attackerGuid].HeroName);
                 output.Add(string.Format("{0} received {1} {2} from {3}{4} at end of turn.", heroDict[targetGuid].HeroName, value, type, statusDisplay.StatusName, inflicter));
             } else if (damage != 0 || healing != 0) {
                 string type = healing == 0 ? "damaged" : "healed";

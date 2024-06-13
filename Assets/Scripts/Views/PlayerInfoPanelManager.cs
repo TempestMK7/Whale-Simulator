@@ -13,7 +13,10 @@ public class PlayerInfoPanelManager : MonoBehaviour {
 
     private int displayedLevel;
 
+    private StateManager stateManager;
+
     public void Awake() {
+        stateManager = FindObjectOfType<StateManager>();
         BindStateToUi();
     }
 
@@ -22,32 +25,30 @@ public class PlayerInfoPanelManager : MonoBehaviour {
     }
 
     private void BindStateToUi() {
-        var accountState = StateManager.GetCurrentState();
-        nameText.text = accountState.PlayerName;
-        levelText.text = "Level " + accountState.CurrentLevel.ToString("0");
-        gemText.text = CustomFormatter.Format(accountState.CurrentGems);
-        goldText.text = CustomFormatter.Format(accountState.CurrentGold);
-        soulsText.text = CustomFormatter.Format(accountState.CurrentSouls);
+        nameText.text = stateManager.CurrentAccountState.PlayerName;
+        levelText.text = "Level " + stateManager.CurrentAccountState.CurrentLevel.ToString("0");
+        gemText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGems);
+        goldText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGold);
+        soulsText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSouls);
 
         HandleLevelBar();
     }
 
     private void HandleLevelBar() {
-        var accountState = StateManager.GetCurrentState();
         if (displayedLevel == 0) {
-            levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
-            displayedLevel = accountState.CurrentLevel;
+            levelBar.SetValue((float)stateManager.CurrentAccountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(stateManager.CurrentAccountState.CurrentLevel));
+            displayedLevel = stateManager.CurrentAccountState.CurrentLevel;
         } else {
             if (levelBar.Value == 1f) {
                 levelBar.EmptyBar();
             }
 
-            var differential = accountState.CurrentLevel - displayedLevel;
+            var differential = stateManager.CurrentAccountState.CurrentLevel - displayedLevel;
             if (differential > 0) {
                 displayedLevel++;
                 levelBar.SetValue(100f, 100f, HandleLevelBar);
             } else {
-                levelBar.SetValue((float)accountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(accountState.CurrentLevel));
+                levelBar.SetValue((float)stateManager.CurrentAccountState.CurrentExperience, (float)LevelContainer.ExperienceRequirement(stateManager.CurrentAccountState.CurrentLevel));
             }
         }
     }

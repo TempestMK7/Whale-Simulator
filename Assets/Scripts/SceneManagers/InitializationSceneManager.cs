@@ -22,7 +22,7 @@ public class InitializationSceneManager : MonoBehaviour {
         if (initializing) return;
         initializing = true;
         var loadingPopup = Instantiate(loadingPopupPrefab, mainCanvas.transform).GetComponent<LoadingPopup>();
-        loadingPopup.LaunchPopup("Step 1 of 4.", "Loading assets...", false);
+        loadingPopup.LaunchPopup("Step 1 of 5.", "Loading assets...", false);
 
         try {
             BaseHeroContainer.Initialize();
@@ -37,12 +37,18 @@ public class InitializationSceneManager : MonoBehaviour {
 
             SettingsManager.GetInstance();
 
-            loadingPopup.SetText("Step 2 of 4.", "Contacting identity server...");
+            loadingPopup.SetText("Step 2 of 5.", "Contacting identity server...");
+            var stateManager = FindObjectOfType<StateManager>();
             var credentialsManager = FindObjectOfType<CredentialsManager>();
             await credentialsManager.InitializeEverything();
-            loadingPopup.SetText("Step 3 of 4.", "Downloading account information...");
+            loadingPopup.SetText("Step 3 of 5.", "Getting user information...");
+            await credentialsManager.DownloadUserInfo();
+            loadingPopup.SetText("Step 4 of 5.", "Downloading account information...");
             await credentialsManager.DownloadState();
-            loadingPopup.SetText("Step 4 of 4.", "Launching world hub...");
+            if (stateManager.CurrentAccountState == null) {
+                throw new Exception("State is null.");
+            }
+            loadingPopup.SetText("Step 5 of 5.", "Launching world hub...");
             SceneManager.LoadSceneAsync("HubScene");
         } catch (Exception e) {
             initializing = false;

@@ -154,9 +154,9 @@ namespace Com.Tempest.Whale.GameObjects {
                     return new BaseHero(hero, "Botanikaht", "Icons/Element02_256_10", "Characters/GrassOverrideController", "Characters/Botanikaht/Large/MainPrefab",
                         RoleEnum.PROTECTION, FactionEnum.GRASS, 5,
                         100, 70, 70, 75, 75, 55, 0.1, 0.2,
-                        AbilityEnum.CHOKING_VINES, AttackEnum.BASIC_PETAL_SLAP, AttackEnum.BASIC_BRANCH_SLAP, AttackEnum.BASIC_NEEDLE_SHOT, AttackEnum.BASIC_GRAPE_SHOT,
+                        AbilityEnum.CHOKING_VINES, AttackEnum.BASIC_PETAL_SLAP, AttackEnum.BASIC_BRANCH_SLAP, AttackEnum.CHARGE_WEED_WHACKER, AttackEnum.CHARGE_CABER_TOSS,
                         new AttackEnum[] { AttackEnum.BASIC_RAZOR_VINE, AttackEnum.BASIC_GRAPE_SHOT, AttackEnum.BASIC_COCONUT_CATAPULT, AttackEnum.BASIC_REJUVENATE, AttackEnum.BASIC_REVITALIZE },
-                        new AttackEnum[] { AttackEnum.CHARGE_CABER_TOSS, AttackEnum.CHARGE_TIMBER, AttackEnum.CHARGE_MOONBEAM, AttackEnum.CHARGE_TRANQUIL_GROVE, AttackEnum.CHARGE_SERENE_FOREST });
+                        new AttackEnum[] { AttackEnum.CHARGE_TIMBER, AttackEnum.CHARGE_SALAD_TOSS, AttackEnum.CHARGE_MOONBEAM, AttackEnum.CHARGE_TRANQUIL_GROVE, AttackEnum.CHARGE_SERENE_FOREST });
 
                 // Fire heroes.
                 case HeroEnum.LEPYRA:

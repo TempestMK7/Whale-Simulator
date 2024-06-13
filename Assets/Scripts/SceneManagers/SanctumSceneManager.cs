@@ -22,17 +22,20 @@ public class SanctumSceneManager : MonoBehaviour {
     public TooltipPopup tooltipPrefab;
     public LoadingPopup loadingPrefab;
 
+    private StateManager stateManager;
+
     public void Start() {
-        var state = StateManager.GetCurrentState();
-        if (!state.HasEnteredSanctum) {
+        stateManager = FindObjectOfType<StateManager>();
+        if (!stateManager.CurrentAccountState.HasEnteredSanctum) {
             var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
             tooltip.SetTooltip("This is the Sanctum.", "This is where you claim materials which you can use to upgrade your heroes and purchase things you need.\nProgressing through the campaign will increase the rate at which you accumulate materials.");
-            StateManager.NotifySanctumEntered();
+            stateManager.CurrentAccountState.HasEnteredSanctum = true;
+            _ = FindObjectOfType<CredentialsManager>().UpdateTutorials();
         }
     }
 
     void Update() {
-        var state = StateManager.GetCurrentState();
+        var state = stateManager.CurrentAccountState;
         var generation = MissionContainer.GetGenerationInfo(state);
         double unformattedTime = (EpochTime.CurrentTimeMillis() - state.LastClaimTimeStamp);
 

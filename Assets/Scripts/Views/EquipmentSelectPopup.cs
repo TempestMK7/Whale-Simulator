@@ -49,7 +49,7 @@ public class EquipmentSelectPopup : MonoBehaviour {
         }
         equipmentLabel.text = string.Format("Equip {0}", title);
 
-        adapter = new EquipmentAdapter(this, listItemPrefab, selectedHero, selectedSlot);
+        adapter = new EquipmentAdapter(FindObjectOfType<StateManager>(), this, listItemPrefab, selectedHero, selectedSlot);
         StartCoroutine(ExpandIntoFrame());
     }
 
@@ -83,7 +83,7 @@ public class EquipmentSelectPopup : MonoBehaviour {
     }
 
     public AccountEquipment GetCurrentSelection() {
-        var equipmentList = StateManager.GetCurrentState().AccountEquipment;
+        var equipmentList = FindObjectOfType<StateManager>().CurrentAccountState.AccountEquipment;
         var matchingSlot = new List<EquipmentSlot>();
         matchingSlot.Add(selectedSlot);
         switch (selectedSlot) {
@@ -100,13 +100,15 @@ public class EquipmentSelectPopup : MonoBehaviour {
 
 public class EquipmentAdapter : RecyclerViewAdapter {
 
+    private readonly StateManager stateManager;
     private readonly EquipmentSelectPopup popup;
     private readonly GameObject listItemPrefab;
     private readonly AccountHero selectedHero;
     private readonly EquipmentSlot selectedSlot;
     private readonly List<AccountEquipment> equipmentList;
 
-    public EquipmentAdapter(EquipmentSelectPopup popup, GameObject listItemPrefab, AccountHero selectedHero, EquipmentSlot selectedSlot) {
+    public EquipmentAdapter(StateManager stateManager, EquipmentSelectPopup popup, GameObject listItemPrefab, AccountHero selectedHero, EquipmentSlot selectedSlot) {
+        this.stateManager = stateManager;
         this.popup = popup;
         this.listItemPrefab = listItemPrefab;
         this.selectedHero = selectedHero;
@@ -129,7 +131,8 @@ public class EquipmentAdapter : RecyclerViewAdapter {
                 allowedSlots.Add(EquipmentSlot.TWO_HAND);
                 break;
         }
-        equipmentList = StateManager.GetCurrentState().AccountEquipment.FindAll((AccountEquipment matchable) => {
+        
+        equipmentList = stateManager.CurrentAccountState.AccountEquipment.FindAll((AccountEquipment matchable) => {
             return allowedSlots.Contains(matchable.GetBaseEquipment().Slot);
         });
     }

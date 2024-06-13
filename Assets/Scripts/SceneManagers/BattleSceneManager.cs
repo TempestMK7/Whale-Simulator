@@ -43,6 +43,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     private BattleEnum battleType;
     private CredentialsManager credentialsManager;
+    private StateManager stateManager;
     private bool loadingFromServer = false;
 
     // These are used in selection mode.
@@ -64,6 +65,7 @@ public class BattleSceneManager : MonoBehaviour {
 
     public void Awake() {
         credentialsManager = FindObjectOfType<CredentialsManager>();
+        stateManager = FindObjectOfType<StateManager>();
         battleType = BattleManager.GetBattleType();
         switch (battleType) {
             case BattleEnum.CAMPAIGN:
@@ -94,8 +96,7 @@ public class BattleSceneManager : MonoBehaviour {
         selectionPanel.SetActive(true);
         statusPanel.SetActive(false);
 
-        var state = StateManager.GetCurrentState();
-        unfilteredList = state.AccountHeroes;
+        unfilteredList = stateManager.CurrentAccountState.AccountHeroes;
         filteredList = FilterList();
 
         selectionAdapter = new BattleSelectionAdapter(selectionPrefab, this);
@@ -108,7 +109,7 @@ public class BattleSceneManager : MonoBehaviour {
             case BattleEnum.LOOT_CAVE:
             case BattleEnum.CAMPAIGN:
             default:
-                selectedAllies = StateManager.GetLastUsedTeam();
+                selectedAllies = stateManager.GetLastUsedTeam();
                 selectionAdapter.SetSelectedList(selectedAllies);
                 selectionRecyclerView.NotifyDataSetChanged();
                 break;
@@ -119,7 +120,6 @@ public class BattleSceneManager : MonoBehaviour {
     }
 
     private async Task SelectEnemiesFromBattleType() {
-        var state = StateManager.GetCurrentState();
         switch (battleType) {
             case BattleEnum.LOOT_CAVE:
                 loadingFromServer = true;
@@ -141,7 +141,7 @@ public class BattleSceneManager : MonoBehaviour {
                 loadingFromServer = false;
                 break;
             case BattleEnum.CAMPAIGN:
-                var mission = MissionContainer.GetMission(state.CurrentChapter, state.CurrentMission);
+                var mission = MissionContainer.GetMission(stateManager.CurrentAccountState.CurrentChapter, stateManager.CurrentAccountState.CurrentMission);
                 selectedEnemies = new AccountHero[mission.MissionHeroes.Length];
                 for (int x = 0; x < selectedEnemies.Length; x++) {
                     var accountHero = new AccountHero(mission.MissionHeroes[x]) {
@@ -274,7 +274,7 @@ public class BattleSceneManager : MonoBehaviour {
         loadingFromServer = true;
         var loadingPopup = Instantiate(loadingPrefab, mainCanvas.transform);
         loadingPopup.LaunchPopup("Preparing...", "Writing ballads of your inevitable victory...");
-        StateManager.SetLastUsedTeam(selectedAllies);
+        stateManager.SetLastUsedTeam(selectedAllies);
 
         try {
             var response = await credentialsManager.PerformEpicBattle(battleType, selectedAllies);

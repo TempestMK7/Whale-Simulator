@@ -8,6 +8,6 @@ namespace Com.Tempest.Whale.RequestObjects {
     public class CombatRequest {
 
         public BattleEnum EncounterType { get; set; }
-        public Guid?[] SelectedHeroes { get; set; }
+        public Guid[] SelectedHeroes { get; set; }
     }
 }

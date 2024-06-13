@@ -27,7 +27,7 @@ public class SettingsManager {
             BinaryFormatter formatter = new BinaryFormatter();
             container = (SettingsContainer)formatter.Deserialize(stream);
         } catch (Exception e) {
-            UnityEngine.Debug.Log(e.Message);
+            Debug.Log(e.Message);
         } finally {
             stream.Close();
         }
