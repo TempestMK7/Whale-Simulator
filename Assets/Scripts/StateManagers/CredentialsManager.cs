@@ -31,8 +31,10 @@ public class CredentialsManager : MonoBehaviour {
         refreshTokenFile = Application.persistentDataPath + "/access_token.txt";
         identityClient = new HttpClient();
         identityClient.BaseAddress = new Uri(IDENTITY_API_BASE_URL);
+        identityClient.DefaultRequestHeaders.Add("version", Application.version);
         mainClient = new HttpClient();
         mainClient.BaseAddress = new Uri(STATE_API_BASE_URL);
+        mainClient.DefaultRequestHeaders.Add("version", Application.version);
         stateManager = FindObjectOfType<StateManager>();
     }
 
@@ -57,6 +59,7 @@ public class CredentialsManager : MonoBehaviour {
         if (cachedToken != null) {
             mainClient.DefaultRequestHeaders.Clear();
             mainClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cachedToken);
+            mainClient.DefaultRequestHeaders.Add("version", Application.version);
         }
     }
 
