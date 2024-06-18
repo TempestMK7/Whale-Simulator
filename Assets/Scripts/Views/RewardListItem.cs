@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.ResourceContainers;
 using Com.Tempest.Whale.StateObjects;
 
@@ -23,7 +24,7 @@ public class RewardListItem : MonoBehaviour {
         rewardCountText.enabled = false;
         rewardRarityView.gameObject.SetActive(true);
 
-        rewardIcon.sprite = Resources.Load<Sprite>(equipment.GetBaseEquipment().IconPath);
+        rewardIcon.sprite = Resources.Load<Sprite>(BaseEquipmentContainer.GetEquipmentIcon(equipment.Slot, equipment.IconIndex));
         rewardRarityView.SetLevel(0, equipment.Level, false);
     }
 }

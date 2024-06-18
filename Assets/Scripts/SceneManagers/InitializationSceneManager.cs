@@ -26,7 +26,6 @@ public class InitializationSceneManager : MonoBehaviour {
 
         try {
             BaseHeroContainer.Initialize();
-            BaseEquipmentContainer.Initialize();
             AttackInfoContainer.Initialize();
             AbilityInfoContainer.Initialize();
 

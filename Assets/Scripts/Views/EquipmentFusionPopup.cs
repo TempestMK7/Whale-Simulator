@@ -9,7 +9,7 @@ public class EquipmentFusionPopup : MonoBehaviour {
     public RecyclerView recyclerView;
     public GameObject listItemPrefab;
 
-    private EquipmentType type;
+    private EquipmentSlot slot;
     private int level;
     private List<AccountEquipment> alreadySelected;
     private EquipmentFusionButton summoner;
@@ -31,8 +31,7 @@ public class EquipmentFusionPopup : MonoBehaviour {
     public void BuildList() {
         var allEquipment = stateManager.CurrentAccountState.AccountEquipment;
         displayedList = allEquipment.FindAll((AccountEquipment equipment) => {
-            var baseEquipment = equipment.GetBaseEquipment();
-            var matchesRequirements = baseEquipment.Type == type && equipment.Level == level;
+            var matchesRequirements = equipment.Slot == slot && equipment.Level == level;
             return matchesRequirements && !alreadySelected.Contains(equipment);
         });
         adapter.SetList(displayedList);
@@ -52,8 +51,8 @@ public class EquipmentFusionPopup : MonoBehaviour {
         StartCoroutine(ShrinkToNothing());
     }
 
-    public void LaunchPopup(EquipmentType type, int level, List<AccountEquipment> alreadySelected, EquipmentFusionButton summoner) {
-        this.type = type;
+    public void LaunchPopup(EquipmentSlot slot, int level, List<AccountEquipment> alreadySelected, EquipmentFusionButton summoner) {
+        this.slot = slot;
         this.level = level;
         this.alreadySelected = alreadySelected;
         this.summoner = summoner;

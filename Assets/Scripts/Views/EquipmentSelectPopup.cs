@@ -28,20 +28,14 @@ public class EquipmentSelectPopup : MonoBehaviour {
 
         string title;
         switch (selectedSlot) {
-            case EquipmentSlot.MAIN_HAND:
-                title = "Main Hand";
-                break;
-            case EquipmentSlot.OFF_HAND:
-                title = "Off Hand";
-                break;
-            case EquipmentSlot.CHEST:
-                title = "Chest";
-                break;
-            case EquipmentSlot.LEGS:
-                title = "Legs";
-                break;
             case EquipmentSlot.HEAD:
                 title = "Head";
+                break;
+            case EquipmentSlot.NECK:
+                title = "Neck";
+                break;
+            case EquipmentSlot.BELT:
+                title = "Belt";
                 break;
             default:
                 title = "None";
@@ -59,7 +53,7 @@ public class EquipmentSelectPopup : MonoBehaviour {
 
     public void OnClearPressed() {
         var sceneManager = FindObjectOfType<HeroSceneManager>();
-        if (sceneManager != null) sceneManager.NotifyEquipmentSelected(GetCurrentSelection(), null, null);
+        if (sceneManager != null) sceneManager.NotifyEquipmentSelected(GetCurrentSelection(), null);
         StartCoroutine(ShrinkToNothing());
     }
 
@@ -84,56 +78,26 @@ public class EquipmentSelectPopup : MonoBehaviour {
 
     public AccountEquipment GetCurrentSelection() {
         var equipmentList = FindObjectOfType<StateManager>().CurrentAccountState.AccountEquipment;
-        var matchingSlot = new List<EquipmentSlot>();
-        matchingSlot.Add(selectedSlot);
-        switch (selectedSlot) {
-            case EquipmentSlot.MAIN_HAND:
-            case EquipmentSlot.OFF_HAND:
-                matchingSlot.Add(EquipmentSlot.TWO_HAND);
-                break;
-        }
         return equipmentList.Find((AccountEquipment matchable) => {
-            return selectedHero.Id.Equals(matchable.EquippedHeroId) && matchingSlot.Contains(matchable.EquippedSlot.GetValueOrDefault());
+            return selectedHero.Id.Equals(matchable.EquippedHeroId) && matchable.Slot == selectedSlot;
         });
     }
 }
 
 public class EquipmentAdapter : RecyclerViewAdapter {
 
-    private readonly StateManager stateManager;
     private readonly EquipmentSelectPopup popup;
     private readonly GameObject listItemPrefab;
     private readonly AccountHero selectedHero;
-    private readonly EquipmentSlot selectedSlot;
     private readonly List<AccountEquipment> equipmentList;
 
     public EquipmentAdapter(StateManager stateManager, EquipmentSelectPopup popup, GameObject listItemPrefab, AccountHero selectedHero, EquipmentSlot selectedSlot) {
-        this.stateManager = stateManager;
         this.popup = popup;
         this.listItemPrefab = listItemPrefab;
         this.selectedHero = selectedHero;
-        this.selectedSlot = selectedSlot;
-        var allowedSlots = new List<EquipmentSlot>();
-        switch (selectedSlot) {
-            case EquipmentSlot.HEAD:
-            case EquipmentSlot.CHEST:
-            case EquipmentSlot.LEGS:
-                allowedSlots.Add(selectedSlot);
-                break;
-            case EquipmentSlot.MAIN_HAND:
-                allowedSlots.Add(EquipmentSlot.MAIN_HAND);
-                allowedSlots.Add(EquipmentSlot.ONE_HAND);
-                allowedSlots.Add(EquipmentSlot.TWO_HAND);
-                break;
-            case EquipmentSlot.OFF_HAND:
-                allowedSlots.Add(EquipmentSlot.OFF_HAND);
-                allowedSlots.Add(EquipmentSlot.ONE_HAND);
-                allowedSlots.Add(EquipmentSlot.TWO_HAND);
-                break;
-        }
         
         equipmentList = stateManager.CurrentAccountState.AccountEquipment.FindAll((AccountEquipment matchable) => {
-            return allowedSlots.Contains(matchable.GetBaseEquipment().Slot);
+            return selectedSlot == matchable.Slot;
         });
     }
 
@@ -153,8 +117,7 @@ public class EquipmentAdapter : RecyclerViewAdapter {
     public void OnViewHolderClicked(int position) {
         var selection = equipmentList[position];
         var sceneManager = UnityEngine.Object.FindObjectOfType<HeroSceneManager>();
-        var slot = selection.GetBaseEquipment().Slot == EquipmentSlot.TWO_HAND ? EquipmentSlot.TWO_HAND : selectedSlot;
-        if (sceneManager != null) sceneManager.NotifyEquipmentSelected(selection, selectedHero, slot);
+        if (sceneManager != null) sceneManager.NotifyEquipmentSelected(selection, selectedHero);
         popup.OnCancelPressed();
     }
 }

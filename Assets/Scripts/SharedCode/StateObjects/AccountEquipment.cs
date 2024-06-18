@@ -24,6 +24,7 @@ namespace Com.Tempest.Whale.StateObjects {
 
         public AccountEquipment(EquipmentSlot slot, EquipmentStat primaryStat, EquipmentStat secondaryStat, EquipmentStat tertiaryStat, int primaryQuality, int secondaryQuality, int tertiaryQuality, int level, int iconIndex) {
             Id = Guid.NewGuid();
+            Slot = slot;
             PrimaryStat = primaryStat;
             SecondaryStat = secondaryStat;
             TertiaryStat = tertiaryStat;

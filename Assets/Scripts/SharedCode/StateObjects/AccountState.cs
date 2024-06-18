@@ -89,9 +89,6 @@ namespace Com.Tempest.Whale.StateObjects {
             foreach (AccountHero hero in AccountHeroes) {
                 hero.LoadBaseHero();
             }
-            foreach (AccountEquipment equipment in AccountEquipment) {
-                equipment.LoadBaseEquipment();
-            }
         }
 
         public List<AccountEquipment> GetEquipmentForHero(AccountHero hero) {

@@ -119,7 +119,7 @@ namespace Com.Tempest.Whale.Combat {
             }
         }
 
-        private double CalculateStatFromEquipment(EquipmentStat stat, int statQuality, int level) {
+        public static double CalculateStatFromEquipment(EquipmentStat stat, int statQuality, int level) {
             double quality = 0.8 + (0.02 * statQuality);
             double amount = 0;
             switch (stat) {
@@ -129,19 +129,19 @@ namespace Com.Tempest.Whale.Combat {
                 case EquipmentStat.TOUGHNESS:
                 case EquipmentStat.RESISTANCE:
                 case EquipmentStat.SPEED:
-                    amount = level * 30.0 * statQuality;
+                    amount = level * 30.0 * quality;
                     break;
                 case EquipmentStat.CRITICAL:
                 case EquipmentStat.DEFLECTION:
                 case EquipmentStat.APTITUDE:
-                    amount = 0.1 + (level * 0.1 * quality);
+                    amount = 0.05 + (level * 0.015 * quality);
                     break;
                 case EquipmentStat.PRECISION:
                 case EquipmentStat.REFLEX:
                     amount = 0.2 + (level * 0.03 * quality);
                     break;
                 case EquipmentStat.PERSISTENCE:
-                    amount = 0.1 * (level * 0.015 * quality);
+                    amount = 0.1 + (level * 0.015 * quality);
                     break;
                 case EquipmentStat.DURABILITY:
                     amount = 0.05 + (level * 0.005 * quality);

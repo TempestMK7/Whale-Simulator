@@ -46,11 +46,5 @@ namespace Com.Tempest.Whale.GameObjects {
             PlayerExperience = playerExperience;
             EarnedEquipment = earnedEquipment;
         }
-
-        public void RestoreUnserializedData() {
-            foreach (AccountEquipment equipment in EarnedEquipment) {
-                equipment.LoadBaseEquipment();
-            }
-        }
     }
 }

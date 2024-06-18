@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.StateObjects;
+using Com.Tempest.Whale.Combat;
 
 public class EquipmentSceneManager : MonoBehaviour {
 
@@ -38,19 +39,17 @@ public class EquipmentSceneManager : MonoBehaviour {
     public GameObject fusionPopupPrefab;
 
     public GameObject statPanel;
-    public Text attackLabel;
-    public Text magicLabel;
-    public Text critLabel;
-    public Text defenseLabel;
-    public Text reflectionLabel;
-    public Text deflectLabel;
+    public Text primaryLabel;
+    public Text secondaryLabel;
+    public Text tertiaryLabel;
+    public Text explanationLabel;
 
     private CredentialsManager credentialsManager;
     private StateManager stateManager;
     private bool loadingFromServer = false;
 
     // Master panel things.
-    private EquipmentFilter? currentFilter;
+    private EquipmentSlot? currentFilter;
     private List<AccountEquipment> filteredList;
     private MasterEquipmentAdapter masterAdapter;
 
@@ -73,7 +72,7 @@ public class EquipmentSceneManager : MonoBehaviour {
     #region Master panel methods.
 
     public void OnFilterPressed(int position) {
-        var allFilters = (EquipmentFilter[])Enum.GetValues(typeof(EquipmentFilter));
+        var allFilters = (EquipmentSlot[])Enum.GetValues(typeof(EquipmentSlot));
         var newFilter = allFilters[position];
         if (newFilter == currentFilter) {
             currentFilter = null;
@@ -85,50 +84,12 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     private void FilterList() {
         var unfiltered = new List<AccountEquipment>(stateManager.CurrentAccountState.AccountEquipment);
+        filteredList = unfiltered;
         if (currentFilter == null) {
             filteredList = unfiltered;
         } else {
-            var allowedTypes = new List<EquipmentType>();
-            switch (currentFilter) {
-                case EquipmentFilter.ONE_HAND:
-                    allowedTypes.Add(EquipmentType.DAGGER);
-                    allowedTypes.Add(EquipmentType.SWORD);
-                    allowedTypes.Add(EquipmentType.AXE);
-                    allowedTypes.Add(EquipmentType.SCEPTER);
-                    allowedTypes.Add(EquipmentType.TOME);
-                    allowedTypes.Add(EquipmentType.METAL_SHIELD);
-                    allowedTypes.Add(EquipmentType.CRYSTAL_SHIELD);
-                    break;
-                case EquipmentFilter.TWO_HAND:
-                    allowedTypes.Add(EquipmentType.GREAT_SWORD);
-                    allowedTypes.Add(EquipmentType.GREAT_AXE);
-                    allowedTypes.Add(EquipmentType.STAFF);
-                    break;
-                case EquipmentFilter.CLOTH:
-                    allowedTypes.Add(EquipmentType.CLOTH_CHEST);
-                    allowedTypes.Add(EquipmentType.CLOTH_PANTS);
-                    allowedTypes.Add(EquipmentType.CLOTH_HAT);
-                    break;
-                case EquipmentFilter.LEATHER:
-                    allowedTypes.Add(EquipmentType.LEATHER_CHEST);
-                    allowedTypes.Add(EquipmentType.LEATHER_PANTS);
-                    allowedTypes.Add(EquipmentType.LEATHER_HAT);
-                    break;
-                case EquipmentFilter.PLATE:
-                    allowedTypes.Add(EquipmentType.PLATE_CHEST);
-                    allowedTypes.Add(EquipmentType.PLATE_PANTS);
-                    allowedTypes.Add(EquipmentType.PLATE_HELMET);
-                    break;
-                case EquipmentFilter.CRYSTAL:
-                    allowedTypes.Add(EquipmentType.CRYSTAL_CHEST);
-                    allowedTypes.Add(EquipmentType.CRYSTAL_PANTS);
-                    allowedTypes.Add(EquipmentType.CRYSTAL_HELMET);
-                    break;
-                default:
-                    break;
-            }
             filteredList = unfiltered.FindAll((AccountEquipment matchable) => {
-                return allowedTypes.Contains(matchable.GetBaseEquipment().Type);
+                return matchable.Slot == currentFilter;
             });
         }
         masterAdapter.SetFilteredList(filteredList);
@@ -152,9 +113,8 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     public void BindDetailPanel() {
         var currentEquipment = filteredList[currentSelection];
-        var baseEquipment = currentEquipment.GetBaseEquipment();
 
-        equipmentLabel.text = baseEquipment.Name;
+        equipmentLabel.text = BaseEquipmentContainer.GetEquipmentName(currentEquipment);
         equipmentPositionLabel.text = string.Format("({0} of {1})", currentSelection + 1, filteredList.Count);
         if (currentEquipment.EquippedHeroId == null) {
             equipmentOwnerIcon.enabled = false;
@@ -166,17 +126,32 @@ public class EquipmentSceneManager : MonoBehaviour {
             if (equippedHero != null) equipmentOwnerIcon.sprite = Resources.Load<Sprite>(equippedHero.GetBaseHero().HeroIconPath);
         }
 
-        equipmentDisplay.sprite = Resources.Load<Sprite>(baseEquipment.IconPath);
+        equipmentDisplay.sprite = Resources.Load<Sprite>(BaseEquipmentContainer.GetEquipmentIcon(currentEquipment.Slot, currentEquipment.IconIndex));
 
         equipmentRarityView.SetLevel(0, currentEquipment.Level, true);
+        var primaryFormatted = FormatStat(currentEquipment.PrimaryStat, CombatHero.CalculateStatFromEquipment(currentEquipment.PrimaryStat, currentEquipment.PrimaryQuality, currentEquipment.Level));
+        primaryLabel.text = $"{BaseEquipmentContainer.GetStatName(currentEquipment.PrimaryStat)}: {primaryFormatted}";
+        var secondaryFormatted = FormatStat(currentEquipment.SecondaryStat, CombatHero.CalculateStatFromEquipment(currentEquipment.SecondaryStat, currentEquipment.SecondaryQuality, currentEquipment.Level));
+        secondaryLabel.text = $"{BaseEquipmentContainer.GetStatName(currentEquipment.SecondaryStat)}: {secondaryFormatted}";
+        var tertiaryFormatted = FormatStat(currentEquipment.TertiaryStat, CombatHero.CalculateStatFromEquipment(currentEquipment.TertiaryStat, currentEquipment.TertiaryQuality, currentEquipment.Level));
+        tertiaryLabel.text = $"{BaseEquipmentContainer.GetStatName(currentEquipment.TertiaryStat)}: {tertiaryFormatted}";
+        explanationLabel.text = BaseEquipmentContainer.GetStatDescription(currentEquipment.TertiaryStat);
         ToggleStatFusePanels(true);
+    }
 
-        attackLabel.text = string.Format("Attack: {0}", baseEquipment.BaseStrength * currentEquipment.Level);
-        magicLabel.text = string.Format("Magic: {0}", baseEquipment.BasePower * currentEquipment.Level);
-        critLabel.text = string.Format("Critical: {0}%", (baseEquipment.BaseCrit * 100).ToString("0"));
-        defenseLabel.text = string.Format("Defense: {0}", baseEquipment.BaseToughness * currentEquipment.Level);
-        reflectionLabel.text = string.Format("Reflection: {0}", baseEquipment.BaseResistance * currentEquipment.Level);
-        deflectLabel.text = string.Format("Deflect: {0}%", (baseEquipment.BaseDeflect * 100).ToString("0"));
+    private string FormatStat(EquipmentStat stat, double amount) {
+        switch (stat) {
+            case EquipmentStat.STRENGTH:
+            case EquipmentStat.POWER:
+            case EquipmentStat.TOUGHNESS:
+            case EquipmentStat.RESISTANCE:
+            case EquipmentStat.HEALTH:
+            case EquipmentStat.SPEED:
+            case EquipmentStat.VIGOR:
+                return amount.ToString("##0.#");
+            default:
+                return (amount * 100.0).ToString("##0.#") + "%";
+        }
     }
 
     private void ResetListPosition() {
@@ -229,16 +204,15 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     private void SetupFusePanel() {
         var accountEquipment = filteredList[currentSelection];
-        var baseEquipment = accountEquipment.GetBaseEquipment();
         if (accountEquipment.Level >= 10) {
             ToggleStatFusePanels(true);
             return;
         }
         centerFusionButton.SetAccountEquipment(accountEquipment);
 
-        bottomLeftFusionButton.SetCardRequirements(baseEquipment.Type, accountEquipment.Level);
+        bottomLeftFusionButton.SetCardRequirements(accountEquipment.Slot, accountEquipment.Level);
         bottomLeftFusionButton.SetEmpty();
-        bottomRightFusionButton.SetCardRequirements(baseEquipment.Type, accountEquipment.Level);
+        bottomRightFusionButton.SetCardRequirements(accountEquipment.Slot, accountEquipment.Level);
         bottomRightFusionButton.SetEmpty();
 
         HandleCompleteFusionButton();
@@ -251,7 +225,7 @@ public class EquipmentSceneManager : MonoBehaviour {
         return selected;
     }
 
-    public void RequestFusionPopup(EquipmentFusionButton caller, EquipmentType type, int level) {
+    public void RequestFusionPopup(EquipmentFusionButton caller, EquipmentSlot slot, int level) {
         if (ButtonsBlocked()) return;
         var alreadySelected = GetSelectedFusionEquipment();
         alreadySelected.Add(centerFusionButton.GetSelectedEquipment());
@@ -259,7 +233,7 @@ public class EquipmentSceneManager : MonoBehaviour {
         if (selected != null && alreadySelected.Contains(selected)) alreadySelected.Remove(selected);
 
         var popup = Instantiate(fusionPopupPrefab, detailPanel.transform).GetComponent<EquipmentFusionPopup>();
-        popup.LaunchPopup(type, level, alreadySelected, caller);
+        popup.LaunchPopup(slot, level, alreadySelected, caller);
     }
 
     public void OnFusionEquipmentSelected() {
@@ -310,10 +284,9 @@ public class EquipmentSceneManager : MonoBehaviour {
 
     private void SelectSameEquipment(EquipmentFusionButton fusion, List<AccountEquipment> alreadySelected) {
         var accountEquipment = filteredList[currentSelection];
-        var baseEquipment = accountEquipment.GetBaseEquipment();
         var allEquipment = stateManager.CurrentAccountState.AccountEquipment;
         var firstSelectable = allEquipment.Find((AccountEquipment equipment) => {
-            return !alreadySelected.Contains(equipment) && equipment.Level == accountEquipment.Level && equipment.GetBaseEquipment().Type == baseEquipment.Type;
+            return !alreadySelected.Contains(equipment) && equipment.Level == accountEquipment.Level && equipment.Slot == accountEquipment.Slot;
         });
         if (firstSelectable != null) {
             fusion.SetAccountEquipment(firstSelectable);
@@ -329,10 +302,6 @@ public class EquipmentSceneManager : MonoBehaviour {
     }
 
     #endregion
-}
-
-public enum EquipmentFilter {
-    ONE_HAND, TWO_HAND, CLOTH, LEATHER, PLATE, CRYSTAL
 }
 
 public class MasterEquipmentAdapter: RecyclerViewAdapter {
