@@ -20,44 +20,56 @@ namespace Com.Tempest.Whale.Combat {
 
         #region Hit calculation and modifiers.
 
-        public static double Damage(double modifiedAttack, double modifiedDefense, double baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity) {
+        public static double Damage(double modifiedAttack, double modifiedDefense, double baseDamage, bool hasStab, HitType hitType, HitEffectivity hitEffectivity, CombatHero attacker, CombatHero target) {
+            // World traveller stacks with aptitude if the attack is off-faction, so we check both individually.
+            var stabBonus = hasStab ? 1.333 : 1.0;
+            if (attacker.baseHero.PassiveAbility == AbilityEnum.WORLD_TRAVELLER) {
+                stabBonus = 1.333;
+            }
+            if (!hasStab) {
+                stabBonus *= 1.0 + attacker.GetModifiedAptitude();
+            }
+
             double multiplier = modifiedAttack / modifiedDefense;
             if (multiplier > 100) multiplier = 100;
             if (multiplier < 0.01) multiplier = 0.01;
-            var damage = baseDamage * multiplier;
-
-            if (hasStab) {
-                damage *= 1.333;
-            }
+            var damage = baseDamage * multiplier * stabBonus;
 
             if (hitType == HitType.CRITICAL) {
-                damage *= 1.5;
+                damage *= 1.5 + attacker.GetModifiedPrecision();
             } else if (hitType == HitType.DEFLECTION) {
-                damage *= 0.67;
+                damage /= 1.5 + attacker.GetModifiedReflex();
             }
 
             if (hitEffectivity == HitEffectivity.EMPOWERED) {
-                damage *= 1.333;
+                damage *= 1.5;
             } else if (hitEffectivity == HitEffectivity.RESISTED) {
-                damage *= 0.75;
+                damage /= 1.5;
             }
+
+            damage *= 1.0 - target.GetModifiedDurability();
 
             return damage;
         }
 
-        public static double Healing(double modifiedAttack, double attackerLevel, double targetAwakening, double baseHealing, bool hasStab, HitType hitType) {
+        public static double Healing(double modifiedAttack, double attackerLevel, double targetAwakening, double baseHealing, bool hasStab, HitType hitType, CombatHero attacker, CombatHero target) {
+            // World traveller stacks with aptitude if the attack is off-faction, so we check both individually.
+            var stabBonus = hasStab ? 1.333 : 1.0;
+            if (attacker.baseHero.PassiveAbility == AbilityEnum.WORLD_TRAVELLER) {
+                stabBonus = 1.333;
+            }
+            if (!hasStab) {
+                stabBonus *= 1.0 + attacker.GetModifiedAptitude();
+            }
+
             // This will likely need work later.  Because I do not have a defense value to divide attack by,
             // I take the average defense a target would have at the attacker's level and defender's awakening.
             var effectiveDefense = 75.0 + (2.75 * attackerLevel);
             effectiveDefense *= Math.Pow(1.1, targetAwakening);
-            var healing = baseHealing * (modifiedAttack / effectiveDefense);
-
-            if (hasStab) {
-                healing *= 1.333;
-            }
+            var healing = baseHealing * (modifiedAttack / effectiveDefense) * stabBonus;
 
             if (hitType == HitType.CRITICAL) {
-                healing *= 1.5;
+                healing *= 1.5 + attacker.GetModifiedPrecision();
             }
 
             return healing;
@@ -368,8 +380,9 @@ namespace Com.Tempest.Whale.Combat {
                 turn.steps.Add(attackInfo.ApplyAttackToAlly(attacker, ally));
             }
 
-            attacker.currentEnergy += attackInfo.AttackerEnergyGained;
-            turn.energyGained = attackInfo.AttackerEnergyGained;
+            var energyGained = attackInfo.AttackerEnergyGained + attacker.GetModifiedVigor();
+            attacker.currentEnergy += energyGained;
+            turn.energyGained = energyGained;
 
             turn.steps.AddRange(ApplyPassiveBuffs(attacker, turn));
             turn.steps.AddRange(EvaluateNegativeSideEffects(attacker, enemies, turn));

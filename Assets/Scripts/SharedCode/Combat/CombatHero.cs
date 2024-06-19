@@ -402,6 +402,54 @@ namespace Com.Tempest.Whale.Combat {
             return modified;
         }
 
+        public double GetModifiedAptitude() {
+            var modified = aptitude;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedPrecision() {
+            var modified = precision;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedReflex() {
+            var modified = reflex;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedPersistence() {
+            var modified = persistence;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedDurability() {
+            var modified = durability;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedVigor() {
+            var modified = vigor;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
         public double ReceiveHealing(double healing) {
             double missingHealth = health - currentHealth;
             if (missingHealth >= healing) {
