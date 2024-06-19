@@ -27,6 +27,13 @@ namespace Com.Tempest.Whale.Combat {
         public double critChance;
         public double deflectionChance;
 
+        public double aptitude;
+        public double precision;
+        public double reflex;
+        public double persistence;
+        public double durability;
+        public double vigor;
+
         public double currentHealth;
         public double currentEnergy;
         public List<CombatStatus> currentStatus;
@@ -45,7 +52,7 @@ namespace Com.Tempest.Whale.Combat {
             basicAttack = accountHero.GetBasicAttackEnum();
             chargeAttack = accountHero.GetChargeAttackEnum();
 
-            health = GetBigStat(baseHero.BaseHealth) * 10.0;
+            health = GetBigStat(baseHero.BaseHealth) * 5.0;
             strength = GetBigStat(baseHero.BaseStrength);
             power = GetBigStat(baseHero.BasePower);
             toughness = GetBigStat(baseHero.BaseToughness);
@@ -59,14 +66,96 @@ namespace Com.Tempest.Whale.Combat {
             currentStatus = new List<CombatStatus>();
 
             foreach (AccountEquipment equipment in equipped) {
-                var baseEquipment = equipment.GetBaseEquipment();
-                strength += baseEquipment.BaseStrength * equipment.Level;
-                power += baseEquipment.BasePower * equipment.Level;
-                toughness += baseEquipment.BaseToughness * equipment.Level;
-                resistance += baseEquipment.BaseResistance * equipment.Level;
-                critChance += baseEquipment.BaseCrit;
-                deflectionChance += baseEquipment.BaseDeflect;
+                AddStatToHero(equipment.PrimaryStat, CalculateStatFromEquipment(equipment.PrimaryStat, equipment.PrimaryQuality, equipment.Level));
+                AddStatToHero(equipment.SecondaryStat, CalculateStatFromEquipment(equipment.SecondaryStat, equipment.SecondaryQuality, equipment.Level));
+                AddStatToHero(equipment.TertiaryStat, CalculateStatFromEquipment(equipment.TertiaryStat, equipment.TertiaryQuality, equipment.Level));
             }
+        }
+
+        private void AddStatToHero(EquipmentStat stat, double amount) {
+            switch (stat) {
+                case EquipmentStat.HEALTH:
+                    health += amount;
+                    break;
+                case EquipmentStat.STRENGTH:
+                    strength += amount;
+                    break;
+                case EquipmentStat.POWER:
+                    power += amount;
+                    break;
+                case EquipmentStat.TOUGHNESS:
+                    toughness += amount;
+                    break;
+                case EquipmentStat.RESISTANCE:
+                    resistance += amount;
+                    break;
+                case EquipmentStat.SPEED:
+                    speed += amount;
+                    break;
+                case EquipmentStat.CRITICAL:
+                    critChance += amount;
+                    break;
+                case EquipmentStat.DEFLECTION:
+                    deflectionChance += amount;
+                    break;
+                case EquipmentStat.APTITUDE:
+                    aptitude += amount;
+                    break;
+                case EquipmentStat.PRECISION:
+                    precision += amount;
+                    break;
+                case EquipmentStat.REFLEX:
+                    reflex += amount;
+                    break;
+                case EquipmentStat.PERSISTENCE:
+                    persistence += amount;
+                    break;
+                case EquipmentStat.DURABILITY:
+                    durability += amount;
+                    break;
+                case EquipmentStat.VIGOR:
+                    vigor += amount;
+                    break;
+            }
+        }
+
+        public static double CalculateStatFromEquipment(EquipmentStat stat, int statQuality, int level) {
+            double quality = 0.8 + (0.02 * statQuality);
+            double amount = 0;
+            switch (stat) {
+                case EquipmentStat.HEALTH:
+                case EquipmentStat.STRENGTH:
+                case EquipmentStat.POWER:
+                case EquipmentStat.TOUGHNESS:
+                case EquipmentStat.RESISTANCE:
+                case EquipmentStat.SPEED:
+                    amount = level * 30.0 * quality;
+                    break;
+                case EquipmentStat.CRITICAL:
+                case EquipmentStat.DEFLECTION:
+                case EquipmentStat.APTITUDE:
+                    amount = 0.05 + (level * 0.015 * quality);
+                    break;
+                case EquipmentStat.PRECISION:
+                case EquipmentStat.REFLEX:
+                    amount = 0.2 + (level * 0.03 * quality);
+                    break;
+                case EquipmentStat.PERSISTENCE:
+                    amount = 0.1 + (level * 0.015 * quality);
+                    break;
+                case EquipmentStat.DURABILITY:
+                    amount = 0.05 + (level * 0.005 * quality);
+                    break;
+                case EquipmentStat.VIGOR:
+                    amount = 2.0 + (level * 0.3 * quality);
+                    break;
+            }
+
+            if (stat == EquipmentStat.HEALTH) {
+                amount *= 5.0;
+            }
+
+            return amount;
         }
 
         public CombatHero(CombatHero other) {
@@ -84,6 +173,13 @@ namespace Com.Tempest.Whale.Combat {
             speed = other.speed;
             critChance = other.critChance;
             deflectionChance = other.deflectionChance;
+
+            aptitude = other.aptitude;
+            precision = other.precision;
+            reflex = other.reflex;
+            persistence = other.persistence;
+            durability = other.durability;
+            vigor = other.vigor;
 
             currentHealth = other.currentHealth;
             currentEnergy = other.currentEnergy;
@@ -302,6 +398,54 @@ namespace Com.Tempest.Whale.Combat {
                 } else if (status.status == StatusEnum.DEFLECTION_DOWN) {
                     modified -= status.value;
                 }
+            }
+            return modified;
+        }
+
+        public double GetModifiedAptitude() {
+            var modified = aptitude;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedPrecision() {
+            var modified = precision;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedReflex() {
+            var modified = reflex;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedPersistence() {
+            var modified = persistence;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedDurability() {
+            var modified = durability;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
+            }
+            return modified;
+        }
+
+        public double GetModifiedVigor() {
+            var modified = vigor;
+            foreach (CombatStatus status in currentStatus) {
+                // lol nothing mods this yet.
             }
             return modified;
         }

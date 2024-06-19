@@ -33,10 +33,8 @@ public class HeroSceneManager : MonoBehaviour {
     public LevelupFanfareBehavior levelupFanfare;
 
     public EquipmentListItem headEquipment;
-    public EquipmentListItem chestEquipment;
-    public EquipmentListItem legEquipment;
-    public EquipmentListItem mainHandEquipment;
-    public EquipmentListItem offHandEquipment;
+    public EquipmentListItem neckEquipment;
+    public EquipmentListItem waistEquipment;
     public UnityEngine.UI.Button unequipButton;
 
     public RarityBehavior rarityView;
@@ -247,22 +245,14 @@ public class HeroSceneManager : MonoBehaviour {
 
         var equipped = stateManager.CurrentAccountState.GetEquipmentForHero(currentHero);
         headEquipment.SetEquipment(
-            equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.HEAD; }),
+            equipped.Find((AccountEquipment matchable) => { return matchable.Slot == EquipmentSlot.HEAD; }),
             false, LaunchEquipmentPopup, (int)EquipmentSlot.HEAD);
-        chestEquipment.SetEquipment(
-            equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.CHEST; }),
-            false, LaunchEquipmentPopup, (int)EquipmentSlot.CHEST);
-        legEquipment.SetEquipment(
-            equipped.Find((AccountEquipment matchable) => { return matchable.EquippedSlot == EquipmentSlot.LEGS; }),
-            false, LaunchEquipmentPopup, (int)EquipmentSlot.LEGS);
-        mainHandEquipment.SetEquipment(
-            equipped.Find((AccountEquipment matchable) =>
-            { return matchable.EquippedSlot == EquipmentSlot.MAIN_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
-            false, LaunchEquipmentPopup, (int)EquipmentSlot.MAIN_HAND);
-        offHandEquipment.SetEquipment(
-            equipped.Find((AccountEquipment matchable) =>
-            { return matchable.EquippedSlot == EquipmentSlot.OFF_HAND || matchable.EquippedSlot == EquipmentSlot.TWO_HAND; }),
-            false, LaunchEquipmentPopup, (int)EquipmentSlot.OFF_HAND);
+        neckEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) => { return matchable.Slot == EquipmentSlot.NECK; }),
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.NECK);
+        waistEquipment.SetEquipment(
+            equipped.Find((AccountEquipment matchable) => { return matchable.Slot == EquipmentSlot.BELT; }),
+            false, LaunchEquipmentPopup, (int)EquipmentSlot.BELT);
         unequipButton.gameObject.SetActive(equipped.Count > 0);
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
@@ -302,10 +292,10 @@ public class HeroSceneManager : MonoBehaviour {
         popup.SetHeroAndSlot(filteredList[currentPosition], selectedSlot);
     }
 
-    public async void NotifyEquipmentSelected(AccountEquipment selected, AccountHero equippedHero, EquipmentSlot? slot) {
+    public async void NotifyEquipmentSelected(AccountEquipment selected, AccountHero equippedHero) {
         loadingFromServer = true;
         try {
-            await credentialsManager.EquipToHero(selected, equippedHero, slot);
+            await credentialsManager.EquipToHero(selected, equippedHero);
             loadingFromServer = false;
             BindDetailView();
         } catch (Exception e) {

@@ -68,7 +68,7 @@ namespace Com.Tempest.Whale.GameObjects {
             foreach (AccountEquipment destroyed in destroyedEquipment) {
                 if (destroyed == fusedEquipment) return false;
                 if (destroyed == null) return false;
-                if (destroyed.GetBaseEquipment().Type == fusedEquipment.GetBaseEquipment().Type && destroyed.Level == fusedEquipment.Level) {
+                if (destroyed.Slot == fusedEquipment.Slot && destroyed.Level == fusedEquipment.Level) {
                     selectedEquipment++;
                 } else {
                     return false;

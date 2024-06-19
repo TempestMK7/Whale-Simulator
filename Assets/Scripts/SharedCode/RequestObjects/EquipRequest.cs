@@ -8,6 +8,5 @@ namespace Com.Tempest.Whale.RequestObjects {
 
         public Guid EquipmentId { get; set; }
         public Guid? HeroId { get; set; }
-        public EquipmentSlot? Slot { get; set; }
     }
 }

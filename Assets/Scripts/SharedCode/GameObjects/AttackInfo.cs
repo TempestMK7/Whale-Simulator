@@ -316,14 +316,11 @@ namespace Com.Tempest.Whale.GameObjects {
 
         public List<CombatStep> ApplyAttackToEnemy(CombatHero attacker, CombatHero target) {
             var hasStab = attacker.baseHero.Faction == AttackFaction;
-            if (attacker.baseHero.PassiveAbility == AbilityEnum.WORLD_TRAVELLER) {
-                hasStab = true;
-            }
             var hitType = CombatMath.RollHitType(attacker, target);
             var hitEffectivity = CombatMath.GetEffectivity(AttackFaction, target.baseHero.Faction);
             var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
             var defenseValue = IsPhysical ? target.GetModifiedToughness() : target.GetModifiedResistance();
-            var damage = CombatMath.Damage(attackValue, defenseValue, BaseDamage, hasStab, hitType, hitEffectivity);
+            var damage = CombatMath.Damage(attackValue, defenseValue, BaseDamage, hasStab, hitType, hitEffectivity, attacker, target);
 
             var shadyBranches = target.GetStatus(StatusEnum.SHADY_BRANCHES);
             if (shadyBranches != null && EnemyTargetCount > 1) {
@@ -362,17 +359,20 @@ namespace Com.Tempest.Whale.GameObjects {
                     case StatusEnum.BURN:
                         var burnPow = attacker.GetModifiedPower();
                         var burnDef = target.GetModifiedResistance();
-                        statusValue = CombatMath.Damage(burnPow, burnDef, (int) TargetStatusValue, hasStab, hitType, hitEffectivity);
+                        statusValue = CombatMath.Damage(burnPow, burnDef, (int) TargetStatusValue, hasStab, hitType, hitEffectivity, attacker, target);
+                        statusValue *= 1.0 + attacker.GetModifiedPersistence();
                         break;
                     case StatusEnum.BLEED:
                         var bleedPow = attacker.GetModifiedStrength();
                         var bleedDef = target.GetModifiedToughness();
-                        statusValue = CombatMath.Damage(bleedPow, bleedDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity);
+                        statusValue = CombatMath.Damage(bleedPow, bleedDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity, attacker, target);
+                        statusValue *= 1.0 + attacker.GetModifiedPersistence();
                         break;
                     case StatusEnum.POISON:
                         var poisonPow = attacker.GetModifiedPower();
                         var poisonDef = target.GetModifiedResistance();
-                        statusValue = CombatMath.Damage(poisonPow, poisonDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity);
+                        statusValue = CombatMath.Damage(poisonPow, poisonDef, (int)TargetStatusValue, hasStab, hitType, hitEffectivity, attacker, target);
+                        statusValue *= 1.0 + attacker.GetModifiedPersistence();
                         break;
                     case StatusEnum.CHILL:
                         if (target.HasStatus(StatusEnum.DOWSE)) {
@@ -448,7 +448,7 @@ namespace Com.Tempest.Whale.GameObjects {
             }
             var hitType = CombatMath.RollHitType(attacker);
             var attackValue = IsPhysical ? attacker.GetModifiedStrength() : attacker.GetModifiedPower();
-            var healing = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, BaseHealing, hasStab, hitType);
+            var healing = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, BaseHealing, hasStab, hitType, attacker, ally);
             healing = ally.ReceiveHealing(healing);
 
             var allyEnergy = AllyEnergyGained;
@@ -480,13 +480,15 @@ namespace Com.Tempest.Whale.GameObjects {
                 }
                 switch (bestowedStatus) {
                     case StatusEnum.REGENERATION:
-                        statusValue = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, (int) AllyStatusValue, hasStab, hitType);
+                        statusValue = CombatMath.Healing(attackValue, attacker.currentLevel, ally.awakeningLevel, (int) AllyStatusValue, hasStab, hitType, attacker, ally);
+                        statusValue *= 1.0 + attacker.GetModifiedPersistence();
                         break;
                     case StatusEnum.LAVA_ARMOR:
-                        statusValue = CombatMath.Damage(attacker.GetModifiedPower(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL);
+                        statusValue = CombatMath.Damage(attacker.GetModifiedPower(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL, attacker, ally);
+                        statusValue *= 1.0 + attacker.GetModifiedPersistence();
                         break;
                     case StatusEnum.THORN_ARMOR:
-                        statusValue = CombatMath.Damage(attacker.GetModifiedStrength(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL);
+                        statusValue = CombatMath.Damage(attacker.GetModifiedStrength(), 1, (int) AllyStatusValue, hasStab, hitType, HitEffectivity.NORMAL, attacker, ally);
                         break;
                     case StatusEnum.EARTH_ARMOR:
                         statusValue = attacker.GetModifiedToughness() * statusValue;

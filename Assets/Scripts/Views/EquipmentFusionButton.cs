@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.StateObjects;
@@ -18,7 +16,7 @@ public class EquipmentFusionButton : MonoBehaviour {
     private Sprite addSprite;
     private EquipmentSceneManager parentManager;
 
-    private EquipmentType requiredEquipment;
+    private EquipmentSlot requiredEquipment;
     private int requiredLevel;
 
     private AccountEquipment selectedEquipment;
@@ -28,15 +26,15 @@ public class EquipmentFusionButton : MonoBehaviour {
         parentManager = FindObjectOfType<EquipmentSceneManager>();
     }
 
-    public void SetCardRequirements(EquipmentType equipmentType, int level) {
-        requiredEquipment = equipmentType;
+    public void SetCardRequirements(EquipmentSlot equipmentSlot, int level) {
+        requiredEquipment = equipmentSlot;
         requiredLevel = level;
     }
 
     public void SetAccountEquipment(AccountEquipment equipment) {
         selectedEquipment = equipment;
         equippedText.enabled = equipment.EquippedHeroId != null;
-        equipmentIcon.sprite = Resources.Load<Sprite>(equipment.GetBaseEquipment().IconPath);
+        equipmentIcon.sprite = Resources.Load<Sprite>(BaseEquipmentContainer.GetEquipmentIcon(equipment.Slot, equipment.IconIndex));
         equipmentIcon.color = new Color(1, 1, 1, 1);
         rarityView.SetLevel(0, equipment.Level, false);
     }

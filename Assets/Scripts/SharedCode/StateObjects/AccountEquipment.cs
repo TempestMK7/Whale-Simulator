@@ -7,41 +7,43 @@ namespace Com.Tempest.Whale.StateObjects {
     public class AccountEquipment : IComparable<AccountEquipment> {
 
         public Guid Id { get; set; }
-        public EquipmentType EquipType { get; set; }
+        public EquipmentSlot Slot { get; set; }
+        public EquipmentStat PrimaryStat { get; set; }
+        public EquipmentStat SecondaryStat { get; set; }
+        public EquipmentStat TertiaryStat { get; set; }
+        public int PrimaryQuality { get; set; }
+        public int SecondaryQuality { get; set; }
+        public int TertiaryQuality { get; set; }
         public int Level { get; set; }
+        public int IconIndex { get; set; }
         public Guid? EquippedHeroId { get; set; }
-        public EquipmentSlot? EquippedSlot { get; set; }
-
-        [NonSerialized] private BaseEquipment baseEquipment;
 
         public AccountEquipment() {
 
         }
 
-        public AccountEquipment(EquipmentType equipType, int level) {
+        public AccountEquipment(EquipmentSlot slot, EquipmentStat primaryStat, EquipmentStat secondaryStat, EquipmentStat tertiaryStat, int primaryQuality, int secondaryQuality, int tertiaryQuality, int level, int iconIndex) {
             Id = Guid.NewGuid();
-            EquipType = equipType;
+            Slot = slot;
+            PrimaryStat = primaryStat;
+            SecondaryStat = secondaryStat;
+            TertiaryStat = tertiaryStat;
+            PrimaryQuality = primaryQuality;
+            SecondaryQuality = secondaryQuality;
+            TertiaryQuality = tertiaryQuality;
             Level = level;
-            EquippedHeroId = null;
-            EquippedSlot = null;
-            baseEquipment = BaseEquipmentContainer.GetBaseEquipment(equipType);
-        }
-
-        public void LoadBaseEquipment() {
-            baseEquipment = BaseEquipmentContainer.GetBaseEquipment(EquipType);
-        }
-
-        public BaseEquipment GetBaseEquipment() {
-            return baseEquipment;
+            IconIndex = iconIndex;
         }
 
         public int CompareTo(AccountEquipment other) {
-            var typeComparison = EquipType.CompareTo(other.EquipType);
-            if (typeComparison != 0) return typeComparison;
-            if (other.Level != Level) return other.Level - Level;
+            if (Slot != other.Slot) return Slot.CompareTo(other.Slot);
+            if (Level != other.Level) return Level.CompareTo(other.Level);
+            if (PrimaryStat != other.PrimaryStat) return PrimaryStat.CompareTo(other.PrimaryStat);
+            if (SecondaryStat != other.SecondaryStat) return SecondaryStat.CompareTo(other.SecondaryStat);
+            if (TertiaryStat != other.TertiaryStat) return TertiaryStat.CompareTo(other.TertiaryStat);
             if (EquippedHeroId == null && other.EquippedHeroId != null) return 1;
             if (other.EquippedHeroId == null && EquippedHeroId != null) return -1;
-            return 0;
+            return (PrimaryQuality + SecondaryQuality + TertiaryQuality) - (other.PrimaryQuality + other.SecondaryQuality + other.TertiaryQuality);
         }
     }
 }

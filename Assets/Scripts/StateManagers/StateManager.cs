@@ -22,9 +22,6 @@ public class StateManager : MonoBehaviour {
         foreach (AccountHero hero in CurrentAccountState.AccountHeroes) {
             hero.LoadBaseHero();
         }
-        foreach (AccountEquipment equipment in CurrentAccountState.AccountEquipment) {
-            equipment.LoadBaseEquipment();
-        }
         CurrentAccountState.AccountHeroes.Sort();
         CurrentAccountState.AccountEquipment.Sort();
     }
@@ -119,16 +116,14 @@ public class StateManager : MonoBehaviour {
             accountEquipment.Remove(destroyed);
         }
         var newFusedEquipment = response.FusedEquipment;
-        newFusedEquipment.LoadBaseEquipment();
         accountEquipment.Add(newFusedEquipment);
         ConsolidateState();
     }
 
-    public void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
+    public void HandleEquipResponse(EquipResponse response, AccountEquipment equipment, AccountHero hero) {
         Guid? heroId = null;
         if (hero != null) heroId = hero.Id;
         equipment.EquippedHeroId = heroId;
-        equipment.EquippedSlot = slot;
 
         if (response.UnequippedIds.Count == 0) return;
         var unequippedList = CurrentAccountState.AccountEquipment.FindAll((AccountEquipment e) => {
@@ -136,7 +131,6 @@ public class StateManager : MonoBehaviour {
         });
         foreach (AccountEquipment unequipped in unequippedList) {
             unequipped.EquippedHeroId = null;
-            unequipped.EquippedSlot = null;
         }
         ConsolidateState();
     }
@@ -147,7 +141,6 @@ public class StateManager : MonoBehaviour {
         });
         foreach (AccountEquipment e in equipped) {
             e.EquippedHeroId = null;
-            e.EquippedSlot = null;
         }
         ConsolidateState();
     }

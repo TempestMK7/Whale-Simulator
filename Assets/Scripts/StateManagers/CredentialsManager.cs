@@ -200,17 +200,16 @@ public class CredentialsManager : MonoBehaviour {
         return true;
     }
 
-    public async Task EquipToHero(AccountEquipment equipment, AccountHero hero, EquipmentSlot? slot) {
+    public async Task EquipToHero(AccountEquipment equipment, AccountHero hero) {
         Guid? heroId = null;
         if (hero != null) heroId = hero.Id;
 
         var request = new EquipRequest() {
             EquipmentId = equipment.Id,
-            HeroId = heroId,
-            Slot = slot
+            HeroId = heroId
         };
         var response = await MakeLambdaCall<EquipResponse, EquipRequest>(request, "equiphero");
-        stateManager.HandleEquipResponse(response, equipment, hero, slot);
+        stateManager.HandleEquipResponse(response, equipment, hero);
     }
 
     public async Task UnequipHero(AccountHero hero) {
@@ -234,7 +233,6 @@ public class CredentialsManager : MonoBehaviour {
         var response = await MakeLambdaCall<CombatResponse, CombatRequest>(request, "combat");
         if (response != null && response.Report != null) {
             response.Report.RestoreUnserializedData();
-            if (response.Rewards != null) response.Rewards.RestoreUnserializedData();
         }
         stateManager.HandleCombatResponse(battleType, response);
         return response;
