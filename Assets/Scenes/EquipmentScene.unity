@@ -621,7 +621,7 @@ MonoBehaviour:
   masterPanel: {fileID: 30137736}
   detailPanel: {fileID: 903880409}
   masterEquipmentRecycler: {fileID: 1332826512}
-  masterListItemPrefab: {fileID: 3816120747213665198, guid: 5b5bc0dccce3a9a46b5c6e22d368a512, type: 3}
+  masterListItemPrefab: {fileID: 233617396673221342, guid: ee2120c75e611e94e8eb120fd1042ec9, type: 3}
   equipmentLabel: {fileID: 264162252}
   equipmentPositionLabel: {fileID: 1625758620}
   equipmentOwnerIcon: {fileID: 1314476633}

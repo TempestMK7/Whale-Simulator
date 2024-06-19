@@ -62,6 +62,23 @@ namespace Com.Tempest.Whale.GameObjects {
             [EquipmentStat.VIGOR] = "Vigor",
         };
 
+        private static Dictionary<EquipmentStat, string> statAbbreviationDict = new Dictionary<EquipmentStat, string>() {
+            [EquipmentStat.STRENGTH] = "Str",
+            [EquipmentStat.POWER] = "Pow",
+            [EquipmentStat.TOUGHNESS] = "Tuf",
+            [EquipmentStat.RESISTANCE] = "Res",
+            [EquipmentStat.HEALTH] = "HP",
+            [EquipmentStat.SPEED] = "Spd",
+            [EquipmentStat.CRITICAL] = "Crt",
+            [EquipmentStat.DEFLECTION] = "Def",
+            [EquipmentStat.APTITUDE] = "Apt",
+            [EquipmentStat.PRECISION] = "Pre",
+            [EquipmentStat.REFLEX] = "Ref",
+            [EquipmentStat.PERSISTENCE] = "Per",
+            [EquipmentStat.DURABILITY] = "Dur",
+            [EquipmentStat.VIGOR] = "Vig",
+        };
+
         private static Dictionary<EquipmentStat, string> statDescriptionDict = new Dictionary<EquipmentStat, string>() {
             [EquipmentStat.APTITUDE] = "Aptitude raises the effect of moves that are not the same type as the user.",
             [EquipmentStat.PRECISION] = "Precision raises the user's critical hit multiplier.  The base critical hit multiplier is 150%.",
@@ -115,8 +132,27 @@ namespace Com.Tempest.Whale.GameObjects {
             return statNameDict[stat];
         }
 
+        public static string GetStatAbbreviation(EquipmentStat stat) {
+            return statAbbreviationDict[stat];
+        }
+
         public static string GetStatDescription(EquipmentStat tertiaryStat) {
             return statDescriptionDict[tertiaryStat];
+        }
+
+        public static string FormatStat(EquipmentStat stat, double amount) {
+            switch (stat) {
+                case EquipmentStat.STRENGTH:
+                case EquipmentStat.POWER:
+                case EquipmentStat.TOUGHNESS:
+                case EquipmentStat.RESISTANCE:
+                case EquipmentStat.HEALTH:
+                case EquipmentStat.SPEED:
+                case EquipmentStat.VIGOR:
+                    return amount.ToString("##0.#");
+                default:
+                    return (amount * 100.0).ToString("##0.#") + "%";
+            }
         }
 
         public static string GetEquipmentName(EquipmentSlot slot, EquipmentStat primaryStat, EquipmentStat secondaryStat, EquipmentStat tertiaryStat) {

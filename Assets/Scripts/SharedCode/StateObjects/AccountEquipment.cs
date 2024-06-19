@@ -37,7 +37,7 @@ namespace Com.Tempest.Whale.StateObjects {
 
         public int CompareTo(AccountEquipment other) {
             if (Slot != other.Slot) return Slot.CompareTo(other.Slot);
-            if (Level != other.Level) return Level.CompareTo(other.Level);
+            if (Level != other.Level) return other.Level - Level;
             if (PrimaryStat != other.PrimaryStat) return PrimaryStat.CompareTo(other.PrimaryStat);
             if (SecondaryStat != other.SecondaryStat) return SecondaryStat.CompareTo(other.SecondaryStat);
             if (TertiaryStat != other.TertiaryStat) return TertiaryStat.CompareTo(other.TertiaryStat);
