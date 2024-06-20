@@ -12,6 +12,7 @@ namespace Com.Tempest.Whale.StateObjects {
         public HeroEnum HeroType { get; set; }
         public int AwakeningLevel { get; set; }
         public int CurrentLevel { get; set; }
+        public double CurrentExperience { get; set; }
 
         public AttackEnum? CurrentBasicAttack { get; set; }
         public AttackEnum? CurrentChargeAttack { get; set; }
@@ -29,6 +30,7 @@ namespace Com.Tempest.Whale.StateObjects {
             baseHero = BaseHeroContainer.GetBaseHero(HeroType);
             AwakeningLevel = baseHero.Rarity;
             CurrentLevel = 1;
+            CurrentExperience = 0;
             UnlockedAttacks = new List<AttackEnum>();
         }
 
@@ -71,6 +73,38 @@ namespace Com.Tempest.Whale.StateObjects {
             var rarity = otherHero.Rarity - myHero.Rarity;
             if (rarity != 0) return rarity;
             return otherHero.HeroName.CompareTo(myHero.HeroName);
+        }
+
+        public int GetNextExperienceRequirement() {
+            // Experience requirement doubles every 10 levels.
+            // return (int)(Math.Pow(1.071774, CurrentLevel - 1.0) * 1000);
+            double multiplier = Math.Pow(1.1042, CurrentLevel - 1.0);
+            var rounding = multiplier > 10 ? 0 : 1;
+            return (int)(Math.Round(multiplier, rounding) * 100);
+        }
+
+        public void AwardExperience(int experience) {
+            CurrentExperience += experience;
+            if (CurrentLevel >= 100) {
+                CurrentLevel = 100;
+                CurrentExperience = 0;
+                return;
+            }
+            while (CurrentExperience >= GetNextExperienceRequirement() && CurrentLevel < 100) {
+                CurrentExperience -= GetNextExperienceRequirement();
+                CurrentLevel++;
+            }
+        }
+
+        public int ExperienceReward(int enemyLevel) {
+            var baseExperience = (int)(10 * Math.Pow(1.05316, enemyLevel - 1));
+            if (enemyLevel >= CurrentLevel) {
+                var difference = enemyLevel - CurrentLevel;
+                var multiplier = 1.0 + (difference * 0.05);
+                return (int)(baseExperience * multiplier);
+            } else {
+                return (int)(baseExperience * Math.Pow(0.98, CurrentLevel - enemyLevel));
+            }
         }
     }
 }
