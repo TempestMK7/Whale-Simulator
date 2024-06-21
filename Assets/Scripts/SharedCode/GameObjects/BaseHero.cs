@@ -315,10 +315,6 @@ namespace Com.Tempest.Whale.GameObjects {
                         new AttackEnum[] { });
             }
         }
-
-        public static double GetBigStatGain(double baseStat) {
-            return ((baseStat - 50.0) / 20.0) + 1.5;
-        }
     }
 
     public class BaseHeroContainer {

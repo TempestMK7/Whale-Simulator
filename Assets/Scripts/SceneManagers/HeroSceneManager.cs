@@ -258,9 +258,9 @@ public class HeroSceneManager : MonoBehaviour {
         levelLabel.text = string.Format("Level: {0}", currentLevel);
         levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
         currentGold.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGold);
-        currentSouls.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSouls);
-        goldCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
-        soulsCost.text = CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
+        currentSouls.text = ""; // CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSouls);
+        goldCost.text = ""; // CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
+        soulsCost.text = ""; // CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
 
         healthLabel.text = string.Format("Health: {0}", combatHero.health.ToString("0"));
         attackLabel.text = string.Format("Strength: {0}", combatHero.strength.ToString("0"));

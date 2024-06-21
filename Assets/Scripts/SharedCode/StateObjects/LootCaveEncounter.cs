@@ -34,11 +34,39 @@ namespace Com.Tempest.Whale.StateObjects {
         }
 
         public int GetCurrentLevel() {
-            return Floor * 5;
+            return Floor * 3;
         }
 
         public int GetAwakeningLevel() {
-            return (Floor / 4) + 1;
+            var awakening = (GetCurrentLevel() / 10) + 1;
+            return Math.Min(awakening, 10);
+        }
+
+        public PotentialRewardsContainer GetPotentialRewards() {
+            var awakening = GetAwakeningLevel();
+            return new PotentialRewardsContainer() {
+                GoldMin = 1,
+                GoldMax = (int)Math.Pow(10, Math.Ceiling(awakening / 3.0) + 1),
+                RedCrystalsMin = -2,
+                RedCrystalsMax = (int)Math.Ceiling(awakening / 2.0),
+                BlueCrystalsMin = -4,
+                BlueCrystalsMax = awakening > 5 ? 1 : 0,
+                SilverDustMin = 1,
+                SilverDustMax = 100 + 10 * awakening,
+                GoldDustMin = -100,
+                GoldDustMax = -50 + (10 * awakening),
+                OldPagesMin = -2,
+                OldPagesMax = awakening / 3,
+                AncientPagesMin = -9,
+                AncientPagesMax = awakening / 6,
+                TreatsMin = -3,
+                TreatsMax = 6,
+                TreatsMaxSize = awakening / 4,
+                NumberEquipmentMin = -2,
+                NumberEquipmentMax = 3,
+                EquipmentLevelMin = 1 + (awakening / 4),
+                EquipmentLevelMax = (int)Math.Round(awakening / 2.0)
+            };
         }
     }
 }

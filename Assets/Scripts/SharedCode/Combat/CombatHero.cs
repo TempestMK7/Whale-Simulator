@@ -194,7 +194,7 @@ namespace Com.Tempest.Whale.Combat {
         }
 
         private double GetBigStat(double baseStat) {
-            return (baseStat + (BaseHero.GetBigStatGain(baseStat) * currentLevel)) * Math.Pow(1.1, awakeningLevel - 1);
+            return (baseStat + (currentLevel / 2) + (baseStat * currentLevel / 20)) * Math.Pow(1.1, awakeningLevel);
         }
 
         public int CompareTo(CombatHero other) {

@@ -10,18 +10,8 @@ namespace Com.Tempest.Whale.StateObjects {
         public Guid Id { get; set; }
         public string PlayerName { get; set; }
 
-        public long LastClaimTimeStamp { get; set; }
-
         public double CurrentGold { get; set; }
-        public double CurrentSouls { get; set; }
-        public int CurrentLevel { get; set; }
-        public double CurrentExperience { get; set; }
         public long CurrentGems { get; set; }
-        public long CurrentSummons { get; set; }
-
-        public long CurrentBronzeSummons { get; set; }
-        public long CurrentSilverSummons { get; set; }
-        public long CurrentGoldSummons { get; set; }
 
         public int CurrentChapter { get; set; }
         public int CurrentMission { get; set; }
@@ -36,6 +26,7 @@ namespace Com.Tempest.Whale.StateObjects {
 
         public List<AccountHero> AccountHeroes { get; set; }
         public List<AccountEquipment> AccountEquipment { get; set; }
+        public List<AccountInventory> Inventory { get; set; }
 
         public Guid[] LastTeamSelection { get; set; }
         public Guid[] LastRaidSelection { get; set; }
@@ -44,18 +35,8 @@ namespace Com.Tempest.Whale.StateObjects {
             Id = Guid.NewGuid();
             PlayerName = "Unregistered Account";
 
-            LastClaimTimeStamp = EpochTime.CurrentTimeMillis();
-
             CurrentGold = 0;
-            CurrentSouls = 0;
-            CurrentLevel = 1;
-            CurrentExperience = 0;
             CurrentGems = 0;
-            CurrentSummons = 10;
-
-            CurrentBronzeSummons = 0;
-            CurrentSilverSummons = 0;
-            CurrentGoldSummons = 0;
 
             CurrentChapter = 1;
             CurrentMission = 1;
@@ -65,6 +46,13 @@ namespace Com.Tempest.Whale.StateObjects {
 
             AccountHeroes = new List<AccountHero>();
             AccountEquipment = new List<AccountEquipment>();
+            Inventory = new List<AccountInventory>() {
+                new AccountInventory() {
+                    Id = new Guid(),
+                    ItemType = ItemEnum.RED_CRYSTAL,
+                    Quantity = 10
+                }
+            };
 
             LastTeamSelection = new Guid[5];
             for (int x = 0; x < LastTeamSelection.Length; x++) {
@@ -76,16 +64,11 @@ namespace Com.Tempest.Whale.StateObjects {
             }
         }
 
-        public void FixLevelsFromExperience() {
-            while (CurrentExperience > LevelContainer.ExperienceRequirement(CurrentLevel)) {
-                CurrentExperience -= LevelContainer.ExperienceRequirement(CurrentLevel);
-                CurrentLevel++;
-            }
-        }
-
         public void RetrieveDataAfterLoad() {
-            if (AccountHeroes == null) AccountHeroes = new List<AccountHero>();
-            if (AccountEquipment == null) AccountEquipment = new List<AccountEquipment>();
+            AccountHeroes ??= new List<AccountHero>();
+            AccountEquipment ??= new List<AccountEquipment>();
+            Inventory ??= new List<AccountInventory>();
+
             foreach (AccountHero hero in AccountHeroes) {
                 hero.LoadBaseHero();
             }
@@ -97,20 +80,31 @@ namespace Com.Tempest.Whale.StateObjects {
             });
         }
 
-        public void ReceiveRewards(EarnedRewardsContainer rewards) {
+        public void ReceiveRewards(EarnedRewardsContainer rewards, Guid[] selectedHeroes) {
             CurrentGold += rewards.Gold;
-            CurrentSouls += rewards.Souls;
-            CurrentExperience += rewards.PlayerExperience;
             CurrentGems += rewards.Gems;
-            CurrentSummons += rewards.Summons;
-            CurrentBronzeSummons += rewards.BronzeSummons;
-            CurrentSilverSummons += rewards.SilverSummons;
-            CurrentGoldSummons += rewards.GoldSummons;
-            AccountEquipment.AddRange(rewards.EarnedEquipment);
 
+            AccountEquipment.AddRange(rewards.EarnedEquipment);
             RetrieveDataAfterLoad();
-            FixLevelsFromExperience();
             AccountEquipment.Sort();
+
+            foreach (AccountInventory inventory in rewards.EarnedInventory) {
+                var existingInventory = Inventory.Find(matchable => matchable.ItemType == inventory.ItemType);
+                if (existingInventory != null) {
+                    existingInventory.Quantity += inventory.Quantity;
+                } else {
+                    Inventory.Add(inventory);
+                }
+            }
+
+            foreach (int defeatedEnemyLevel in rewards.DefeatedEnemyLevels) {
+                foreach (Guid selectedHeroId in selectedHeroes) {
+                    var selectedHero = AccountHeroes.Find(matchable => matchable.Id.Equals(selectedHeroId));
+                    if (selectedHero != null) {
+                        selectedHero.AwardExperience(selectedHero.ExperienceReward(defeatedEnemyLevel));
+                    }
+                }
+            }
         }
     }
 }
