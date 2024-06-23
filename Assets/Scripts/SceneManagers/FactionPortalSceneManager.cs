@@ -41,9 +41,6 @@ class FactionPortalSceneManager : MonoBehaviour {
 
     private void ResetTextValues() {
         nameText.text = stateManager.CurrentAccountState.PlayerName;
-        bronzeText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentBronzeSummons);
-        silverText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSilverSummons);
-        goldText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGoldSummons);
 
         string selection = "None";
         switch (factionSelection) {
@@ -85,22 +82,19 @@ class FactionPortalSceneManager : MonoBehaviour {
     }
 
     public void OnBronzeSummonPressed(int count) {
-        if (stateManager.CurrentAccountState.CurrentBronzeSummons < count) return;
-        OnSummonPressed(3, count);
+
     }
 
     public void OnSilverSummonPressed(int count) {
-        if (stateManager.CurrentAccountState.CurrentSilverSummons < count) return;
-        OnSummonPressed(4, count);
+
     }
 
     public void OnGoldSummonPressed(int count) {
-        if (stateManager.CurrentAccountState.CurrentGoldSummons < count) return;
-        OnSummonPressed(5, count);
+
     }
 
-    public async void OnSummonPressed(int rarity, int count) {
-        if (PopupExists()) return;
+    public void OnSummonPressed(int rarity, int count) {
+        /*if (PopupExists()) return;
 
         var loadingPopup = Instantiate(loadingPopupPrefab, mainCanvas.transform);
         loadingPopup.LaunchPopup("Summoning...", "Finding heroes who are willing to join your team...", false);
@@ -115,7 +109,7 @@ class FactionPortalSceneManager : MonoBehaviour {
         } catch (Exception e) {
             Debug.LogError(e);
             CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error summoning your heroes.");
-        }
+        }*/
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {

@@ -74,6 +74,10 @@ namespace Com.Tempest.Whale.StateObjects {
             }
         }
 
+        public AccountInventory GetInventory(ItemEnum item) {
+            return Inventory.Find(matchable => matchable.ItemType == item);
+        }
+
         public List<AccountEquipment> GetEquipmentForHero(AccountHero hero) {
             return AccountEquipment.FindAll((AccountEquipment matchable) => {
                 return hero.Id.Equals(matchable.EquippedHeroId);

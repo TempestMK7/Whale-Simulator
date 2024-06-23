@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.StateObjects;
 
 public class PortalSceneManager : MonoBehaviour {
@@ -27,8 +28,7 @@ public class PortalSceneManager : MonoBehaviour {
     public void Awake() {
         stateManager = FindObjectOfType<StateManager>();
         nameText.text = stateManager.CurrentAccountState.PlayerName;
-        levelText.text = string.Format("Level {0}", stateManager.CurrentAccountState.CurrentLevel);
-        summonText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSummons);
+        summonText.text = CustomFormatter.Format(stateManager.CurrentAccountState.GetInventory(ItemEnum.RED_CRYSTAL).Quantity);
         portalOpenEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
         portalOpenEffect.PlayDelayed(0.3f);
         portalLoopEffect.volume = SettingsManager.GetInstance().effectVolume * 0.5f;
@@ -66,7 +66,7 @@ public class PortalSceneManager : MonoBehaviour {
     }
 
     public void OnSummonReceived(List<AccountHero> summonedHeroes) {
-        summonText.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSummons);
+        summonText.text = CustomFormatter.Format(stateManager.CurrentAccountState.GetInventory(ItemEnum.RED_CRYSTAL).Quantity);
         if (summonedHeroes.Count == 1) {
             var hero = summonedHeroes[0];
             var popup = Instantiate(singleSummonPopupPrefab, sceneUiCanvas.transform);

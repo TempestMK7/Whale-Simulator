@@ -480,25 +480,18 @@ public class BattleSelectionAdapter : RecyclerViewAdapter {
 public class RewardAdapter : RecyclerViewAdapter {
 
     private GameObject listItemPrefab;
-    private EarnedRewardsContainer rewards;
 
-    private List<RewardType> earnedRewards;
+    private int earnedGold;
+    private int earnedGems;
+    private List<AccountInventory> earnedInventory;
     private List<AccountEquipment> earnedEquipment;
 
     public RewardAdapter(GameObject listItemPrefab, EarnedRewardsContainer rewards) {
         this.listItemPrefab = listItemPrefab;
-        this.rewards = rewards;
 
-        earnedRewards = new List<RewardType>();
-        if (rewards.Gold > 0) earnedRewards.Add(RewardType.GOLD);
-        if (rewards.Souls > 0) earnedRewards.Add(RewardType.SOULS);
-        if (rewards.PlayerExperience > 0) earnedRewards.Add(RewardType.PLAYER_EXPERIENCE);
-        if (rewards.Gems > 0) earnedRewards.Add(RewardType.GEMS);
-        if (rewards.Summons > 0) earnedRewards.Add(RewardType.STANDARD_SUMMON);
-        if (rewards.BronzeSummons > 0) earnedRewards.Add(RewardType.BRONZE_SUMMON);
-        if (rewards.SilverSummons > 0) earnedRewards.Add(RewardType.SILVER_SUMMON);
-        if (rewards.GoldSummons > 0) earnedRewards.Add(RewardType.GOLD_SUMMON);
-
+        earnedGold = rewards.Gold;
+        earnedGems = rewards.Gems;
+        earnedInventory = rewards.EarnedInventory;
         earnedEquipment = rewards.EarnedEquipment;
     }
 
@@ -508,41 +501,27 @@ public class RewardAdapter : RecyclerViewAdapter {
 
     public override void OnBindViewHolder(GameObject viewHolder, int position) {
         var rewardHolder = viewHolder.GetComponent<RewardListItem>();
-        if (position < earnedRewards.Count) {
-            var type = earnedRewards[position];
-            switch (type) {
-                case RewardType.GOLD:
-                    rewardHolder.SetReward(type, rewards.Gold);
-                    break;
-                case RewardType.SOULS:
-                    rewardHolder.SetReward(type, rewards.Souls);
-                    break;
-                case RewardType.PLAYER_EXPERIENCE:
-                    rewardHolder.SetReward(type, rewards.PlayerExperience);
-                    break;
-                case RewardType.GEMS:
-                    rewardHolder.SetReward(type, rewards.Gems);
-                    break;
-                case RewardType.STANDARD_SUMMON:
-                    rewardHolder.SetReward(type, rewards.Summons);
-                    break;
-                case RewardType.BRONZE_SUMMON:
-                    rewardHolder.SetReward(type, rewards.BronzeSummons);
-                    break;
-                case RewardType.SILVER_SUMMON:
-                    rewardHolder.SetReward(type, rewards.SilverSummons);
-                    break;
-                case RewardType.GOLD_SUMMON:
-                    rewardHolder.SetReward(type, rewards.GoldSummons);
-                    break;
+
+        int currencyCount = 0;
+        if (earnedGold > 0) { currencyCount++; }
+        if (earnedGems > 0) { currencyCount++; }
+        if (position < currencyCount) {
+            if (position == 0 && earnedGold > 0) {
+                rewardHolder.SetReward(earnedGold, 0);
+            } else {
+                rewardHolder.SetReward(0, earnedGems);
             }
+        } else if (position < currencyCount + earnedInventory.Count) {
+            rewardHolder.SetReward(earnedInventory[position - currencyCount]);
         } else {
-            var equipPosition = position - earnedRewards.Count;
-            rewardHolder.SetReward(earnedEquipment[equipPosition]);
+            rewardHolder.SetReward(earnedEquipment[position - (currencyCount + earnedInventory.Count)]);
         }
     }
 
     public override int GetItemCount() {
-        return earnedRewards.Count + earnedEquipment.Count;
+        int currencyCount = 0;
+        if (earnedGold > 0) { currencyCount++; }
+        if (earnedGems > 0) { currencyCount++; }
+        return currencyCount + earnedInventory.Count + earnedEquipment.Count;
     }
 }

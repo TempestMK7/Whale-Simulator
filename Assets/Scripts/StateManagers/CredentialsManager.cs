@@ -105,11 +105,6 @@ public class CredentialsManager : MonoBehaviour {
         stateManager.HandleAccountStateResponse(newState);
     }
 
-    public async Task ClaimResources() {
-        ClaimResourcesResponse response = await MakeLambdaCall<ClaimResourcesResponse>("claimresources");
-        stateManager.HandleClaimResourcesResponse(response);
-    }
-
     public async Task UpdateTutorials() {
         var accountState = stateManager.CurrentAccountState;
         var request = new UpdateTutorialsRequest() {
@@ -129,36 +124,6 @@ public class CredentialsManager : MonoBehaviour {
         var response = await MakeLambdaCall<SummonResponse, SummonRequest>(summonRequest, "summonhero");
         stateManager.HandleSummonResponse(response);
         return response.SummonedHeroes;
-    }
-
-    public async Task<List<AccountHero>> RequestSummons(FactionEnum faction, int rarity, int summonCount) {
-        var summonRequest = new FactionSummonRequest() {
-            ChosenFaction = faction,
-            SummonCount = summonCount,
-            SummonRarity = rarity
-        };
-        var response = await MakeLambdaCall<FactionSummonResponse, FactionSummonRequest>(summonRequest, "summonfactionhero");
-        stateManager.HandleSummonResponse(response);
-        return response.SummonedHeroes;
-    }
-
-    public async Task<bool> RequestLevelup(AccountHero selectedHero) {
-        if (selectedHero.CurrentLevel >= LevelContainer.MaxLevelForAwakeningValue(selectedHero.AwakeningLevel)) {
-            return false;
-        }
-
-        long cost = LevelContainer.HeroExperienceRequirement(selectedHero.CurrentLevel);
-        var currentState = stateManager.CurrentAccountState;
-        if (currentState.CurrentGold < cost || currentState.CurrentSouls < cost) {
-            return false;
-        }
-
-        var request = new LevelupHeroRequest() {
-            AccountHeroId = selectedHero.Id
-        };
-        var response = await MakeLambdaCall<LevelupHeroResponse, LevelupHeroRequest>(request, "leveluphero");
-        stateManager.HandleLevelupResponse(response, selectedHero);
-        return response.LevelupSuccessful;
     }
 
     public async Task<bool> RequestFusion(AccountHero fusedHero, List<AccountHero> destroyedHeroes) {

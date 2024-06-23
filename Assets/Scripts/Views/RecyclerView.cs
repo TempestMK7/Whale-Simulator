@@ -31,7 +31,7 @@ public class RecyclerView: MonoBehaviour {
             foreach (GameObject existing in currentViewHolders) {
                 if (existing == null) continue;
                 existing.gameObject.SetActive(false);
-                recyclableViewHolders.Add(existing);
+                if (!recyclableViewHolders.Contains(existing)) recyclableViewHolders.Add(existing);
             }
         }
         currentViewHolders = new GameObject[currentCount];
@@ -80,14 +80,15 @@ public class RecyclerView: MonoBehaviour {
 
             if (validPosition) {
                 var current = currentViewHolders[x];
-                if (current != null) continue;
-                if (recyclableViewHolders.Count > 0) {
-                    current = recyclableViewHolders[0];
-                    recyclableViewHolders.RemoveAt(0);
-                } else {
-                    current = adapter.OnCreateViewHolder(contentArea);
+                if (current == null) {
+                    if (recyclableViewHolders.Count > 0) {
+                        current = recyclableViewHolders[0];
+                        recyclableViewHolders.RemoveAt(0);
+                    } else {
+                        current = adapter.OnCreateViewHolder(contentArea);
+                    }
+                    currentViewHolders[x] = current;
                 }
-                currentViewHolders[x] = current;
                 
                 current.gameObject.SetActive(true);
                 current.transform.SetParent(contentArea);

@@ -20,7 +20,7 @@ public class InventorySceneManager : MonoBehaviour {
     }
 
     public void NotifyListSelection(AccountInventory inventory) {
-
+        // TODO: Build a tooltip popup with the message in the base inventory object.
     }
 }
 

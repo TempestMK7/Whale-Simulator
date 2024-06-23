@@ -19,7 +19,8 @@ public class InventoryListItemBehavior : MonoBehaviour, IPointerClickHandler {
     public void SetAccountInventory(AccountInventory accountInventory) {
         this.accountInventory = accountInventory;
         var baseInventory = BaseInventoryContainer.GetBaseInventory(accountInventory.ItemType);
-        quantityLabel.text = baseInventory.name;
+
+        quantityLabel.text = CustomFormatter.Format(accountInventory.Quantity);
         itemIcon.sprite = Resources.Load<Sprite>(baseInventory.iconName);
     }
 

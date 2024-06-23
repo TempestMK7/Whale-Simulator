@@ -188,13 +188,13 @@ public class HeroSceneManager : MonoBehaviour {
         ToggleStatPanel(!statPanel.activeSelf);
     }
 
-    public async void OnLevelUpPressed() {
+    public void OnLevelUpPressed() {
         if (ButtonsBlocked()) return;
         loadingFromServer = true;
         try {
-            bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
+            //bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
             loadingFromServer = false;
-            OnLevelUpComplete(successful);
+            //OnLevelUpComplete(successful);
         } catch (Exception e) {
             Debug.LogError(e);
             loadingFromServer = false;

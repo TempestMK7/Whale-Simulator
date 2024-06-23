@@ -50,6 +50,10 @@ public class HubSceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("EquipmentScene");
     }
 
+    public void OnInventoryClicked() {
+        SceneManager.LoadSceneAsync("InventoryScene");
+    }
+
     private bool PopupOpened() {
         return FindObjectOfType<SettingsPopupManager>() != null || FindObjectOfType<TooltipPopup>() != null;
     }

@@ -57,32 +57,12 @@ public class StateManager : MonoBehaviour {
         ConsolidateState();
     }
 
-    public void HandleClaimResourcesResponse(ClaimResourcesResponse response) {
-        CurrentAccountState.LastClaimTimeStamp = response.LastClaimTimeStamp;
-        CurrentAccountState.CurrentGold = response.CurrentGold;
-        CurrentAccountState.CurrentSouls = response.CurrentSouls;
-        CurrentAccountState.CurrentExperience = response.CurrentExperience;
-        CurrentAccountState.CurrentLevel = response.CurrentLevel;
-        ConsolidateState();
-    }
-
     public void HandleSummonResponse(SummonResponse response) {
         foreach (AccountHero hero in response.SummonedHeroes) {
             hero.LoadBaseHero();
         }
-        CurrentAccountState.CurrentSummons = response.CurrentSummons;
-        CurrentAccountState.AccountHeroes.AddRange(response.SummonedHeroes);
-        CurrentAccountState.RetrieveDataAfterLoad();
-        ConsolidateState();
-    }
-
-    public void HandleSummonResponse(FactionSummonResponse response) {
-        foreach (AccountHero hero in response.SummonedHeroes) {
-            hero.LoadBaseHero();
-        }
-        CurrentAccountState.CurrentBronzeSummons = response.CurrentBronzeSummons;
-        CurrentAccountState.CurrentSilverSummons = response.CurrentSilverSummons;
-        CurrentAccountState.CurrentGoldSummons = response.CurrentGoldSummons;
+        var crystalInventory = CurrentAccountState.GetInventory(ItemEnum.RED_CRYSTAL);
+        if (crystalInventory != null) crystalInventory.Quantity = response.CurrentSummons;
         CurrentAccountState.AccountHeroes.AddRange(response.SummonedHeroes);
         CurrentAccountState.RetrieveDataAfterLoad();
         ConsolidateState();
@@ -92,7 +72,6 @@ public class StateManager : MonoBehaviour {
         if (!response.LevelupSuccessful) return;
         leveledHero.CurrentLevel = response.HeroLevel;
         CurrentAccountState.CurrentGold = response.CurrentGold;
-        CurrentAccountState.CurrentSouls = response.CurrentSouls;
         ConsolidateState();
     }
 
@@ -147,20 +126,7 @@ public class StateManager : MonoBehaviour {
 
     public void HandleCombatResponse(BattleEnum battleType, CombatResponse response) {
         if (!response.Report.alliesWon) return;
-        switch (battleType) {
-            case BattleEnum.CAMPAIGN:
-                if (CurrentAccountState.CurrentMission == 10) {
-                    CurrentAccountState.CurrentMission = 1;
-                    CurrentAccountState.CurrentChapter++;
-                } else {
-                    CurrentAccountState.CurrentMission++;
-                }
-                break;
-            case BattleEnum.LOOT_CAVE:
-                CurrentAccountState.CurrentCaveFloor += 1;
-                break;
-        }
-        CurrentAccountState.ReceiveRewards(response.Rewards);
+        if (response.NewState != null) CurrentAccountState = response.NewState;
         ConsolidateState();
     }
 

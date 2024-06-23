@@ -55,6 +55,9 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public class BaseInventoryContainer {
 
+        public const string GOLD_ICON_PATH = "Icons/icon_gold_smaller";
+        public const string GEM_ICON_PATH = "Icons/icon_gem";
+
         private static Dictionary<ItemEnum, BaseInventory> inventoryDictionary;
 
         public static void Initialize() {

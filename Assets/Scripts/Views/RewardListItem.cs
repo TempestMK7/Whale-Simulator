@@ -10,13 +10,27 @@ public class RewardListItem : MonoBehaviour {
     public Text rewardCountText;
     public RarityBehavior rewardRarityView;
 
-    public void SetReward(RewardType rewardType, int rewardCount) {
+    public void SetReward(int goldCount, int gemCount) {
         rewardIcon.enabled = true;
         rewardCountText.enabled = true;
         rewardRarityView.gameObject.SetActive(false);
 
-        rewardIcon.sprite = RewardIconContainer.GetIconForReward(rewardType);
-        rewardCountText.text = CustomFormatter.Format(rewardCount);
+        if (gemCount > 0) {
+            rewardIcon.sprite = Resources.Load<Sprite>(BaseInventoryContainer.GEM_ICON_PATH);
+            rewardCountText.text = CustomFormatter.Format(gemCount);
+        } else {
+            rewardIcon.sprite = Resources.Load<Sprite>(BaseInventoryContainer.GOLD_ICON_PATH);
+            rewardCountText.text = CustomFormatter.Format(goldCount);
+        }
+    }
+
+    public void SetReward(AccountInventory inventory) {
+        rewardIcon.enabled = true;
+        rewardCountText.enabled = true;
+        rewardRarityView.gameObject.SetActive(false);
+
+        rewardIcon.sprite = Resources.Load<Sprite>(BaseInventoryContainer.GetBaseInventory(inventory.ItemType).iconName);
+        rewardCountText.text = CustomFormatter.Format(inventory.Quantity);
     }
 
     public void SetReward(AccountEquipment equipment) {

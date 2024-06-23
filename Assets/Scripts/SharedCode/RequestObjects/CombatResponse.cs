@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
+using Com.Tempest.Whale.StateObjects;
 
 namespace Com.Tempest.Whale.RequestObjects {
 
@@ -10,5 +11,6 @@ namespace Com.Tempest.Whale.RequestObjects {
 
         public CombatReport Report { get; set; }
         public EarnedRewardsContainer Rewards { get; set; }
+        public AccountState NewState { get; set; }
     }
 }
