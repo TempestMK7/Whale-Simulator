@@ -1,6 +1,7 @@
 using Com.Tempest.Whale.StateObjects;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InventorySceneManager : MonoBehaviour {
 
@@ -17,6 +18,10 @@ public class InventorySceneManager : MonoBehaviour {
         credentialsManager = FindObjectOfType<CredentialsManager>();
         inventoryAdapter = new InventoryAdapter(stateManager.CurrentAccountState.Inventory, inventoryListItemPrefab, this);
         inventoryRecycler.SetAdapter(inventoryAdapter);
+    }
+
+    public void OnBackPressed() {
+        SceneManager.LoadSceneAsync("HubScene");
     }
 
     public void NotifyListSelection(AccountInventory inventory) {
@@ -43,7 +48,7 @@ public class InventoryAdapter : RecyclerViewAdapter {
     public override GameObject OnCreateViewHolder(RectTransform contentHolder) {
         var listItem = Object.Instantiate(listItemPrefab, contentHolder);
         listItem.GetComponent<InventoryListItemBehavior>().SetSceneManager(sceneManager);
-        return Object.Instantiate(listItemPrefab, contentHolder);
+        return listItem;
     }
 
     public override void OnBindViewHolder(GameObject viewHolder, int position) {

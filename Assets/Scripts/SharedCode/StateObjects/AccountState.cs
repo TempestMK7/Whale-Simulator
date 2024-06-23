@@ -48,7 +48,7 @@ namespace Com.Tempest.Whale.StateObjects {
             AccountEquipment = new List<AccountEquipment>();
             Inventory = new List<AccountInventory>() {
                 new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.RED_CRYSTAL,
                     Quantity = 10
                 }

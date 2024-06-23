@@ -43,7 +43,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var redCrystals = CombatMath.RandomInt(RedCrystalsMin, RedCrystalsMax + 1);
             if (redCrystals > 0) {
                 earnedInventory.Add(new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.RED_CRYSTAL,
                     Quantity = redCrystals
                 });
@@ -52,7 +52,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var blueCrystals = CombatMath.RandomInt(BlueCrystalsMin, BlueCrystalsMax + 1);
             if (blueCrystals > 0) {
                 earnedInventory.Add(new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.BLUE_CRYSTAL,
                     Quantity = blueCrystals
                 });
@@ -61,7 +61,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var silverDust = CombatMath.RandomInt(SilverDustMin, SilverDustMax + 1);
             if (silverDust > 0) {
                 earnedInventory.Add(new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.SILVER_DUST,
                     Quantity = silverDust
                 });
@@ -70,7 +70,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var goldDust = CombatMath.RandomInt(GoldDustMin, GoldDustMax + 1);
             if (goldDust > 0) {
                 earnedInventory.Add(new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.GOLD_DUST,
                     Quantity = goldDust
                 });
@@ -79,7 +79,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var oldPages = CombatMath.RandomInt(OldPagesMin, OldPagesMax + 1);
             if (oldPages > 0) {
                 earnedInventory.Add(new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.OLD_PAGES,
                     Quantity = oldPages
                 });
@@ -88,7 +88,7 @@ namespace Com.Tempest.Whale.GameObjects {
             var ancientPages = CombatMath.RandomInt(AncientPagesMin, AncientPagesMax + 1);
             if (ancientPages > 0) {
                 earnedInventory.Add(new AccountInventory() {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     ItemType = ItemEnum.ANCIENT_PAGES,
                     Quantity = ancientPages
                 });
@@ -98,7 +98,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 var littleTreats = CombatMath.RandomInt(TreatsMin * (int)Math.Pow(2, TreatsMaxSize), TreatsMax * (int)Math.Pow(2, TreatsMaxSize) + 1);
                 if (littleTreats > 0) {
                     earnedInventory.Add(new AccountInventory() {
-                        Id = new Guid(),
+                        Id = Guid.NewGuid(),
                         ItemType = ItemEnum.LITTLE_TREAT,
                         Quantity = littleTreats
                     });
@@ -109,7 +109,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 var yummyTreats = CombatMath.RandomInt(TreatsMin * (int)Math.Pow(2, TreatsMaxSize - 1), TreatsMax * (int)Math.Pow(2, TreatsMaxSize - 1) + 1);
                 if (yummyTreats > 0) {
                     earnedInventory.Add(new AccountInventory() {
-                        Id = new Guid(),
+                        Id = Guid.NewGuid(),
                         ItemType = ItemEnum.YUMMY_TREAT,
                         Quantity = yummyTreats
                     });
@@ -120,7 +120,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 var sizableTreats = CombatMath.RandomInt(TreatsMin * (int)Math.Pow(2, TreatsMaxSize - 2), TreatsMax * (int)Math.Pow(2, TreatsMaxSize - 2) + 1);
                 if (sizableTreats > 0) {
                     earnedInventory.Add(new AccountInventory() {
-                        Id = new Guid(),
+                        Id = Guid.NewGuid(),
                         ItemType = ItemEnum.SIZABLE_TREAT,
                         Quantity = sizableTreats
                     });
@@ -131,7 +131,7 @@ namespace Com.Tempest.Whale.GameObjects {
                 var fancyTreats = CombatMath.RandomInt(TreatsMin * (int)Math.Pow(2, TreatsMaxSize - 3), TreatsMax * (int)Math.Pow(2, TreatsMaxSize - 3) + 1);
                 if (fancyTreats > 0) {
                     earnedInventory.Add(new AccountInventory() {
-                        Id = new Guid(),
+                        Id = Guid.NewGuid(),
                         ItemType = ItemEnum.FANCY_TREAT,
                         Quantity = fancyTreats
                     });
