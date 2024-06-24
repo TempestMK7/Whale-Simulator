@@ -1,3 +1,4 @@
+using Com.Tempest.Whale.GameObjects;
 using Com.Tempest.Whale.StateObjects;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class InventorySceneManager : MonoBehaviour {
 
+    public Canvas mainCanvas;
     public RecyclerView inventoryRecycler;
 
     public GameObject inventoryListItemPrefab;
+    public GameObject tooltipPrefab;
 
     private StateManager stateManager;
     private CredentialsManager credentialsManager;
@@ -24,8 +27,19 @@ public class InventorySceneManager : MonoBehaviour {
         SceneManager.LoadSceneAsync("HubScene");
     }
 
-    public void NotifyListSelection(AccountInventory inventory) {
-        // TODO: Build a tooltip popup with the message in the base inventory object.
+    public void OnClick(AccountInventory inventory) {
+        if (ButtonsBlocked()) return;
+        var baseInventory = BaseInventoryContainer.GetBaseInventory(inventory.ItemType);
+        var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+        tooltip.GetComponent<TooltipPopup>().SetTooltip(baseInventory.Name, baseInventory.Description);
+    }
+
+    public void OnLongPress(AccountInventory inventory) {
+        if (ButtonsBlocked()) return;
+    }
+
+    private bool ButtonsBlocked() {
+        return FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<LoadingPopup>() != null;
     }
 }
 

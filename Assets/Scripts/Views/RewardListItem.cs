@@ -29,7 +29,7 @@ public class RewardListItem : MonoBehaviour {
         rewardCountText.enabled = true;
         rewardRarityView.gameObject.SetActive(false);
 
-        rewardIcon.sprite = Resources.Load<Sprite>(BaseInventoryContainer.GetBaseInventory(inventory.ItemType).iconName);
+        rewardIcon.sprite = Resources.Load<Sprite>(BaseInventoryContainer.GetBaseInventory(inventory.ItemType).IconPath);
         rewardCountText.text = CustomFormatter.Format(inventory.Quantity);
     }
 

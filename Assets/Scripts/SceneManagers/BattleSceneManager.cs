@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Com.Tempest.Whale.Combat;
 using Com.Tempest.Whale.GameObjects;
-using Com.Tempest.Whale.ResourceContainers;
 using Com.Tempest.Whale.StateObjects;
 
 public class BattleSceneManager : MonoBehaviour {

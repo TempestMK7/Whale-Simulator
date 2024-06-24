@@ -40,16 +40,16 @@ namespace Com.Tempest.Whale.GameObjects {
 
     public class BaseInventory {
 
-        public ItemEnum itemEnum { get; }
-        public string name { get; }
-        public string iconName { get; }
-        public string description { get; }
+        public ItemEnum ItemType { get; }
+        public string Name { get; }
+        public string IconPath { get; }
+        public string Description { get; }
 
-        public BaseInventory(ItemEnum itemEnum, string name, string iconName, string description) {
-            this.itemEnum = itemEnum;
-            this.name = name;
-            this.iconName = iconName;
-            this.description = description;
+        public BaseInventory(ItemEnum itemEnum, string name, string iconPath, string description) {
+            ItemType = itemEnum;
+            Name = name;
+            IconPath = iconPath;
+            Description = description;
         }
     }
 
