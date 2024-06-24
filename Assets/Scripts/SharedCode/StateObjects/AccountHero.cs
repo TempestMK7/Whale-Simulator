@@ -106,5 +106,17 @@ namespace Com.Tempest.Whale.StateObjects {
                 return (int)(baseExperience * Math.Pow(0.98, CurrentLevel - enemyLevel));
             }
         }
+
+        public List<AttackEnum> GetUnknownAttacks() {
+            if (baseHero == null) GetBaseHero();
+            var unknownAttacks = new List<AttackEnum>();
+            foreach (AttackEnum basic in baseHero.TeachableBasics) {
+                if (!UnlockedAttacks.Contains(basic)) unknownAttacks.Add(basic);
+            }
+            foreach (AttackEnum charge in baseHero.TeachableCharges) {
+                if (!UnlockedAttacks.Contains(charge)) unknownAttacks.Add(charge);
+            }
+            return unknownAttacks;
+        }
     }
 }
