@@ -8,8 +8,9 @@ namespace Com.Tempest.Whale.RequestObjects {
     public class UseItemResponse {
 
         public bool Success { get; set; }
-        public AccountInventory NewInventory { get; set; }
-        public AccountHero NewHero { get; set; }
+        public AccountInventory UsedInventory { get; set; }
+        public AccountHero TargetHero { get; set; }
+        public AccountInventory ResultInventory { get; set; }
         public AttackEnum? NewAttack { get; set; }
     }
 }

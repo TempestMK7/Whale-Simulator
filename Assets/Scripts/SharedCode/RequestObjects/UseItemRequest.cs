@@ -5,8 +5,8 @@ namespace Com.Tempest.Whale.RequestObjects {
     [Serializable]
     public class UseItemRequest {
 
-        public Guid InventoryId { get; set; }
-        public Guid HeroId { get; set; }
+        public Guid UsedInventoryId { get; set; }
+        public Guid TargetHeroId { get; set; }
         public int Quantity { get; set; }
     }
 }
