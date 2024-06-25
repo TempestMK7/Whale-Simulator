@@ -68,13 +68,6 @@ public class StateManager : MonoBehaviour {
         ConsolidateState();
     }
 
-    public void HandleLevelupResponse(LevelupHeroResponse response, AccountHero leveledHero) {
-        if (!response.LevelupSuccessful) return;
-        leveledHero.CurrentLevel = response.HeroLevel;
-        CurrentAccountState.CurrentGold = response.CurrentGold;
-        ConsolidateState();
-    }
-
     public void HandleFuseResponse(FuseHeroResponse response, AccountHero fusedHero, List<AccountHero> destroyedHeroes) {
         var accountHeroes = CurrentAccountState.AccountHeroes;
         accountHeroes.Remove(fusedHero);

@@ -107,14 +107,14 @@ namespace Com.Tempest.Whale.StateObjects {
             }
         }
 
-        public List<AttackEnum> GetUnknownAttacks() {
+        public List<AttackEnum> GetUnknownAttacks(MoveComplexity complexity) {
             if (baseHero == null) GetBaseHero();
             var unknownAttacks = new List<AttackEnum>();
             foreach (AttackEnum basic in baseHero.TeachableBasics) {
-                if (!UnlockedAttacks.Contains(basic)) unknownAttacks.Add(basic);
+                if (!UnlockedAttacks.Contains(basic) && AttackInfoContainer.GetAttackInfo(basic).Complexity == complexity) unknownAttacks.Add(basic);
             }
             foreach (AttackEnum charge in baseHero.TeachableCharges) {
-                if (!UnlockedAttacks.Contains(charge)) unknownAttacks.Add(charge);
+                if (!UnlockedAttacks.Contains(charge) && AttackInfoContainer.GetAttackInfo(charge).Complexity == complexity) unknownAttacks.Add(charge);
             }
             return unknownAttacks;
         }
