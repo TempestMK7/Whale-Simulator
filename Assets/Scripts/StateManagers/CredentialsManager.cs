@@ -185,6 +185,19 @@ public class CredentialsManager : MonoBehaviour {
         stateManager.HandleUnequipResponse(hero);
     }
 
+    public async Task<UseItemResponse> UseItem(AccountInventory inventory, AccountHero hero, long quantity) {
+        var request = new UseItemRequest() {
+            UsedInventoryId = inventory.Id,
+            TargetHeroId = hero != null ? hero.Id : Guid.Empty,
+            Quantity = quantity
+        };
+        var response = await MakeLambdaCall<UseItemResponse, UseItemRequest>(request, "useitem");
+        if (response != null && response.Success) {
+            stateManager.HandleUseItemResponse(response);
+        }
+        return response;
+    }
+
     public async Task<CombatResponse> PerformEpicBattle(BattleEnum battleType, AccountHero[] selectedHeroes) {
         var selectedGuids = new Guid[selectedHeroes.Length];
         for (int x = 0; x < selectedHeroes.Length; x++) {

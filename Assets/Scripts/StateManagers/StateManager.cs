@@ -24,6 +24,7 @@ public class StateManager : MonoBehaviour {
         }
         CurrentAccountState.AccountHeroes.Sort();
         CurrentAccountState.AccountEquipment.Sort();
+        CurrentAccountState.Inventory.Sort();
     }
 
     #endregion
@@ -113,6 +114,26 @@ public class StateManager : MonoBehaviour {
         });
         foreach (AccountEquipment e in equipped) {
             e.EquippedHeroId = null;
+        }
+        ConsolidateState();
+    }
+
+    public void HandleUseItemResponse(UseItemResponse response) {
+        if (!response.Success) return;
+        if (response.UsedInventory != null) {
+            var existing = CurrentAccountState.GetInventory(response.UsedInventory.ItemType);
+            if (existing == null) CurrentAccountState.Inventory.Add(response.UsedInventory);
+            else existing.Quantity = response.UsedInventory.Quantity;
+        }
+        if (response.TargetHero != null) {
+            var existing = CurrentAccountState.AccountHeroes.Find(matchable => matchable.Id.Equals(response.TargetHero.Id));
+            if (existing != null) CurrentAccountState.AccountHeroes.Remove(existing);
+            CurrentAccountState.AccountHeroes.Add(response.TargetHero);
+        }
+        if (response.ResultInventory != null) {
+            var existing = CurrentAccountState.GetInventory(response.ResultInventory.ItemType);
+            if (existing == null) CurrentAccountState.Inventory.Add(response.ResultInventory);
+            else existing.Quantity = response.ResultInventory.Quantity;
         }
         ConsolidateState();
     }

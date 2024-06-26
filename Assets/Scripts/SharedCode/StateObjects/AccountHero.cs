@@ -83,7 +83,7 @@ namespace Com.Tempest.Whale.StateObjects {
             return (int)(Math.Round(multiplier, rounding) * 100);
         }
 
-        public void AwardExperience(int experience) {
+        public void AwardExperience(long experience) {
             CurrentExperience += experience;
             if (CurrentLevel >= 100) {
                 CurrentLevel = 100;

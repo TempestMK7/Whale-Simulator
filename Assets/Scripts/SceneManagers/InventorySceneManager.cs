@@ -20,7 +20,8 @@ public class InventorySceneManager : MonoBehaviour {
     public void Awake() {
         stateManager = FindObjectOfType<StateManager>();
         credentialsManager = FindObjectOfType<CredentialsManager>();
-        inventoryAdapter = new InventoryAdapter(stateManager.CurrentAccountState.Inventory, inventoryListItemPrefab, this);
+        inventoryAdapter = new InventoryAdapter(inventoryListItemPrefab, this);
+        inventoryAdapter.SetNewList(stateManager.CurrentAccountState.Inventory);
         inventoryRecycler.SetAdapter(inventoryAdapter);
     }
 
@@ -54,6 +55,45 @@ public class InventorySceneManager : MonoBehaviour {
         itemHeroSelect.GetComponent<ItemWithHeroSelectPopupBehavior>().SetTreatInventory(inventory);
     }
 
+    public async void OnGivePressed(AccountInventory inventory, AccountHero targetHero, long quantity) {
+        var response = await credentialsManager.UseItem(inventory, targetHero, quantity);
+        if (response != null && response.Success) {
+            inventoryAdapter.SetNewList(stateManager.CurrentAccountState.Inventory);
+            inventoryRecycler.NotifyDataSetChanged();
+            var heroName = BaseHeroContainer.GetBaseHero(targetHero.HeroType).HeroName;
+
+            string successMessage;
+            if (response.NewAttack != null) {
+                var attackName = AttackInfoContainer.GetAttackInfo((AttackEnum)response.NewAttack).AttackName;
+                successMessage = $"{heroName} learned {attackName}.";
+            } else {
+                var experienceTotal = BaseExperience(response.UsedInventory.ItemType) * quantity;
+                successMessage = $"{heroName} gained {experienceTotal} experience and is now level {response.TargetHero.CurrentLevel}.";
+            }
+
+            var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+            tooltip.GetComponent<TooltipPopup>().SetTooltip("Success!", successMessage);
+        } else {
+            var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+            tooltip.GetComponent<TooltipPopup>().SetTooltip("Can't Do That", "Your item could not be used in this way.");
+        }
+    }
+
+    private long BaseExperience(ItemEnum treatType) {
+        switch (treatType) {
+            case ItemEnum.LITTLE_TREAT:
+                return 100;
+            case ItemEnum.YUMMY_TREAT:
+                return 1000;
+            case ItemEnum.SIZABLE_TREAT:
+                return 10000;
+            case ItemEnum.FANCY_FOOD:
+                return 100000;
+            default:
+                return 0;
+        }
+    }
+
     private bool ButtonsBlocked() {
         return FindObjectOfType<TooltipPopup>() != null ||
             FindObjectOfType<LoadingPopup>() != null ||
@@ -67,14 +107,13 @@ public class InventoryAdapter : RecyclerViewAdapter {
     private readonly GameObject listItemPrefab;
     private readonly InventorySceneManager sceneManager;
 
-    public InventoryAdapter(List<AccountInventory> inventory, GameObject listItemPrefab, InventorySceneManager sceneManager) {
-        this.inventory = inventory;
+    public InventoryAdapter(GameObject listItemPrefab, InventorySceneManager sceneManager) {
         this.listItemPrefab = listItemPrefab;
         this.sceneManager = sceneManager;
     }
 
     public void SetNewList(List<AccountInventory> newInventory) {
-        inventory = newInventory;
+        inventory = newInventory.FindAll(matchable => matchable.Quantity > 0);
     }
 
     public override GameObject OnCreateViewHolder(RectTransform contentHolder) {

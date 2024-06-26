@@ -47,9 +47,9 @@ public class ItemWithHeroSelectPopupBehavior : MonoBehaviour, IHeroSelectionList
     public void SetTreatInventory(AccountInventory inventory) {
         this.inventory = inventory;
         bool requiresQuantity = ItemRequiresQuantity(inventory.ItemType);
-        quantityLabel.enabled = requiresQuantity;
-        plusButton.enabled = requiresQuantity;
-        minusButton.enabled = requiresQuantity;
+        quantityLabel.gameObject.SetActive(requiresQuantity);
+        plusButton.gameObject.SetActive(requiresQuantity);
+        minusButton.gameObject.SetActive(requiresQuantity);
         recyclerView.GetComponent<RectTransform>().offsetMin = new Vector2(20, requiresQuantity ? 130 : 90);
         HandleQuantityLabel();
     }
@@ -89,7 +89,7 @@ public class ItemWithHeroSelectPopupBehavior : MonoBehaviour, IHeroSelectionList
 
     public void OnGivePressed() {
         if (selectedHero == null) return;
-        // TODO: await server response from using hero.
+        FindObjectOfType<InventorySceneManager>().OnGivePressed(inventory, selectedHero, selectedQuantity);
         StartCoroutine(ShrinkToNothing());
     }
 

@@ -7,6 +7,6 @@ namespace Com.Tempest.Whale.RequestObjects {
 
         public Guid UsedInventoryId { get; set; }
         public Guid TargetHeroId { get; set; }
-        public int Quantity { get; set; }
+        public long Quantity { get; set; }
     }
 }
