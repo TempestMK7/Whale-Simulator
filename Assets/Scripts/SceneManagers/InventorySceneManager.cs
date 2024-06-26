@@ -11,6 +11,7 @@ public class InventorySceneManager : MonoBehaviour {
 
     public GameObject inventoryListItemPrefab;
     public GameObject tooltipPrefab;
+    public GameObject itemHeroSelectPrefab;
 
     private StateManager stateManager;
     private CredentialsManager credentialsManager;
@@ -36,10 +37,27 @@ public class InventorySceneManager : MonoBehaviour {
 
     public void OnLongPress(AccountInventory inventory) {
         if (ButtonsBlocked()) return;
+        switch (inventory.ItemType) {
+            case ItemEnum.LITTLE_TREAT:
+            case ItemEnum.YUMMY_TREAT:
+            case ItemEnum.SIZABLE_TREAT:
+            case ItemEnum.FANCY_TREAT:
+            case ItemEnum.OLD_BOOK:
+            case ItemEnum.ANCIENT_BOOK:
+                LaunchHeroSelectionPopup(inventory);
+                break;
+        }
+    }
+
+    private void LaunchHeroSelectionPopup(AccountInventory inventory) {
+        var itemHeroSelect = Instantiate(itemHeroSelectPrefab, mainCanvas.transform);
+        itemHeroSelect.GetComponent<ItemWithHeroSelectPopupBehavior>().SetTreatInventory(inventory);
     }
 
     private bool ButtonsBlocked() {
-        return FindObjectOfType<TooltipPopup>() != null || FindObjectOfType<LoadingPopup>() != null;
+        return FindObjectOfType<TooltipPopup>() != null ||
+            FindObjectOfType<LoadingPopup>() != null ||
+            FindObjectOfType<ItemWithHeroSelectPopupBehavior>() != null;
     }
 }
 

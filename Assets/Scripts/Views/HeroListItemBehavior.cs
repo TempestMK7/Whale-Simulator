@@ -21,6 +21,7 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
     private FusionPopupBehavior fusionPopup;
     private HeroSceneManager heroSceneManager;
     private BattleSceneManager battleSceneManager;
+    private IHeroSelectionListener heroSelectionListener;
 
     private StateManager stateManager;
 
@@ -62,6 +63,10 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         battleSceneManager = manager;
     }
 
+    public void SetHeroSelectionListener(IHeroSelectionListener listener) {
+        heroSelectionListener = listener;
+    }
+
     public void OnPointerClick(PointerEventData eventData) {
         if (isSelectable && battleSceneManager != null && battleSceneManager.OnHeroSelected(accountHero, !isSelected)) {
             isSelected = !isSelected;
@@ -74,5 +79,11 @@ public class HeroListItemBehavior : MonoBehaviour, IPointerClickHandler {
         if (heroSceneManager != null) {
             heroSceneManager.NotifyListSelection(listPosition);
         }
+        heroSelectionListener?.OnHeroSelected(listPosition, accountHero);
     }
+}
+
+public interface IHeroSelectionListener {
+
+    public abstract void OnHeroSelected(int position, AccountHero hero);
 }
