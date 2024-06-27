@@ -101,12 +101,11 @@ namespace Com.Tempest.Whale.StateObjects {
                 }
             }
 
-            foreach (int defeatedEnemyLevel in rewards.DefeatedEnemyLevels) {
-                foreach (Guid selectedHeroId in selectedHeroes) {
-                    var selectedHero = AccountHeroes.Find(matchable => matchable.Id.Equals(selectedHeroId));
-                    if (selectedHero != null) {
-                        selectedHero.AwardExperience(selectedHero.ExperienceReward(defeatedEnemyLevel));
-                    }
+
+            foreach (Guid selectedHeroId in selectedHeroes) {
+                var selectedHero = AccountHeroes.Find(matchable => matchable.Id.Equals(selectedHeroId));
+                foreach (int defeatedEnemyLevel in rewards.DefeatedEnemyLevels) {
+                    selectedHero.AwardExperience(selectedHero.ExperienceReward(defeatedEnemyLevel));
                 }
             }
         }

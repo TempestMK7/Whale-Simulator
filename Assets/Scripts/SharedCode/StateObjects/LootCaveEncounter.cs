@@ -44,6 +44,10 @@ namespace Com.Tempest.Whale.StateObjects {
 
         public PotentialRewardsContainer GetPotentialRewards() {
             var awakening = GetAwakeningLevel();
+            var defeatedEnemyLevels = new List<int>();
+            for (int x = 0; x < 5; x++) {
+                defeatedEnemyLevels.Add(GetCurrentLevel());
+            }
             return new PotentialRewardsContainer() {
                 GoldMin = 1,
                 GoldMax = (int)Math.Pow(10, Math.Ceiling(awakening / 3.0) + 1),
@@ -65,7 +69,8 @@ namespace Com.Tempest.Whale.StateObjects {
                 NumberEquipmentMin = -2,
                 NumberEquipmentMax = 3,
                 EquipmentLevelMin = 1 + (awakening / 4),
-                EquipmentLevelMax = (int)Math.Round(awakening / 2.0)
+                EquipmentLevelMax = (int)Math.Round(awakening / 2.0),
+                DefeatedEnemyLevels = defeatedEnemyLevels
             };
         }
     }

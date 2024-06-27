@@ -12,7 +12,7 @@ namespace Com.Tempest.Whale.StateObjects {
         public HeroEnum HeroType { get; set; }
         public int AwakeningLevel { get; set; }
         public int CurrentLevel { get; set; }
-        public double CurrentExperience { get; set; }
+        public long CurrentExperience { get; set; }
 
         public AttackEnum? CurrentBasicAttack { get; set; }
         public AttackEnum? CurrentChargeAttack { get; set; }
@@ -97,7 +97,7 @@ namespace Com.Tempest.Whale.StateObjects {
         }
 
         public int ExperienceReward(int enemyLevel) {
-            var baseExperience = (int)(10 * Math.Pow(1.05316, enemyLevel - 1));
+            var baseExperience = 10.0 * Math.Pow(1.05316, enemyLevel - 1);
             if (enemyLevel >= CurrentLevel) {
                 var difference = enemyLevel - CurrentLevel;
                 var multiplier = 1.0 + (difference * 0.05);

@@ -363,6 +363,10 @@ namespace Com.Tempest.Whale.GameObjects {
         }
 
         public PotentialRewardsContainer RewardsForMission() {
+            var defeatedEnemyLevels = new List<int>();
+            foreach (HeroEnum _ in MissionHeroes) {
+                defeatedEnemyLevels.Add(HeroLevel);
+            }
             return new PotentialRewardsContainer() {
                 GoldMin = HeroAwakening * 20,
                 GoldMax = HeroAwakening * 100,
@@ -384,7 +388,8 @@ namespace Com.Tempest.Whale.GameObjects {
                 NumberEquipmentMin = 1,
                 NumberEquipmentMax = 3,
                 EquipmentLevelMin = 1 + (HeroAwakening / 4),
-                EquipmentLevelMax = (int)Math.Round(HeroAwakening / 2.0)
+                EquipmentLevelMax = (int)Math.Round(HeroAwakening / 2.0),
+                DefeatedEnemyLevels = defeatedEnemyLevels
             };
         }
     }
