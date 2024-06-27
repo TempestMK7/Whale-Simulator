@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemWithHeroSelectPopupBehavior : MonoBehaviour, IHeroSelectionListener {
+public class ItemWithHeroSelectPopup : MonoBehaviour, IHeroSelectionListener {
 
     public RectTransform popupContainer;
     public RecyclerView recyclerView;

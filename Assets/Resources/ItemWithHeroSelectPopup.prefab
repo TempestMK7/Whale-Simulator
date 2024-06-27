@@ -934,7 +934,7 @@ GameObject:
   - component: {fileID: 5182014637284988763}
   - component: {fileID: 2603655738180977759}
   m_Layer: 5
-  m_Name: ItemHeroSelectPopupPrefab
+  m_Name: ItemWithHeroSelectPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

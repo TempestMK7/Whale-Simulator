@@ -12,6 +12,7 @@ public class InventorySceneManager : MonoBehaviour {
     public GameObject inventoryListItemPrefab;
     public GameObject tooltipPrefab;
     public GameObject itemHeroSelectPrefab;
+    public GameObject combineItemPrefab;
 
     private StateManager stateManager;
     private CredentialsManager credentialsManager;
@@ -33,7 +34,7 @@ public class InventorySceneManager : MonoBehaviour {
         if (ButtonsBlocked()) return;
         var baseInventory = BaseInventoryContainer.GetBaseInventory(inventory.ItemType);
         var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
-        tooltip.GetComponent<TooltipPopup>().SetTooltip(baseInventory.Name, baseInventory.Description);
+        tooltip.GetComponent<TooltipPopup>().SetTooltip(baseInventory.NameSingular, baseInventory.Description);
     }
 
     public void OnLongPress(AccountInventory inventory) {
@@ -47,12 +48,27 @@ public class InventorySceneManager : MonoBehaviour {
             case ItemEnum.ANCIENT_BOOK:
                 LaunchHeroSelectionPopup(inventory);
                 break;
+            case ItemEnum.OLD_PAGES:
+            case ItemEnum.ANCIENT_PAGES:
+                var baseInventory = BaseInventoryContainer.GetBaseInventory(inventory.ItemType);
+                if (inventory.Quantity < baseInventory.QuantityRequired) {
+                    var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+                    tooltip.GetComponent<TooltipPopup>().SetTooltip("Not Enough", $"You do not have the required {baseInventory.QuantityRequired} {baseInventory.NamePlural}.");
+                } else {
+                    LaunchCombineItemPopup(inventory);
+                }
+                break;
         }
     }
 
     private void LaunchHeroSelectionPopup(AccountInventory inventory) {
         var itemHeroSelect = Instantiate(itemHeroSelectPrefab, mainCanvas.transform);
-        itemHeroSelect.GetComponent<ItemWithHeroSelectPopupBehavior>().SetTreatInventory(inventory);
+        itemHeroSelect.GetComponent<ItemWithHeroSelectPopup>().SetTreatInventory(inventory);
+    }
+
+    private void LaunchCombineItemPopup(AccountInventory inventory) {
+        var combinePopup = Instantiate(combineItemPrefab, mainCanvas.transform);
+        combinePopup.GetComponent<CombineItemPopup>().SetSelectedInventory(inventory);
     }
 
     public async void OnGivePressed(AccountInventory inventory, AccountHero targetHero, long quantity) {
@@ -79,6 +95,21 @@ public class InventorySceneManager : MonoBehaviour {
         }
     }
 
+    public async void OnCombinePressed(AccountInventory inventory) {
+        var response = await credentialsManager.UseItem(inventory, null, 100);
+        if (response != null && response.Success ) {
+            inventoryAdapter.SetNewList(stateManager.CurrentAccountState.Inventory);
+            inventoryRecycler.NotifyDataSetChanged();
+            var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+            var resultBaseInventory = BaseInventoryContainer.GetBaseInventory(response.ResultInventory.ItemType);
+            var resultName = response.ResultInventory.Quantity == 1 ? resultBaseInventory.NameSingular : resultBaseInventory.NamePlural;
+            tooltip.GetComponent<TooltipPopup>().SetTooltip("Success!", $"You now have {response.ResultInventory.Quantity} {resultName}.");
+        } else {
+            var tooltip = Instantiate(tooltipPrefab, mainCanvas.transform);
+            tooltip.GetComponent<TooltipPopup>().SetTooltip("Can't Do That", "Your item could not be used in this way.");
+        }
+    }
+
     private long BaseExperience(ItemEnum treatType) {
         switch (treatType) {
             case ItemEnum.LITTLE_TREAT:
@@ -97,7 +128,7 @@ public class InventorySceneManager : MonoBehaviour {
     private bool ButtonsBlocked() {
         return FindObjectOfType<TooltipPopup>() != null ||
             FindObjectOfType<LoadingPopup>() != null ||
-            FindObjectOfType<ItemWithHeroSelectPopupBehavior>() != null;
+            FindObjectOfType<ItemWithHeroSelectPopup>() != null;
     }
 }
 
