@@ -75,12 +75,12 @@ namespace Com.Tempest.Whale.StateObjects {
             return otherHero.HeroName.CompareTo(myHero.HeroName);
         }
 
-        public int GetNextExperienceRequirement() {
+        public long GetNextExperienceRequirement() {
             // Experience requirement doubles every 10 levels.
             // return (int)(Math.Pow(1.071774, CurrentLevel - 1.0) * 1000);
             double multiplier = Math.Pow(1.1042, CurrentLevel - 1.0);
             var rounding = multiplier > 10 ? 0 : 1;
-            return (int)(Math.Round(multiplier, rounding) * 100);
+            return (long)(Math.Round(multiplier, rounding) * 100);
         }
 
         public void AwardExperience(long experience) {

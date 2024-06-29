@@ -39,11 +39,8 @@ public class HeroSceneManager : MonoBehaviour {
 
     public RarityBehavior rarityView;
     public Text levelLabel;
-    public UnityEngine.UI.Button levelButton;
-    public Text currentGold;
-    public Text currentSouls;
-    public Text goldCost;
-    public Text soulsCost;
+    public Text expLabel;
+    public ProgressBarPro expBar;
 
     public Text healthLabel;
     public Text defenseLabel;
@@ -188,20 +185,6 @@ public class HeroSceneManager : MonoBehaviour {
         ToggleStatPanel(!statPanel.activeSelf);
     }
 
-    public void OnLevelUpPressed() {
-        if (ButtonsBlocked()) return;
-        loadingFromServer = true;
-        try {
-            //bool successful = await credentialsManager.RequestLevelup(filteredList[currentPosition]);
-            loadingFromServer = false;
-            //OnLevelUpComplete(successful);
-        } catch (Exception e) {
-            Debug.LogError(e);
-            loadingFromServer = false;
-            CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
-        }
-    }
-
     public void OnLevelUpComplete(bool successful) {
         if (!successful) return;
         levelupFanfare.Play();
@@ -256,11 +239,8 @@ public class HeroSceneManager : MonoBehaviour {
         unequipButton.gameObject.SetActive(equipped.Count > 0);
 
         levelLabel.text = string.Format("Level: {0}", currentLevel);
-        levelButton.gameObject.SetActive(currentLevel < LevelContainer.MaxLevelForAwakeningValue(currentHero.AwakeningLevel));
-        currentGold.text = CustomFormatter.Format(stateManager.CurrentAccountState.CurrentGold);
-        currentSouls.text = ""; // CustomFormatter.Format(stateManager.CurrentAccountState.CurrentSouls);
-        goldCost.text = ""; // CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
-        soulsCost.text = ""; // CustomFormatter.Format(LevelContainer.HeroExperienceRequirement(currentLevel));
+        expLabel.text = $"{CustomFormatter.Format(currentHero.CurrentExperience)} / {CustomFormatter.Format(currentHero.GetNextExperienceRequirement())}";
+        SetToExistingProgress();
 
         healthLabel.text = string.Format("Health: {0}", combatHero.health.ToString("0"));
         attackLabel.text = string.Format("Strength: {0}", combatHero.strength.ToString("0"));
@@ -283,6 +263,26 @@ public class HeroSceneManager : MonoBehaviour {
         currentFusionRequirement = LevelContainer.GetFusionRequirementForLevel(currentHero.AwakeningLevel);
         fuseButton.gameObject.SetActive(currentFusionRequirement != null);
         ToggleStatPanel(true);
+    }
+
+    private void SetNewExperience(float progress, bool leveledUp) {
+        if (expBar.IsAnimating()) return;
+        
+        if (leveledUp) {
+            expBar.SetValue(100f, SetToExistingProgress);
+        } else {
+            expBar.SetValue(0f);
+            expBar.SetValue(progress, SetToExistingProgress);
+        }
+    }
+
+    private void SetToExistingProgress() {
+        var currentHero = filteredList[currentPosition];
+        var percentage = (float)currentHero.CurrentExperience / currentHero.GetNextExperienceRequirement();
+        if (expBar.Value != percentage) {
+            expBar.SetValue(0f);
+            expBar.SetValue(percentage, SetToExistingProgress);
+        }
     }
 
     public void LaunchEquipmentPopup(int slot) {
@@ -316,6 +316,14 @@ public class HeroSceneManager : MonoBehaviour {
             loadingFromServer = false;
             CredentialsManager.DisplayNetworkError(mainCanvas, "There was an error while communicating with the server.");
         }
+    }
+
+    public void LaunchTreatPopup() {
+        if (ButtonsBlocked()) return;
+    }
+
+    public void LaunchBookPopup() {
+        if (ButtonsBlocked()) return;
     }
 
     public void LaunchAttackTooltip() {
